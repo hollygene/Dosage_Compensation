@@ -348,9 +348,9 @@ warnings()
 #logMaxMat2 <-cbind(chrms,logMaxMat)
 
 ##get the column of log2 values of line 112 from the logMat (matrix) of all of the log2 values
-X112 <- subset(logMat, select=c("X112"))
+#X112 <- subset(logMat, select=c("X112"))
 #make a table with the chromosome numer in there too 
-X112c <- cbind(chrms,X112)
+#X112c <- cbind(chrms,X112)
 ##get the maximum log2 fold changes out 
 #X112max <- subset(logMaxMat2, select=c("X112"))
 #X112maxc <- cbind(chrms,X112max)
@@ -363,12 +363,12 @@ X112c <- cbind(chrms,X112)
 ###y.bar <- mean()
 ###y.SE <- c(sd(yL)/sqrt(length(yL)), sd(yH)/sqrt(length(yH)))
 ##plot the log2 values by the chromosome # 
-plot(X112~chrms, data=X112,ylim=c(-1.5,1.5),xlab="Chromosome", ylab="log2(fold change)",type="p",main="MA Line 112",pch=16,col="darkturquoise")
+#plot(X112~chrms, data=X112,ylim=c(-1.5,1.5),xlab="Chromosome", ylab="log2(fold change)",type="p",main="MA Line 112",pch=16,col="darkturquoise")
 #this is just an example plot script
 ####plot(1:2, y.bar, ylim=c(0, 25), xlim=c(0.5, 2.5), xaxt="n", pch=16,
      ###xlab="", ylab="Tree density", cex=1.5)
 ##this makes the x axis have the chromosome # labels
-axis(1, 1:16, c("1", "2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"))
+#axis(1, 1:16, c("1", "2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"))
 ##next I would like to figure out how to put error bars, but it is not completely necessary right now 
 ##add error bars
 #d = data.frame(
@@ -379,30 +379,30 @@ axis(1, 1:16, c("1", "2","3","4","5","6","7","8","9","10","11","12","13","14","1
 
 ##install.packages("Hmisc", dependencies=T)
 
-X112 <- subset(logMat, select=c("X112"))
-X112.1 <-X112[1,]
-X112c <- cbind(chrms,X112)
-X112.sd <- subset(logMatsd2, select=c("X112"))
-X112.1.sd <- X112.sd[1,]
-arrows(1, X112.1-X112.1.sd, 1, X112.1+X112.1.sd, code=3,angle=90,length=0.05)
+#X112 <- subset(logMat, select=c("X112"))
+#X112.1 <-X112[1,]
+#X112c <- cbind(chrms,X112)
+#X112.sd <- subset(logMatsd2, select=c("X112"))
+#X112.1.sd <- X112.sd[1,]
+#arrows(1, X112.1-X112.1.sd, 1, X112.1+X112.1.sd, code=3,angle=90,length=0.05)
 
-View(X112.1)
-X112c <- cbind(chrms,X112)
+#View(X112.1)
+#X112c <- cbind(chrms,X112)
 
-X112.sd <- subset(logMatsd2, select=c("X112"))
-X112.all <- cbind(chrms,X112,X112.sd)
-colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
-X112.sd1 <- X112.sd[1,]
-arrows(1:2, X112-X112.sd1, 1:2, X112+X112.sd1, code=3,angle=90,length=0.05)
-arrows(x, avg-sdev, x, avg+sdev, length=0.05, angle=90, code=3)
+#X112.sd <- subset(logMatsd2, select=c("X112"))
+#X112.all <- cbind(chrms,X112,X112.sd)
+#colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
+#X112.sd1 <- X112.sd[1,]
+#arrows(1:2, X112-X112.sd1, 1:2, X112+X112.sd1, code=3,angle=90,length=0.05)
+#arrows(x, avg-sdev, x, avg+sdev, length=0.05, angle=90, code=3)
 
 ###arrows(1:2, X112-X112min, 1:2, X112+X112max, code=3, angle=90, length=0.05)
-x <- 1:16
-plot(X112~chrms, data=X112,
-     ylim=range(c(X112-X112.sd, X112+X112.sd)),
-     pch=16, xlab="Chromosome", ylab="log2(fold change",
-     main="MA Line 112", col="darkturquoise"
-)
+#x <- 1:16
+#plot(X112~chrms, data=X112,
+ #    ylim=range(c(X112-X112.sd, X112+X112.sd)),
+  #   pch=16, xlab="Chromosome", ylab="log2(fold change",
+   #  main="MA Line 112", col="darkturquoise"
+#)
 
 ###arrows(x, X112-X112.sd, x, X112+X112.sd, length=0.05, angle=90, code=3)
 

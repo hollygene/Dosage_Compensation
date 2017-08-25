@@ -188,6 +188,9 @@ join genes.attr_table.txt genes.fpkm_table.txt > genes.fpkm_table.joined.txt
 #after files are joined, want to split column that contains the chromosomes
 tr < genes.fpkm_table.joined.csv ":" "\t" > genes.fpkm_table.joined.split.csv
 
+##remove the mitochondrial sequences 
+awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.split.renamchr.csv > genes.fpkm_table.joined.split.renamchr.rmvmito.csv
+
 #need this for downstream analysis in R 
 awk -F'\t' '{
 if ($1~"I" && $1!~"V" && $1!~"X" && $1!~"II" && $1!~"III") print "1", ",", $0;

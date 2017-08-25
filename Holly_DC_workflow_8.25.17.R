@@ -16,39 +16,39 @@ sc_counts <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation
 ###sc_counts = sc_counts[-1,]
 class(sc_counts)
 str(sc_counts)
-colnames(sc_counts)[1] <- "gene"; colnames(sc_counts)[2] <- "class_code";colnames(sc_counts)[3] <- "nearest_ref_id"
-colnames(sc_counts)[4] <- "ref_id"; colnames(sc_counts)[5] <- "gene_short_name"; colnames(sc_counts)[6] <- "tss_id";
-colnames(sc_counts)[7] <- "locus";colnames(sc_counts)[8] <- "length";colnames(sc_counts)[9] <- "null";colnames(sc_counts)[10] <- "X112_0";
-colnames(sc_counts)[11] <- "X112_1";colnames(sc_counts)[12] <- "X112_2";colnames(sc_counts)[13] <- "X115_0";
-colnames(sc_counts)[14] <- "X115_1";colnames(sc_counts)[15] <- "X115_2";colnames(sc_counts)[16] <- "X117_0";
-colnames(sc_counts)[17] <- "X117_1";colnames(sc_counts)[18] <- "X117_2";colnames(sc_counts)[19] <- "X11_1";
-colnames(sc_counts)[20] <- "X11_0";colnames(sc_counts)[21] <- "X11_2";colnames(sc_counts)[22] <- "X123_0";
-colnames(sc_counts)[23] <- "X123_1";colnames(sc_counts)[24] <- "X123_2";colnames(sc_counts)[25] <- "X141_0";
-colnames(sc_counts)[26] <- "X141_1";colnames(sc_counts)[27] <- "X141_2";colnames(sc_counts)[28] <- "X152_1";
-colnames(sc_counts)[29] <- "X152_0";colnames(sc_counts)[30] <- "X152_2";colnames(sc_counts)[31] <- "X18_1";
-colnames(sc_counts)[32] <- "X18_0";colnames(sc_counts)[33] <- "X18_2";colnames(sc_counts)[34] <- "X1_0";
-colnames(sc_counts)[35] <- "X1_1";colnames(sc_counts)[36] <- "X1_2";colnames(sc_counts)[37] <- "X21_1";
-colnames(sc_counts)[38] <- "X21_0";colnames(sc_counts)[39] <- "X21_2";colnames(sc_counts)[40] <- "X29_1";
-colnames(sc_counts)[41] <- "X29_0";colnames(sc_counts)[42] <- "X29_2";colnames(sc_counts)[43] <- "X2_0";
-colnames(sc_counts)[44] <- "X2_1";colnames(sc_counts)[45] <- "X2_2";colnames(sc_counts)[46] <- "X31_1";
-colnames(sc_counts)[47] <- "X31_0";colnames(sc_counts)[48] <- "X31_2";colnames(sc_counts)[49] <- "X3_0";
-colnames(sc_counts)[50] <- "X3_1";colnames(sc_counts)[51] <- "X3_2";colnames(sc_counts)[52] <- "X49_0";
-colnames(sc_counts)[53] <- "X49_1";colnames(sc_counts)[54] <- "X49_2";colnames(sc_counts)[55] <- "X4_1";
-colnames(sc_counts)[56] <- "X4_0";colnames(sc_counts)[57] <- "X4_2";colnames(sc_counts)[58] <- "X50_1";
-colnames(sc_counts)[59] <- "X50_0";colnames(sc_counts)[60] <- "X50_2";colnames(sc_counts)[61] <- "X59_0";
-colnames(sc_counts)[62] <- "X59_1";colnames(sc_counts)[63] <- "X59_2";colnames(sc_counts)[64] <- "X5_1";
-colnames(sc_counts)[65] <- "X5_0";colnames(sc_counts)[66] <- "X5_2";colnames(sc_counts)[67] <- "X61_1";
-colnames(sc_counts)[68] <- "X61_0";colnames(sc_counts)[69] <- "X61_2";colnames(sc_counts)[70] <- "X66_0";
-colnames(sc_counts)[71] <- "X66_1";colnames(sc_counts)[72] <- "X66_2";colnames(sc_counts)[73] <- "X69_1";
-colnames(sc_counts)[74] <- "X69_0";colnames(sc_counts)[75] <- "X69_2";colnames(sc_counts)[76] <- "X6_0";
-colnames(sc_counts)[77] <- "X6_1";colnames(sc_counts)[78] <- "X6_2";colnames(sc_counts)[79] <- "X76_0";
-colnames(sc_counts)[80] <- "X76_1";colnames(sc_counts)[81] <- "X76_2";colnames(sc_counts)[82] <- "X77_1";
-colnames(sc_counts)[83] <- "X77_0";colnames(sc_counts)[84] <- "X77_2";colnames(sc_counts)[85] <- "X7_1";
-colnames(sc_counts)[86] <- "X7_0";colnames(sc_counts)[87] <- "X7_2";colnames(sc_counts)[88] <- "X8_0";
-colnames(sc_counts)[89] <- "X8_1";colnames(sc_counts)[90] <- "X8_2";colnames(sc_counts)[91] <- "X9_0";
-colnames(sc_counts)[92] <- "X9_1";colnames(sc_counts)[93] <- "X9_2";colnames(sc_counts)[94] <- "GC_Anc_1";
-colnames(sc_counts)[95] <- "GC_Anc_0";colnames(sc_counts)[96] <- "GC_Anc_2";colnames(sc_counts)[97] <- "MA_Anc_1";
-colnames(sc_counts)[98] <- "MA_Anc_0";colnames(sc_counts)[99] <- "MA_Anc_2";
+#colnames(sc_counts)[1] <- "gene"; colnames(sc_counts)[2] <- "class_code";colnames(sc_counts)[3] <- "nearest_ref_id"
+#colnames(sc_counts)[4] <- "ref_id"; colnames(sc_counts)[5] <- "gene_short_name"; colnames(sc_counts)[6] <- "tss_id";
+#colnames(sc_counts)[7] <- "locus";colnames(sc_counts)[8] <- "length";colnames(sc_counts)[9] <- "null";colnames(sc_counts)[10] <- "X112_0";
+#colnames(sc_counts)[11] <- "X112_1";colnames(sc_counts)[12] <- "X112_2";colnames(sc_counts)[13] <- "X115_0";
+#colnames(sc_counts)[14] <- "X115_1";colnames(sc_counts)[15] <- "X115_2";colnames(sc_counts)[16] <- "X117_0";
+#colnames(sc_counts)[17] <- "X117_1";colnames(sc_counts)[18] <- "X117_2";colnames(sc_counts)[19] <- "X11_1";
+#colnames(sc_counts)[20] <- "X11_0";colnames(sc_counts)[21] <- "X11_2";colnames(sc_counts)[22] <- "X123_0";
+#colnames(sc_counts)[23] <- "X123_1";colnames(sc_counts)[24] <- "X123_2";colnames(sc_counts)[25] <- "X141_0";
+#colnames(sc_counts)[26] <- "X141_1";colnames(sc_counts)[27] <- "X141_2";colnames(sc_counts)[28] <- "X152_1";
+#colnames(sc_counts)[29] <- "X152_0";colnames(sc_counts)[30] <- "X152_2";colnames(sc_counts)[31] <- "X18_1";
+#colnames(sc_counts)[32] <- "X18_0";colnames(sc_counts)[33] <- "X18_2";colnames(sc_counts)[34] <- "X1_0";
+#colnames(sc_counts)[35] <- "X1_1";colnames(sc_counts)[36] <- "X1_2";colnames(sc_counts)[37] <- "X21_1";
+#colnames(sc_counts)[38] <- "X21_0";colnames(sc_counts)[39] <- "X21_2";colnames(sc_counts)[40] <- "X29_1";
+#colnames(sc_counts)[41] <- "X29_0";colnames(sc_counts)[42] <- "X29_2";colnames(sc_counts)[43] <- "X2_0";
+#colnames(sc_counts)[44] <- "X2_1";colnames(sc_counts)[45] <- "X2_2";colnames(sc_counts)[46] <- "X31_1";
+#colnames(sc_counts)[47] <- "X31_0";colnames(sc_counts)[48] <- "X31_2";colnames(sc_counts)[49] <- "X3_0";
+#colnames(sc_counts)[50] <- "X3_1";colnames(sc_counts)[51] <- "X3_2";colnames(sc_counts)[52] <- "X49_0";
+#colnames(sc_counts)[53] <- "X49_1";colnames(sc_counts)[54] <- "X49_2";colnames(sc_counts)[55] <- "X4_1";
+#colnames(sc_counts)[56] <- "X4_0";colnames(sc_counts)[57] <- "X4_2";colnames(sc_counts)[58] <- "X50_1";
+#colnames(sc_counts)[59] <- "X50_0";colnames(sc_counts)[60] <- "X50_2";colnames(sc_counts)[61] <- "X59_0";
+#colnames(sc_counts)[62] <- "X59_1";colnames(sc_counts)[63] <- "X59_2";colnames(sc_counts)[64] <- "X5_1";
+#colnames(sc_counts)[65] <- "X5_0";colnames(sc_counts)[66] <- "X5_2";colnames(sc_counts)[67] <- "X61_1";
+#colnames(sc_counts)[68] <- "X61_0";colnames(sc_counts)[69] <- "X61_2";colnames(sc_counts)[70] <- "X66_0";
+#colnames(sc_counts)[71] <- "X66_1";colnames(sc_counts)[72] <- "X66_2";colnames(sc_counts)[73] <- "X69_1";
+#colnames(sc_counts)[74] <- "X69_0";colnames(sc_counts)[75] <- "X69_2";colnames(sc_counts)[76] <- "X6_0";
+#colnames(sc_counts)[77] <- "X6_1";colnames(sc_counts)[78] <- "X6_2";colnames(sc_counts)[79] <- "X76_0";
+#colnames(sc_counts)[80] <- "X76_1";colnames(sc_counts)[81] <- "X76_2";colnames(sc_counts)[82] <- "X77_1";
+#colnames(sc_counts)[83] <- "X77_0";colnames(sc_counts)[84] <- "X77_2";colnames(sc_counts)[85] <- "X7_1";
+#colnames(sc_counts)[86] <- "X7_0";colnames(sc_counts)[87] <- "X7_2";colnames(sc_counts)[88] <- "X8_0";
+#colnames(sc_counts)[89] <- "X8_1";colnames(sc_counts)[90] <- "X8_2";colnames(sc_counts)[91] <- "X9_0";
+#colnames(sc_counts)[92] <- "X9_1";colnames(sc_counts)[93] <- "X9_2";colnames(sc_counts)[94] <- "GC_Anc_1";
+#colnames(sc_counts)[95] <- "GC_Anc_0";colnames(sc_counts)[96] <- "GC_Anc_2";colnames(sc_counts)[97] <- "MA_Anc_1";
+#colnames(sc_counts)[98] <- "MA_Anc_0";colnames(sc_counts)[99] <- "MA_Anc_2";
 
 ##remove the top row which is the old header
 #sc_counts <- sc_counts[-c(1), ]
@@ -57,6 +57,7 @@ colnames(sc_counts)[98] <- "MA_Anc_0";colnames(sc_counts)[99] <- "MA_Anc_2";
 sc_counts.a <- sc_counts[,-c(1,2,3,4,6,8,9) ]
 class(sc_counts.a)
 str(sc_counts.a)
+colnames(sc_counts.a)[1] <- "gene"; colnames(sc_counts.a)[2] <- "chr"
 #decided to keep length
 #sc_counts.b <- sc_counts.a[,-c(3) ]
 
@@ -70,7 +71,7 @@ str(sc_counts.a)
 #sc_counts.z[,3:4] <- sc_counts.z[,3:4]+.5 
 
 sc_counts.z <- sc_counts.a
-sc_counts.z[,3:92] <- sc_counts.z[,4:92]+.5 #add .5 to dataset so the zeroes dont mess up
+sc_counts.z[,3:92] <- sc_counts.z[,3:92]+.5 #add .5 to dataset so the zeroes dont mess up
 
 
 warnings()
@@ -87,22 +88,22 @@ sc_des <- sc_counts.final[,1:86]
 ###########
 #the purpose of these is to get the rows of each chromosome
 
-index1 <- which(sc_anc[,1]==1)
-index2 <- which(sc_anc[,1]==2)
-index3 <- which(sc_anc[,1]==3)
-index4 <- which(sc_anc[,1]==4)
-index5 <- which(sc_anc[,1]==5)
-index6 <- which(sc_anc[,1]==6)
-index7 <- which(sc_anc[,1]==7)
-index8 <- which(sc_anc[,1]==8)
-index9 <- which(sc_anc[,1]==9)
-index10 <- which(sc_anc[,1]==10)
-index11 <- which(sc_anc[,1]==11)
-index12 <- which(sc_anc[,1]==12)
-index13 <- which(sc_anc[,1]==13)
-index14 <- which(sc_anc[,1]==14)
-index15 <- which(sc_anc[,1]==15)
-index16 <- which(sc_anc[,1]==16)
+index1 <- which(sc_anc[,2]==1)
+index2 <- which(sc_anc[,2]==2)
+index3 <- which(sc_anc[,2]==3)
+index4 <- which(sc_anc[,2]==4)
+index5 <- which(sc_anc[,2]==5)
+index6 <- which(sc_anc[,2]==6)
+index7 <- which(sc_anc[,2]==7)
+index8 <- which(sc_anc[,2]==8)
+index9 <- which(sc_anc[,2]==9)
+index10 <- which(sc_anc[,2]==10)
+index11 <- which(sc_anc[,2]==11)
+index12 <- which(sc_anc[,2]==12)
+index13 <- which(sc_anc[,2]==13)
+index14 <- which(sc_anc[,2]==14)
+index15 <- which(sc_anc[,2]==15)
+index16 <- which(sc_anc[,2]==16)
 
 
 # FOLD CHANGES: average of line over average of ancestor
@@ -121,7 +122,7 @@ getAvgFPKM <- function(line) { #for line as "###" string
   r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
   r2 <- paste(c("X",line,"_1"),collapse="")
   r3 <- paste(c("X",line,"_2"),collapse="")
-  reps <- sc_des[,c("chr","gene",r1,r2,r3)] #get those 4 columns out of the descendant dataset
+  reps <- sc_des[,c("gene","chr",r1,r2,r3)] #get those 4 columns out of the descendant dataset
   reps[reps==0] <- NA #replace 0 values with NA as before
   desAvg <- rowMeans(reps[,c(-1,-2)],na.rm=T)
   desAvg <- cbind(sc_des[,c(1,2)],desAvg)
@@ -158,7 +159,7 @@ getFPKMRatio <- function(line) { #line must be a 3 digit character
   desAvg <- getAvgFPKM(line) #first call avg fpkm script, which returns a 3 column matrix
   ratioByGene <- desAvg[,3]/ancAvg[,3]
   rat <- cbind(sc_des[,1:2],ratioByGene) #add gene and chrm values
-  colnames(rat) <- c("chrm","gene","ratio")
+  colnames(rat) <- c("gene","chr","ratio")
   return(rat)
 }
 
@@ -183,9 +184,10 @@ getFPKMRatio <- function(line) { #line must be a 3 digit character
 
 ##########
 #this gets the fold change for just the specified chromosome
+##because my columns of gene and chr were switched, I had to specify in this function that chr was now column2 
 getChrmRatio <- function(line, chr){ #input line as "XXX", chr as a number
   rat <- getFPKMRatio(line) #get list of ratios which includes chrm and gene
-  rat.c <- rat[(rat[,1]==chr),] #get just the rows for the appropriate chrom
+  rat.c <- rat[(rat[,2]==chr),] #get just the rows for the appropriate chrom
   rat.cs <- rat.c[order(rat.c[,3]),]#order by column 3
   return(rat.cs)
 }

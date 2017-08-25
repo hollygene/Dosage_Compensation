@@ -1,0 +1,57 @@
+Dosage Compensation Transcriptome Assembly Protocol, April 2017
+
+#Need to build an index using Bowtie
+#bowtie2-build FILE_A_name.fa FILE_A_name
+#FILE_A_name.fa is the reference genome file 
+#FILE_A_name is the resulting file that has been indexed (this is what you then put into TopHat for mapping)
+
+#1: 
+time /usr/local/bowtie2/latest/bin/bowtie2
+bowtie2-build -f S288C_reference_sequence_R64-2-1_20150113.fsa S288C_reference_sequence_R64-2-1_20150113
+qsub -q bowtie_build.sh 
+
+#2 Double check that it worked using bowtie2 inspect
+time /usr/local/bowtie2/latest/bin/bowtie2
+bowtie2-inspect -s SC_ref_index
+qsub -q rcc-30d bowtie_inspect.sh 
+
+
+#Need to use Cufflinks to change .gff transcript file into .gtf file 
+#3: export PATH=/usr/local/cufflinks/latest/bin/:$PATH
+    time /usr/local/cufflinks/latest/bin/cufflinks 
+    gffread -E saccharomyces_cerevisiae_R64_2-1_20150113.gff -T -o saccharomyces_cerevisiae_R64_2-1_20150113.gtf
+
+#4 Need to change chromosome names in .gtf file to match those in bowtie index
+awk -F'\t' '{                                         
+if ($1=="chrI") print ">ref|NC_001133|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrII") print ">ref|NC_001134|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrIII") print ">ref|NC_001135|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrIV") print ">ref|NC_001136|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrV") print ">ref|NC_001137|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrVI") print ">ref|NC_001138|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrVII") print ">ref|NC_001139|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrVIII") print ">ref|NC_001140|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrIX") print ">ref|NC_001141|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrX") print ">ref|NC_001142|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXI") print ">ref|NC_001143|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXII") print ">ref|NC_001144|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXIII") print ">ref|NC_001145|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXIV") print ">ref|NC_001146|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXV") print ">ref|NC_001147|", $2, $3, $4, $5, $6, $7, $8, $9;
+if ($1=="chrXVI") print ">ref|NC_001148|", $2, $3, $4, $5, $6, $7, $8, $9;
+}' saccharomyces_cerevisiae_R64-2-1_20150113.gtf > saccharomyces_cerevisiae_R64-2-1_20150113_2.gtf
+
+#4 Need to rename GTF file to match that of FASTA reference sequence: 
+mv saccharomyces_cerevisiae_R64-2-1_20150113_2.gtf S288C_reference_sequence_R64-2-1_20150113.gtf
+
+time /usr/local/tophat/latest/bin/tophat -i 30 -I 20000 -G ../SPref/SPref.gtf 
+--transcriptome-index ../SP_transcriptome/SP ../SP_bowtie/SP RNAseq_SP${i}.fastq
+
+#Need to use TopHat to make a transcriptome index from the .gtf file given:
+#5: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
+	time /usr/local/tophat/latest/bin/tophat -G S288C_reference_sequence_R64-2-1_20150113.gtf --transcriptome-index=transcriptome_data/known S288C_reference_sequence_R64-2-1_20150113 
+
+#Then run Tophat with the transcriptome index and parameters needed and reference sequence from bowtie 
+#6: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
+	time /usr/local/tophat/latest/bin/tophat -i 10 -I 1000 --transcriptome-index=transcriptome_data/known S288C_reference_sequence_R64-2-1_20150113 Holly_MA_Anc_B_S1_R1_001.fastq 
+

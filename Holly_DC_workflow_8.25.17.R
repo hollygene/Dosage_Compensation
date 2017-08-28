@@ -411,6 +411,7 @@ warnings()
 library("Hmisc")
 #changes the margins to the standard margin width
 par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
 #line 112
 #get the standard deviations for each chromosome for line 112 only
 X112.sd <- subset(logMatsd2, select=c("X112"))
@@ -426,6 +427,7 @@ with (
 )
 #adds a title to the graph
 title(main="MA Line 112")
+abline(h=0,lty=3)
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1145,31 +1147,31 @@ mtext("*", side=3, line=0, at=3, cex=1.5, col="red")
 
 #CHROMOSOME 1 
 
-boxplot((log2(euRatio.c1)),(log2(l007.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 7",las=3)
+boxplot((log2(euRatio.c1)),(log2(l007.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 7 Chromsome 1",las=3)
 t.test((log2(l007.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
 p3 <- 0.0006221
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.4, "*", pos=3, cex=1.5, col="red")
+text(x=2, y=2.3, "*", pos=3, cex=1.5, col="red")
 
-boxplot((log2(euRatio.c1)),(log2(l018.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 18",las=3)
+boxplot((log2(euRatio.c1)),(log2(l018.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 18 Chromosome 1",las=3)
 t.test((log2(l018.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
 p3 <- 0.004569
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.4, "*", pos=3, cex=1.5, col="red")
+text(x=2, y=2.3, "*", pos=3, cex=1.5, col="red")
 
-boxplot((log2(euRatio.c1)),(log2(l011.1[,3])),names=c( "Disomic", "Monosomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 11",las=3)
+boxplot((log2(euRatio.c1)),(log2(l011.1[,3])),names=c( "Disomic", "Monosomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 11 Chromosome 1",las=3)
 t.test((log2(l011.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
 p3 <-  0.002302
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.4, "*", pos=3, cex=1.5, col="red")
+text(x=2, y=2.2, "*", pos=3, cex=1.5, col="red")
 
-boxplot((log2(euRatio.c1)),(log2(l021.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 21",las=3)
+boxplot((log2(euRatio.c1)),(log2(l021.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 21 Chromosome 1",las=3)
 t.test((log2(l021.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
 p3 <-  0.1214

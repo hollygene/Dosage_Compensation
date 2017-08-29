@@ -1,0 +1,1 @@
+/usr/local/samtools/latest/samtools index /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly_1B_S6_R1_001_tophat_out/accepted_hits.1B.sorted.bam

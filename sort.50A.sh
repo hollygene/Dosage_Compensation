@@ -1,1 +1,1 @@
-/usr/local/samtools/latest/samtools sort /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly_MA_50_redo_S7_R1_001_tophat_out/accepted_hits.bam /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly_MA_50_redo_S7_R1_001_tophat_out/accepted_hits.50a.sorted
+/usr/local/samtools/latest/samtools sort /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly_MA_50_S7_R1_001_tophat_out/accepted_hits.bam /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly_MA_50_S7_R1_001_tophat_out/accepted_hits.50a.sorted

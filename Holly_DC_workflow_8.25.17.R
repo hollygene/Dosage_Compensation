@@ -1146,6 +1146,8 @@ mtext("*", side=3, line=0, at=3, cex=1.5, col="red")
 ##############################################################################################
 
 #CHROMOSOME 1 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
 
 boxplot((log2(euRatio.c1)),(log2(l007.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 7 Chromsome 1",las=3)
 t.test((log2(l007.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
@@ -1178,14 +1180,14 @@ p3 <-  0.1214
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
-
+par(mfrow=(c(1,1)))
 boxplot((log2(euRatio.c1)),(log2(l152.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 152",las=3)
 t.test((log2(l152.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
 p3 <-  1.546e-06
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.55, "*", pos=3, cex=1.5, col="red")
+text(x=2, y=5.5, "*", pos=3, cex=1.5, col="red")
 
 ##############################################################################################
 #CHROMOSOME 5 
@@ -1219,6 +1221,23 @@ anRatio.c5.no4 <- c(l117.5[,3],l049.5[,3],l050.5[,3])
 ##text(x=3.2,y = 3.7, labels = mylabel,cex=.8)
 #text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 ##going to need these for all of the chromosomes that have a CNV, but can come back to this later
+###################################################################################################
+#CHROMOSOME 3
+
+
+#RATIOS FOR CHROMOSOME 3
+euRatio.c3 <- c(l002.3[,3],l003.3[,3],l005.3[,3],l006.3[,3],l009.3[,3])
+
+
+
+l115.3 <- getChrmRatio("115",3)
+boxplot( (log2(euRatio.c3)),(log2(l115.3[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine", "mediumvioletred"),main="Line 115 Chr 3",las=3)
+t.test((log2(l115.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+abline(h=0,lty=3)
+p5 <- 0.00544
+mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
+text(x=2.4,y = 2.5, labels = mylabel,cex=.8)
+
 #####################################################################################################
 ###going to look at individual lines 
 par(mfrow=c(1,1))
@@ -1238,7 +1257,7 @@ abline(h=0,lty=3)
 p3 <- 9.394e-14
 mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=2.5, "*", pos=3, cex=1.5, col="red")
 
 ##significantly different
 boxplot( (log2(euRatio.c5)),(log2(l004.5[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine", "mediumvioletred"),main="Line 4",las=3)
@@ -1247,14 +1266,24 @@ abline(h=0,lty=3)
 p4 <- 1.414e-14
 mylabel = bquote(italic(p) == .(format(p4, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=2, y=2.5, "*", pos=3, cex=1.5, col="red")
 
 ##significantly different
 boxplot( (log2(euRatio.c5)),(log2(l050.5[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine", "mediumvioletred"),main="Line 50 Chr 5",las=3)
 t.test((log2(l050.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <- 0.4638
+p5 <- 0.4559
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+l123.5 <- getChrmRatio("123",5)
+boxplot( (log2(euRatio.c5)),(log2(l123.5[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine", "mediumvioletred"),main="Line 123 Chr 5",las=3)
+t.test((log2(l123.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+abline(h=0,lty=3)
+p5 <- 4e-06
+mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
+text(x=2.4,y = 2.5, labels = mylabel,cex=.8)
+
 ##significantly different 
 
 ##############################################################################################
@@ -1286,11 +1315,12 @@ abline(h=0,lty=3)
 p5 <- 1.337e-06
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 
 #Line 31
 boxplot( (log2(euRatio.c7)),(log2(l031.7[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "violetred1"),main="Chr 7 Gene Expression Line 31", las=3)
 t.test((log2(l031.7[,3])), (log2(euRatio.c7)), paired=FALSE, var.equal=TRUE)
-p5 <- 0.8172
+p5 <- 0.7816
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
@@ -1302,7 +1332,7 @@ p5 <- "< 2.2e-16"
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=5, "*", pos=3, cex=1.5, col="red")
 #line 61
 boxplot( (log2(euRatio.c7)),(log2(l061.7[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "violetred1"),main="Chr 7 Gene Expression Line 61", las=3)
 t.test((log2(l061.7[,3])), (log2(euRatio.c7)), paired=FALSE, var.equal=TRUE)
@@ -1310,11 +1340,11 @@ p5 <- "< 2.2e-16"
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=2.5, "*", pos=3, cex=1.5, col="red")
 #line 115
 boxplot( (log2(euRatio.c7)),(log2(l115.7[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "violetred1"),main="Chr 7 Gene Expression Line 115", las=3)
 t.test((log2(l115.7[,3])), (log2(euRatio.c7)), paired=FALSE, var.equal=TRUE)
-p5 <- 0.1992
+p5 <- 0.1624
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
@@ -1334,7 +1364,7 @@ p5 <- 3.599e-16
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 
 
 #############################################################################################
@@ -1355,7 +1385,7 @@ p5 <- "< 2.2e-16"
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 #Line76
 boxplot((log2(euRatio.c9)),(log2(l076.9[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan3", "mediumvioletred"),main="Chr 9 Gene Expression Line 76", las=3)
 t.test((log2(l076.9[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
@@ -1363,7 +1393,7 @@ p5 <- "< 2.2e-16"
 abline(h=0,lty=3)
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=2.7, "*", pos=3, cex=1.5, col="red")
 ##############################################################################################
 
 ###Chromosome 10 
@@ -1380,7 +1410,7 @@ euRatio.c10 <- c(l002.10[,3],l003.10[,3],l005.10[,3],l006.10[,3],l009.10[,3])
 boxplot( (log2(euRatio.c10)),(log2(l066.10[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan2", "deeppink1"),main="Chr 10 Gene Expression: Line 66")
 t.test((log2(l066.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <-0.4511
+p5 <-0.4013
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
@@ -1401,7 +1431,7 @@ euRatio.c12 <- c(l002.12[,3],l003.12[,3],l005.12[,3],l006.12[,3],l009.12[,3])
 boxplot( (log2(euRatio.c12)),(log2(l001.12[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine2", "mediumvioletred"),main="Chr 12 Gene Expression: Line 1",las=3)
 t.test((log2(l001.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <- 0.245
+p5 <- 0.1625
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
@@ -1412,7 +1442,7 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=7, "*", pos=3, cex=1.5, col="red")
 #line77 
 boxplot( (log2(euRatio.c12)),(log2(l077.12[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine2", "mediumvioletred"),main="Chr 12 Gene Expression: Line 77",las=3)
 t.test((log2(l077.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
@@ -1420,12 +1450,12 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 #line123 
 boxplot( (log2(euRatio.c12)),(log2(l123.12[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("aquamarine2", "mediumvioletred"),main="Chr 12 Gene Expression: Line 123",las=3)
 t.test((log2(l123.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <-0.3206
+p5 <-0.2541
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
@@ -1436,7 +1466,7 @@ text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 l076.14 <- getChrmRatio("76",14)
 
 
-#RATIOS FOR CHROMOSOME 10
+#RATIOS FOR CHROMOSOME 14
 anRatio.c14 <- c(l076.14[,3])
 euRatio.c14 <- c(l002.14[,3],l003.14[,3],l005.14[,3],l006.14[,3],l009.14[,3])
 
@@ -1446,7 +1476,7 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=2.5, "*", pos=3, cex=1.5, col="red")
 
 ##############################################################################################
 
@@ -1464,7 +1494,7 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=5.3, "*", pos=3, cex=1.5, col="red")
 ##############################################################################################
 
 ###Chromosome 16 
@@ -1474,7 +1504,7 @@ l069.16 <- getChrmRatio("69",16)
 l112.16 <- getChrmRatio("112",16)
 l141.16 <- getChrmRatio("141",16)
 
-#RATIOS FOR CHROMOSOME 10
+#RATIOS FOR CHROMOSOME 16
 anRatio.c16 <- c(l008.16[,3],l031.16[,3],l069.16[,3],l112.16[,3],l141.16[,3])
 euRatio.c16 <- c(l002.16[,3],l003.16[,3],l005.16[,3],l006.16[,3],l009.16[,3])
 #line 8
@@ -1484,12 +1514,12 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=3.3, "*", pos=3, cex=1.5, col="red")
 #line31
 boxplot( (log2(euRatio.c16)),(log2(l031.16[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan3", "mediumorchid3"),main="Chr 16 Gene Expression: Line 31",las=3)
 t.test((log2(l031.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <-0.212
+p5 <-0.1757
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
@@ -1497,7 +1527,7 @@ text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 boxplot( (log2(euRatio.c16)),(log2(l069.16[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan3", "mediumorchid3"),main="Chr 16 Gene Expression: Line 69",las=3)
 t.test((log2(l069.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p5 <-0.1216
+p5 <-0.0951
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
@@ -1508,7 +1538,7 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-
+text(x=2, y=5, "*", pos=3, cex=1.5, col="red")
 #line141
 boxplot( (log2(euRatio.c16)),(log2(l141.16[,3])),names=c("Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan3", "mediumorchid3"),main="Chr 16 Gene Expression: Line 141",las=3)
 t.test((log2(l141.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
@@ -1516,6 +1546,7 @@ abline(h=0,lty=3)
 p5 <-"< 2.2e-16"
 mylabel = bquote(italic(p) == .(format(p5, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=2, y=3, "*", pos=3, cex=1.5, col="red")
 ##############################################################################################
 
 #make a histogram of log ratio of all genes across 

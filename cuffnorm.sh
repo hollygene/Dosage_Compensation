@@ -2,7 +2,6 @@
 
 export PATH=/usr/local/cufflinks/latest/bin/:$PATH 
 time /usr/local/cufflinks/latest/bin/cuffnorm -o /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/CufflinksOutput2/cuffnorm_out \
--output-format cuffdiff \
 /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/genes.gtf \
 -p 5 \
 -L X112,X115,X117,X11,X123,X141,X152,X18,X1,X21,X29,X2,X31,X3,X49,X4,X50,X59,X5,X61,X66,X69,X6,X76,X77,X7,X8,X9,GC_Anc,MA_Anc \

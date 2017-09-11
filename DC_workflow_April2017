@@ -7,29 +7,29 @@ cd /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/CufflinksOutput
 
 #Need to build an index using Bowtie
 #bowtie2-build FILE_A_name.fa FILE_A_name
-#FILE_A_name.fa is the reference genome file 
+#FILE_A_name.fa is the reference genome file
 #FILE_A_name is the resulting file that has been indexed (this is what you then put into TopHat for mapping)
 
 #reference genome and GTF file obtained from: https://support.illumina.com/sequencing/sequencing_software/igenome.html
 
 
-#1: 
+#1:
 time /usr/local/bowtie2/latest/bin/bowtie2
 bowtie2-build -f genome.fa genome
-qsub -q bowtie_build.sh 
+qsub -q bowtie_build.sh
 
 #2 Double check that it worked using bowtie2 inspect
 time /usr/local/bowtie2/latest/bin/bowtie2
 bowtie2-inspect -s genome
-qsub -q rcc-30d bowtie_inspect.sh 
+qsub -q rcc-30d bowtie_inspect.sh
 
 #Need to use TopHat to make a transcriptome index from the .gtf file given:
 #3: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
 	time /usr/local/tophat/latest/bin/tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 
-#Then run Tophat with the transcriptome index and parameters needed and reference sequence from bowtie 
+#Then run Tophat with the transcriptome index and parameters needed and reference sequence from bowtie
 #4: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
-	time /usr/local/tophat/latest/bin/tophat -i 10 -I 1000 --transcriptome-index=transcriptome_data/known genome Holly_MA_Anc_B_S1_R1_001.fastq 
+	time /usr/local/tophat/latest/bin/tophat -i 10 -I 1000 --transcriptome-index=transcriptome_data/known genome Holly_MA_Anc_B_S1_R1_001.fastq
 
 #a	 loop to do all of the files at once (WORKS)
 
@@ -50,8 +50,8 @@ done
 # Cufflinks script
 # reads samples.txt that contains the directory names
 # makes a directory for each one (cufflinks${SampleName}
-# uses the accepted_hits.bam file for each tophat output as input and runs cufflinks on it 
-# 
+# uses the accepted_hits.bam file for each tophat output as input and runs cufflinks on it
+#
 #
    while read SampleName
 do
@@ -80,16 +80,16 @@ awk '{print$"/transcripts.gtf"} > assemblies2.txt
 ################################################################################################################
 ## script to run cuffmerge
 
-export PATH=/usr/local/cufflinks/latest/bin/:$PATH 
+export PATH=/usr/local/cufflinks/latest/bin/:$PATH
 time /usr/local/cufflinks/latest/bin/cuffmerge \
 -g /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genes.gtf \
 -s /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genome.fa \
 -p 4 \
 assemblies2.txt
 
-###on more files 
+###on more files
 ##start with line 1
-export PATH=/usr/local/cufflinks/latest/bin/:$PATH 
+export PATH=/usr/local/cufflinks/latest/bin/:$PATH
 time /usr/local/cufflinks/latest/bin/cuffmerge \
 -g /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genes.gtf \
 -s /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genome.fa \
@@ -107,7 +107,7 @@ awk '{print$"/transcripts.gtf"} > test_assemblies2.txt
 ################################################################################################################
 ################################################################################################################
 
-export PATH=/usr/local/cufflinks/latest/bin/:$PATH 
+export PATH=/usr/local/cufflinks/latest/bin/:$PATH
 time /usr/local/cufflinks/latest/bin/cuffmerge \
 -g /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genes.gtf \
 -s /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genome.fa \
@@ -118,7 +118,7 @@ cufflinksHolly-GC-8-redo_S5_R1_001_tophat_out/transcripts.gtf
 ################################################################################################################
 ##script to run cuffdiff on everything
 
-export PATH=/usr/local/cufflinks/latest/bin/:$PATH 
+export PATH=/usr/local/cufflinks/latest/bin/:$PATH
 time /usr/local/cufflinks/latest/bin/cuffdiff -o diff_out \
 -b /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/genome.fa \
 -p 5 \
@@ -153,12 +153,12 @@ time /usr/local/cufflinks/latest/bin/cuffdiff -o diff_out \
 /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly-GC-8-redo_S5_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_8B_S13_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_8C_S10_R1_001_tophat_out/accepted_hits.bam \
 /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_9A_S5_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_9B_S14_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_9C_S11_R1_001_tophat_out/accepted_hits.bam \
 /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_GC_Anc_B_S2_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_GC_Anc_C_S32_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_GC_Anc_S4_R1_001_tophat_out/accepted_hits.bam \
-/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_MA_Anc_B_S1_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly-MA-Anc-C-redo_S19_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_MA_Anc_S5_R1_001_tophat_out/accepted_hits.bam 
+/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_MA_Anc_B_S1_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly-MA-Anc-C-redo_S19_R1_001_tophat_out/accepted_hits.bam,/panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/tophat_outputs/Holly_MA_Anc_S5_R1_001_tophat_out/accepted_hits.bam
 
 ################################################################################################################
 ################################################################################################################
-#this code replaces the roman numerals in the file with numbers for the chromosome 
-#need this for downstream analysis in R 
+#this code replaces the roman numerals in the file with numbers for the chromosome
+#need this for downstream analysis in R
 awk -F'\t' '{
 if ($7~"I" && $7!~"V" && $7!~"X") print $0,"\t","1";
 if ($7~"II" && $7!~"III") print $0,"\t","2";
@@ -183,33 +183,43 @@ if ($7~"MT") print $0,"\t","MT";
 
 
 ##need to join genes.attr_table with genes.fpkm_table
-join genes.attr_table.txt genes.fpkm_table.txt > genes.fpkm_table.joined.txt
+join genes.attr_table.csv genes.fpkm_table.csv > genes.fpkm_table.joined.csv
 
 #after files are joined, want to split column that contains the chromosomes
-tr < genes.fpkm_table.joined.csv ":" "\t" > genes.fpkm_table.joined.split.csv
+tr < genes.fpkm_table.joined.csv ":" "," > genes.fpkm_table.joined.split.csv
 
-##remove the mitochondrial sequences 
-awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.split.renamchr.csv > genes.fpkm_table.joined.split.renamchr.rmvmito.csv
+tr ' ' ',' <genes.fpkm_table.joined.split.csv > genes.fpkm_table.joined.split.commas.csv
 
-#need this for downstream analysis in R 
-awk -F'\t' '{
-if ($1~"I" && $1!~"V" && $1!~"X" && $1!~"II" && $1!~"III") print "1", ",", $0;
-if ($1~"II" && $1!~"III" && $1!~"X" && $1!~"V") print "2", ",", $0;
-if ($1~"III" && $1!~"V" && $1!~"X") print "3", ",", $0;
-if ($1~"IV" && $1!~"X") print "4", ",", $0;
-if ($1~"V" && $1!~"I" && $1!~"X") print "5", ",", $0;
-if ($1~"VI" && $ 1!~"VII" && $1!~"VIII" && $1!~"XVI") print "6", ",", $0;
-if ($1~"VII" && $1!~"VIII") print "7", ",", $0;
-if ($1~"VIII") print "8", ",", $0;
-if ($1~"IX") print "9", ",", $0;
-if ($1~"X" && $1!~"I" && $1!~"V") print "10", ",", $0;
-if ($1~"XI" && $1!~"XII" && $1!~"XIII" && $1!~"V") print "11", ",", $0;
-if ($1~"XII" && $1!~"XIII") print "12", ",", $0;
-if ($1~"XIII") print "13", ",", $0;
-if ($1~"XIV") print "14", ",", $0;
-if ($1~"XV" && $1!~"XVI") print "15", ",", $0;
-if ($1~"XVI") print "16", ",", $0;
-}' genes.fpkm_table.csv > genes.fpkm_table_2.csv
+##remove the mitochondrial sequences
+awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.split.commas.csv > genes.fpkm_table.joined.split.commas.rmvmito.csv
+
+#need this for downstream analysis in R
+awk -F',' '{
+if (NR>1) {
+if ($7~"I" && $7!~"V" && $7!~"X" && $7!~"II" && $7!~"III") print "1", ",", $0;
+if ($7~"II" && $7!~"III" && $7!~"X" && $7!~"V") print "2", ",", $0;
+if ($7~"III" && $7!~"V" && $7!~"X") print "3", ",", $0;
+if ($7~"IV" && $7!~"X") print "4", ",", $0;
+if ($7~"V" && $7!~"I" && $7!~"X") print "5", ",", $0;
+if ($7~"VI" && $ 7!~"VII" && $7!~"VIII" && $7!~"XVI") print "6", ",", $0;
+if ($7~"VII" && $7!~"VIII") print "7", ",", $0;
+if ($7~"VIII") print "8", ",", $0;
+if ($7~"IX") print "9", ",", $0;
+if ($7~"X" && $7!~"I" && $7!~"V") print "10", ",", $0;
+if ($7~"XI" && $7!~"XII" && $7!~"XIII" && $7!~"V") print "11", ",", $0;
+if ($7~"XII" && $7!~"XIII") print "12", ",", $0;
+if ($7~"XIII") print "13", ",", $0;
+if ($7~"XIV") print "14", ",", $0;
+if ($7~"XV" && $7!~"XVI") print "15", ",", $0;
+if ($7~"XVI") print "16", ",", $0  } else print $0
+}' genes.fpkm_table.joined.split.commas.rmvmito.csv > genes.fpkm_table.joined.split.commas.rmvmito.chgchr.csv
+
+#print column 2 for comparison
+awk -F"," '{print $4}' genes.fpkm_table.joined.split.commas.rmvmito.csv > comparison.rmvmito.csv
+awk -F"," '{print $5}' genes.fpkm_table.joined.split.commas.rmvmito.chgchr.csv > comparison.rmvmito.chgchr.csv
+
+##find difference between two files
+awk -F"," 'NR==FNR{a[$1]=$2;next}{if (a[$1])print a[$1],$0;else print "Not Found", $0;}' OFS=";" comparison.rmvmito.csv comparison.rmvmito.chgchr.csv > difference.csv
 
 
 awk -F'\t' '{
@@ -219,13 +229,13 @@ if ($1~"I" && $1!~"V" && $1!~"X" && $1!~"II" && $1!~"III") print "1", ",", $0;
 gsub(pattern, replacement, x,
      ignore.case = FALSE, extended = TRUE, perl = FALSE,
      fixed = FALSE, useBytes = FALSE)
-     
-     
+
+
      awk '{ gsub(/I/&&!/II/, "1"); print }' genes.fpkm_table.csv > genes.fpkm_table_2.csv
-     
-     
-     \t 
-     
+
+
+     \t
+
      sed -i '' 's/I'\t'/1'\t'/g'  genes.fpkm_table.csv > genes.fpkm_table_2.csv
 ###excel formula to change roman numerals into numbers
 =MATCH(B4,INDEX(ROMAN(ROW(INDIRECT("1:4000"))),0),0)
@@ -236,25 +246,25 @@ awk -F'\t' '{ if $1!~"#N/A" print $0 }' genes.fpkm_table.txt > genes.fpkm_table_
 ################################################################################################################
 ################################################################################################################
 ###need to make a code to compare files from Cuffdiff to files from edgeR of differentially expressed genes
-###want to find those genes that are common and different between the two 
+###want to find those genes that are common and different between the two
 ##awk -F'\t' 'NR==FNR{c[$3]++;next};c[$2] > 0' gene_exp_112.diff X112.vs.anc.csv > 112_diff_genes.txt
 ###awk 'FNR==NR {arr[$3];next} $2 in arr' gene_exp_112.diff X112.vs.anc.csv > 112_diff_genes.txt
-##this code finds the lines where the p-value is less than or equal to 0.05 and also includes the header in the file 
-awk -F'\t' '{   
-if (NR>1) {                                      
+##this code finds the lines where the p-value is less than or equal to 0.05 and also includes the header in the file
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' gene_exp_112.diff > sig.genes.112.cuffdiff.txt
 
-##do the same for the edgeR file 
-##have to get the .csv file into a .txt file 
+##do the same for the edgeR file
+##have to get the .csv file into a .txt file
 ##some of the commented out scripts below don't work for that
 ###awk '{gsub(/\,/,'\t');print;}' X112.vs.anc.csv >X112.vs.anc.txt
 ###sed 's|,|\t|g' X112.vs.anc.csv >X112.vs.anc.txt
 ####sed -e 's/,/\t/g' X112.vs.anc.csv >X112.vs.anc.txt
-###this one works 
+###this one works
 
-cat X112.vs.anc.csv | tr "," "\\t" > X112.vs.anc.txt  
-awk -F'\t' '{   
-if (NR>1) {                                      
+cat X112.vs.anc.csv | tr "," "\\t" > X112.vs.anc.txt
+awk -F'\t' '{
+if (NR>1) {
 if ($8<="0.05") print $0 } else print $0}' 112vsanc_noquotes.txt > sig.genes.112.edgeR.txt
 
 ###awk 'FNR==NR {arr[$2];next} $3 in arr' sig.genes.112.cuffdiff.txt sig.genes.112.edgeR.txt > 112_diff_genes.txt
@@ -289,90 +299,90 @@ sed 's/\"//g' X112.vs.anc.txt > test_noquotes.txt
 
 ################################################################################################################
 ################################################################################################################
-###pipeline, change for each file 
-##prints only those lines whose p-value is less than 0.05 
-awk -F'\t' '{   
-if (NR>1) {                                      
+###pipeline, change for each file
+##prints only those lines whose p-value is less than 0.05
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' gene_exp_112.diff > sig.genes.112.cuffdiff.txt
-##removes commas 
-cat X112.vs.anc.csv | tr "," "\\t" > X112.vs.anc.txt 
+##removes commas
+cat X112.vs.anc.csv | tr "," "\\t" > X112.vs.anc.txt
 ###removes quotes
 sed 's/\"//g' X112.vs.anc.txt > test_noquotes.txt
 ##prints only those lines whose p-value is less than 0.05 (edgeR file)
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($8<="0.05") print $0 } else print $0}' 112vsanc_noquotes.txt > sig.genes.112.edgeR.txt
-##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file) 
+##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file)
 awk 'NR==FNR {a[$2]; next} $3 in a {print}' sig.genes.112.edgeR.txt sig.genes.112.cuffdiff.txt > 112_diff_genes.txt
-##confirms that the same number of genes are found when reversing the order of the files 
-##works, same number of genes identified. 
+##confirms that the same number of genes are found when reversing the order of the files
+##works, same number of genes identified.
 awk 'NR==FNR {a[$3]; next} $2 in a {print}'  sig.genes.112.cuffdiff.txt sig.genes.112.edgeR.txt > 112_diff_genes_confirm.txt
 
 ##for line 115
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' gene_exp_115.diff > sig.genes.115.cuffdiff.txt
-##removes commas 
-cat X115.vs.anc.csv | tr "," "\\t" > X115.vs.anc.txt 
+##removes commas
+cat X115.vs.anc.csv | tr "," "\\t" > X115.vs.anc.txt
 ###removes quotes
 sed 's/\"//g' X115.vs.anc.txt > 115vsanc_noquotes.txt
 ##prints only those lines whose p-value is less than 0.05 (edgeR file)
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($8<="0.05") print $0 } else print $0}' 115vsanc_noquotes.txt > sig.genes.115.edgeR.txt
-##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file) 
+##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file)
 awk 'NR==FNR {a[$2]; next} $3 in a {print}' sig.genes.115.edgeR.txt sig.genes.115.cuffdiff.txt > 115_diff_genes.txt
-##confirms that the same number of genes are found when reversing the order of the files 
-##works, same number of genes identified. 
+##confirms that the same number of genes are found when reversing the order of the files
+##works, same number of genes identified.
 awk 'NR==FNR {a[$3]; next} $2 in a {print}'  sig.genes.115.cuffdiff.txt sig.genes.115.edgeR.txt > 115_diff_genes_confirm.txt
 
 
 
 ##for line 117
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' gene_exp_117.diff > sig.genes.117.cuffdiff.txt
 
-##removes commas 
-cat X117.vs.anc.csv | tr "," "\\t" > X117.vs.anc.txt 
+##removes commas
+cat X117.vs.anc.csv | tr "," "\\t" > X117.vs.anc.txt
 
 ###removes quotes
 sed 's/\"//g' X117.vs.anc.txt > 117vsanc_noquotes.txt
 
 ##prints only those lines whose p-value is less than 0.05 (edgeR file)
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($8<="0.05") print $0 } else print $0}' 117vsanc_noquotes.txt > sig.genes.117.edgeR.txt
 
-##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file) 
+##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file)
 awk 'NR==FNR {a[$2]; next} $3 in a {print}' sig.genes.117.edgeR.txt sig.genes.117.cuffdiff.txt > 117_diff_genes.txt
 
-##confirms that the same number of genes are found when reversing the order of the files 
-##works, same number of genes identified. 
+##confirms that the same number of genes are found when reversing the order of the files
+##works, same number of genes identified.
 awk 'NR==FNR {a[$3]; next} $2 in a {print}'  sig.genes.117.cuffdiff.txt sig.genes.117.edgeR.txt > 117_diff_genes_confirm.txt
 
 
 ##for line 117
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' gene_exp_X21.diff > sig.genes.21.cuffdiff.txt
 
-##removes commas 
-cat X21.vs.anc.csv | tr "," "\\t" > X21.vs.anc.txt 
+##removes commas
+cat X21.vs.anc.csv | tr "," "\\t" > X21.vs.anc.txt
 
 ###removes quotes
 sed 's/\"//g' X21.vs.anc.txt > 21vsanc_noquotes.txt
 
 ##prints only those lines whose p-value is less than 0.05 (edgeR file)
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($8<="0.05") print $0 } else print $0}' 21vsanc_noquotes.txt > sig.genes.21.edgeR.txt
 
-##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file) 
+##compares the cuffdiff and edgeR files and prints the matching lines from the second file (cuffdiff file)
 awk 'NR==FNR {a[$2]; next} $3 in a {print}' sig.genes.21.edgeR.txt sig.genes.21.cuffdiff.txt > 21_diff_genes.txt
 
-##confirms that the same number of genes are found when reversing the order of the files 
-##works, same number of genes identified. 
+##confirms that the same number of genes are found when reversing the order of the files
+##works, same number of genes identified.
 awk 'NR==FNR {a[$3]; next} $2 in a {print}'  sig.genes.21.cuffdiff.txt sig.genes.21.edgeR.txt > 21_diff_genes_confirm.txt
 
 ##compare the .diff file to the fpkm file to find genes that are not differentially expressed between the sample and ancestor
@@ -384,19 +394,19 @@ awk 'NR==FNR {a[$2]; next} !$4 in a {print}' X4.gene_exp.diff.txt X4_genes.fpkm_
 ##-23 hides the right-only and both columns, showing the lines that appear only in the first (left) file
 
 #diff  X4_genes.fpkm_tracking.txt X4.gene_exp.diff.txt > X4_not_diff_exp.txt | grep \^\<
-##compare the two files and output only lines that are in the left one but not the right one 
-##such lines are flagged by diff with < so it suffices to grep that symbol at the beginning of the line 
+##compare the two files and output only lines that are in the left one but not the right one
+##such lines are flagged by diff with < so it suffices to grep that symbol at the beginning of the line
 
 ######################################################################################################################################
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X4.gene_exp.diff.txt > X4_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X4.gene_exp.diff.txt > X4_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -408,13 +418,13 @@ awk -F'\t' '{ if ($4~"V" && $4!~"I" && $4!~"X" ) print $0 }' X4_diff_exp.txt > X
 ######################################################
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' 1_gene_exp.diff.txt > 1_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' 1_gene_exp.diff.txt > 1_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -427,80 +437,80 @@ awk -F'\t' '{ if (NR>1) { if ($4~"XII" && $4!~"XIII" ) print $0 }else print $0}'
 ######################################################
 
 
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X2_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X2_gene_exp.diff.txt > X2_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X2_gene_exp.diff.txt > X2_diff_exp.txt
 
 ######################################################
 
 
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X3_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X3_gene_exp.diff.txt > X3_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X3_gene_exp.diff.txt > X3_diff_exp.txt
 
 ######################################################
 
 
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X5_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X5_gene_exp.diff.txt > X5_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X5_gene_exp.diff.txt > X5_diff_exp.txt
 
 
 ######################################################
 
 
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X6_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X6_gene_exp.diff.txt > X6_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X6_gene_exp.diff.txt > X6_diff_exp.txt
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X7_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X7_gene_exp.diff.txt > X7_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X7_gene_exp.diff.txt > X7_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -510,17 +520,17 @@ awk -F'\t' '{ if (NR>1) {  if ($4~"VII" && $4!~"VIII" ) print $0 } else print $0
 awk -F'\t' '{ if (NR>1) { if ($4~"VII" && $4!~"VIII" ) print $0 }else print $0}' X7_diff_exp.txt > X7_diff_exp.chrCOI.txt
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X141_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X141_gene_exp.diff.txt > X141_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X141_gene_exp.diff.txt > X141_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -531,31 +541,31 @@ awk -F'\t' '{ if (NR>1) { if ($4~"XVI") print $0 }else print $0}' X141_diff_exp.
 
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X9_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X9_gene_exp.diff.txt > X9_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X9_gene_exp.diff.txt > X9_diff_exp.txt
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X11_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X11_gene_exp.diff.txt > X11_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X11_gene_exp.diff.txt > X11_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -571,17 +581,17 @@ awk -F'\t' '{ if (NR>1) {  if ($4~"XV" && $4!~"I") print $0 } else print $0}' X1
 awk -F'\t' '{ if (NR>1) { if ($4~"XV" && $4!~"I") print $0 }else print $0}' X11_diff_exp.txt > X11_diff_exp.chrCOI2.txt
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X123_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X123_gene_exp.diff.txt > X123_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X123_gene_exp.diff.txt > X123_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -592,17 +602,17 @@ awk -F'\t' '{ if (NR>1) { if ($4~"XII" && $4!~"V" && $4!~"XIII") print $0 }else 
 
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X21_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X21_gene_exp.diff.txt > X21_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X21_gene_exp.diff.txt > X21_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -613,17 +623,17 @@ awk -F'\t' '{ if (NR>1) { if ($4~"I" && $4!~"V" && $4!~"X" && $4!~"II" && $4!~"I
 
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X76_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X76_gene_exp.diff.txt > X76_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X76_gene_exp.diff.txt > X76_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -647,17 +657,17 @@ awk -F'\t' '{ if (NR>1) { if ($4~"XIV")print $0 }else print $0}' X76_diff_exp.tx
 
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X152_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X152_gene_exp.diff.txt > X152_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X152_gene_exp.diff.txt > X152_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -674,17 +684,17 @@ awk -F'\t' '{ if (NR>1) {  if ($4~"I" && $4!~"V" && $4!~"X" && $4!~"II" && $4!~"
 awk -F'\t' '{ if (NR>1) { if ($4~"I" && $4!~"V" && $4!~"X" && $4!~"II" && $4!~"III") print $0 }else print $0}' X152_diff_exp.txt > X152_diff_exp.chrCOI2.txt
 
 ######################################################
-##add .txt to end of filename and also include line number 
+##add .txt to end of filename and also include line number
 cp gene_exp.diff  X117_gene_exp.diff.txt
 
 ##find genes that are not differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12>="0.05") print $0 } else print $0}' X117_gene_exp.diff.txt > X117_not_diff_exp.txt
 
 #find genes that are significantly differentially expressed
-awk -F'\t' '{   
-if (NR>1) {                                      
+awk -F'\t' '{
+if (NR>1) {
 if ($12<="0.05") print $0 } else print $0}' X117_gene_exp.diff.txt > X117_diff_exp.txt
 
 #find genes that are not significantly differentially expressed on the chromosome of interest
@@ -695,7 +705,7 @@ awk -F'\t' '{ if (NR>1) { if ($7~"V" && $7!~"I" && $7!~"X") print $0 }else print
 
 
 
-($7~"V" && $7!~"I" && $7!~"X") 
+($7~"V" && $7!~"I" && $7!~"X")
 
 
 /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/cuffnorm_out_2/genes.count_table
@@ -709,4 +719,3 @@ cp genes.attr_table genes.attr_table.txt
 ##need to index bam files to view in IGV
 
 /usr/local/samtools/latest/samtools index Sample${i}.sorted.bam
-

@@ -75,6 +75,7 @@ ls | grep '_tophat_out' > assemblies.txt
 
 #then add /transcripts.gtf to the end of the directory name so that the program knows where to look
 awk '{print$"/transcripts.gtf"} > assemblies2.txt
+
 ################################################################################################################
 ################################################################################################################
 ## script to run cuffmerge
@@ -257,6 +258,10 @@ cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rm
 #in old data, need to get rid of mitochondrial data and also convert the file to .csv not .tsv
 awk -F',' '{if ($1!~"chrmt") print $0}' gene_fpkm_chrm.tsv > genes_fpkm_chrm.nomito.tsv
 #need to put back commas into old data to make it actually comma separated values
+##this one works!!!
+for file in genes_fpkm_chrm.nomito.tsv; do cat $file| tr '[\t]' '[,]' > genes_fpkm_chrm.nomito.commas.tsv; done
+##change file to csv
+cp genes_fpkm_chrm.nomito.commas.tsv genes_fpkm_chrm.nomito.commas.csv
 #these don't work
 #tr '	' ',' < genes_fpkm_chrm.nomito.csv > genes_fpkm_chrm.nomito.commas.csv
 #tr ' ' '\t' < genes_fpkm_chrm.nomito.csv > genes_fpkm_chrm.nomito.commas.csv

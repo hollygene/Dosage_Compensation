@@ -253,7 +253,7 @@ echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_i
 
 #need to get rid of columns that I don't actually need
 #don't need: 3-10
-cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv >genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv
+cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv
 
 #in old data, need to get rid of mitochondrial data and also convert the file to .csv not .tsv
 awk -F',' '{if ($1!~"chrmt") print $0}' gene_fpkm_chrm.tsv > genes_fpkm_chrm.nomito.tsv
@@ -262,6 +262,11 @@ awk -F',' '{if ($1!~"chrmt") print $0}' gene_fpkm_chrm.tsv > genes_fpkm_chrm.nom
 for file in genes_fpkm_chrm.nomito.tsv; do cat $file| tr '[\t]' '[,]' > genes_fpkm_chrm.nomito.commas.tsv; done
 ##change file to csv
 cp genes_fpkm_chrm.nomito.commas.tsv genes_fpkm_chrm.nomito.commas.csv
+##
+awk 'NR==FNR {a[$2]; next} $2 in a {print}'  genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv genes_fpkm_chrm.nomito.commas.csv > genes_fpkm_match_oldtonew.csv
+##concatenate them together somehow
+#this ALMOST works, but messes up some lines... not sure why yet.will continue tomorrow. 
+pr -mts, genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv genes_fpkm_match_oldtonew.csv > genes_fpkm_merge.csv
 #these don't work
 #tr '	' ',' < genes_fpkm_chrm.nomito.csv > genes_fpkm_chrm.nomito.commas.csv
 #tr ' ' '\t' < genes_fpkm_chrm.nomito.csv > genes_fpkm_chrm.nomito.commas.csv

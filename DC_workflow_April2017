@@ -1,5 +1,4 @@
 Dosage Compensation Transcriptome Assembly Protocol, April 2017
-
 #to log into the zcluster
 ssh hcm14449@zcluster.rcc.uga.edu
 password
@@ -197,7 +196,7 @@ tr ' ' ',' <genes.fpkm_table.joined.rmcom.split.csv > genes.fpkm_table.joined.rm
 awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.rmcom.split.commas.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.csv
 
 #need this for downstream analysis in R
-#awk -F',' '{
+##awk -F',' '{
 #if (NR>1) {
 #if ($7~"I" && $7!~"V" && $7!~"X" && $7!~"II" && $7!~"III") print "1", ",", $0;
 #if ($7~"II" && $7!~"III" && $7!~"X" && $7!~"V") print "2", ",", $0;
@@ -265,42 +264,30 @@ awk -F',' '{if ($1!~"chrmt") print $0}' gene_fpkm_chrm.tsv > genes_fpkm_chrm.nom
 #sed -i -e 's/\t/,/g'  genes_fpkm_chrm.nomito.csv > genes_fpkm_chrm.nomito.commas.csv
 
 
-
+##############################################################################################################
+#these codes are unnecessary now, were to compare what was in my two files
 #print column 2 for comparison
 #awk -F"," '{print $7,$8}' genes.fpkm_table.joined.split.commas.rmvmito.csv > comparison.rmvmito.csv
 #awk -F"," '{print $8,$9}' genes.fpkm_table.joined.split.commas.rmvmito.chgchr.csv > comparison.rmvmito.chgchr.csv
-
 ##find difference between two files
 #awk -F"," 'NR==FNR{a[$1]=$2;next}{if (a[$1])print a[$1],$0;else print "Not Found", $0;}' OFS=";" comparison.rmvmito.csv comparison.rmvmito.chgchr.csv > difference.csv
-
 #grep -vFxf comparison.rmvmito.csv comparison.rmvmito.chgchr.csv > difference.csv
 #grep -vFxf comparison.rmvmito.chgchr.csv comparison.rmvmito.csv  > difference.csv
-
 ##reason for my files being different lengths was that some lines had a gene id in which
 ##there was a comma in it so it made a new column
 #need to go in and replace commas with "/" in original file
 #tr < genes.fpkm_table.joined.csv "," "/" > genes.fpkm_table.joined.rmcom.csv
-
-
 #awk -F'\t' '{
 #if ($1=="I" && $1!~"V" && $1!~"X" && $1!~"II" && $1!~"III") print "1", ",", $0;
 #}' genes.fpkm_table.csv > test.csv
-
 #gsub(pattern, replacement, x,
 #     ignore.case = FALSE, extended = TRUE, perl = FALSE,
 #     fixed = FALSE, useBytes = FALSE)
-
-
 #     awk '{ gsub(/I/&&!/II/, "1"); print }' genes.fpkm_table.csv > genes.fpkm_table_2.csv
-
-
 #     \t
-
 #     sed -i '' 's/I'\t'/1'\t'/g'  genes.fpkm_table.csv > genes.fpkm_table_2.csv
 ###excel formula to change roman numerals into numbers
 #=MATCH(B4,INDEX(ROMAN(ROW(INDIRECT("1:4000"))),0),0)
-
-
 #awk -F'\t' '{ if $1!~"#N/A" print $0 }' genes.fpkm_table.txt > genes.fpkm_table_nomito.txt
 
 ################################################################################################################

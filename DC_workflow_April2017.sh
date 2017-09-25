@@ -185,16 +185,33 @@ if ($7~"MT") print $0,"\t","MT";
 ##need to join genes.attr_table with genes.fpkm_table
 join genes.attr_table.csv genes.fpkm_table.csv > genes.fpkm_table.joined.csv
 
+#doing this again but not .csv format this time 9/25
+join genes.attr_table genes.fpkm_table > genes.fpkm_table.joined
+
 #need to go in and replace commas with "/" in original file
 tr < genes.fpkm_table.joined.csv "," "/" > genes.fpkm_table.joined.rmcom.csv
+
+#again 9/25
+tr < genes.fpkm_table.joined "," "/" > genes.fpkm_table.joined.rmcom
 
 #after files are joined, want to split column that contains the chromosomes
 tr < genes.fpkm_table.joined.rmcom.csv ":" "," > genes.fpkm_table.joined.rmcom.split.csv
 
+#9/25
+tr < genes.fpkm_table.joined.rmcom ":" "," > genes.fpkm_table.joined.rmcom.split
+
+#add commas where tabs are to make comma separated values file not tab separated values
 tr ' ' ',' <genes.fpkm_table.joined.rmcom.split.csv > genes.fpkm_table.joined.rmcom.split.commas.csv
+
+#9/25
+tr ' ' ',' < genes.fpkm_table.joined.rmcom.split > genes.fpkm_table.joined.rmcom.split.commas.csv
 
 ##remove the mitochondrial sequences
 awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.rmcom.split.commas.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.csv
+
+#9/25
+awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.rmcom.split.commas.csv > genes.fpkm_table.joined.rmcom.split.commas.nomito.csv
+
 
 #need this for downstream analysis in R
 ##awk -F',' '{
@@ -220,6 +237,26 @@ awk -F',' '{if ($7!~"MT") print $0}' genes.fpkm_table.joined.rmcom.split.commas.
 ##this one works just fine
 awk -F',' '{
 if (NR>1) {
+if ($7=="I") print "1",",",$0;
+if ($7=="II") print "2", ",", $0;
+if ($7=="III") print "3", ",", $0;
+if ($7=="IV") print "4", ",", $0;
+if ($7=="V") print "5", ",", $0;
+if ($7=="VI") print "6", ",", $0;
+if ($7=="VII") print "7", ",", $0;
+if ($7=="VIII") print "8", ",", $0;
+if ($7=="IX") print "9", ",", $0;
+if ($7=="X") print "10", ",", $0;
+if ($7=="XI") print "11", ",", $0;
+if ($7=="XII") print "12", ",", $0;
+if ($7=="XIII") print "13", ",", $0;
+if ($7=="XIV") print "14", ",", $0;
+if ($7=="XV") print "15", ",", $0;
+if ($7=="XVI") print "16", ",", $0  } else print $0
+}' genes.fpkm_table.joined.rmcom.split.commas.nomito.csv> genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.csv
+
+awk -F',' '{
+if (NR>1) {
 if ($7=="I") print "1", ",", $0;
 if ($7=="II") print "2", ",", $0;
 if ($7=="III") print "3", ",", $0;
@@ -238,6 +275,8 @@ if ($7=="XV") print "15", ",", $0;
 if ($7=="XVI") print "16", ",", $0  } else print $0
 }' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv
 
+
+
 ##NOW I HAVE THE RIGHT NUMBER OF LINES BETWEEN MY TWO FILES
 #Now I need to figure out how to make my column names match
 #How to print one string in one column in one line?
@@ -248,12 +287,24 @@ if ($7=="XVI") print "16", ",", $0  } else print $0
 
 #get rid of old header
 grep -v "locus"  genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv > temp && mv temp genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.csv
+
+#9/25
+grep -v "locus"  genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.csv > temp && mv temp genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv
+
 #add new header
 echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_id,chr_roman,length,null,X112_2,X112_0,X112_1,X115_0,X115_1,X115_2,X117_0,X117_1,X117_2,X11_1,X11_0,X11_2,X123_1,X123_0,X123_2,X141_1,X141_0,X141_2,X152_1,X152_0,X152_2,X18_1,X18_0,X18_2,X1_0,X1_1,X1_2,X21_1,X21_0,X21_2,X29_1,X29_0,X29_2,X2_0,X2_1,X2_2,X31_1,X31_0,X31_2,X3_0,X3_1,X3_2,X49_0,X49_1,X49_2,X4_1,X4_0,X4_2,X50_1,X50_0,X50_2,X59_0,X59_1,X59_2,X5_1,X5_0,X5_2,X61_1,X61_0,X61_2,X66_0,X66_1,X66_2,X69_1,X69_0,X69_2,X6_0,X6_1,X6_2,X76_0,X76_1,X76_2,X77_1,X77_0,X77_2,X7_1,X7_0,X7_2,X8_0,X8_1,X8_2,X9_0,X9_1,X9_2,GC_Anc_1,GC_Anc_0,GC_Anc_2,MA_Anc_1,MA_Anc_0,MA_Anc_2" | cat - genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv
+
+#9/25
+echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_id,chr_roman,length,null,X112_2,X112_0,X112_1,X115_0,X115_1,X115_2,X117_0,X117_1,X117_2,X11_1,X11_0,X11_2,X123_1,X123_0,X123_2,X141_1,X141_0,X141_2,X152_1,X152_0,X152_2,X18_1,X18_0,X18_2,X1_0,X1_1,X1_2,X21_1,X21_0,X21_2,X29_1,X29_0,X29_2,X2_0,X2_1,X2_2,X31_1,X31_0,X31_2,X3_0,X3_1,X3_2,X49_0,X49_1,X49_2,X4_1,X4_0,X4_2,X50_1,X50_0,X50_2,X59_0,X59_1,X59_2,X5_1,X5_0,X5_2,X61_1,X61_0,X61_2,X66_0,X66_1,X66_2,X69_1,X69_0,X69_2,X6_0,X6_1,X6_2,X76_0,X76_1,X76_2,X77_1,X77_0,X77_2,X7_1,X7_0,X7_2,X8_0,X8_1,X8_2,X9_0,X9_1,X9_2,GC_Anc_1,GC_Anc_0,GC_Anc_2,MA_Anc_1,MA_Anc_0,MA_Anc_2" | cat - genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv> genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.csv
 
 #need to get rid of columns that I don't actually need
 #don't need: 3-10
 cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv
+
+#9/25
+#getting rid of anything not MA also
+cut -f1,2,5,7,9,11-19,23-31,41-43,59-61,98-100 -d',' genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.csv > genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.MA.csv
+
 
 #in old data, need to get rid of mitochondrial data and also convert the file to .csv not .tsv
 awk -F',' '{if ($1!~"chrmt") print $0}' gene_fpkm_chrm.tsv > genes_fpkm_chrm.nomito.tsv

@@ -407,15 +407,16 @@ chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.GC <-cbind(chrms,logMat.GC)
 
 yl.old=NULL
-for(line in rep){
+for(line in rep.old){
   for(chrm in 1:16){
     yl.old <- c(yl.old,median(log2(getChrmRatio.old(line,chrm)[,3])))
   }
 }
+View(yl.old)
 
 warnings()
 logMat.old <- matrix(yl.old,nrow=16,ncol=15)
-colnames(logMat.old) <- rep
+colnames(logMat.old) <- rep.old
 logMat.old <- data.frame(logMat.old)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.old <-cbind(chrms,logMat.old)

@@ -26,7 +26,7 @@ anc.means <- rowMeans(sc_counts.z[,30:32]) #average in the ancestor
 sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means<5),]
 
 #final matrix for ancestor and descendans
-sc_anc <- sc_counts.final[,c(1:55,30,31,32)]
+sc_anc <- sc_counts.final[,c(1:5,30,31,32)]
 sc_des <- sc_counts.final[,c(1:5,6:29)] #average for each GC line
 
 #the purpose of these is to get the rows of each chromosome
@@ -129,12 +129,17 @@ colnames(logMatsd.MA) <- rep.MA
 logMatsd.MA <- data.frame(logMatsd.MA)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.MA <-cbind(chrms,logMatsd.MA)
+write.csv(logMat2.MA,file="logMat.MA")
+shapiro.test(logMat2.MA)
 
 ######################################################################################
 #how to make a graph of the chromosomes and their respective error bars 
 #changes the margins to the standard margin width
 par(mar=c(5, 4, 4, 2) + 0.1)
 par(mfrow=c(1,1))
+
+
+
 #line 112
 #get the standard deviations for each chromosome for line 112 only
 X112 <- subset(logMat.MA, select=c("X112"))
@@ -396,14 +401,17 @@ l50.16 <- getChrmRatio.MA("50",16)
 #because for this experiment I don't have any euploid replicates (without using the old data), I have 
 #to use lines that are euploid at that specific chromosome
 #line 152 is 3n for c1
+par(mfrow=c(1,1))
+par(mar = c(5, 4, 4, 2) + 0.1)
+
 l152.1 <- getChrmRatio.MA("152",1)
 euRatio.c1 <- c(l112.1[,3],l115.1[,3],l117.1[,3],l123.1[,3],l141.1[,3],l29.1[,3],l50.1[,3])
 
 boxplot((log2(l152.1[,3])),(log2(euRatio.c1)),names=c("Trisomic","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise"), main="Chr 1 Line 152 vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l152.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-p <- "7.377e-12"         
+wilcox.test((log2(l152.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+p <- "< 2.2e-16"         
 mylabel = bquote(italic(p) == .(format(p, digits = 9)))
 text(x=2.3,y = 1.6, labels = mylabel)
 
@@ -414,13 +422,13 @@ euRatio.c5 <- c(l112.5[,3],l115.5[,3],l152.5[,3],l123.5[,3],l141.5[,3],l29.5[,3]
 boxplot((log2(l117.5[,3])),(log2(l50.5[,3])),(log2(euRatio.c5)),names=c("Line 117","Line 50","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise","lawngreen"), main="Chr 5 Line 117 and 50 vs Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l117.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l117.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
 p <- "< 2.2e-16"         
 mylabel = bquote(italic(p.117) == .(format(p, digits = 9)))
 text(x=3.3,y = 4, labels = mylabel)
 #between 50 and the euploids 
-t.test((log2(l50.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
-p <- "0.00711"         
+wilcox.test((log2(l50.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+p <- "0.01778"         
 mylabel = bquote(italic(p.50) == .(format(p, digits = 9)))
 text(x=3.3,y = 3.6, labels = mylabel)
 ##even though line 50 doesn't look trisomic, the p-value is still significant 
@@ -432,8 +440,8 @@ euRatio.c7 <- c(l112.7[,3],l152.7[,3],l117.7[,3],l123.7[,3],l141.7[,3],l29.7[,3]
 boxplot((log2(l115.7[,3])),(log2(euRatio.c7)),names=c("Trisomic","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise"), main="Chr 7 Line 115 vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l115.7[,3])), (log2(euRatio.c7)), paired=FALSE, var.equal=TRUE)
-p <- "0.3071"         
+wilcox.test((log2(l115.7[,3])), (log2(euRatio.c7)), paired=FALSE, var.equal=TRUE)
+p <- "0.606"         
 mylabel = bquote(italic(p) == .(format(p, digits = 9)))
 text(x=2.3,y = 3.7, labels = mylabel)
 
@@ -444,7 +452,7 @@ euRatio.c8 <- c(l112.8[,3],l115.8[,3],l117.8[,3],l123.8[,3],l141.8[,3],l29.8[,3]
 boxplot((log2(l152.8[,3])),(log2(euRatio.c8)),names=c("Trisomic","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise"), main="Chr 8 Line 152 vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l152.8[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
 p <- "< 2.2e-16"         
 mylabel = bquote(italic(p) == .(format(p, digits = 9)))
 text(x=2.3,y = 2.5, labels = mylabel)
@@ -456,7 +464,7 @@ euRatio.c9 <- c(l112.9[,3],l115.9[,3],l117.9[,3],l123.9[,3],l141.9[,3],l152.9[,3
 boxplot((log2(l29.9[,3])),(log2(euRatio.c9)),names=c("Monosomic","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise"), main="Chr 9 Line 29 vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l29.9[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l29.9[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
 p <- "< 2.2e-16"         
 mylabel = bquote(italic(p) == .(format(p, digits = 9)))
 text(x=2.3,y = 6, labels = mylabel)
@@ -468,8 +476,8 @@ euRatio.c12 <- c(l112.12[,3],l115.12[,3],l117.12[,3],l29.12[,3],l141.12[,3],l152
 boxplot((log2(l123.12[,3])),(log2(euRatio.c12)),names=c("Trisomic","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise"), main="Chr 12 Line 123 vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l123.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-p <- "0.08047"         
+wilcox.test((log2(l123.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+p <- "0.0158"         
 mylabel = bquote(italic(p) == .(format(p, digits = 9)))
 text(x=2.3,y = 4, labels = mylabel)
 
@@ -480,12 +488,12 @@ euRatio.c16 <- c(l123.16[,3],l115.16[,3],l117.16[,3],l29.16[,3],l152.16[,3],l50.
 boxplot((log2(l141.16[,3])),(log2(l112.16[,3])),(log2(euRatio.c16)),names=c("141","112","Disomic"),ylab="log2(fold change)", col=c("purple","turquoise","lawngreen"), main="Chr 16 Trisomic vs Avg Euploid Lines")
 abline(h=0,lty=3)
 #run a t-test between the two 
-t.test((log2(l112.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l112.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 p <- "< 2.2e-16"         
 mylabel = bquote(italic(p.112) == .(format(p, digits = 9)))
 text(x=3.3,y = 4, labels = mylabel)
 #and for 141
-t.test((log2(l141.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l141.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 p <- "< 2.2e-16"         
 mylabel = bquote(italic(p.141) == .(format(p, digits = 9)))
 text(x=3.3,y = 4.5, labels = mylabel)
@@ -649,11 +657,11 @@ mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
 text(x=2.2,y = .55, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.5[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .65, labels = mylabel3,cex=.8)
 
-#line 115
+#line 117
 hist(log2(l117.5[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Trisomic Chr 5 Line 117")
 lines(density(log2(l117.5[,3])),col="green")
 mc11 <- mean(log2(l117.5[,3]))
@@ -661,12 +669,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.5[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.5[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .35, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .4, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.5[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 5 Line 123")
@@ -706,12 +714,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.5[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.5[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.5[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 5 Line 50")
@@ -721,12 +729,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.5[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .65, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.5[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
 text(x=2.2,y = .7, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .75, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.5[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 5 Line 152")
@@ -752,12 +760,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l112.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .65, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l112.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
 text(x=2.2,y = .7, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .75, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l115.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Trisomic Chr 7 Line 115")
@@ -767,14 +775,14 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l115.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .65, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
 text(x=2.2,y = .7, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .75, labels = mylabel3,cex=.8)
 
-#line 115
+#line 117
 hist(log2(l117.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 7 Line 117")
 lines(density(log2(l117.7[,3])),col="green")
 mc11 <- mean(log2(l117.7[,3]))
@@ -782,12 +790,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 7 Line 123")
@@ -797,12 +805,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l123.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l123.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 141
 hist(log2(l141.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 7 Line 141")
@@ -827,12 +835,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 7 Line 50")
@@ -842,12 +850,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.7[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.7[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.7[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 7 Line 152")
@@ -873,12 +881,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l112.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l112.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l115.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 8 Line 115")
@@ -888,12 +896,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l115.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l117.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 8 Line 117")
@@ -903,12 +911,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 8 Line 123")
@@ -918,12 +926,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l123.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l123.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 141
 hist(log2(l141.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 8 Line 141")
@@ -948,12 +956,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 8 Line 50")
@@ -963,12 +971,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.8[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.8[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.8[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Trisomic Chr 8 Line 152")
@@ -1009,12 +1017,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l115.9[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.9[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l117.9[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 9 Line 117")
@@ -1024,12 +1032,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.9[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .5, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.9[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .6, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .7, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.9[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 9 Line 123")
@@ -1039,12 +1047,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l123.9[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l123.9[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 141
 hist(log2(l141.9[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 9 Line 141")
@@ -1069,12 +1077,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.9[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.9[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.9[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 9 Line 50")
@@ -1084,12 +1092,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.9[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .4, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.9[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .5, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .6, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.9[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 9 Line 152")
@@ -1115,12 +1123,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l112.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .4, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l112.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .5, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .6, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l115.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 115")
@@ -1130,12 +1138,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l115.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 115
 hist(log2(l117.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 117")
@@ -1145,12 +1153,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Trisomic Chr 12 Line 123")
@@ -1160,12 +1168,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l123.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l123.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 141
 hist(log2(l141.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 141")
@@ -1175,12 +1183,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l141.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .4, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l141.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .5, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .6, labels = mylabel3,cex=.8)
 
 #line 29
 hist(log2(l29.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 29")
@@ -1190,12 +1198,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .4, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .5, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .6, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 50")
@@ -1205,12 +1213,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.12[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.12[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.12[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 12 Line 152")
@@ -1252,12 +1260,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l115.16[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l115.16[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 117
 hist(log2(l117.16[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 16 Line 117")
@@ -1267,12 +1275,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l117.16[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .25, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l117.16[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .35, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .45, labels = mylabel3,cex=.8)
 
 #line 123
 hist(log2(l123.16[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 16 Line 123")
@@ -1282,12 +1290,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l123.16[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .3, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l123.16[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .4, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .5, labels = mylabel3,cex=.8)
 
 #line 141
 hist(log2(l141.16[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Trisomic Chr 16 Line 141")
@@ -1312,12 +1320,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l29.16[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .4, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l29.16[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .5, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .6, labels = mylabel3,cex=.8)
 
 #line 50
 hist(log2(l50.16[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 16 Line 50")
@@ -1327,12 +1335,12 @@ mc11
 abline(v = mc11, col = "blue")
 s2 <- skewness(log2(l50.16[,3]))
 mylabel = bquote(italic("Skewness") == .(format(s2, digits = 3)))
-text(x=2.2,y = .55, labels = mylabel,cex=.8)
+text(x=2.2,y = .25, labels = mylabel,cex=.8)
 sd2 <- sd(log2(l50.16[,3]))
 mylabel2 = bquote(italic("SD") == .(format(sd2, digits = 3)))
-text(x=2.2,y = .7, labels = mylabel2,cex=.8)
+text(x=2.2,y = .35, labels = mylabel2,cex=.8)
 mylabel3 = bquote(italic("Mean") == .(format(mc11, digits = 3)))
-text(x=2.2,y = .85, labels = mylabel3,cex=.8)
+text(x=2.2,y = .45, labels = mylabel3,cex=.8)
 
 #line 152
 hist(log2(l152.16[,3]),freq=FALSE,breaks=40,xlab="log2(Fold Change)",xlim=range(-3,3),main="Euploid Chr 16 Line 152")

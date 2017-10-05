@@ -856,3 +856,11 @@ cp genes.attr_table genes.attr_table.txt
 ##need to index bam files to view in IGV
 
 /usr/local/samtools/latest/samtools index Sample${i}.sorted.bam
+
+
+#################################################################################
+#NEXT STEPS:
+#want to look for genes that are known to be upregulated or downregulated during
+#the ESR
+#also want to look for histone genes
+#so need to come up with pipeline to do that.

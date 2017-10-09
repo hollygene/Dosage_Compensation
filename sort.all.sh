@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#PBS -N j_s_samtools
+#PBS -q batch
+#PBS -l nodes=1:ppn=1:AMD
+#PBS -l mem=100gb
+#PBS -l walltime=480:00:00
+
+while read SampleName
+do
+  mkdir /lustre1/hcm14449/SC_RNAseq/INDEX${SampleName}
+cd $PBS_O_WORKDIR
+module load samtools/1.3.1
+time  samtools index \
+/project/dwhlab/Holly/RNA_seq/fastq_files/${SampleName}/accepted_hits.bam
+
+done < /project/dwhlab/Holly/RNA_seq/fastq_files/samples.txt

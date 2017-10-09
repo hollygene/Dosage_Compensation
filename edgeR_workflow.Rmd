@@ -1,0 +1,118 @@
+---
+title: "edgeR_workflow_DC"
+author: "Holly"
+date: "10/2/2017"
+output: html_document
+---
+
+First, we load our packages 
+```{r load_packages, include=TRUE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("limma")
+source("https://bioconductor.org/biocLite.R")
+biocLite("edgeR")
+source("https://bioconductor.org/biocLite.R")
+biocLite("biomaRt")
+install.packages("dplyr")
+
+library(limma)
+library(edgeR)
+library(dplyr)
+```
+
+Then we read in our data 
+``` {r read data, include=TRUE}
+raw <- read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/September_2017/genes.count_table",row.names="tracking_id")
+##add a grouping factor (for us this is the sample)
+group <- as.factor(c("X112","X112","X112","X115","X115","X115","X117","X117","X117","X11","X11","X11","X123","X123","X123","X141","X141","X141","X152","X152","X152","X18","X18","X18","X1","X1","X1","X21","X21","X21","X29","X29","X29","X2","X2","X2","X31","X31","X31","X3","X3","X3","X49","X49","X49","X4","X4","X4","X50","X50","X50","X59","X59","X59","X5","X5","X5","X61","X61","X61","X66","X66","X66","X69","X69","X69","X6","X6","X6","X76","X76","X76","X77","X77","X77","X7","X7","X7","X8","X8","X8","X9","X9","X9","GCA","GCA","GCA","MAA","MAA","MAA"))
+##convert the data into a DGEList-object (this uses edgeR)
+x <- DGEList(counts=raw,group=group)
+x$samples$group <- group
+exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA"),c(9,3,9,9,3,54,3)))
+x$samples$exp <- exp
+##describes the type of data this is 
+class(x)
+###this tells you the dimensions of your object
+dim(x)
+
+```
+After reading our data, we organize it the way we want it. 
+``` {r organize_data, include=TRUE}
+###there is a data frame called samples in this and it stores group, library size, and normalization factor information
+x$samples
+##I decided to use my own gene information that I have from cuffnorm output
+geneattr <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/September_2017/genes.attr_table.csv")
+geneattrnames <- c("tracking_id","class_code","nearest_ref_id","gene_id","gene_short_name","tss_id","locus","length")
+colnames(geneattr) <- geneattrnames
+geneattrnames
+View(geneattr)
+##make a file with only the things that you want in it (in my case, I just want gene id and locus)
+genenames <- select(geneattr,columns=c("gene_short_name","locus","length"))
+##eliminate duplicates
+x$genes <- genenames
+x
+genecolnames <- c("gene_id","locus","length")
+##make a vector of gene lengths 
+gene.lengths <- as.numeric(x$genes$length)
+gene.lengths
+colnames(x$genes) <- genecolnames
+x
+```
+
+Next, we move on to filtering the data. 
+We are filtering with count-per-million (CPM) rather than counts directly, since counts directly doesn't account for differences in library sizes. (from edgeR Users Guide)
+``` {r filtering, include= TRUE}
+table(rowSums(x$counts==0)==90)
+keep <- rowSums(cpm(x)>1) >= 90 
+#filters out lowly expressed genes
+x <- x[keep, , keep.lib.sizes=FALSE]
+#recalculate the library sizes after filtering
+x <- DGEList(counts=x, group=group)
+x$samples
+
+```
+
+Next we move onto normalization of our data
+``` {r normalization, include=TRUE}
+
+
+```
+
+```{r quasi-likelihood F-tests, include=TRUE}
+x <- read.delim("fileofcounts.txt",row.names="Symbol")
+group <- factor(c(1,1,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+design <- model.matrix(~group)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y,design)
+qlf <- glmQLFTest(fit,coef=2)
+topTags(qlf)
+```
+
+## edgeR notes from the documentation 
+I will put in code blocks of certain things you can do in edgeR and I can rearrange it later
+
+```{r likelihood ratio tests, include=TRUE}
+fit <- glmFit(y,design)
+lrt <- glmLRT(fit,coef=2)
+topTags(lrt)
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

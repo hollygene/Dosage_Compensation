@@ -18,6 +18,7 @@ install.packages("dplyr")
 library(limma)
 library(edgeR)
 library(dplyr)
+library(RColorBrewer)
 ```
 
 Then we read in our data 
@@ -57,20 +58,51 @@ gene.lengths <- as.numeric(x$genes$length)
 gene.lengths
 colnames(x$genes) <- genecolnames
 x
+samplenames <- c("X112_0","X112_1","X112_2","X115_0","X115_1","X115_2","X117_0","X117_1","X117_2","X11_0","X11_1","X11_2","X123_0","X123_1","X123_2","X141_0","X141_1","X141_2","X152_0","X152_1","X152_2","X18_0","X18_1","X18_2","X1_0","X1_1","X1_2","X21_0","X21_1","X21_2","X29_0","X29_1","X29_2","X2_0","X2_1","X2_2","X31_0","X31_1","X31_2","X3_0","X3_1","X3_2","X49_0","X49_1","X49_2","X4_0","X4_1","X4_2","X50_0","X50_1","X50_2","X59_0","X59_1","X59_2","X5_0","X5_1","X5_2","X61_0","X61_1","X61_2","X66_0","X66_1","X66_2","X69_0","X69_1","X69_2","X6_0","X6_1","X6_2","X76_0","X76_1","X76_2","X77_0","X77_1","X77_2","X7_0","X7_1","X7_2","X8_0","X8_1","X8_2","X9_0","X9_1","X9_2","GCA_0","GCA_1","GCA_2","MAA_0","MAA_1","MAA_2")
 ```
 
 Next, we move on to filtering the data. 
 We are filtering with count-per-million (CPM) rather than counts directly, since counts directly doesn't account for differences in library sizes. (from edgeR Users Guide)
 ``` {r filtering, include= TRUE}
+cpm <- cpm(x)
+lcpm <- cpm(x,log=TRUE)
 table(rowSums(x$counts==0)==90)
-keep <- rowSums(cpm(x)>1) >= 90 
+#genes must be expressed in at least one group (group size 3-biological replicates) to be kept for downstream analysis
+keep <- rowSums(cpm(x)>1) >= 3
+
 #filters out lowly expressed genes
-x <- x[keep, , keep.lib.sizes=FALSE]
+x.fil <- x[keep, , keep.lib.sizes=FALSE]
+dim(x.fil)
 #recalculate the library sizes after filtering
-x <- DGEList(counts=x, group=group)
-x$samples
+x.fil <- DGEList(counts=x.fil, group=group)
+x.fil$samples
 
 ```
+
+``` {r raw_vs_filtered, include=TRUE}
+nsamples <- ncol(x.fil)
+col <- brewer.pal(nsamples,"Paired")
+par(mfrow=c(1,2))
+plot(density(lcpm[,1]), col=col[1],lwd=2,ylim=c(0,0.3),las=2,main="",xlab="")
+title(main="A. Raw data",xlab="Log-cpm")
+abline(v=0,lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
+lcpm.fil <- cpm(x.fil,log=TRUE)
+plot(density(lcpm.fil[,1]), col=col[1],lwd=2,ylim=c(0,0.3),las=2,main="",xlab="")
+title(main="B. Filtered data",xlab="Log-cpm")
+abline(v=0,lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm.fil[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
+
+```
+
 
 Next we move onto normalization of our data
 ``` {r normalization, include=TRUE}

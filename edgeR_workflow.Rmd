@@ -106,8 +106,17 @@ legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
 
 Next we move onto normalization of our data
 ``` {r normalization, include=TRUE}
-
-
+x.norm <- calcNormFactors(x.fil, method="TMM")
+#can look at magnitude of scaling factors
+x.norm$samples$norm.factors
+#visualize the effects of normalization
+par(mfrow=c(1,2))
+lcpm <- cpm(x.fil,log=TRUE)
+boxplot(lcpm,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="A.Example: unnormalized data", ylab="Log-cpm")
+lcpm.norm <- cpm(x.norm,log=TRUE)
+boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="B. Example: Normalized data", ylab="Log-cpm")
 ```
 
 ```{r quasi-likelihood F-tests, include=TRUE}

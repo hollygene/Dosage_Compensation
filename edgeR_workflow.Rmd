@@ -123,14 +123,13 @@ title(main="B. Example: Normalized data", ylab="Log-cpm")
 lcpm <- cpm(x.norm,log=TRUE)
 par(mfrow=c(1,2))
 col.group <- group
-levels(col.group) <- brewer.pal(8,"Accent")
-col.group <- as.characeter(col.group)
+levels(col.group) <- palette(rainbow(nlevels(col.group)))
+col.group <- as.character(col.group)
+plotMDS(lcpm,labels=group,col=col.group,main="A.Sample groups",cex=0.5)
 col.exp <- exp
-levels(col.exp) <- brewer.pal(2,"Set1")
-plotMDS(lcpm,labels=group,col=col.group)
-title(main="A. Sample groups")
-plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4))
-title(main="B. Sequencing lanes")
+levels(col.exp) <- brewer.pal(2, "PuRd")
+col.exp <- as.character(col.exp)
+plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
 ```
 
 ```{r quasi-likelihood F-tests, include=TRUE}

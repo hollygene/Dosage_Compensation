@@ -119,6 +119,20 @@ boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
 title(main="B. Example: Normalized data", ylab="Log-cpm")
 ```
 
+```{r MDS plots, include=TRUE}
+lcpm <- cpm(x.norm,log=TRUE)
+par(mfrow=c(1,2))
+col.group <- group
+levels(col.group) <- brewer.pal(8,"Accent")
+col.group <- as.characeter(col.group)
+col.exp <- exp
+levels(col.exp) <- brewer.pal(2,"Set1")
+plotMDS(lcpm,labels=group,col=col.group)
+title(main="A. Sample groups")
+plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4))
+title(main="B. Sequencing lanes")
+```
+
 ```{r quasi-likelihood F-tests, include=TRUE}
 x <- read.delim("fileofcounts.txt",row.names="Symbol")
 group <- factor(c(1,1,2,2))

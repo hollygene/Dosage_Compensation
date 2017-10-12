@@ -6,8 +6,6 @@
 #PBS -l pmem=2gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
-#PBS -o /lustre1/hcm14449/SC_RNAseq/sort_all.o
-#PBS -e /lustre1/hcm14449/SC_RNAseq/sort_all.e
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat
 module load tophat/2.1.1

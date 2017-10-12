@@ -7,6 +7,8 @@
 #PBS -l walltime=480:00:00
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
+#PBS -o /lustre1/hcm14449/SC_RNAseq/sort_all.o
+#PBS -e /lustre1/hcm14449/SC_RNAseq/sort_all.e
 
 module load samtools/1.3.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat

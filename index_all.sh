@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -N sort_all
+#PBS -N index_all
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:AMD
 #PBS -l mem=100gb

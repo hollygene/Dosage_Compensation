@@ -11,4 +11,4 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat
 module load tophat/2.1.1
 
 time  tophat -p 4 -o ./SC001_1_raw.fastq_tophat_out -i 10 -I 1000 \
---./transcriptome-index=transcriptome_data/known genome SC001_1_raw.fastq
+--transcriptome-index=transcriptome_data/known genome SC001_1_raw.fastq

@@ -16,6 +16,7 @@ biocLite("biomaRt")
 install.packages("dplyr")
 
 library(limma)
+library(Glimma)
 library(edgeR)
 library(dplyr)
 library(RColorBrewer)
@@ -131,6 +132,15 @@ levels(col.exp) <- brewer.pal(2, "PuRd")
 col.exp <- as.character(col.exp)
 plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
 ```
+``` {r glimma plots, include=TRUE}
+
+
+
+
+
+```
+
+
 
 ```{r quasi-likelihood F-tests, include=TRUE}
 x <- read.delim("fileofcounts.txt",row.names="Symbol")

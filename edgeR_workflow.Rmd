@@ -77,7 +77,6 @@ dim(x.fil)
 #recalculate the library sizes after filtering
 x.fil <- DGEList(counts=x.fil, group=group)
 x.fil$samples
-
 ```
 
 ``` {r raw_vs_filtered, include=TRUE}
@@ -101,7 +100,6 @@ for (i in 2:nsamples){
   lines(den$x,den$y,col=col[i],lwd=2)
 }
 legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
-
 ```
 
 
@@ -120,6 +118,9 @@ boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
 title(main="B. Example: Normalized data", ylab="Log-cpm")
 ```
 
+Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research). 
+I used the plotMDS function below to make such a plot for my normalized data. First, I calculated the log-counts per million and then I plotted them. The first dimension will always explain most of the variation in the data (in my case, that was sample group). I then tried experimental groups (GC vs MA) and found that that explained a little of the variance too. Next time I could try clustering them by aneuploid and not aneuploid and see what happens (I would expect to see a greater difference between those than most of the other groups). 
+
 ```{r MDS plots, include=TRUE}
 lcpm <- cpm(x.norm,log=TRUE)
 par(mfrow=c(1,2))
@@ -131,16 +132,75 @@ col.exp <- exp
 levels(col.exp) <- brewer.pal(2, "PuRd")
 col.exp <- as.character(col.exp)
 plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
-```
-``` {r glimma plots, include=TRUE}
-
-
-
-
-
+#also can make MDS plots
+glMDSPlot(lcpm,labels=paste(group,exp,sep="_"),groups=x$samples[,c(2)],launch=TRUE)
 ```
 
+Here, I made a design matrix and also a contrasts matrix 
+``` {r make_contrasts, include=TRUE}
+design <- model.matrix(~0+group+exp)
+colnames(design) <- gsub("group","exp",colnames(design))
+design
+contr.matrix <- makeContrasts(
+  X1vsGCA = X1-GCA,
+  X11vsGCA = X11-GCA,
+  X112vsMAnc = X112-MAA,
+  X115vsMAnc = X115-MAA,
+  X117vsMAnc = X117-MAA,
+  X123vsMAnc = X123-MAA,
+  X141vsMAnc= X141-MAA,
+  X152vsMAnc = X152-MAA,
+  X18vsGCA = X18-GCA,
+  X2vsGCA = X2-GCA,
+  X21vsGCA = X21-GCA,
+  X29vsMAnc = X29-MAA,
+  X3vsGCA = X3-GCA,
+  X31vsGCA = X31-GCA,
+  X4vsGCA = X4-GCA,
+  X49vsGCA = X49-GCA,
+  X5vsGCA = X5-GCA,
+  X50vsMAnc = X50-MAA,
+  X59vsGCA = X59-GCA,
+  X6vsGCA = X6-GCA,
+  X61vsGCA = X61-GCA,
+  X66vsGCA = X66-GCA,
+  X69vsGCA = X69-GCA,
+  X7vsGCA = X7-GCA,
+  X76vsGCA = X76-GCA,
+  X77vsGCA = X77-GCA,
+  X8vsGCA = X8-GCA,
+  X9vsGCA = X9-GCA,
+  levels=colnames(design)
+)
 
+```
+
+``` {r voom, include=TRUE}
+v <- voom(x.norm,design,plot=TRUE)
+v
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
+efit <- eBayes(vfit)
+plotSA(efit)
+#estimate number of DE genes
+summary(decideTests(efit))
+#need to look up what reat does
+tfit <- treat(vfit,lfc=1)
+dt <- decideTests(tfit)
+de.common1.11 <- which(dt[,1]!=0 & dt[,2]!=0)
+length(de.common1.11)
+```
+``` {r edgeR GLM, include=TRUE}
+design.2 <- model.matrix(~0+group)
+colnames(design.2) <- gsub("group","",colnames(design.2))
+y <- estimateDisp(x.norm, design.2)
+fit <- glmFit(y, design.2)
+group
+X1vsGCA <- makeContrasts(X1-GCA,levels=design.2)
+lrt.1vsGCA <- glmLRT(fit,contrast=X1vsGCA)
+topTags(lrt.1vsGCA)
+
+```
 
 ```{r quasi-likelihood F-tests, include=TRUE}
 x <- read.delim("fileofcounts.txt",row.names="Symbol")

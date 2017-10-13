@@ -24,11 +24,11 @@ qsub -q rcc-30d bowtie_inspect.sh
 
 #Need to use TopHat to make a transcriptome index from the .gtf file given:
 #3: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
-	time /usr/local/tophat/latest/bin/tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
+time /usr/local/tophat/latest/bin/tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 
 #Then run Tophat with the transcriptome index and parameters needed and reference sequence from bowtie
 #4: export LD_LIBRARY_PATH=/usr/local/boost/1.54.0/gcc447/lib:/usr/local/gcc/4.7.1/lib:/usr/local/gcc/4.7.1/lib64:${LD_LIBRARY_PATH}
-	time /usr/local/tophat/latest/bin/tophat -i 10 -I 1000 --transcriptome-index=transcriptome_data/known genome Holly_MA_Anc_B_S1_R1_001.fastq
+time /usr/local/tophat/latest/bin/tophat -i 10 -I 1000 --transcriptome-index=transcriptome_data/known genome Holly_MA_Anc_B_S1_R1_001.fastq
 
 #a	 loop to do all of the files at once (WORKS)
 

@@ -5,7 +5,7 @@ date: "10/2/2017"
 output: html_document
 ---
 
-First, we load our packages 
+First, we load our packages
 ```{r load_packages, include=TRUE}
 source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
@@ -22,7 +22,7 @@ library(dplyr)
 library(RColorBrewer)
 ```
 
-Then we read in our data 
+Then we read in our data
 ``` {r read data, include=TRUE}
 raw <- read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/September_2017/genes.count_table",row.names="tracking_id")
 ##add a grouping factor (for us this is the sample)
@@ -32,13 +32,13 @@ x <- DGEList(counts=raw,group=group)
 x$samples$group <- group
 exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA"),c(9,3,9,9,3,54,3)))
 x$samples$exp <- exp
-##describes the type of data this is 
+##describes the type of data this is
 class(x)
 ###this tells you the dimensions of your object
 dim(x)
 
 ```
-After reading our data, we organize it the way we want it. 
+After reading our data, we organize it the way we want it.
 ``` {r organize_data, include=TRUE}
 ###there is a data frame called samples in this and it stores group, library size, and normalization factor information
 x$samples
@@ -54,7 +54,7 @@ genenames <- select(geneattr,columns=c("gene_short_name","locus","length"))
 x$genes <- genenames
 x
 genecolnames <- c("gene_id","locus","length")
-##make a vector of gene lengths 
+##make a vector of gene lengths
 gene.lengths <- as.numeric(x$genes$length)
 gene.lengths
 colnames(x$genes) <- genecolnames
@@ -62,7 +62,7 @@ x
 samplenames <- c("X112_0","X112_1","X112_2","X115_0","X115_1","X115_2","X117_0","X117_1","X117_2","X11_0","X11_1","X11_2","X123_0","X123_1","X123_2","X141_0","X141_1","X141_2","X152_0","X152_1","X152_2","X18_0","X18_1","X18_2","X1_0","X1_1","X1_2","X21_0","X21_1","X21_2","X29_0","X29_1","X29_2","X2_0","X2_1","X2_2","X31_0","X31_1","X31_2","X3_0","X3_1","X3_2","X49_0","X49_1","X49_2","X4_0","X4_1","X4_2","X50_0","X50_1","X50_2","X59_0","X59_1","X59_2","X5_0","X5_1","X5_2","X61_0","X61_1","X61_2","X66_0","X66_1","X66_2","X69_0","X69_1","X69_2","X6_0","X6_1","X6_2","X76_0","X76_1","X76_2","X77_0","X77_1","X77_2","X7_0","X7_1","X7_2","X8_0","X8_1","X8_2","X9_0","X9_1","X9_2","GCA_0","GCA_1","GCA_2","MAA_0","MAA_1","MAA_2")
 ```
 
-Next, we move on to filtering the data. 
+Next, we move on to filtering the data.
 We are filtering with count-per-million (CPM) rather than counts directly, since counts directly doesn't account for differences in library sizes. (from edgeR Users Guide)
 ``` {r filtering, include= TRUE}
 cpm <- cpm(x)
@@ -118,8 +118,8 @@ boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
 title(main="B. Example: Normalized data", ylab="Log-cpm")
 ```
 
-Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research). 
-I used the plotMDS function below to make such a plot for my normalized data. First, I calculated the log-counts per million and then I plotted them. The first dimension will always explain most of the variation in the data (in my case, that was sample group). I then tried experimental groups (GC vs MA) and found that that explained a little of the variance too. Next time I could try clustering them by aneuploid and not aneuploid and see what happens (I would expect to see a greater difference between those than most of the other groups). 
+Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research).
+I used the plotMDS function below to make such a plot for my normalized data. First, I calculated the log-counts per million and then I plotted them. The first dimension will always explain most of the variation in the data (in my case, that was sample group). I then tried experimental groups (GC vs MA) and found that that explained a little of the variance too. Next time I could try clustering them by aneuploid and not aneuploid and see what happens (I would expect to see a greater difference between those than most of the other groups).
 
 ```{r MDS plots, include=TRUE}
 lcpm <- cpm(x.norm,log=TRUE)
@@ -136,7 +136,7 @@ plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
 glMDSPlot(lcpm,labels=paste(group,exp,sep="_"),groups=x$samples[,c(2)],launch=TRUE)
 ```
 
-Here, I made a design matrix and also a contrasts matrix 
+Here, I made a design matrix and also a contrasts matrix
 ``` {r make_contrasts, include=TRUE}
 design <- model.matrix(~0+group+exp)
 colnames(design) <- gsub("group","exp",colnames(design))
@@ -199,7 +199,10 @@ group
 X1vsGCA <- makeContrasts(X1-GCA,levels=design.2)
 lrt.1vsGCA <- glmLRT(fit,contrast=X1vsGCA)
 topTags(lrt.1vsGCA)
-
+#to do the QL method
+fit <- glmQLFit(y,design.2)
+qlf.1vsGCA <- glmQLFTest(fit,contrast=X1vsGCA)
+topTags(qlf.1vsGCA)
 ```
 
 ```{r quasi-likelihood F-tests, include=TRUE}
@@ -214,7 +217,7 @@ qlf <- glmQLFTest(fit,coef=2)
 topTags(qlf)
 ```
 
-## edgeR notes from the documentation 
+## edgeR notes from the documentation
 I will put in code blocks of certain things you can do in edgeR and I can rearrange it later
 
 ```{r likelihood ratio tests, include=TRUE}

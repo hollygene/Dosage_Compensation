@@ -15,7 +15,6 @@ for file in ./*.fastq
 do
 
 FBASE=$(basename $file .fastq)
-
 BASE=${FBASE%.fastq}
 THREADS=4
 time  tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/${BASE}_tophat_out \

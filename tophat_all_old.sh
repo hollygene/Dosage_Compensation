@@ -3,7 +3,7 @@
 #PBS -q batch
 #PBS -l nodes=1:ppn=4:AMD
 #PBS -l walltime=96:00:00
-#PBS -l pmem=2gb
+#PBS -l pmem=100gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 

@@ -3,7 +3,7 @@
 #PBS -q batch
 #PBS -l nodes=1:ppn=4:AMD
 #PBS -l walltime=96:00:00
-#PBS -l pmem=20gb
+#PBS -l pmem=10gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
@@ -15,5 +15,3 @@ time  tophat -p 4 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC006_1_r
 --transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genome \
 ./SC006_1_raw.fastq
-
-\

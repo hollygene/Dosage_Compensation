@@ -14,11 +14,11 @@ module load cufflinks/2.2.1
 
 while read SampleName
 do
-mkdir /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/Cufflinks/cufflinks${SampleName}
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinks${SampleName}
 
-time cufflinks -p 4
+time cufflinks
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
--o /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/Cufflinks/cufflinks${SampleName} \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinks${SampleName} \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophatgenome.fa \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat${SampleName}/accepted_hits.bam
 

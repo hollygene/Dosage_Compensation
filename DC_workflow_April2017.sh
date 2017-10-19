@@ -114,6 +114,7 @@ time /usr/local/cufflinks/latest/bin/cuffmerge \
 -p 4 \
 cufflinksHolly_GC_Anc_S4_R1_001_tophat_out/transcripts.gtf \
 cufflinksHolly-GC-8-redo_S5_R1_001_tophat_out/transcripts.gtf
+
 ################################################################################################################
 ################################################################################################################
 ##script to run cuffdiff on everything

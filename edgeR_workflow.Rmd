@@ -4,22 +4,22 @@ author: "Holly"
 date: "10/2/2017"
 output: html_document
 ---
+This workflow is using the edgeR example from the edgeR documentation for "Experiments with all combinations of multiple factors (Section 3.3)"
 
 First, we load our packages
+
 ```{r load_packages, include=TRUE}
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("limma")
 #source("https://bioconductor.org/biocLite.R")
 #biocLite("edgeR")
 #source("https://bioconductor.org/biocLite.R")
 #biocLite("biomaRt")
 #install.packages("dplyr")
 
-library(limma)
-library(Glimma)
 library(edgeR)
 library(dplyr)
 library(RColorBrewer)
+library(qdapTools)
+library(data.table)
 ```
 
 Then we read in our data
@@ -57,7 +57,6 @@ genecolnames <- c("gene_id","locus","length")
 ##make a vector of gene lengths
 gene.lengths <- as.numeric(x$genes$length)
 gene.lengths
-colnames(x$genes) <- genecolnames
 x
 samplenames <- c("X112_0","X112_1","X112_2","X115_0","X115_1","X115_2","X117_0","X117_1","X117_2","X11_0","X11_1","X11_2","X123_0","X123_1","X123_2","X141_0","X141_1","X141_2","X152_0","X152_1","X152_2","X18_0","X18_1","X18_2","X1_0","X1_1","X1_2","X21_0","X21_1","X21_2","X29_0","X29_1","X29_2","X2_0","X2_1","X2_2","X31_0","X31_1","X31_2","X3_0","X3_1","X3_2","X49_0","X49_1","X49_2","X4_0","X4_1","X4_2","X50_0","X50_1","X50_2","X59_0","X59_1","X59_2","X5_0","X5_1","X5_2","X61_0","X61_1","X61_2","X66_0","X66_1","X66_2","X69_0","X69_1","X69_2","X6_0","X6_1","X6_2","X76_0","X76_1","X76_2","X77_0","X77_1","X77_2","X7_0","X7_1","X7_2","X8_0","X8_1","X8_2","X9_0","X9_1","X9_2","GCA_0","GCA_1","GCA_2","MAA_0","MAA_1","MAA_2")
 ```
@@ -117,87 +116,146 @@ lcpm.norm <- cpm(x.norm,log=TRUE)
 boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
 title(main="B. Example: Normalized data", ylab="Log-cpm")
 ```
-
-Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research).
-I used the plotMDS function below to make such a plot for my normalized data. First, I calculated the log-counts per million and then I plotted them. The first dimension will always explain most of the variation in the data (in my case, that was sample group). I then tried experimental groups (GC vs MA) and found that that explained a little of the variance too. Next time I could try clustering them by aneuploid and not aneuploid and see what happens (I would expect to see a greater difference between those than most of the other groups).
-
-```{r MDS plots, include=TRUE}
-lcpm <- cpm(x.norm,log=TRUE)
-par(mfrow=c(1,2))
-col.group <- group
-levels(col.group) <- palette(rainbow(nlevels(col.group)))
-col.group <- as.character(col.group)
-plotMDS(lcpm,labels=group,col=col.group,main="A.Sample groups",cex=0.5)
-col.exp <- exp
-levels(col.exp) <- brewer.pal(2, "PuRd")
-col.exp <- as.character(col.exp)
-plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
-#also can make MDS plots
-glMDSPlot(lcpm,labels=paste(group,exp,sep="_"),groups=x$samples[,c(2)],launch=FALSE)
+Plot MDS (multidimensional scaling plot)
+In this plot, distances between samples indicate the leading BCV (biological coefficient of variation) between the samples
+Dimension 1 splits the samples into two groups pretty clearly, and I know from glancing at the saple numbers that it's mostly by experimental group (ie MA vs GC), which makes sense. 
+``` {r MDS, include=TRUE}
+plotMDS(x.norm)
 ```
-
-Here, I made a design matrix and also a contrasts matrix
-``` {r make_contrasts, include=TRUE}
-design <- model.matrix(~0+group+exp)
+``` {r edgeR pairwise, include=TRUE}
+y <- x.norm
+y$samples
+levels(y$samples$group)
+#have to estimate dispersion first, which entails making a design matrix
+design <- model.matrix(~0+group)
 colnames(design) <- gsub("group","",colnames(design))
-design
-contr.matrix <- makeContrasts(
-  X1vsGCA = X1-GCA,
-  X11vsGCA = X11-GCA,
-  X112vsMAnc = X112-MAA,
-  X115vsMAnc = X115-MAA,
-  X117vsMAnc = X117-MAA,
-  X123vsMAnc = X123-MAA,
-  X141vsMAnc= X141-MAA,
-  X152vsMAnc = X152-MAA,
-  X18vsGCA = X18-GCA,
-  X2vsGCA = X2-GCA,
-  X21vsGCA = X21-GCA,
-  X29vsMAnc = X29-MAA,
-  X3vsGCA = X3-GCA,
-  X31vsGCA = X31-GCA,
-  X4vsGCA = X4-GCA,
-  X49vsGCA = X49-GCA,
-  X5vsGCA = X5-GCA,
-  X50vsMAnc = X50-MAA,
-  X59vsGCA = X59-GCA,
-  X6vsGCA = X6-GCA,
-  X61vsGCA = X61-GCA,
-  X66vsGCA = X66-GCA,
-  X69vsGCA = X69-GCA,
-  X7vsGCA = X7-GCA,
-  X76vsGCA = X76-GCA,
-  X77vsGCA = X77-GCA,
-  X8vsGCA = X8-GCA,
-  X9vsGCA = X9-GCA,
-  levels=colnames(design)
-)
+#estimate dispersions
+y <- estimateDisp(x.norm, design)
+#make comparisons
+#1 is GCA and 2 is MAA
+#other numbers correspond to the lines from levels(y$samples$group)
+et1 <- exactTest(y, pair=c("X1","GCA"))
+View(topTags(et1))
+View(et1)
+write.csv(topTags(et1),file="1vsAnc.edgeR.pairwise.csv")
+et11 <- exactTest(y,pair=c(4,1))
+topTags(et11)
+write.csv(topTags(et11),file="11vsAnc.edgeR.pairwise.csv")
+et18 <- exactTest(y,pair=c(11,1))
+topTags(et18)
+write.csv(topTags(et18),file="18vsAnc.edgeR.pairwise.csv")
+et2 <- exactTest(y,pair=c(12,1))
+topTags(et2)
+write.csv(topTags(et2),file="2vsAnc.edgeR.pairwise.csv")
+et21 <- exactTest(y,pair=c(13,1))
+topTags(et21)
+write.csv(topTags(et21),file="21vsAnc.edgeR.pairwise.csv")
+et3 <- exactTest(y,pair=c(15,1))
+topTags(et3)
+write.csv(et3,file="3vsAnc.edgeR.pairwise.csv")
+et31 <- exactTest(y,pair=c(16,1))
+topTags(et31)
+write.csv(et31,file="31vsAnc.edgeR.pairwise.csv")
+et4 <- exactTest(y,pair=c(17,1))
+topTags(et4)
+write.csv(et4,file="4vsAnc.edgeR.pairwise.csv")
+et49 <- exactTest(y,pair=c(18,1))
+topTags(et49)
+write.csv(et49,file="49vsAnc.edgeR.pairwise.csv")
+et5 <- exactTest(y,pair=c(19,1))
+topTags(et5)
+write.csv(et5,file="5vsAnc.edgeR.pairwise.csv")
+et59 <- exactTest(y,pair=c(21,1))
+topTags(et59)
+write.csv(et59,file="59vsAnc.edgeR.pairwise.csv")
+et6 <- exactTest(y,pair=c(22,1))
+topTags(et6)
+write.csv(et6,file="6vsAnc.edgeR.pairwise.csv")
+et61 <- exactTest(y,pair=c(23,1))
+topTags(et61)
+write.csv(et61,file="61vsAnc.edgeR.pairwise.csv")
+et66 <- exactTest(y,pair=c(24,1))
+topTags(et66)
+write.csv(et66,file="66vsAnc.edgeR.pairwise.csv")
+et69 <- exactTest(y,pair=c(25,1))
+topTags(et69)
+write.csv(et69,file="69vsAnc.edgeR.pairwise.csv")
+et7 <- exactTest(y,pair=c(26,1))
+topTags(et7)
+write.csv(et7,file="7vsAnc.edgeR.pairwise.csv")
+et76 <- exactTest(y,pair=c(27,1))
+topTags(et76)
+write.csv(et76,file="76vsAnc.edgeR.pairwise.csv")
+et77 <- exactTest(y,pair=c(28,1))
+topTags(et77)
+write.csv(et77,file="77vsAnc.edgeR.pairwise.csv")
+et8 <- exactTest(y,pair=c(29,1))
+topTags(et8)
+write.csv(et8,file="8vsAnc.edgeR.pairwise.csv")
+et9 <- exactTest(y,pair=c(30,1))
+topTags(et9)
+write.csv(et9,file="9vsAnc.edgeR.pairwise.csv")
+et2 <- exactTest(y,pair=c(12,1))
+topTags(et2)
+write.csv(et2,file="2vsAnc.edgeR.pairwise.csv")
+#MA Lines
+et112 <- exactTest(y,pair=c(5,2))
+topTags(et112)
+write.csv(et112,file="112vsAnc.edgeR.pairwise.csv")
+et115 <- exactTest(y,pair=c(6,2))
+topTags(et115)
+write.csv(et115,file="115vsAnc.edgeR.pairwise.csv")
+et117 <- exactTest(y,pair=c(7,2))
+topTags(et117)
+write.csv(et117,file="117vsAnc.edgeR.pairwise.csv")
+et123 <- exactTest(y,pair=c(8,2))
+topTags(et123)
+write.csv(et123,file="123vsAnc.edgeR.pairwise.csv")
+et141 <- exactTest(y,pair=c(9,2))
+topTags(et141)
+write.csv(et141,file="141vsAnc.edgeR.pairwise.csv")
+et152 <- exactTest(y,pair=c(10,2))
+topTags(et152)
+write.csv(et152,file="152vsAnc.edgeR.pairwise.csv")
+et29 <- exactTest(y,pair=c(14,2))
+topTags(et29)
+write.csv(et29,file="29vsAnc.edgeR.pairwise.csv")
+et20 <- exactTest(y,pair=c(20,2))
+topTags(et50)
+write.csv(et50,file="50vsAnc.edgeR.pairwise.csv")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ```
 
-``` {r voom, include=TRUE}
-v <- voom(x.norm,design,plot=TRUE)
-v
-vfit <- lmFit(v, design)
-vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
-efit <- eBayes(vfit)
-plotSA(efit)
-#estimate number of DE genes
-summary(decideTests(efit))
-#need to look up what reat does
-tfit <- treat(vfit,lfc=1)
-dt <- decideTests(tfit)
-de.common1.11 <- which(dt[,1]!=0 & dt[,2]!=0)
-length(de.common1.11)
-```
+
+
+
+
+
 
 ``` {r edgeR GLM, include=TRUE}
 design.2 <- model.matrix(~0+group)
 colnames(design.2) <- gsub("group","",colnames(design.2))
+#estimate dispersions
 y <- estimateDisp(x.norm, design.2)
+#view dispersion estimates in a BCV plot
+plotBCV(y)
+#fit genewise glms
 fit <- glmFit(y, design.2)
-group
-X1vsGCA <- makeContrasts(X1-GCA,levels=design.2)
 my.contrasts <- makeContrasts(
   X1vsGCA = X1-GCA,
   X11vsGCA = X11-GCA,
@@ -229,13 +287,13 @@ my.contrasts <- makeContrasts(
   X9vsGCA = X9-GCA,
   levels=colnames(design.2)
 )
-
 #Euploid GC lines
 lrt.X2vsGCA <- glmLRT(fit,contrast=my.contrasts[,"X2vsGCA"])
 topTags(lrt.X2vsGCA)
+write.csv(lrt.X2vsGCA,file="2vsAnc.edgeR.glm.csv")
 #look at cpm for top genes in comparison
 top.X2vsGCA <- rownames(topTags(lrt.X2vsGCA))
-cpm(y)[top.X2vsGCA,]
+summary(de<-decideTestsDGE(lrt.X2vsGCA))
 #for X2vsGCA, cpm doesn't vary much at first gene: 33,34,30
 lrt.X3vsGCA <- glmLRT(fit, contrast=my.contrasts[,"X3vsGCA"])
 topTags(lrt.X3vsGCA)
@@ -297,7 +355,7 @@ topTags(lrt.X152vsMAnc)
 
 #to do the QL method
 fit <- glmQLFit(y,design.2)
-qlf.1vsGCA <- glmQLFTest(fit,contrast=X1vsGCA)
+qlf.1vsGCA <- glmQLFTest(fit,contrast=my.contrasts[,"X1vsGCA"])
 topTags(qlf.1vsGCA)
 
 
@@ -353,42 +411,13 @@ DEnames.X9
 plotSmear(lrt.X9vsGCA,de.tags=DEnames.X9)
 abline(h=c(-1,1),col="blue")
 
-
+class(geneattr)
+gene.infoX9 <- lookup(DEnames.X9,geneattr,missing=NA)
+gene.infoX9
 ```
 
 
-```{r quasi-likelihood F-tests, include=TRUE}
-x <- read.delim("fileofcounts.txt",row.names="Symbol")
-group <- factor(c(1,1,2,2))
-y <- DGEList(counts=x,group=group)
-y <- calcNormFactors(y)
-design <- model.matrix(~group)
-y <- estimateDisp(y,design)
-fit <- glmQLFit(y,design)
-qlf <- glmQLFTest(fit,coef=2)
-topTags(qlf)
-```
 
-## edgeR notes from the documentation
-I will put in code blocks of certain things you can do in edgeR and I can rearrange it later
-
-```{r likelihood ratio tests, include=TRUE}
-fit <- glmFit(y,design)
-lrt <- glmLRT(fit,coef=2)
-topTags(lrt)
-```
-
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
 plot(pressure)

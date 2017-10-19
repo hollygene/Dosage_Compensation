@@ -16,8 +16,8 @@ while read SampleName
 do
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinks${SampleName}
 
-time cufflinks
--G /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
+time cufflinks \
+-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinks${SampleName} \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophatgenome.fa \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat${SampleName}/accepted_hits.bam

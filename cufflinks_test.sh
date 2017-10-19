@@ -8,7 +8,7 @@
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks
 
-module load cufflinks/2.2.0
+module load cufflinks/2.2.1
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC001_1_raw.fastq_tophat_out
 

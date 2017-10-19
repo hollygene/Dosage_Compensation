@@ -12,7 +12,7 @@ module load cufflinks/2.2.1
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC001_1_raw.fastq_tophat_out
 
-time cufflinks
+time cufflinks \
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC001_1_raw.fastq_tophat_out \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophatgenome.fa \

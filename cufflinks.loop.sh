@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #PBS -q batch
-#PBS -l nodes=1:ppn=1:AMD
+#PBS -l nodes=2:ppn=3:AMD
 #PBS -l walltime=96:00:00
-#PBS -l pmem=5gb
+#PBS -l pmem=10gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 

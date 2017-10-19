@@ -10,10 +10,10 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks
 
 module load cufflinks/2.2.1
 
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC001_1_raw.fastq_tophat_out
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC007_3_raw_tophat_out
 
 time cufflinks \
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC001_1_raw.fastq_tophat_out \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cufflinks/cufflinksSC007_3_raw_tophat_out \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophatgenome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophatSC001_1_raw.fastq_tophat_out/accepted_hits.bam
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC007_3_raw_tophat_out/accepted_hits.bam

@@ -14,5 +14,6 @@ module load cufflinks/2.2.1
 cuffnorm -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/Cuffnorm_out_test \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genes.gtf \
 -p 3 \
--L SC119 \
+-L SCA,SC119 \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC119_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC119_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC119_3_raw_tophat_out/accepted_hits.bam

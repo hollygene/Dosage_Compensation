@@ -15,9 +15,3 @@ time  tophat -p 4 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC006_1_r
 --transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genome \
 ./SC006_1_raw.fastq
-
-time  tophat -p 4 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/genome \
-./SCA_3_raw.fastq

@@ -163,18 +163,17 @@ write.csv(topTags(et11),file="11vsAnc.edgeR.pairwise.csv")
 #perform the test for the given pairwise comparison you're interested in 
 et18 <- exactTest(y,pair=c(11,1))
 #find the top differentially expressed genes and put into a data frame
-topDE.18 <- data.frame(topTags(et18))
+topTags(et18,n=600)
+topDE.18 <- data.frame(topTags(et18,n=600))
 #check to make sure it is a data frame
 class(topDE.18)
-#need to change the data frame into a data table so that you can compare with gene attr to get the gene names
-topDE.18 <- data.table(topDE.18)
 #this is how you make the rownames (where the gene names are) into an actual column so I can select by it. 
 #make sure it has the right number of columns 
 ncol(topDE.18)
 #make it so that the rownames are now the tracking_id column
-topDE.18$tracking_id <- rownames(topDE.18)
+topDE.18$gene <- rownames(topDE.18)
 #compare your tracking_id column in pairwise comparison to the gene_id column in gene attr
-topDE.18 = merge(topDE.18,geneattr,by.x="tracking_id",by.y="gene_id")
+topDE.18 = merge(topDE.18,geneattr,by.x="gene",by.y="gene_id")
 #make sure it has the right number of columns again
 ncol(topDE.18)
 #write into a .csv file for later viewing 

@@ -136,6 +136,74 @@ y <- estimateDisp(x.norm, design)
 #1 is GCA and 2 is MAA
 #other numbers correspond to the lines from levels(y$samples$group)
 
+##starting with the known euploid lines
+#line 2
+et2 <- exactTest(y,pair=c(12,1))
+topTags(et2,n=100)
+topDE.2 <- data.frame(topTags(et2,n=100))
+class(topDE.2)
+ncol(topDE.2)
+topDE.2$gene <- rownames(topDE.2)
+topDE.2 = merge(topDE.2,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.2)
+write.csv(topDE.2,file="2vsAnc.edgeR.pairwise.csv")
+
+#line 3
+et3 <- exactTest(y,pair=c(15,1))
+topTags(et3,n=100)
+topDE.3 <- data.frame(topTags(et3,n=100))
+class(topDE.3)
+ncol(topDE.3)
+topDE.3$gene <- rownames(topDE.3)
+topDE.3 = merge(topDE.3,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.3)
+write.csv(topDE.3,file="3vsAnc.edgeR.pairwise.csv")
+
+#line5
+et5 <- exactTest(y,pair=c(19,1))
+topTags(et5,n=100)
+topDE.5 <- data.frame(topTags(et5,n=100))
+class(topDE.5)
+ncol(topDE.5)
+topDE.5$gene <- rownames(topDE.5)
+topDE.5 = merge(topDE.5,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.5)
+write.csv(topDE.5,file="5vsAnc.edgeR.pairwise.csv")
+
+#line 6
+et6 <- exactTest(y,pair=c(22,1))
+topTags(et6,n=100)
+topDE.6 <- data.frame(topTags(et6,n=100))
+class(topDE.6)
+ncol(topDE.6)
+topDE.6$gene <- rownames(topDE.6)
+topDE.6 = merge(topDE.6,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.6)
+write.csv(topDE.6,file="6vsAnc.edgeR.pairwise.csv")
+
+#line8
+et8 <- exactTest(y,pair=c(29,1))
+topTags(et8,n=100)
+topDE.8 <- data.frame(topTags(et8,n=100))
+class(topDE.8)
+ncol(topDE.8)
+topDE.8$gene <- rownames(topDE.8)
+topDE.8 = merge(topDE.8,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.8)
+write.csv(topDE.8,file="8vsAnc.edgeR.pairwise.csv")
+
+#line 9 
+et9 <- exactTest(y,pair=c(30,1))
+topTags(et9,n=100)
+topDE.9 <- data.frame(topTags(et9,n=100))
+class(topDE.9)
+ncol(topDE.9)
+topDE.9$gene <- rownames(topDE.9)
+topDE.9 = merge(topDE.9,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.9)
+write.csv(topDE.9,file="9vsAnc.edgeR.pairwise.csv")
+
+#Aneuploid lines
 #line 1
 et1 <- exactTest(y, pair=c("X1","GCA"))
 topDE.1 <- data.frame(topTags(et1))
@@ -179,16 +247,7 @@ ncol(topDE.18)
 #write into a .csv file for later viewing 
 write.csv(topTags(et18),file="18vsAnc.edgeR.pairwise.csv")
 
-#line 2
-et2 <- exactTest(y,pair=c(12,1))
-topDE.2 <- data.frame(topTags(et2))
-class(topDE.2)
-topDE.2 <- data.table(topDE.2)
-ncol(topDE.2)
-topDE.2$tracking_id <- rownames(topDE.2)
-topDE.2 = merge(topDE.2,geneattr,by.x="tracking_id",by.y="gene_id")
-ncol(topDE.2)
-write.csv(topTags(et2),file="2vsAnc.edgeR.pairwise.csv")
+
 
 #Line 21
 et21 <- exactTest(y,pair=c(13,1))
@@ -201,9 +260,7 @@ topDE.21 = merge(topDE.2,geneattr,by.x="tracking_id",by.y="gene_id")
 ncol(topDE.21)
 write.csv(topTags(et21),file="21vsAnc.edgeR.pairwise.csv")
 
-et3 <- exactTest(y,pair=c(15,1))
-topTags(et3)
-write.csv(topTags(et3),file="3vsAnc.edgeR.pairwise.csv")
+
 et31 <- exactTest(y,pair=c(16,1))
 topTags(et31)
 write.csv(topTags(et31),file="31vsAnc.edgeR.pairwise.csv")
@@ -213,15 +270,11 @@ write.csv(topTags(et4),file="4vsAnc.edgeR.pairwise.csv")
 et49 <- exactTest(y,pair=c(18,1))
 topTags(et49)
 write.csv(topTags(et49),file="49vsAnc.edgeR.pairwise.csv")
-et5 <- exactTest(y,pair=c(19,1))
-topTags(et5)
-write.csv(topTags(et5),file="5vsAnc.edgeR.pairwise.csv")
+
 et59 <- exactTest(y,pair=c(21,1))
 topTags(et59)
 write.csv(topTags(et59),file="59vsAnc.edgeR.pairwise.csv")
-et6 <- exactTest(y,pair=c(22,1))
-topTags(et6)
-write.csv(topTags(et6),file="6vsAnc.edgeR.pairwise.csv")
+
 et61 <- exactTest(y,pair=c(23,1))
 topTags(et61)
 write.csv(topTags(et61),file="61vsAnc.edgeR.pairwise.csv")
@@ -240,12 +293,7 @@ write.csv(topTags(et76),file="76vsAnc.edgeR.pairwise.csv")
 et77 <- exactTest(y,pair=c(28,1))
 topTags(et77)
 write.csv(topTags(et77),file="77vsAnc.edgeR.pairwise.csv")
-et8 <- exactTest(y,pair=c(29,1))
-topTags(et8)
-write.csv(topTags(et8),file="8vsAnc.edgeR.pairwise.csv")
-et9 <- exactTest(y,pair=c(30,1))
-topTags(et9)
-write.csv(topTags(et9),file="9vsAnc.edgeR.pairwise.csv")
+
 et2 <- exactTest(y,pair=c(12,1))
 topTags(et2)
 write.csv(topTags(et2),file="2vsAnc.edgeR.pairwise.csv")

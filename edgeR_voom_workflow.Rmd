@@ -104,18 +104,33 @@ legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
 
 
 Next we move onto normalization of our data
+Here I'm trying out all of the different normalization methods
+Still looks like TMM is the best option for me. 
 ``` {r normalization, include=TRUE}
-x.norm <- calcNormFactors(x.fil, method="TMM")
+x.norm.TMM <- calcNormFactors(x.fil, method="TMM")
+x.norm.RLE <- calcNormFactors(x.fil, method="RLE")
+x.norm.UQ <- calcNormFactors(x.fil, method="upperquartile")
 #can look at magnitude of scaling factors
-x.norm$samples$norm.factors
+x.norm.TMM$samples$norm.factors
+x.norm.RLE$samples$norm.factors
+x.norm.UQ$samples$norm.factors
 #visualize the effects of normalization
 par(mfrow=c(1,2))
 lcpm <- cpm(x.fil,log=TRUE)
 boxplot(lcpm,las=2,col=col,main="",cex=.2,cex.axis=.4)
 title(main="A.Example: unnormalized data", ylab="Log-cpm")
-lcpm.norm <- cpm(x.norm,log=TRUE)
-boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
-title(main="B. Example: Normalized data", ylab="Log-cpm")
+
+lcpm.norm.TMM <- cpm(x.norm.TMM,log=TRUE)
+boxplot(lcpm.norm.TMM,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="B. Example: Normalized data-TMM", ylab="Log-cpm")
+
+lcpm.norm.RLE <- cpm(x.norm.RLE,log=TRUE)
+boxplot(lcpm.norm.RLE,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="C. Example: Normalized data-RLE", ylab="Log-cpm")
+
+lcpm.norm.UQ <- cpm(x.norm.UQ,log=TRUE)
+boxplot(lcpm.norm.UQ,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="C. Example: Normalized data-UQ", ylab="Log-cpm")
 ```
 
 Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research).

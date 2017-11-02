@@ -248,98 +248,169 @@ commonAll <- rbind(commonAll, newGenes)
 ``` {r aneuploid comparisons, include=TRUE}
 #Aneuploid lines
 #line 1
-et1 <- exactTest(y, pair=c("X1","GCA"))
+#oddly, line 1 has no DE genes below an adjusted p value of 0.05 
+et1 <- exactTest(y, pair=c(3,1))
+topTags.1 <- topTags(et1)
 topDE.1 <- data.frame(topTags(et1))
+topTags.1 <- topTags(et1,n=7126,p.value=0.05,adjust.method="none")
+topDE.1 <- data.frame(topTags(et1,n=7126,p.value=0.05,adjust.method="none"))
 class(topDE.1)
-#need to find some command to look up column 1 of topTags in geneattr and find the chromosome (or just all of the information about it)
-topDE.1 <- data.table(topDE.1)
-#this is how you make the rownames (where the gene names are) into an actual column so I can select by it. 
 ncol(topDE.1)
-topDE.1$tracking_id <- rownames(topDE.1)
-topDE.1 = merge(topDE.1,geneattr,by.x="tracking_id",by.y="gene_id")
-write.csv(topTags(et1),file="1vsAnc.edgeR.pairwise.csv")
+topDE.1$gene <- rownames(topDE.1)
+topDE.1 = merge(topDE.1,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.1)
+topDE.1 <- data.frame(v1=setdiff(topDE.1$gene_short_name,commonAll[,1]))
+write.csv(topDE.1,file="1vsAnc.edgeR.pairwise.csv")
+
 
 #line 11
 et11 <- exactTest(y,pair=c(4,1))
-topDE.11 <- data.frame(topTags(et11))
+topTags.11 <- topTags(et11,n=7126,p.value=0.05)
+topDE.11 <- data.frame(topTags(et11,n=7126,p.value=0.05))
 class(topDE.11)
-#need to find some command to look up column 1 of topTags in geneattr and find the chromosome (or just all of the information about it)
-#this is how you make the rownames (where the gene names are) into an actual column so I can select by it. 
 ncol(topDE.11)
 topDE.11$gene <- rownames(topDE.11)
 topDE.11 = merge(topDE.11,geneattr,by.x="gene",by.y="gene_id")
-write.csv(topTags(et11),file="11vsAnc.edgeR.pairwise.csv")
+ncol(topDE.11)
+topDE.11 <- topDE.11[!(topDE.11$gene %in% commonAll$commonAll),]
+write.csv(topDE.11,file="11vsAnc.edgeR.pairwise.csv")
 
 #line 18
 #perform the test for the given pairwise comparison you're interested in 
 et18 <- exactTest(y,pair=c(11,1))
-#find the top differentially expressed genes and put into a data frame
-topTags(et18,n=600)
-topDE.18 <- data.frame(topTags(et18,n=600))
-#check to make sure it is a data frame
+topTags.18 <- topTags(et18,n=7126,p.value=0.05)
+topDE.18 <- data.frame(topTags(et18,n=7126,p.value=0.05))
 class(topDE.18)
-#this is how you make the rownames (where the gene names are) into an actual column so I can select by it. 
-#make sure it has the right number of columns 
 ncol(topDE.18)
-#make it so that the rownames are now the tracking_id column
 topDE.18$gene <- rownames(topDE.18)
-#compare your tracking_id column in pairwise comparison to the gene_id column in gene attr
 topDE.18 = merge(topDE.18,geneattr,by.x="gene",by.y="gene_id")
-#make sure it has the right number of columns again
 ncol(topDE.18)
-#write into a .csv file for later viewing 
-write.csv(topTags(et18),file="18vsAnc.edgeR.pairwise.csv")
-
-
+topDE.18 <- topDE.18[!(topDE.18$gene %in% commonAll$commonAll),]
+write.csv(topDE.18,file="18vsAnc.edgeR.pairwise.csv")
 
 #Line 21
 et21 <- exactTest(y,pair=c(13,1))
-topDE.21 <- data.frame(topTags(et21))
+topTags.21 <- topTags(et21,n=7126,p.value=0.05)
+topDE.21 <- data.frame(topTags(et21,n=7126,p.value=0.05))
 class(topDE.21)
-topDE.21 <- data.table(topDE.21)
 ncol(topDE.21)
-topDE.21$tracking_id <- rownames(topDE.21)
-topDE.21 = merge(topDE.2,geneattr,by.x="tracking_id",by.y="gene_id")
+topDE.21$gene <- rownames(topDE.21)
+topDE.21 = merge(topDE.21,geneattr,by.x="gene",by.y="gene_id")
 ncol(topDE.21)
-write.csv(topTags(et21),file="21vsAnc.edgeR.pairwise.csv")
-
+topDE.21 <- topDE.21[!(topDE.21$gene %in% commonAll$commonAll),]
+write.csv(topDE.21,file="21vsAnc.edgeR.pairwise.csv")
 
 et31 <- exactTest(y,pair=c(16,1))
-topTags(et31)
-write.csv(topTags(et31),file="31vsAnc.edgeR.pairwise.csv")
+topTags.31 <- topTags(et31,n=7126,p.value=0.05)
+topDE.31 <- data.frame(topTags(et31,n=7126,p.value=0.05))
+class(topDE.31)
+ncol(topDE.31)
+topDE.31$gene <- rownames(topDE.31)
+topDE.31 = merge(topDE.31,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.31)
+topDE.31 <- topDE.31[!(topDE.31$gene %in% commonAll$commonAll),]
+write.csv(topDE.31,file="31vsAnc.edgeR.pairwise.csv")
+
 et4 <- exactTest(y,pair=c(17,1))
-topTags(et4)
-write.csv(topTags(et4),file="4vsAnc.edgeR.pairwise.csv")
+topTags.4 <- topTags(et4,n=7126,p.value=0.05)
+topDE.4 <- data.frame(topTags(et4,n=7126,p.value=0.05))
+class(topDE.4)
+ncol(topDE.4)
+topDE.4$gene <- rownames(topDE.4)
+topDE.4 = merge(topDE.4,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.4)
+topDE.4 <- topDE.4[!(topDE.4$gene %in% commonAll$commonAll),]
+write.csv(topDE.4,file="4vsAnc.edgeR.pairwise.csv")
+
 et49 <- exactTest(y,pair=c(18,1))
-topTags(et49)
-write.csv(topTags(et49),file="49vsAnc.edgeR.pairwise.csv")
+topTags.49 <- topTags(et49,n=7126,p.value=0.05)
+topDE.49 <- data.frame(topTags(et49,n=7126,p.value=0.05))
+class(topDE.49)
+ncol(topDE.49)
+topDE.49$gene <- rownames(topDE.49)
+topDE.49 = merge(topDE.49,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.49)
+topDE.49 <- topDE.49[!(topDE.49$gene %in% commonAll$commonAll),]
+write.csv(topDE.49,file="49vsAnc.edgeR.pairwise.csv")
 
 et59 <- exactTest(y,pair=c(21,1))
-topTags(et59)
-write.csv(topTags(et59),file="59vsAnc.edgeR.pairwise.csv")
+topTags.59 <- topTags(et59,n=7126,p.value=0.05)
+topDE.59 <- data.frame(topTags(et59,n=7126,p.value=0.05))
+class(topDE.59)
+ncol(topDE.59)
+topDE.59$gene <- rownames(topDE.59)
+topDE.59 = merge(topDE.59,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.59)
+topDE.59 <- topDE.59[!(topDE.59$gene %in% commonAll$commonAll),]
+write.csv(topDE.59,file="59vsAnc.edgeR.pairwise.csv")
 
 et61 <- exactTest(y,pair=c(23,1))
-topTags(et61)
-write.csv(topTags(et61),file="61vsAnc.edgeR.pairwise.csv")
-et66 <- exactTest(y,pair=c(24,1))
-topTags(et66)
-write.csv(topTags(et66),file="66vsAnc.edgeR.pairwise.csv")
-et69 <- exactTest(y,pair=c(25,1))
-topTags(et69)
-write.csv(topTags(et69),file="69vsAnc.edgeR.pairwise.csv")
-et7 <- exactTest(y,pair=c(26,1))
-topTags(et7)
-write.csv(topTags(et7),file="7vsAnc.edgeR.pairwise.csv")
-et76 <- exactTest(y,pair=c(27,1))
-topTags(et76)
-write.csv(topTags(et76),file="76vsAnc.edgeR.pairwise.csv")
-et77 <- exactTest(y,pair=c(28,1))
-topTags(et77)
-write.csv(topTags(et77),file="77vsAnc.edgeR.pairwise.csv")
+topTags.61 <- topTags(et61,n=7126,p.value=0.05)
+topDE.61 <- data.frame(topTags(et61,n=7126,p.value=0.05))
+class(topDE.61)
+ncol(topDE.61)
+topDE.61$gene <- rownames(topDE.61)
+topDE.61 = merge(topDE.61,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.61)
+topDE.61 <- topDE.61[!(topDE.61$gene %in% commonAll$commonAll),]
+write.csv(topDE.61,file="61vsAnc.edgeR.pairwise.csv")
 
-et2 <- exactTest(y,pair=c(12,1))
-topTags(et2)
-write.csv(topTags(et2),file="2vsAnc.edgeR.pairwise.csv")
+et66 <- exactTest(y,pair=c(24,1))
+topTags.66 <- topTags(et66,n=7126,p.value=0.05)
+topDE.66 <- data.frame(topTags(et66,n=7126,p.value=0.05))
+class(topDE.66)
+ncol(topDE.66)
+topDE.66$gene <- rownames(topDE.66)
+topDE.66 = merge(topDE.66,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.66)
+topDE.66 <- topDE.66[!(topDE.66$gene %in% commonAll$commonAll),]
+write.csv(topDE.66,file="66vsAnc.edgeR.pairwise.csv")
+
+et69 <- exactTest(y,pair=c(25,1))
+topTags.69 <- topTags(et69,n=7126,p.value=0.05)
+topDE.69 <- data.frame(topTags(et69,n=7126,p.value=0.05))
+class(topDE.69)
+ncol(topDE.69)
+topDE.69$gene <- rownames(topDE.69)
+topDE.69 = merge(topDE.69,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.69)
+topDE.69 <- topDE.69[!(topDE.69$gene %in% commonAll$commonAll),]
+write.csv(topDE.69,file="69vsAnc.edgeR.pairwise.csv")
+
+et7 <- exactTest(y,pair=c(26,1))
+topTags.7 <- topTags(et7,n=7126,p.value=0.05)
+topDE.7 <- data.frame(topTags(et7,n=7126,p.value=0.05))
+class(topDE.7)
+ncol(topDE.7)
+topDE.7$gene <- rownames(topDE.7)
+topDE.7 = merge(topDE.7,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.7)
+topDE.7 <- topDE.7[!(topDE.7$gene %in% commonAll$commonAll),]
+write.csv(topDE.7,file="7vsAnc.edgeR.pairwise.csv")
+
+et76 <- exactTest(y,pair=c(27,1))
+topTags.76 <- topTags(et76,n=7126,p.value=0.05)
+topDE.76 <- data.frame(topTags(et76,n=7126,p.value=0.05))
+class(topDE.76)
+ncol(topDE.76)
+topDE.76$gene <- rownames(topDE.76)
+topDE.76 = merge(topDE.76,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.76)
+topDE.76 <- topDE.76[!(topDE.76$gene %in% commonAll$commonAll),]
+write.csv(topDE.76,file="76vsAnc.edgeR.pairwise.csv")
+
+et77 <- exactTest(y,pair=c(28,1))
+topTags.77 <- topTags(et77,n=7126,p.value=0.05)
+topDE.77 <- data.frame(topTags(et77,n=7126,p.value=0.05))
+class(topDE.77)
+ncol(topDE.77)
+topDE.77$gene <- rownames(topDE.77)
+topDE.77 = merge(topDE.77,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.77)
+topDE.77 <- topDE.77[!(topDE.77$gene %in% commonAll$commonAll),]
+write.csv(topDE.77,file="77vsAnc.edgeR.pairwise.csv")
+
+#not going to do MA lines until I have the euploid gene expression data 
 #MA Lines
 et112 <- exactTest(y,pair=c(5,2))
 topTags(et112)
@@ -368,7 +439,190 @@ write.csv(topTags(et50),file="50vsAnc.edgeR.pairwise.csv")
 ```
 
 
+``` {r pairwise DE genes bonferroni correction, include=TRUE}
+#Aneuploid lines
+#line 1
+#oddly, line 1 has no DE genes below an adjusted p value of 0.05 
+et1 <- exactTest(y, pair=c(3,1))
+topTags.1 <- topTags(et1,n=7126,p.value=0.05,adjust.method="bonferroni")
+topDE.1 <- data.frame(topTags(et1,n=7126,p.value=0.05,adjust.method="bonferroni"))
+class(topDE.1)
+ncol(topDE.1)
+topDE.1$gene <- rownames(topDE.1)
+topDE.1 = merge(topDE.1,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.1)
+topDE.1 <- topDE.1[!(topDE.1$gene %in% commonAll$commonAll),]
+write.csv(topDE.1,file="1vsAnc.edgeR.pairwise.bonf.csv")
 
+et1 <- exactTest(y, pair=c(3,1))
+topTags.1 <- topTags(et1,n=7126,p.value=0.05,adjust.method="holm")
+topDE.1 <- data.frame(topTags(et1,n=7126,p.value=0.05,adjust.method="holm"))
+class(topDE.1)
+ncol(topDE.1)
+topDE.1$gene <- rownames(topDE.1)
+topDE.1 = merge(topDE.1,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.1)
+topDE.1 <- topDE.1[!(topDE.1$gene %in% commonAll$commonAll),]
+write.csv(topDE.1,file="1vsAnc.edgeR.pairwise.holm.csv")
+
+et1 <- exactTest(y, pair=c(3,1))
+topTags.1 <- topTags(et1,n=7126,p.value=0.05,adjust.method="hochberg")
+topDE.1 <- data.frame(topTags(et1,n=7126,p.value=0.05,adjust.method="hochberg"))
+class(topDE.1)
+ncol(topDE.1)
+topDE.1$gene <- rownames(topDE.1)
+topDE.1 = merge(topDE.1,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.1)
+topDE.1 <- topDE.1[!(topDE.1$gene %in% commonAll$commonAll),]
+write.csv(topDE.1,file="1vsAnc.edgeR.pairwise.hoch.csv")
+
+#line 11
+et11 <- exactTest(y,pair=c(4,1))
+topTags.11 <- topTags(et11,n=7126,p.value=0.05)
+topDE.11 <- data.frame(topTags(et11,n=7126,p.value=0.05))
+class(topDE.11)
+ncol(topDE.11)
+topDE.11$gene <- rownames(topDE.11)
+topDE.11 = merge(topDE.11,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.11)
+topDE.11 <- topDE.11[!(topDE.11$gene %in% commonAll$commonAll),]
+write.csv(topDE.11,file="11vsAnc.edgeR.pairwise.csv")
+
+#line 18
+#perform the test for the given pairwise comparison you're interested in 
+et18 <- exactTest(y,pair=c(11,1))
+topTags.18 <- topTags(et18,n=7126,p.value=0.05)
+topDE.18 <- data.frame(topTags(et18,n=7126,p.value=0.05))
+class(topDE.18)
+ncol(topDE.18)
+topDE.18$gene <- rownames(topDE.18)
+topDE.18 = merge(topDE.18,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.18)
+topDE.18 <- topDE.18[!(topDE.18$gene %in% commonAll$commonAll),]
+write.csv(topDE.18,file="18vsAnc.edgeR.pairwise.csv")
+
+#Line 21
+et21 <- exactTest(y,pair=c(13,1))
+topTags.21 <- topTags(et21,n=7126,p.value=0.05)
+topDE.21 <- data.frame(topTags(et21,n=7126,p.value=0.05))
+class(topDE.21)
+ncol(topDE.21)
+topDE.21$gene <- rownames(topDE.21)
+topDE.21 = merge(topDE.21,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.21)
+topDE.21 <- topDE.21[!(topDE.21$gene %in% commonAll$commonAll),]
+write.csv(topDE.21,file="21vsAnc.edgeR.pairwise.csv")
+
+et31 <- exactTest(y,pair=c(16,1))
+topTags.31 <- topTags(et31,n=7126,p.value=0.05)
+topDE.31 <- data.frame(topTags(et31,n=7126,p.value=0.05))
+class(topDE.31)
+ncol(topDE.31)
+topDE.31$gene <- rownames(topDE.31)
+topDE.31 = merge(topDE.31,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.31)
+topDE.31 <- topDE.31[!(topDE.31$gene %in% commonAll$commonAll),]
+write.csv(topDE.31,file="31vsAnc.edgeR.pairwise.csv")
+
+et4 <- exactTest(y,pair=c(17,1))
+topTags.4 <- topTags(et4,n=7126,p.value=0.05)
+topDE.4 <- data.frame(topTags(et4,n=7126,p.value=0.05))
+class(topDE.4)
+ncol(topDE.4)
+topDE.4$gene <- rownames(topDE.4)
+topDE.4 = merge(topDE.4,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.4)
+topDE.4 <- topDE.4[!(topDE.4$gene %in% commonAll$commonAll),]
+write.csv(topDE.4,file="4vsAnc.edgeR.pairwise.csv")
+
+et49 <- exactTest(y,pair=c(18,1))
+topTags.49 <- topTags(et49,n=7126,p.value=0.05)
+topDE.49 <- data.frame(topTags(et49,n=7126,p.value=0.05))
+class(topDE.49)
+ncol(topDE.49)
+topDE.49$gene <- rownames(topDE.49)
+topDE.49 = merge(topDE.49,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.49)
+topDE.49 <- topDE.49[!(topDE.49$gene %in% commonAll$commonAll),]
+write.csv(topDE.49,file="49vsAnc.edgeR.pairwise.csv")
+
+et59 <- exactTest(y,pair=c(21,1))
+topTags.59 <- topTags(et59,n=7126,p.value=0.05)
+topDE.59 <- data.frame(topTags(et59,n=7126,p.value=0.05))
+class(topDE.59)
+ncol(topDE.59)
+topDE.59$gene <- rownames(topDE.59)
+topDE.59 = merge(topDE.59,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.59)
+topDE.59 <- topDE.59[!(topDE.59$gene %in% commonAll$commonAll),]
+write.csv(topDE.59,file="59vsAnc.edgeR.pairwise.csv")
+
+et61 <- exactTest(y,pair=c(23,1))
+topTags.61 <- topTags(et61,n=7126,p.value=0.05)
+topDE.61 <- data.frame(topTags(et61,n=7126,p.value=0.05))
+class(topDE.61)
+ncol(topDE.61)
+topDE.61$gene <- rownames(topDE.61)
+topDE.61 = merge(topDE.61,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.61)
+topDE.61 <- topDE.61[!(topDE.61$gene %in% commonAll$commonAll),]
+write.csv(topDE.61,file="61vsAnc.edgeR.pairwise.csv")
+
+et66 <- exactTest(y,pair=c(24,1))
+topTags.66 <- topTags(et66,n=7126,p.value=0.05)
+topDE.66 <- data.frame(topTags(et66,n=7126,p.value=0.05))
+class(topDE.66)
+ncol(topDE.66)
+topDE.66$gene <- rownames(topDE.66)
+topDE.66 = merge(topDE.66,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.66)
+topDE.66 <- topDE.66[!(topDE.66$gene %in% commonAll$commonAll),]
+write.csv(topDE.66,file="66vsAnc.edgeR.pairwise.csv")
+
+et69 <- exactTest(y,pair=c(25,1))
+topTags.69 <- topTags(et69,n=7126,p.value=0.05)
+topDE.69 <- data.frame(topTags(et69,n=7126,p.value=0.05))
+class(topDE.69)
+ncol(topDE.69)
+topDE.69$gene <- rownames(topDE.69)
+topDE.69 = merge(topDE.69,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.69)
+topDE.69 <- topDE.69[!(topDE.69$gene %in% commonAll$commonAll),]
+write.csv(topDE.69,file="69vsAnc.edgeR.pairwise.csv")
+
+et7 <- exactTest(y,pair=c(26,1))
+topTags.7 <- topTags(et7,n=7126,p.value=0.05)
+topDE.7 <- data.frame(topTags(et7,n=7126,p.value=0.05))
+class(topDE.7)
+ncol(topDE.7)
+topDE.7$gene <- rownames(topDE.7)
+topDE.7 = merge(topDE.7,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.7)
+topDE.7 <- topDE.7[!(topDE.7$gene %in% commonAll$commonAll),]
+write.csv(topDE.7,file="7vsAnc.edgeR.pairwise.csv")
+
+et76 <- exactTest(y,pair=c(27,1))
+topTags.76 <- topTags(et76,n=7126,p.value=0.05)
+topDE.76 <- data.frame(topTags(et76,n=7126,p.value=0.05))
+class(topDE.76)
+ncol(topDE.76)
+topDE.76$gene <- rownames(topDE.76)
+topDE.76 = merge(topDE.76,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.76)
+topDE.76 <- topDE.76[!(topDE.76$gene %in% commonAll$commonAll),]
+write.csv(topDE.76,file="76vsAnc.edgeR.pairwise.csv")
+
+et77 <- exactTest(y,pair=c(28,1))
+topTags.77 <- topTags(et77,n=7126,p.value=0.05)
+topDE.77 <- data.frame(topTags(et77,n=7126,p.value=0.05))
+class(topDE.77)
+ncol(topDE.77)
+topDE.77$gene <- rownames(topDE.77)
+topDE.77 = merge(topDE.77,geneattr,by.x="gene",by.y="gene_id")
+ncol(topDE.77)
+topDE.77 <- topDE.77[!(topDE.77$gene %in% commonAll$commonAll),]
+write.csv(topDE.77,file="77vsAnc.edgeR.pairwise.csv")
+```
 
 
 ``` {r edgeR GLM, include=TRUE}

@@ -107,10 +107,14 @@ Next we move onto normalization of our data
 Here I'm trying out all of the different normalization methods
 Still looks like TMM is the best option for me. 
 ``` {r normalization, include=TRUE}
+x.norm <- calcNormFactors(x.fil, method="TMM")
+summary(x.norm)
+write.csv(x.norm,file="norm.TMM.edgeR.csv")
 x.norm.TMM <- calcNormFactors(x.fil, method="TMM")
 x.norm.RLE <- calcNormFactors(x.fil, method="RLE")
 x.norm.UQ <- calcNormFactors(x.fil, method="upperquartile")
 #can look at magnitude of scaling factors
+x.norm$samples$norm.factors
 x.norm.TMM$samples$norm.factors
 x.norm.RLE$samples$norm.factors
 x.norm.UQ$samples$norm.factors
@@ -130,7 +134,7 @@ title(main="C. Example: Normalized data-RLE", ylab="Log-cpm")
 
 lcpm.norm.UQ <- cpm(x.norm.UQ,log=TRUE)
 boxplot(lcpm.norm.UQ,las=2,col=col,main="",cex=.2,cex.axis=.4)
-title(main="C. Example: Normalized data-UQ", ylab="Log-cpm")
+title(main="D. Example: Normalized data-UQ", ylab="Log-cpm")
 ```
 
 Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research).
@@ -138,6 +142,7 @@ I used the plotMDS function below to make such a plot for my normalized data. Fi
 
 ```{r MDS plots, include=TRUE}
 lcpm <- cpm(x.norm,log=TRUE)
+cpm.norm <- cpm(x.norm)
 class(x.norm)
 par(mfrow=c(1,2))
 col.group <- group
@@ -190,8 +195,84 @@ contr.matrix <- makeContrasts(
 )
 
 ```
+``` {r voom, include=TRUE}
+v <- voom(x.norm, design, plot=TRUE)
+v 
+vfit <- lmFit(v, design) 
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix) 
+efit <- eBayes(vfit)
+
+plotSA(efit)
+plotSA(vfit)
+summary(decideTests(efit,method="separate",adjust.method="fdr",p.value=0.05)) 
+summary(decideTests(vfit,method="separate",adjust.method="fdr",p.value=0.05)) 
+```
+
+``` {r using treat, include=TRUE}
+tfit <- treat(vfit, lfc=0.1) 
+dt <- decideTests(tfit) 
+summary(dt) 
+```
+
+``` {r compare cuffdiff to edgeR normalization, include=TRUE}
+#cuffdiff.2 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/2_diff_out/genes.fpkm_#tracking",header=TRUE)
+#library(splitstackshape)
+#cuffdiff.2 <- cSplit(cuffdiff.2, "locus", ":")
+#plot(col=as.factor(cuffdiff.2$locus_1), cuffdiff.2$X2_FPKM, ylab="FPKM", xlab="locus")
+#cuffdiff.1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/1_diff_out/genes.fpkm_tracking",header=TRUE)
+#cuffdiff.1 <- cSplit(cuffdiff.1, "locus", ":")
+#plot(cuffdiff.1$X1_FPKM, col=as.factor(cuffdiff.1$locus_1), ylab="FPKM", xlab="Locus")
+#cuffdiff.3 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/3_diff_out/genes.fpkm_tracking",header=TRUE)
+#cuffdiff.3 <- cSplit(cuffdiff.3, "locus", ":")
+#plot(cuffdiff.3$X3_FPKM, col=as.factor(cuffdiff.3$locus_1), ylab="FPKM", xlab="Locus")
+
+cuffnorm <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffnorm/genes.fpkm_table.csv",header=TRUE)
+plot(cuffnorm$X3_1, col=as.factor(cuffnorm$Chr), ylab="FPKM", xlab="Chr")
+qplot(cuffnorm$Chr, cuffnorm$X3_1, data = cuffnorm, color=cuffnorm$Chr)
+
+#plot the same sort of graph with the normalized cpm from edgeR
+edgeR <- data.frame(cpm.norm)
+#make the rownames into their own column since they weren't before
+edgeR$gene <- rownames(edgeR)
+#merge the cpm with the gene attributes matrix so we know more information (ie chromosome)
+edgeR = merge(edgeR,geneattr,by.x="gene",by.y="gene_id")
+#split the locus column so we know which chromosome it is on 
+library(splitstackshape)
+edgeR = cSplit(edgeR,"locus",":")
+#get rid of mitochondrial sequences
+edgeR = edgeR[!grepl("MT",edgeR$locus_1),]
+#confirm that it worked
+levels(edgeR$locus_1)
+plot(edgeR$X3_1, col=nlevels(as.factor(edgeR$locus_1)), ylab="CPM", xlab="Chr")
+library(ggplot2)
+require(ggplot2)
+data(edgeR)
+qplot(edgeR$locus_1, edgeR$X3_1, data = edgeR, color=edgeR$locus_1)
+
+#plot the same thing but in lcpm for curiosity's sake
+edgeR.log <- data.frame(lcpm.norm.TMM)
+edgeR.log$gene <- rownames(edgeR.log)
+#merge the cpm with the gene attributes matrix so we know more information (ie chromosome)
+edgeR.log = merge(edgeR.log,geneattr,by.x="gene",by.y="gene_id")
+#split the locus column so we know which chromosome it is on 
+#library(splitstackshape)
+edgeR.log = cSplit(edgeR.log,"locus",":")
+#get rid of mitochondrial sequences
+edgeR.log = edgeR.log[!grepl("MT",edgeR.log$locus_1),]
+#confirm that it worked
+levels(edgeR.log$locus_1)
+qplot(edgeR.log$locus_1, edgeR.log$X3_1, data = edgeR.log, color=edgeR.log$locus_1)
+
+#compare an aneuploid line that I'm confident is aneuploid:
+qplot(cuffnorm$Chr, cuffnorm$X7_1, data = cuffnorm, color=cuffnorm$Chr)
+qplot(edgeR$locus_1, edgeR$X7_1, data = edgeR.log, color=edgeR$locus_1)
+
+qplot(cuffnorm$Chr, cuffnorm$X11_1, data = cuffnorm, color=cuffnorm$Chr)
+qplot(edgeR$locus_1, edgeR$X11_1, data = edgeR.log, color=edgeR$locus_1)
+```
 
 This one shows almost no DE genes for most of the samples
+
 
 ```{r quasi-likelihood F-tests, include=TRUE}
 x <- read.delim("fileofcounts.txt",row.names="Symbol")

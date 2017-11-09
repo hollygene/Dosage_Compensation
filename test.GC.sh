@@ -19,6 +19,7 @@ bowtie2-build -f genome.fa genome
 
 #unload bowtie2
 module unload bowtie2/2.2.9
+
 #load in tophat
 module load tophat/2.1.1
 
@@ -86,3 +87,5 @@ cuffquant \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out/accepted_hits.bam
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/output.txt
+
+module unload cufflinks/2.2.1

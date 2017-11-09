@@ -17,8 +17,7 @@ module load bowtie2/2.2.9
 module load tophat/2.1.1
 #load in cufflinks
 module load cufflinks/2.2.1
-# put the cufflinks 2.2.1 executables in $PATH
-module load cufflinks/2.2.1
+
 
 # build forward and backward indices of reference genome for mapping reads with bowtie
 bowtie2-build -f genome.fa genome

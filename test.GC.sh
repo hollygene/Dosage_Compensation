@@ -13,11 +13,12 @@ THREADS=4
 
 # put bowtie 2.2.9 executables in $PATH
 module load bowtie2/2.2.9
-#load in tophat
-module load tophat/2.1.1
 
 # build forward and backward indices of reference genome for mapping reads with bowtie
 bowtie2-build -f genome.fa genome
+
+#load in tophat
+module load tophat/2.1.1
 
 #index transcriptome file
 tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
@@ -35,8 +36,8 @@ FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out \
 -i 10 -I 1000 \
---transcriptome-index=transcriptome_data/known \
-genome \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
 ./${BASE}.fastq
 
 done
@@ -51,11 +52,14 @@ module load cufflinks/2.2.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test
 printf '%s\n' * > output.txt
 
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test
+
 #run cufflinks on all samples
 while read SampleName
 do
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test/cufflinks${SampleName}
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test
+
 cufflinks \
 -p $THREADS
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
@@ -65,11 +69,13 @@ cufflinks \
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/output.txt
 
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 #run cuffquant to estimate expression levels to put into cuffdiff
 while read SampleName
 do
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName}
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+
 cuffquant \
 -p $THREADS
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \

@@ -17,6 +17,8 @@ module load bowtie2/2.2.9
 # build forward and backward indices of reference genome for mapping reads with bowtie
 bowtie2-build -f genome.fa genome
 
+#unload bowtie2
+module unload bowtie2/2.2.9
 #load in tophat
 module load tophat/2.1.1
 

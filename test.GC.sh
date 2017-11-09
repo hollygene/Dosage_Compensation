@@ -32,10 +32,10 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 for file in ./*.fastq
 
 do
-
+mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/"
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/
 FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
-
 tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/${BASE}_tophat_out \
 -i 10 -I 1000 \
 --transcriptome-index=transcriptome_data/known \

@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N assembly
 #PBS -q batch
-#PBS -l nodes=1:ppn=4:AMD
+#PBS -l nodes=2:ppn=1:AMD
 #PBS -l walltime=96:00:00
 #PBS -l pmem=20gb
 #PBS -M hmcqueary@uga.edu
@@ -13,13 +13,15 @@ THREADS=4
 
 # put bowtie 2.2.9 executables in $PATH
 module load bowtie2/2.2.9
-#load in tophat
-module load tophat/2.1.1
-#load in cufflinks
-module load cufflinks/2.2.1
 
 # build forward and backward indices of reference genome for mapping reads with bowtie
 bowtie2-build -f genome.fa genome
+
+#unload bowtie2
+module unload bowtie2/2.2.9
+
+#load in tophat
+module load tophat/2.1.1
 
 #index transcriptome file
 tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
@@ -27,6 +29,7 @@ tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 #run tophat on all samples
 #do GC ones first
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/"
 
 for file in ./*.fastq
 
@@ -34,49 +37,64 @@ do
 
 FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
-
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/${BASE}_tophat_out \
+tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out \
 -i 10 -I 1000 \
---transcriptome-index=transcriptome_data/known \
-genome \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
 ./${BASE}.fastq
 
 done
 
+#unload tophat
+module unload tophat/2.1.1
+
+#load in cufflinks
+module load cufflinks/2.2.1
+
 #then run cufflinks on all GC samples
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test
 printf '%s\n' * > output.txt
+
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test
 
 #run cufflinks on all samples
 while read SampleName
 do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName}
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test/cufflinks${SampleName}
+
 cufflinks \
 -p $THREADS
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName} \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test/cufflinks${SampleName} \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/${BASE}_tophat_out
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/output.txt
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/output.txt
 
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 #run cuffquant to estimate expression levels to put into cuffdiff
+
 while read SampleName
 do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant/cuffquant${SampleName}
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName}
+
 cuffquant \
 -p $THREADS
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant/cuffquant${SampleName} \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName} \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/${BASE}_tophat_out/accepted_hits.bam
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat/output.txt
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/output.txt
+
+module unload cufflinks/2.2.1
 
 #####################################################################################################################
 #then MA new
+#load in tophat
+module load tophat/2.1.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 for file in ./*.fastq
@@ -92,7 +110,11 @@ genome \
 ./${BASE}.fastq
 
 done
+#unload tophat
+module unload tophat/2.1.1
 
+#load in cufflinks
+module load cufflinks/2.2.1
 #then run cufflinks on all new MA samples
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/tophat
 printf '%s\n' * > output.txt
@@ -125,7 +147,13 @@ cuffquant \
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/tophat/output.txt
 
+#unload cufflinks
+module unload cufflinks/2.2.1
+
+#####################################################################################################################
 #then MA old
+#load in tophat
+module load tophat/2.1.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 for file in ./*.fastq
@@ -141,6 +169,11 @@ genome \
 ./${BASE}.fastq
 
 done
+#unload tophat
+module unload tophat/2.1.1
+
+#load cufflinks
+module load cufflinks/2.2.1
 
 #then run cufflinks on all new MA samples
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/tophat
@@ -174,7 +207,8 @@ cuffquant \
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/tophat/output.txt
 
-
-
 #run cuffdiff to find differential expression between each line and its ancestor
 cuffdiff -p $THREADS --library-type fr-unstranded -o FNR_cuffdiff --labels wild-type,dFNR MG1655.ref.gtf SRR5344681_cuffquant/abundances.cxb,SRR5344682_cuffquant/abundances.cxb SRR5344683_cuffquant/abundances.cxb,SRR5344684_cuffquant/abundances.cxb
+
+#unload cufflinks
+module unload cufflinks/2.2.1

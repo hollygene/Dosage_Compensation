@@ -11,14 +11,25 @@ basedir="/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly"
 cd $basedir
 THREADS=4
 
-# put bowtie 2.2.9 executables in $PATH
-module load bowtie2/2.2.9
 
-# build forward and backward indices of reference genome for mapping reads with bowtie
-bowtie2-build -f genome.fa genome
 
-#unload bowtie2
-module unload bowtie2/2.2.9
+#load in bwa for mapping
+module load bwa/0.7.15
+
+bwa index genome.fa
+
+#run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+module load java/jdk1.8.0_20 fastqc
+fastqc *.fastq -o fastqc
+
+module unload java/jdk1.8.0_20 fastqc
+
+#map reads to ref genome using bwa
+bwa mem Holly_2A_S1_R1_001.fastq
+
+Holly_2B_S7_R1_001.fastq
+Holly_2C_S4_R1_001.fastq
 
 #load in tophat
 module load tophat/2.1.1

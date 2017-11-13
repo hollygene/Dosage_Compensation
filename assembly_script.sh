@@ -2,7 +2,7 @@
 #PBS -q batch
 #PBS -l nodes=2:ppn=4:AMD
 #PBS -l walltime=480:00:00
-#PBS -l mem=10gb
+#PBS -l mem=5gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
@@ -13,6 +13,7 @@ THREADS=4
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+mkdir fastqc
 module load java/jdk1.8.0_20 fastqc
 fastqc *.fastq -o fastqc
 

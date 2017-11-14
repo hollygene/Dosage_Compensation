@@ -14,11 +14,11 @@ THREADS=4
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #run trimmomatic to trim sequences a little
 module load trimmomatic/0.36

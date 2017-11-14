@@ -23,21 +23,25 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 #run trimmomatic to trim sequences a little
 module load trimmomatic/0.36
 
+#testing it
+java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -trimlog Holly_2A_S1_R1_001.log -phred33 Holly_2A_S1_R1_001.fastq ./trimmed/Holly_2A_S1_R1_001_trim.fastq
+
 #do this in loop
-for file in ./*.fastq
+#for file in ./*.fastq
 
-do
+#do
 
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
+#FBASE=$(basename $file .fastq)
+#BASE=${FBASE%.fastq}
 
-java -classpath /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar org.usadellab.trimmomatic.TrimmomaticSE \
--threads $THREADS \
--trimlog ${BASE}.log \
--phred64 ${BASE}.fastq ./trimmed/${BASE}_trim.fastq
-done
+#java -classpath /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar org.usadellab.trimmomatic.TrimmomaticSE \
+#-threads $THREADS \
+#-trimlog ${BASE}.log \
+#-phred64 ${BASE}.fastq ./trimmed/${BASE}_trim.fastq
+#done
 
 module unload trimmomatic/0.36
+
 
 #load in bwa for mapping
 #module load bwa/0.7.15

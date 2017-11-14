@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N assembly_test
 #PBS -q batch
-#PBS -l nodes=2:ppn=4:AMD
+#PBS -l nodes=1:ppn=4:AMD
 #PBS -l walltime=480:00:00
 #PBS -l mem=5gb
 #PBS -M hmcqueary@uga.edu
@@ -33,7 +33,7 @@ FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
 java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -threads $THREADS \
-[-phred33 | -phred64] [-trimlog trim_log.txt] ./${BASE}.fastq \
+-phred33 [-trimlog trim_log.txt] ./${BASE}.fastq \
 ./trimmed/${BASE}_trim.fastq
 done
 

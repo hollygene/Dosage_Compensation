@@ -20,6 +20,25 @@ fastqc *.fastq -o fastqc
 
 module unload java/jdk1.8.0_20 fastqc
 
+#run trimmomatic to trim sequences a little
+module load trimmomatic/0.36
+mkdir trimmed
+
+#do this in loop
+for file in ./*.fastq
+
+do
+
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
+
+java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -threads $THREADS \
+[-phred33 | -phred64] [-trimlog trim_log.txt] ./${BASE}.fastq \
+./trimmed/${BASE}_trim.fastq
+done
+
+module unload trimmomatic/0.36
+
 #load in bwa for mapping
 #module load bwa/0.7.15
 

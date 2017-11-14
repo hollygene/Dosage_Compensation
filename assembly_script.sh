@@ -33,8 +33,7 @@ FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
 java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -threads $THREADS \
--phred33 [-trimlog trim_log.txt] ./${BASE}.fastq \
-./trimmed/${BASE}_trim.fastq
+-phred33 ./${BASE}.fastq ./trimmed/${BASE}_trim.fastq
 done
 
 module unload trimmomatic/0.36

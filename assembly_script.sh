@@ -1,4 +1,5 @@
 #!/bin/bash
+#PBS -N assembly_test
 #PBS -q batch
 #PBS -l nodes=2:ppn=4:AMD
 #PBS -l walltime=480:00:00

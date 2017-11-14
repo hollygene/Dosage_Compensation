@@ -31,10 +31,10 @@ do
 FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
-
-time java -classpath /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar org.usadellab.trimmomatic.TrimmomaticSE \
+java -classpath /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar org.usadellab.trimmomatic.TrimmomaticSE \
 -threads $THREADS \
--phred33 ${BASE}.fastq ./trimmed/${BASE}_trim.fastq
+-trimlog ${BASE}.log \
+-phred64 ${BASE}.fastq ./trimmed/${BASE}_trim.fastq
 done
 
 module unload trimmomatic/0.36

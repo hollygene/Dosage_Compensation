@@ -22,7 +22,6 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 
 #run trimmomatic to trim sequences a little
 module load trimmomatic/0.36
-mkdir trimmed
 
 #do this in loop
 for file in ./*.fastq
@@ -32,8 +31,10 @@ do
 FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
-java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -threads $THREADS \
--phred33 ./${BASE}.fastq ./trimmed/${BASE}_trim.fastq
+
+time java -classpath /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar org.usadellab.trimmomatic.TrimmomaticSE \
+-threads $THREADS \
+-phred33 ${BASE}.fastq ./trimmed/${BASE}_trim.fastq
 done
 
 module unload trimmomatic/0.36

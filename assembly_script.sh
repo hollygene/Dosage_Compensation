@@ -20,11 +20,17 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 
 #module unload java/jdk1.8.0_20 fastqc
 
-#run trimmomatic to trim sequences a little
-module load trimmomatic/0.36
+#trim sequences a little
+#trying trimgalore since trimmomatic didnt seem to work
+module load trimgalore/0.4.4
+
+trim_galore --phred33 -o trimmed Holly_2A_S1_R1_001.fastq 
+
+module unload trimgalore/0.4.4
+
 
 #testing it
-java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -trimlog Holly_2A_S1_R1_001.log -phred33 Holly_2A_S1_R1_001.fastq ./trimmed/Holly_2A_S1_R1_001_trim.fastq
+#java -jar /usr/local/apps/trimmomatic/0.36/trimmomatic-0.36.jar SE -trimlog Holly_2A_S1_R1_001.log -phred33 Holly_2A_S1_R1_001.fastq ./trimmed/Holly_2A_S1_R1_001_trim.fastq
 
 #do this in loop
 #for file in ./*.fastq

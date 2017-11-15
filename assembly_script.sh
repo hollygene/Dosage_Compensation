@@ -24,7 +24,6 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 #trying trimgalore since trimmomatic didnt seem to work
 module load trimgalore/0.4.4
 
-do this in loop
 for file in ./*.fastq
 
 do

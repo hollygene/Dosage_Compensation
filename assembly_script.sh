@@ -37,7 +37,20 @@ done
 
 module unload trimgalore/0.4.4
 
+#map to reference using bowtie2
 
+module load bowtie2/2.2.9
+#build index for ref genome
+bowtie2-build genome.fa genome
+
+bowtie2-inspect -s genome
+
+#map sequences for line 2 first
+bowtie2 -x genome -U Holly_2A_S1_R1_001.fastq -S Holly_2A.sam
+bowtie2 -x genome -U Holly_2B_S7_R1_001.fastq -S Holly_2B.sam
+bowtie2 -x genome -U Holly_2C_S4_R1_001.fastq -S Holly_2C.sam
+
+module unload bowtie2/2.2.9
 
 #load in bwa for mapping
 #module load bwa/0.7.15

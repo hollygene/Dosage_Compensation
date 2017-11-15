@@ -51,8 +51,33 @@ bowtie2 -x genome -U Holly_2A_S1_R1_001.fastq -S Holly_2A.sam
 bowtie2 -x genome -U Holly_2B_S7_R1_001.fastq -S Holly_2B.sam
 bowtie2 -x genome -U Holly_2C_S4_R1_001.fastq -S Holly_2C.sam
 
+bowtie2 -x genome -U Holly-GC-7-redo_S4_R1_001.fastq -S Holly_7A.sam
+bowtie2 -x genome -U Holly_7B_S12_R1_001.fastq -S Holly_7B.sam
+bowtie2 -x genome -U Holly_7C_S9_R1_001.fastq -S Holly_7C.sam
+
 module unload bowtie2/2.2.9
 
+module load samtools/1.3.1
+#turn sam files into bam files
+
+samtools view -b - > Holly_2A.sam
+samtools view -b - > Holly_2B.sam
+samtools view -b - > Holly_2C.sam
+
+samtools view -b - > Holly_7A.sam
+samtools view -b - > Holly_7B.sam
+samtools view -b - > Holly_7C.sam
+
+#sort the bam files
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2A.tmp Holly_2A.bam > Holly_2A.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2B.tmp Holly_2B.bam > Holly_2B.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2C.tmp Holly_2C.bam > Holly_2C.sort.bam
+
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7A.tmp Holly_7A.bam > Holly_7A.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7B.tmp Holly_7B.bam > Holly_7B.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7C.tmp Holly_7C.bam > Holly_7C.sort.bam
+
+module unload samtools/1.3.1
 #load in bwa for mapping
 #module load bwa/0.7.15
 

@@ -31,7 +31,7 @@ do
 FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
-trim_galore --phred33 -o trimmed ${BASE}.fastq
+trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
 done
 
@@ -40,6 +40,7 @@ module unload trimgalore/0.4.4
 #map to reference using bowtie2
 
 module load bowtie2/2.2.9
+
 #build index for ref genome
 bowtie2-build genome.fa genome
 

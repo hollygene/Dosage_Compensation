@@ -14,6 +14,8 @@ THREADS=4
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+#trying to rename files so that I can eventually run a loop with cuffdiff
+#rename 'GC' A *.fq
 #mkdir fastqc
 #module load java/jdk1.8.0_20 fastqc
 #fastqc *.fastq -o fastqc
@@ -49,15 +51,30 @@ bowtie2-inspect -s genome
 
 #map sequences for line 2 first
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2A_S1_R1_001_trimmed.fq -S Holly_2A.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2B_S7_R1_001_trimmed.fq -S Holly_2B.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2C_S4_R1_001_trimmed.fq -S Holly_2C.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2A_S1_R1_001_trimmed.fq -S Holly_2A.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2B_S7_R1_001_trimmed.fq -S Holly_2B.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2C_S4_R1_001_trimmed.fq -S Holly_2C.sam
 
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly-GC-7-redo_S4_R1_001_trimmed.fq -S Holly_7A.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7B_S12_R1_001_trimmed.fq -S Holly_7B.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7C_S9_R1_001_trimmed.fq -S Holly_7C.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly-GC-7-redo_S4_R1_001_trimmed.fq -S Holly_7A.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7B_S12_R1_001_trimmed.fq -S Holly_7B.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7C_S9_R1_001_trimmed.fq -S Holly_7C.sam
+
+for file in ./*.fq
+
+do
+
+FBASE=$(basename $file .fq)
+BASE=${FBASE%.fq}
+
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+-U ${BASE}.fq -S ${BASE}.sam
+
+done
 
 module unload bowtie2/2.2.9
+
+
+
 
 #module load samtools/1.3.1
 #turn sam files into bam files

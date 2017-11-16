@@ -48,14 +48,14 @@ bowtie2-build genome.fa genome
 bowtie2-inspect -s genome
 
 #map sequences for line 2 first
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2A_S1_R1_001.fastq -S Holly_2A.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2B_S7_R1_001.fastq -S Holly_2B.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2C_S4_R1_001.fastq -S Holly_2C.sam
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2A_S1_R1_001.trimmed.fq -S Holly_2A.sam
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2B_S7_R1_001.trimmed.fq -S Holly_2B.sam
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_2C_S4_R1_001.trimmed.fq -S Holly_2C.sam
 
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly-GC-7-redo_S4_R1_001.fastq -S Holly_7A.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7B_S12_R1_001.fastq -S Holly_7B.sam
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7C_S9_R1_001.fastq -S Holly_7C.sam
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly-GC-7-redo_S4_R1_001.trimmed.fq -S Holly_7A.sam
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7B_S12_R1_001.trimmed.fq -S Holly_7B.sam
+bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7C_S9_R1_001.trimmed.fq -S Holly_7C.sam
 
 module unload bowtie2/2.2.9
 

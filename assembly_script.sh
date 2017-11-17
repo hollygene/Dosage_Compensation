@@ -76,13 +76,13 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
 module load samtools/1.3.1
 #turn sam files into bam files
 
-samtools view -b - > Holly_2A_S1_R1_001_trimmed.sam
-samtools view -b - > Holly_2B_S7_R1_001_trimmed.sam
-samtools view -b - > Holly_2C_S4_R1_001_trimmed.sam
+samtools view -b Holly_2A_S1_R1_001_trimmed.sam
+samtools view -b Holly_2B_S7_R1_001_trimmed.sam
+samtools view -b Holly_2C_S4_R1_001_trimmed.sam
 
-samtools view -b - > Holly_7B_S12_R1_001_trimmed.sam
-samtools view -b - > Holly_7C_S9_R1_001_trimmed.sam
-samtools view -b - > Holly-A-7-redo_S4_R1_001_trimmed.sam
+samtools view -b Holly_7B_S12_R1_001_trimmed.sam
+samtools view -b Holly_7C_S9_R1_001_trimmed.sam
+samtools view -b Holly-A-7-redo_S4_R1_001_trimmed.sam
 
 #sort the bam files
 #samtools sort -m 5G -@ $THREADS -O bam -T Holly_2A.tmp Holly_2A.bam > Holly_2A.sort.bam

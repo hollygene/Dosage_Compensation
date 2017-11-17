@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N assembly_test
 #PBS -q batch
-#PBS -l nodes=1:ppn=4:AMD
+#PBS -l nodes=2:ppn=4:AMD
 #PBS -l walltime=480:00:00
 #PBS -l mem=5gb
 #PBS -M hmcqueary@uga.edu
@@ -41,13 +41,13 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 
 #map to reference using bowtie2
 
-module load bowtie2/2.2.9
+#module load bowtie2/2.2.9
 
 #build index for ref genome
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/
-bowtie2-build genome.fa genome
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/
+#bowtie2-build genome.fa genome
 
-bowtie2-inspect -s genome
+#bowtie2-inspect -s genome
 
 #map sequences for line 2 first
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
@@ -59,42 +59,39 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
 #bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7B_S12_R1_001_trimmed.fq -S Holly_7B.sam
 #bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome -U Holly_7C_S9_R1_001_trimmed.fq -S Holly_7C.sam
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
 
-bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
--U ${BASE}.fq -S ${BASE}.sam
+#bowtie2 -x /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#-U ${BASE}.fq -S ${BASE}.sam
 
-done
+#done
 
-module unload bowtie2/2.2.9
+#module unload bowtie2/2.2.9
 
-
-
-
-#module load samtools/1.3.1
+module load samtools/1.3.1
 #turn sam files into bam files
 
-#samtools view -b - > Holly_2A.sam
-#samtools view -b - > Holly_2B.sam
-#samtools view -b - > Holly_2C.sam
+samtools view -b - > Holly_2A.sam
+samtools view -b - > Holly_2B.sam
+samtools view -b - > Holly_2C.sam
 
-#samtools view -b - > Holly_7A.sam
-#samtools view -b - > Holly_7B.sam
-#samtools view -b - > Holly_7C.sam
+samtools view -b - > Holly_7A.sam
+samtools view -b - > Holly_7B.sam
+samtools view -b - > Holly_7C.sam
 
 #sort the bam files
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_2A.tmp Holly_2A.bam > Holly_2A.sort.bam
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_2B.tmp Holly_2B.bam > Holly_2B.sort.bam
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_2C.tmp Holly_2C.bam > Holly_2C.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2A.tmp Holly_2A.bam > Holly_2A.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2B.tmp Holly_2B.bam > Holly_2B.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_2C.tmp Holly_2C.bam > Holly_2C.sort.bam
 
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_7A.tmp Holly_7A.bam > Holly_7A.sort.bam
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_7B.tmp Holly_7B.bam > Holly_7B.sort.bam
-#samtools sort -m 5G -@ $THREADS -O bam -T Holly_7C.tmp Holly_7C.bam > Holly_7C.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7A.tmp Holly_7A.bam > Holly_7A.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7B.tmp Holly_7B.bam > Holly_7B.sort.bam
+samtools sort -m 5G -@ $THREADS -O bam -T Holly_7C.tmp Holly_7C.bam > Holly_7C.sort.bam
 
 #module unload samtools/1.3.1
 #load in bwa for mapping

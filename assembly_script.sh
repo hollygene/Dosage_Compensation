@@ -171,6 +171,8 @@ module unload java/jdk1.8.0_20 fastqc
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
 module load trimgalore/0.4.4
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
 
 for file in ./*.fastq
 

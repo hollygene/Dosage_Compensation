@@ -117,7 +117,7 @@ THREADS=4
 module load cufflinks/2.2.1
 
 #then run cufflinks on all GC samples
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test
 printf '%s\n' * > output.txt
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
@@ -174,7 +174,7 @@ module unload java/jdk1.8.0_20 fastqc
 #trying trimgalore since trimmomatic didnt seem to work
 module load trimgalore/0.4.4
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 for file in ./*.fastq
 

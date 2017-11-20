@@ -118,8 +118,8 @@ module load cufflinks/2.2.1
 
 #then run cufflinks on all GC samples
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test
-printf '%s\n' * > output.txt
 
+ls >> output.txt
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
 
@@ -164,32 +164,32 @@ module unload cufflinks/2.2.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 #trying to rename files so that I can eventually run a loop with cuffdiff
 #rename 'GC' A *.fq
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
-module load trimgalore/0.4.4
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+#module load trimgalore/0.4.4
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
-for file in ./*.fastq
+#for file in ./*.fastq
 
-do
+#do
 
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
+#FBASE=$(basename $file .fastq)
+#BASE=${FBASE%.fastq}
 
-trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
+#trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
-done
+#done
 
-module unload trimgalore/0.4.4
+#module unload trimgalore/0.4.4
 
-
+module load tophat/2.1.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
 mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/"
 

@@ -1,9 +1,9 @@
 #!/bin/bash
-#PBS -N assembly_test_2 
+#PBS -N assembly_test_2
 #PBS -q batch
 #PBS -l nodes=2:ppn=4:AMD
 #PBS -l walltime=480:00:00
-#PBS -l mem=50b
+#PBS -l mem=20b
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 

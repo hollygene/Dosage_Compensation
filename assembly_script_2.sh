@@ -119,14 +119,13 @@ module load cufflinks/2.2.1
 #then run cufflinks on all GC samples
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test
 
-ls >> output.txt
+#ls >> output.txt
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
 
 #run cufflinks on all samples
 while read SampleName
 do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks_test/cufflinks${SampleName}
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName}
 
 cufflinks \
 -p $THREADS
@@ -135,7 +134,7 @@ cufflinks \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/trimmed/tophat_test/output.txt
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
 
 module unload cufflinks/2.2.1
 
@@ -249,6 +248,25 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 #done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/tophat/output.txt
 
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
+ls >> output.txt
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks
+
+#run cufflinks on all samples
+while read SampleName
+do
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks/cufflinks${SampleName}
+
+cufflinks \
+-p $THREADS
+-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks/cufflinks${SampleName} \
+-b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/${BASE}_tophat_out
+
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/output.txt
+
+module unload cufflinks/2.2.1
 #run cuffquant to estimate expression levels to put into cuffdiff
 #while read SampleName
 #do
@@ -273,14 +291,16 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
+
 module load trimgalore/0.4.4
 
 for file in ./*.fastq

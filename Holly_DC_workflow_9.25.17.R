@@ -443,6 +443,7 @@ for(line in rep.GC){
   }
 }
 
+
 logMatsd.GC <- matrix(ysd.GC,nrow=16,ncol=20)
 colnames(logMatsd.GC) <- rep.GC
 logMatsd.GC <- data.frame(logMatsd.GC)
@@ -451,14 +452,14 @@ logMatsd2.GC <-cbind(chrms,logMatsd.GC)
 
 #for old lines
 ysd.old=NULL
-for(line in rep){
+for(line in rep.old){
   for(chrm in 1:16){
     ysd.old <- c(ysd.old,sd(log2(getChrmRatio.old(line,chrm)[,3])))
   }
 }
 
 logMatsd.old <- matrix(ysd.old,nrow=16,ncol=15)
-colnames(logMatsd.old) <- rep
+colnames(logMatsd.old) <- rep.old
 logMatsd.old <- data.frame(logMatsd.old)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.old <-cbind(chrms,logMatsd.old)
@@ -542,7 +543,7 @@ warnings()
 
 ##install.packages("Hmisc", dependencies=T)
 
-X112 <- subset(logMat, select=c("X112"))
+X112 <- subset(logMat.MA, select=c("X112"))
 #X112.1 <-X112[1,]
 #X112c <- cbind(chrms,X112)
 #X112.sd <- subset(logMatsd2, select=c("X112"))
@@ -589,6 +590,8 @@ with (
   data = X112.all
   , expr = errbar(main="MA Line 112",chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n")
 )
+
+
 #adds a title to the graph
 title(main="MA Line 112")
 abline(h=0,lty=3)
@@ -1166,23 +1169,25 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 ##going to need these for all of the chromosomes that have a CNV, but can come back to this later
 ###probably an easier way to do this, but will come back to this later
 
-l002.1 <- getChrmRatio("2",1)
-l003.1 <- getChrmRatio("3",1)
-l005.1 <- getChrmRatio("5",1)
-l006.1 <- getChrmRatio("6",1)
-l009.1 <- getChrmRatio("9",1)
+l002.1 <- getChrmRatio.GC("2",1)
+l003.1 <- getChrmRatio.GC("3",1)
+l005.1 <- getChrmRatio.GC("5",1)
+l006.1 <- getChrmRatio.GC("6",1)
+l009.1 <- getChrmRatio.GC("9",1)
 
-l002.2 <- getChrmRatio("2",2)
-l003.2 <- getChrmRatio("3",2)
-l005.2 <- getChrmRatio("5",2)
-l006.2 <- getChrmRatio("6",2)
-l009.2 <- getChrmRatio("9",2)
 
-l002.3 <- getChrmRatio("2",3)
-l003.3 <- getChrmRatio("3",3)
-l005.3 <- getChrmRatio("5",3)
-l006.3 <- getChrmRatio("6",3)
-l009.3 <- getChrmRatio("9",3)
+
+l002.2 <- getChrmRatio.GC("2",2)
+l003.2 <- getChrmRatio.GC("3",2)
+l005.2 <- getChrmRatio.GC("5",2)
+l006.2 <- getChrmRatio.GC("6",2)
+l009.2 <- getChrmRatio.GC("9",2)
+
+l002.3 <- getChrmRatio.GC("2",3)
+l003.3 <- getChrmRatio.GC("3",3)
+l005.3 <- getChrmRatio.GC("5",3)
+l006.3 <- getChrmRatio.GC("6",3)
+l009.3 <- getChrmRatio.GC("9",3)
 
 l002.4 <- getChrmRatio("2",4)
 l003.4 <- getChrmRatio("3",4)

@@ -1168,14 +1168,22 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 ##starting with chromosome I, going in order
 ##going to need these for all of the chromosomes that have a CNV, but can come back to this later
 ###probably an easier way to do this, but will come back to this later
-
+#these are the euploid lines 
 l002.1 <- getChrmRatio.GC("2",1)
 l003.1 <- getChrmRatio.GC("3",1)
 l005.1 <- getChrmRatio.GC("5",1)
 l006.1 <- getChrmRatio.GC("6",1)
 l009.1 <- getChrmRatio.GC("9",1)
 
+#loop by line
+#for (line in c(2,3,5,6,9)) { getChrmRatio.GC(line,1) }
 
+#although loop by chromosome might be better
+#eu.chrm <- vector("list",16)
+#for (chrm in 1:16) 
+#{ eu.chrm[[chrm]] <- getChrmRatio.GC(2,chrm)}
+
+#chrm1 <- lapply(eu.chrm, "[",1:3)
 
 l002.2 <- getChrmRatio.GC("2",2)
 l003.2 <- getChrmRatio.GC("3",2)

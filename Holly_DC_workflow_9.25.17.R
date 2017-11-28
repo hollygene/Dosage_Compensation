@@ -406,6 +406,27 @@ logMat.GC <- data.frame(logMat.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.GC <-cbind(chrms,logMat.GC)
 
+#this makes a matrix with the log2 ratio between ancestor and sample of each gene 
+
+getChrmRatio.GC.test <- function(line, chr){ #input line as "XXX", chr as a number
+  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
+  rat.cs.GC <- rat.GC[order(rat.GC[,3]),]#order by column 3
+  return(rat.cs.GC)
+}
+
+
+yl.GC=NULL
+for(line in rep.GC){
+    y.GC <- c(yl.GC,log2(getChrmRatio.GC.test(line,chrm)[,3]))
+}
+
+warnings()
+logMat.GC.test<- matrix(y.GC,nrow=5431,ncol=20)
+colnames(logMat.GC.test) <- rep.GC
+logMat.GC.test <- data.frame(logMat.GC.test)
+genes <- ancAvg.GC[,2]
+logMat2.GC.test <-cbind(genes,logMat.GC.test)
+
 yl.old=NULL
 for(line in rep.old){
   for(chrm in 1:16){
@@ -598,6 +619,33 @@ abline(h=0,lty=3)
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
+
+#lets try making a loop just for fun 
+for (line in c(112,115,117,123,141,152,29,50)) {
+  
+line <- subset(logMat.MA, select=line)
+line.sd <- subset(logMatsd2.MA, select=line)
+#merge the stdev with the mean and the chromosome number
+line.all <- cbind(chrms,line,line.sd)
+#change the column names appropriately
+colnames(line.all)[1] <- "chr"; colnames(line.all)[2] <- "mean";colnames(line.all)[3] <- "sd"
+
+#plots the chromosomes with error bars for each one 
+with (
+  data = line.all
+  , expr = errbar(main="MA",chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n")
+)
+
+
+#adds a title to the graph
+abline(h=0,lty=3)
+##makes it so that the x-axis is all of the chromosomes and none are missing 
+labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
+axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
+
+}
+#well, that doesn't work...
+
 
 #line 115
 par(mar=c(5, 4, 4, 2) + 0.1)
@@ -1170,10 +1218,75 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 ###probably an easier way to do this, but will come back to this later
 #these are the euploid lines 
 l002.1 <- getChrmRatio.GC("2",1)
+colnames(l002.1) <- c("chr","tracking_id","Line 2")
 l003.1 <- getChrmRatio.GC("3",1)
+colnames(l003.1) <- c("chr","tracking_id","Line 3")
 l005.1 <- getChrmRatio.GC("5",1)
+colnames(l005.1) <- c("chr","tracking_id","Line 5")
 l006.1 <- getChrmRatio.GC("6",1)
+colnames(l006.1) <- c("chr","tracking_id","Line 6")
+l008.1 <- getChrmRatio.GC("8",1)
+colnames(l008.1) <- c("chr","tracking_id","Line 8")
 l009.1 <- getChrmRatio.GC("9",1)
+colnames(l009.1) <- c("chr","tracking_id","Line 9")
+
+chrm.1.Ratios <- merge(l001.1,l002.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l003.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l004.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l005.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l006.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l007.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l008.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l009.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l011.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l018.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l021.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l031.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l049.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l059.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l061.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l066.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l069.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l076.1,by=2)
+chrm.1.Ratios <- merge(chrm.1.Ratios,l077.1,by=2)
+#chrm.1List <- lapply(c(2,3,5,6,8,9)),function(i)) { df <- read.table()}
+
+files <- c(l002.1,l003.1,l005.1,l006.1,l008.1,l009.1)
+big.list.of.data.frames <- lapply(files, read.table, header = TRUE)
+
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+str(l002.1)
+chrm.1 <- matrix(l002.1,l003.1)
+#aneuploid lines 
+l011.1 <- getChrmRatio.GC("11",1)
+colnames(l011.1) <- c("chr","tracking_id","Line 11")
+l018.1 <- getChrmRatio.GC("18",1)
+colnames(l018.1) <- c("chr","tracking_id","Line 18")
+l001.1 <- getChrmRatio.GC("1",1)
+colnames(l001.1) <- c("chr","tracking_id","Line 1")
+l021.1 <- getChrmRatio.GC("21",1)
+colnames(l021.1) <- c("chr","tracking_id","Line 21")
+l031.1 <- getChrmRatio.GC("31",1)
+colnames(l031.1) <- c("chr","tracking_id","Line 31")
+l049.1 <- getChrmRatio.GC("49",1)
+colnames(l049.1) <- c("chr","tracking_id","Line 49")
+l004.1 <- getChrmRatio.GC("4",1)
+colnames(l004.1) <- c("chr","tracking_id","Line 4")
+l059.1 <- getChrmRatio.GC("59",1)
+colnames(l059.1) <- c("chr","tracking_id","Line 59")
+l061.1 <- getChrmRatio.GC("61",1)
+colnames(l061.1) <- c("chr","tracking_id","Line 61")
+l066.1 <- getChrmRatio.GC("66",1)
+colnames(l066.1) <- c("chr","tracking_id","Line 66")
+l069.1 <- getChrmRatio.GC("69",1)
+colnames(l069.1) <- c("chr","tracking_id","Line 69")
+l076.1 <- getChrmRatio.GC("76",1)
+colnames(l076.1) <- c("chr","tracking_id","Line 76")
+l077.1 <- getChrmRatio.GC("77",1)
+colnames(l077.1) <- c("chr","tracking_id","Line 77")
+l007.1 <- getChrmRatio.GC("7",1)
+colnames(l007.1) <- c("chr","tracking_id","Line 7")
 
 #loop by line
 #for (line in c(2,3,5,6,9)) { getChrmRatio.GC(line,1) }
@@ -1189,91 +1302,331 @@ l002.2 <- getChrmRatio.GC("2",2)
 l003.2 <- getChrmRatio.GC("3",2)
 l005.2 <- getChrmRatio.GC("5",2)
 l006.2 <- getChrmRatio.GC("6",2)
+l008.2 <- getChrmRatio.GC("8",2)
 l009.2 <- getChrmRatio.GC("9",2)
+
+l011.2 <- getChrmRatio.GC("11",2)
+l018.2 <- getChrmRatio.GC("18",2)
+l001.2 <- getChrmRatio.GC("1",2)
+l021.2 <- getChrmRatio.GC("21",2)
+l031.2 <- getChrmRatio.GC("31",2)
+l049.2 <- getChrmRatio.GC("49",2)
+l004.2 <- getChrmRatio.GC("4",2)
+l059.2 <- getChrmRatio.GC("59",2)
+l061.2 <- getChrmRatio.GC("61",2)
+l066.2 <- getChrmRatio.GC("66",2)
+l069.2 <- getChrmRatio.GC("69",2)
+l076.2 <- getChrmRatio.GC("76",2)
+l077.2 <- getChrmRatio.GC("77",2)
+l007.2 <- getChrmRatio.GC("7",2)
 
 l002.3 <- getChrmRatio.GC("2",3)
 l003.3 <- getChrmRatio.GC("3",3)
 l005.3 <- getChrmRatio.GC("5",3)
+l008.3 <- getChrmRatio.GC("8",3)
 l006.3 <- getChrmRatio.GC("6",3)
 l009.3 <- getChrmRatio.GC("9",3)
 
-l002.4 <- getChrmRatio("2",4)
-l003.4 <- getChrmRatio("3",4)
-l005.4 <- getChrmRatio("5",4)
-l006.4 <- getChrmRatio("6",4)
-l009.4 <- getChrmRatio("9",4)
+l011.3 <- getChrmRatio.GC("11",3)
+l018.3 <- getChrmRatio.GC("18",3)
+l001.3 <- getChrmRatio.GC("1",3)
+l021.3 <- getChrmRatio.GC("21",3)
+l031.3 <- getChrmRatio.GC("31",3)
+l049.3 <- getChrmRatio.GC("49",3)
+l004.3 <- getChrmRatio.GC("4",3)
+l059.3 <- getChrmRatio.GC("59",3)
+l061.3 <- getChrmRatio.GC("61",3)
+l066.3 <- getChrmRatio.GC("66",3)
+l069.3 <- getChrmRatio.GC("69",3)
+l076.3 <- getChrmRatio.GC("76",3)
+l077.3 <- getChrmRatio.GC("77",3)
+l007.3 <- getChrmRatio.GC("7",3)
 
-l002.5 <- getChrmRatio("2",5)
-l003.5 <- getChrmRatio("3",5)
-l005.5 <- getChrmRatio("5",5)
-l006.5 <- getChrmRatio("6",5)
-l009.5 <- getChrmRatio("9",5)
+l002.4 <- getChrmRatio.GC("2",4)
+l003.4 <- getChrmRatio.GC("3",4)
+l005.4 <- getChrmRatio.GC("5",4)
+l006.4 <- getChrmRatio.GC("6",4)
+l008.4 <- getChrmRatio.GC("8",4)
+l009.4 <- getChrmRatio.GC("9",4)
 
-l002.6 <- getChrmRatio("2",6)
-l003.6 <- getChrmRatio("3",6)
-l005.6 <- getChrmRatio("5",6)
-l006.6 <- getChrmRatio("6",6)
-l009.6 <- getChrmRatio("9",6)
+l011.4 <- getChrmRatio.GC("11",4)
+l018.4 <- getChrmRatio.GC("18",4)
+l001.4 <- getChrmRatio.GC("1",4)
+l021.4 <- getChrmRatio.GC("21",4)
+l031.4 <- getChrmRatio.GC("31",4)
+l049.4 <- getChrmRatio.GC("49",4)
+l004.4 <- getChrmRatio.GC("4",4)
+l059.4 <- getChrmRatio.GC("59",4)
+l061.4 <- getChrmRatio.GC("61",4)
+l066.4 <- getChrmRatio.GC("66",4)
+l069.4 <- getChrmRatio.GC("69",4)
+l076.4 <- getChrmRatio.GC("76",4)
+l077.4 <- getChrmRatio.GC("77",4)
+l007.4 <- getChrmRatio.GC("7",4)
 
-l002.7 <- getChrmRatio("2",7)
-l003.7 <- getChrmRatio("3",7)
-l005.7 <- getChrmRatio("5",7)
-l006.7 <- getChrmRatio("6",7)
-l009.7 <- getChrmRatio("9",7)
+l002.5 <- getChrmRatio.GC("2",5)
+l003.5 <- getChrmRatio.GC("3",5)
+l005.5 <- getChrmRatio.GC("5",5)
+l006.5 <- getChrmRatio.GC("6",5)
+l008.5 <- getChrmRatio.GC("8",5)
+l009.5 <- getChrmRatio.GC("9",5)
 
-l002.8 <- getChrmRatio("2",8)
-l003.8 <- getChrmRatio("3",8)
-l005.8 <- getChrmRatio("5",8)
-l006.8 <- getChrmRatio("6",8)
-l009.8 <- getChrmRatio("9",8)
+l011.5 <- getChrmRatio.GC("11",5)
+l018.5 <- getChrmRatio.GC("18",5)
+l001.5 <- getChrmRatio.GC("1",5)
+l021.5 <- getChrmRatio.GC("21",5)
+l031.5 <- getChrmRatio.GC("31",5)
+l049.5 <- getChrmRatio.GC("49",5)
+l004.5 <- getChrmRatio.GC("4",5)
+l059.5 <- getChrmRatio.GC("59",5)
+l061.5 <- getChrmRatio.GC("61",5)
+l066.5 <- getChrmRatio.GC("66",5)
+l069.5 <- getChrmRatio.GC("69",5)
+l076.5 <- getChrmRatio.GC("76",5)
+l077.5 <- getChrmRatio.GC("77",5)
+l007.5 <- getChrmRatio.GC("7",5)
 
-l002.9 <- getChrmRatio("2",9)
-l003.9 <- getChrmRatio("3",9)
-l005.9 <- getChrmRatio("5",9)
-l006.9 <- getChrmRatio("6",9)
-l009.9 <- getChrmRatio("9",9)
+l002.6 <- getChrmRatio.GC("2",6)
+l003.6 <- getChrmRatio.GC("3",6)
+l005.6 <- getChrmRatio.GC("5",6)
+l006.6 <- getChrmRatio.GC("6",6)
+l008.6 <- getChrmRatio.GC("8",6)
+l009.6 <- getChrmRatio.GC("9",6)
 
-l002.10 <- getChrmRatio("2",10)
-l003.10 <- getChrmRatio("3",10)
-l005.10 <- getChrmRatio("5",10)
-l006.10 <- getChrmRatio("6",10)
-l009.10 <- getChrmRatio("9",10)
+l011.6 <- getChrmRatio.GC("11",6)
+l018.6 <- getChrmRatio.GC("18",6)
+l001.6 <- getChrmRatio.GC("1",6)
+l021.6 <- getChrmRatio.GC("21",6)
+l031.6 <- getChrmRatio.GC("31",6)
+l049.6 <- getChrmRatio.GC("49",6)
+l004.6 <- getChrmRatio.GC("4",6)
+l059.6 <- getChrmRatio.GC("59",6)
+l061.6 <- getChrmRatio.GC("61",6)
+l066.6 <- getChrmRatio.GC("66",6)
+l069.6 <- getChrmRatio.GC("69",6)
+l076.6 <- getChrmRatio.GC("76",6)
+l077.6 <- getChrmRatio.GC("77",6)
+l007.6 <- getChrmRatio.GC("7",6)
 
-l002.11 <- getChrmRatio("2",11)
-l003.11 <- getChrmRatio("3",11)
-l005.11 <- getChrmRatio("5",11)
-l006.11 <- getChrmRatio("6",11)
-l009.11 <- getChrmRatio("9",11)
+l002.7 <- getChrmRatio.GC("2",7)
+l003.7 <- getChrmRatio.GC("3",7)
+l005.7 <- getChrmRatio.GC("5",7)
+l006.7 <- getChrmRatio.GC("6",7)
+l008.7 <- getChrmRatio.GC("8",7)
+l009.7 <- getChrmRatio.GC("9",7)
 
-l002.12 <- getChrmRatio("2",12)
-l003.12 <- getChrmRatio("3",12)
-l005.12 <- getChrmRatio("5",12)
-l006.12 <- getChrmRatio("6",12)
-l009.12 <- getChrmRatio("9",12)
+l011.7 <- getChrmRatio.GC("11",7)
+l018.7 <- getChrmRatio.GC("18",7)
+l001.7 <- getChrmRatio.GC("1",7)
+l021.7 <- getChrmRatio.GC("21",7)
+l031.7 <- getChrmRatio.GC("31",7)
+l049.7 <- getChrmRatio.GC("49",7)
+l004.7 <- getChrmRatio.GC("4",7)
+l059.7 <- getChrmRatio.GC("59",7)
+l061.7 <- getChrmRatio.GC("61",7)
+l066.7 <- getChrmRatio.GC("66",7)
+l069.7 <- getChrmRatio.GC("69",7)
+l076.7 <- getChrmRatio.GC("76",7)
+l077.7 <- getChrmRatio.GC("77",7)
+l007.7 <- getChrmRatio.GC("7",7)
 
-l002.13 <- getChrmRatio("2",13)
-l003.13 <- getChrmRatio("3",13)
-l005.13 <- getChrmRatio("5",13)
-l006.13 <- getChrmRatio("6",13)
-l009.13 <- getChrmRatio("9",13)
+l002.8 <- getChrmRatio.GC("2",8)
+l003.8 <- getChrmRatio.GC("3",8)
+l005.8 <- getChrmRatio.GC("5",8)
+l006.8 <- getChrmRatio.GC("6",8)
+l008.8 <- getChrmRatio.GC("8",8)
+l009.8 <- getChrmRatio.GC("9",8)
 
-l002.14 <- getChrmRatio("2",14)
-l003.14 <- getChrmRatio("3",14)
-l005.14 <- getChrmRatio("5",14)
-l006.14 <- getChrmRatio("6",14)
-l009.14 <- getChrmRatio("9",14)
+l011.8 <- getChrmRatio.GC("11",8)
+l018.8 <- getChrmRatio.GC("18",8)
+l001.8 <- getChrmRatio.GC("1",8)
+l021.8 <- getChrmRatio.GC("21",8)
+l031.8 <- getChrmRatio.GC("31",8)
+l049.8 <- getChrmRatio.GC("49",8)
+l004.8 <- getChrmRatio.GC("4",8)
+l059.8 <- getChrmRatio.GC("59",8)
+l061.8 <- getChrmRatio.GC("61",8)
+l066.8 <- getChrmRatio.GC("66",8)
+l069.8 <- getChrmRatio.GC("69",8)
+l076.8 <- getChrmRatio.GC("76",8)
+l077.8 <- getChrmRatio.GC("77",8)
+l007.8 <- getChrmRatio.GC("7",8)
 
-l002.15 <- getChrmRatio("2",15)
-l003.15 <- getChrmRatio("3",15)
-l005.15 <- getChrmRatio("5",15)
-l006.15 <- getChrmRatio("6",15)
-l009.15 <- getChrmRatio("9",15)
+l002.9 <- getChrmRatio.GC("2",9)
+l003.9 <- getChrmRatio.GC("3",9)
+l005.9 <- getChrmRatio.GC("5",9)
+l006.9 <- getChrmRatio.GC("6",9)
+l008.9 <- getChrmRatio.GC("8",9)
+l009.9 <- getChrmRatio.GC("9",9)
 
-l002.16 <- getChrmRatio("2",16)
-l003.16 <- getChrmRatio("3",16)
-l005.16 <- getChrmRatio("5",16)
-l006.16 <- getChrmRatio("6",16)
-l009.16 <- getChrmRatio("9",16)
+l011.9 <- getChrmRatio.GC("11",9)
+l018.9 <- getChrmRatio.GC("18",9)
+l001.9 <- getChrmRatio.GC("1",9)
+l021.9 <- getChrmRatio.GC("21",9)
+l031.9 <- getChrmRatio.GC("31",9)
+l049.9 <- getChrmRatio.GC("49",9)
+l004.9 <- getChrmRatio.GC("4",9)
+l059.9 <- getChrmRatio.GC("59",9)
+l061.9 <- getChrmRatio.GC("61",9)
+l066.9 <- getChrmRatio.GC("66",9)
+l069.9 <- getChrmRatio.GC("69",9)
+l076.9 <- getChrmRatio.GC("76",9)
+l077.9 <- getChrmRatio.GC("77",9)
+l007.9 <- getChrmRatio.GC("7",9)
+
+l002.10 <- getChrmRatio.GC("2",10)
+l003.10 <- getChrmRatio.GC("3",10)
+l005.10 <- getChrmRatio.GC("5",10)
+l006.10 <- getChrmRatio.GC("6",10)
+l008.10 <- getChrmRatio.GC("8",10)
+l009.10 <- getChrmRatio.GC("9",10)
+
+l011.10 <- getChrmRatio.GC("11",10)
+l018.10 <- getChrmRatio.GC("18",10)
+l001.10 <- getChrmRatio.GC("1",10)
+l021.10 <- getChrmRatio.GC("21",10)
+l031.10 <- getChrmRatio.GC("31",10)
+l049.10 <- getChrmRatio.GC("49",10)
+l004.10 <- getChrmRatio.GC("4",10)
+l059.10 <- getChrmRatio.GC("59",10)
+l061.10 <- getChrmRatio.GC("61",10)
+l066.10 <- getChrmRatio.GC("66",10)
+l069.10 <- getChrmRatio.GC("69",10)
+l076.10 <- getChrmRatio.GC("76",10)
+l077.10 <- getChrmRatio.GC("77",10)
+l007.10 <- getChrmRatio.GC("7",10)
+
+l002.11 <- getChrmRatio.GC("2",11)
+l003.11 <- getChrmRatio.GC("3",11)
+l005.11 <- getChrmRatio.GC("5",11)
+l006.11 <- getChrmRatio.GC("6",11)
+l008.11 <- getChrmRatio.GC("8",11)
+l009.11 <- getChrmRatio.GC("9",11)
+
+l011.11 <- getChrmRatio.GC("11",11)
+l018.11 <- getChrmRatio.GC("18",11)
+l001.11 <- getChrmRatio.GC("1",11)
+l021.11 <- getChrmRatio.GC("21",11)
+l031.11 <- getChrmRatio.GC("31",11)
+l049.11 <- getChrmRatio.GC("49",11)
+l004.11 <- getChrmRatio.GC("4",11)
+l059.11 <- getChrmRatio.GC("59",11)
+l061.11 <- getChrmRatio.GC("61",11)
+l066.11 <- getChrmRatio.GC("66",11)
+l069.11 <- getChrmRatio.GC("69",11)
+l076.11 <- getChrmRatio.GC("76",11)
+l077.11 <- getChrmRatio.GC("77",11)
+l007.11 <- getChrmRatio.GC("7",11)
+
+l002.12 <- getChrmRatio.GC("2",12)
+l003.12 <- getChrmRatio.GC("3",12)
+l005.12 <- getChrmRatio.GC("5",12)
+l006.12 <- getChrmRatio.GC("6",12)
+l008.12 <- getChrmRatio.GC("8",12)
+l009.12 <- getChrmRatio.GC("9",12)
+
+l011.12 <- getChrmRatio.GC("11",12)
+l018.12 <- getChrmRatio.GC("18",12)
+l001.12 <- getChrmRatio.GC("1",12)
+l021.12 <- getChrmRatio.GC("21",12)
+l031.12 <- getChrmRatio.GC("31",12)
+l049.12 <- getChrmRatio.GC("49",12)
+l004.12 <- getChrmRatio.GC("4",12)
+l059.12 <- getChrmRatio.GC("59",12)
+l061.12 <- getChrmRatio.GC("61",12)
+l066.12 <- getChrmRatio.GC("66",12)
+l069.12 <- getChrmRatio.GC("69",12)
+l076.12 <- getChrmRatio.GC("76",12)
+l077.12 <- getChrmRatio.GC("77",12)
+l007.12 <- getChrmRatio.GC("7",12)
+
+l002.13 <- getChrmRatio.GC("2",13)
+l003.13 <- getChrmRatio.GC("3",13)
+l005.13 <- getChrmRatio.GC("5",13)
+l006.13 <- getChrmRatio.GC("6",13)
+l008.13 <- getChrmRatio.GC("8",13)
+l009.13 <- getChrmRatio.GC("9",13)
+
+l011.13 <- getChrmRatio.GC("11",13)
+l018.13 <- getChrmRatio.GC("18",13)
+l001.13 <- getChrmRatio.GC("1",13)
+l021.13 <- getChrmRatio.GC("21",13)
+l031.13 <- getChrmRatio.GC("31",13)
+l049.13 <- getChrmRatio.GC("49",13)
+l004.13 <- getChrmRatio.GC("4",13)
+l059.13 <- getChrmRatio.GC("59",13)
+l061.13 <- getChrmRatio.GC("61",13)
+l066.13 <- getChrmRatio.GC("66",13)
+l069.13 <- getChrmRatio.GC("69",13)
+l076.13 <- getChrmRatio.GC("76",13)
+l077.13 <- getChrmRatio.GC("77",13)
+l007.13 <- getChrmRatio.GC("7",13)
+
+l002.14 <- getChrmRatio.GC("2",14)
+l003.14 <- getChrmRatio.GC("3",14)
+l005.14 <- getChrmRatio.GC("5",14)
+l006.14 <- getChrmRatio.GC("6",14)
+l008.14 <- getChrmRatio.GC("8",14)
+l009.14 <- getChrmRatio.GC("9",14)
+
+l011.14 <- getChrmRatio.GC("11",14)
+l018.14 <- getChrmRatio.GC("18",14)
+l001.14 <- getChrmRatio.GC("1",14)
+l021.14 <- getChrmRatio.GC("21",14)
+l031.14 <- getChrmRatio.GC("31",14)
+l049.14 <- getChrmRatio.GC("49",14)
+l004.14 <- getChrmRatio.GC("4",14)
+l059.14 <- getChrmRatio.GC("59",14)
+l061.14 <- getChrmRatio.GC("61",14)
+l066.14 <- getChrmRatio.GC("66",14)
+l069.14 <- getChrmRatio.GC("69",14)
+l076.14 <- getChrmRatio.GC("76",14)
+l077.14 <- getChrmRatio.GC("77",14)
+l007.14 <- getChrmRatio.GC("7",14)
+
+l002.15 <- getChrmRatio.GC("2",15)
+l003.15 <- getChrmRatio.GC("3",15)
+l005.15 <- getChrmRatio.GC("5",15)
+l006.15 <- getChrmRatio.GC("6",15)
+l008.15 <- getChrmRatio.GC("8",15)
+l009.15 <- getChrmRatio.GC("9",15)
+
+l011.15 <- getChrmRatio.GC("11",15)
+l018.15 <- getChrmRatio.GC("18",15)
+l001.15 <- getChrmRatio.GC("1",15)
+l021.15 <- getChrmRatio.GC("21",15)
+l031.15 <- getChrmRatio.GC("31",15)
+l049.15 <- getChrmRatio.GC("49",15)
+l004.15 <- getChrmRatio.GC("4",15)
+l059.15 <- getChrmRatio.GC("59",15)
+l061.15 <- getChrmRatio.GC("61",15)
+l066.15 <- getChrmRatio.GC("66",15)
+l069.15 <- getChrmRatio.GC("69",15)
+l076.15 <- getChrmRatio.GC("76",15)
+l077.15 <- getChrmRatio.GC("77",15)
+l007.15 <- getChrmRatio.GC("7",15)
+
+l002.16 <- getChrmRatio.GC("2",16)
+l003.16 <- getChrmRatio.GC("3",16)
+l005.16 <- getChrmRatio.GC("5",16)
+l006.16 <- getChrmRatio.GC("6",16)
+l008.16 <- getChrmRatio.GC("8",16)
+l009.16 <- getChrmRatio.GC("9",16)
+
+l011.16 <- getChrmRatio.GC("11",16)
+l018.16 <- getChrmRatio.GC("18",16)
+l001.16 <- getChrmRatio.GC("1",16)
+l021.16 <- getChrmRatio.GC("21",16)
+l031.16 <- getChrmRatio.GC("31",16)
+l049.16 <- getChrmRatio.GC("49",16)
+l004.16 <- getChrmRatio.GC("4",16)
+l059.16 <- getChrmRatio.GC("59",16)
+l061.16 <- getChrmRatio.GC("61",16)
+l066.16 <- getChrmRatio.GC("66",16)
+l069.16 <- getChrmRatio.GC("69",16)
+l076.16 <- getChrmRatio.GC("76",16)
+l077.16 <- getChrmRatio.GC("77",16)
+l007.16 <- getChrmRatio.GC("7",16)
 
 #this works, just gives an interesting curve 
 plot((log2(l002.1[,3])),ylab="log2(fold change)", xlab="Chromosome")
@@ -1287,13 +1640,6 @@ ancAvg <- cbind(sc_anc[,1:2],ancAvg)
 ##############################################################################################
 
 #CHROMOSOME 1 
-#line 11 is 1n for c1
-l011.1 <- getChrmRatio("11",1)
-#line 152,18,21,7 are 3n for c1
-l152.1 <- getChrmRatio("152",1)
-l018.1 <- getChrmRatio("18",1)
-l021.1 <- getChrmRatio("21",1)
-l007.1 <- getChrmRatio("7",1)
 
 #RATIOS FOR CHROMOSOME 1 
 anRatio.c1 <- c(l152.1[,3],l018.1[,3],l021.1[,3],l007.1[,3])
@@ -1346,60 +1692,180 @@ mtext("*", side=3, line=0, at=3, cex=1.5, col="red")
 #CHROMOSOME 1 
 par(mar=c(5, 4, 4, 2) + 0.1)
 par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
 
-boxplot((log2(euRatio.c1)),(log2(l007.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 7 Chromsome 1",las=3)
-t.test((log2(l007.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-abline(h=0,lty=3)
-p3 <- 0.0006221
-mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.3, "*", pos=3, cex=1.5, col="red")
 
-boxplot((log2(euRatio.c1)),(log2(l018.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 18 Chromosome 1",las=3)
-t.test((log2(l018.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-abline(h=0,lty=3)
-p3 <- 0.004569
-mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.3, "*", pos=3, cex=1.5, col="red")
 
-boxplot((log2(euRatio.c1)),(log2(l011.1[,3])),names=c( "Disomic", "Monosomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 11 Chromosome 1",las=3)
-t.test((log2(l011.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-abline(h=0,lty=3)
-p3 <-  0.002302
-mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=2.2, "*", pos=3, cex=1.5, col="red")
+boxplot((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),(log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),(log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),(log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),ylab="log2(fold change)", col=c("cyan", "green","green","cyan","green","green","deeppink1","green","green","deeppink1","deeppink1","deeppink1","cyan","cyan","cyan","cyan","cyan","cyan","cyan"),main="GC Lines Chromsome 1",las=3)
+euRatio.c1 <- c(l002.1[,3],l003.1[,3],l005.1[,3],l006.1[,3],l009.1[,3])
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l001.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l007.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l011.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l018.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l031.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l049.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+#0.0468 weird. maybe because it's non parametric?
+t.test((log2(l059.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+#I think so, because now the p-value is 0.4
+t.test((log2(l066.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 
-boxplot((log2(euRatio.c1)),(log2(l021.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="GC Line 21 Chromosome 1",las=3)
-t.test((log2(l021.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 abline(h=0,lty=3)
-p3 <-  0.1214
-mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7, y=1, "*", pos=3, cex=1.5, col="red")
+text(x=10, y=.5, "*", pos=3, cex=1.5, col="red")
+text(x=11, y=1.2, "*", pos=3, cex=1.5, col="red")
+text(x=12, y=1.2, "*", pos=3, cex=1.5, col="red")
 
-par(mfrow=(c(1,1)))
-boxplot((log2(euRatio.c1)),(log2(l152.1[,3])),names=c( "Disomic", "Trisomic"),ylab="log2(fold change)", col=c("cyan", "deeppink1"),main="Line 152",las=3)
-t.test((log2(l152.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-abline(h=0,lty=3)
-p3 <-  1.546e-06
-mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=2, y=5.5, "*", pos=3, cex=1.5, col="red")
+#############################################################################################
+
+
 
 ##############################################################################################
+#CHROMOSOME 2
+
+#RATIOS FOR CHROMOSOME 2
+
+euRatio.c2 <- c(l002.2[,3],l003.2[,3],l005.2[,3],l006.2[,3],l008.2[,3],l009.2[,3])
+
+
+boxplot((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3])),(log2(l005.2[,3])),(log2(l006.2[,3])),(log2(l007.2[,3])),(log2(l008.2[,3])),(log2(l009.2[,3])),(log2(l011.2[,3])),(log2(l018.2[,3])),(log2(l021.2[,3])),(log2(l031.2[,3])),(log2(l049.2[,3])),(log2(l059.2[,3])),(log2(l061.2[,3])),(log2(l066.2[,3])),(log2(l069.2[,3])),(log2(l076.2[,3])),(log2(l077.2[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),ylab="log2(fold change)", col=c("cyan", "green","green","green","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","cyan","cyan","cyan","cyan"),main="GC Lines Chromsome 2",las=3)
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l001.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l007.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+#p-value 0.05396
+t.test((log2(l018.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l021.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+#p-value  0.03724
+wilcox.test((log2(l021.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.003565 
+t.test((log2(l031.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l049.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l059.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l066.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.2[,3])), (log2(euRatio.c2)), paired=FALSE, var.equal=TRUE)
+
+abline(h=0,lty=3)
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=4, y=2.5, "*", pos=3, cex=1.5, col="red")
+text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
+###############################################################################################
+#CHROMOSOME 3
+
+#RATIOS FOR CHROMOSOME 3
+
+euRatio.c3 <- c(l002.3[,3],l003.3[,3],l005.3[,3],l006.3[,3],l008.3[,3],l009.3[,3])
+
+
+boxplot((log2(l001.3[,3])),(log2(l002.3[,3])),(log2(l003.3[,3])),(log2(l004.3[,3])),(log2(l005.3[,3])),(log2(l006.3[,3])),(log2(l007.3[,3])),(log2(l008.3[,3])),(log2(l009.3[,3])),(log2(l011.3[,3])),(log2(l018.3[,3])),(log2(l021.3[,3])),(log2(l031.3[,3])),(log2(l049.3[,3])),(log2(l059.3[,3])),(log2(l061.3[,3])),(log2(l066.3[,3])),(log2(l069.3[,3])),(log2(l076.3[,3])),(log2(l077.3[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),ylab="log2(fold change)", col=c("cyan", "green","green","green","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","cyan","cyan","cyan","cyan"),main="GC Lines Chromsome 3",las=3)
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l001.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l007.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+#p=0.01514
+t.test((log2(l018.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.007955
+t.test((log2(l021.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l031.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.04687
+t.test((log2(l049.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l059.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0404
+t.test((log2(l066.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0006532
+t.test((log2(l077.3[,3])), (log2(euRatio.c3)), paired=FALSE, var.equal=TRUE)
+
+abline(h=0,lty=3)
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=4, y=2.5, "*", pos=3, cex=1.5, col="red")
+text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
+###############################################################################################
 #CHROMOSOME 5 
-#line 117 is 3n for c5
-l117.5 <- getChrmRatio("117",5)
-l049.5 <- getChrmRatio("49",5)
-l004.5 <- getChrmRatio("4",5)
-l050.5 <- getChrmRatio("50",5)
 
 #RATIOS FOR CHROMOSOME 5
-anRatio.c5 <- c(l117.5[,3],l049.5[,3],l004.5[,3],l050.5[,3])
-euRatio.c5 <- c(l002.5[,3],l003.5[,3],l005.5[,3],l006.5[,3],l009.5[,3])
-anRatio.c5.no50 <- c(l117.5[,3],l049.5[,3],l004.5[,3])
-anRatio.c5.no4 <- c(l117.5[,3],l049.5[,3],l050.5[,3])
+
+euRatio.c5 <- c(l002.5[,3],l003.5[,3],l005.5[,3],l006.5[,3],l008.5[,3],l009.5[,3])
+
+
+boxplot((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003.5[,3])),(log2(l004.5[,3])),(log2(l005.5[,3])),(log2(l006.5[,3])),(log2(l007.5[,3])),(log2(l008.5[,3])),(log2(l009.5[,3])),(log2(l011.5[,3])),(log2(l018.5[,3])),(log2(l021.5[,3])),(log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l059.5[,3])),(log2(l061.5[,3])),(log2(l066.5[,3])),(log2(l069.5[,3])),(log2(l076.5[,3])),(log2(l077.5[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),ylab="log2(fold change)", col=c("cyan", "green","green","deeppink1","green","green","green","green","green","green","green","green","cyan","deeppink1","cyan","cyan","cyan","cyan","cyan","cyan","cyan"),main="GC Lines Chromsome 5",las=3)
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l001.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l004.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l005.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l007.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l018.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l021.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l031.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l049.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l059.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l066.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.5[,3])), (log2(euRatio.c5)), paired=FALSE, var.equal=TRUE)
+
+abline(h=0,lty=3)
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=4, y=2.5, "*", pos=3, cex=1.5, col="red")
+text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 
 ##boxplot and t-test for chromosome 5 trisomic
 #boxplot((log2(anRatio.c5)), (log2(euRatio.c5)),names=c("Trisomic", "Euploid"),ylab="log2(fold change)", col=c("limegreen", "purple"))

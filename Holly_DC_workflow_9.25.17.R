@@ -4827,7 +4827,7 @@ plot(sample1$q_value,sample1$value_2,ylab="ancestor FPKM",xlab="FDR-adj p-value"
 list_of_titles <- c("Sample1","Sample2","Sample3","Sample4","Sample5","Sample6","Sample7","Sample8",
                     "Sample9","Sample11","Sample18","Sample21","Sample29","Sample31","Sample49","Sample50",
                     "Sample59","Sample61","Sample66","Sample69","Sample76","Sample77","Sample112","Sample115",
-                    "Sample123","Sample141","Sample152")
+                    "Sample117","Sample123","Sample141","Sample152")
 
 
 # Plot separate ggplot figures in a loop.
@@ -4853,4 +4853,79 @@ for (i in 1:length(myFiles)) {
   dev.off() 
 }
 
+########################################################################################################
+#Cuffdiff: Number of differentially expressed genes versus the number of genes on given chromosome
+########################################################################################################
+library(splitstackshape)
+#read in the data
+myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff",pattern = "*.diff")
+
+for (i in 1:length(myFiles)) {
+  pdf(paste("DE_by_total_",list_of_titles[i],".pdf",sep=""))
+  sample <- read.table(myFiles[i],header=TRUE)
+  sample <- data.table(sample)  # make it a data table
+  sample <- cSplit(sample,"locus",":") #split the locus column into "chr" and "locus"
+  names <- c("test_id","gene_id","gene","sample_1","sample_2","status","value_1","value_2","log2.fold_change",
+           "test_stat","p_value","q_value","significant","chr","locus")
+  colnames(sample) <- names
+  chrms <- c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI") #need to count number of rows where sample1$chr == "1" 
+#and so on for each chromosome
+  DE <- subset(sample,significant=="yes") #subset data into the "yeses"
+  N.DE <- DE[,.N,by=chr] #count the number of rows of each chromosome that are DE (this is the number of genes on each chromosome)
+  N.genes <- sample[,.N,by=chr] #count the number of rows of each chromosome (this is the number of genes on each chromosome)
+  All <- merge(N.DE, N.genes, by="chr")
+  names(All) <- c("chr","DE","all")
+  #plot number of DE genes by number of total genes
+  plot(All$all,All$DE,xlab="total genes",ylab="differentially expressed genes",
+       pch=1,xlim=c(0,1000),ylim=c(0,15),main=list_of_titles[i])
+  dev.off()
+}
+
+dev.list()
+
+########################################################################################################
+#Cuffdiff: Number of differentially expressed genes versus the number of genes on just the aneuploid chrom
+########################################################################################################
+
+pdf(paste("DE_by_total_",list_of_titles[i],".pdf",sep=""))
+sample1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/gene_exp_S1.diff",header=TRUE)
+
+sample1 <- data.table(sample1)  # make it a data table
+sample1 <- cSplit(sample1,"locus",":") #split the locus column into "chr" and "locus"
+
+names <- c("test_id","gene_id","gene","sample_1","sample_2","status","value_1","value_2","log2.fold_change",
+           "test_stat","p_value","q_value","significant","chr","locus")
+colnames(sample) <- names
+chrms <- c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI") #need to count number of rows where sample1$chr == "1" 
+#and so on for each chromosome
+DE <- subset(sample,significant=="yes") #subset data into the "yeses"
+N.DE <- DE[,.N,by=chr] #count the number of rows of each chromosome that are DE (this is the number of genes on each chromosome)
+N.genes <- sample[,.N,by=chr] #count the number of rows of each chromosome (this is the number of genes on each chromosome)
+All <- merge(N.DE, N.genes, by="chr")
+names(All) <- c("chr","DE","all")
+All <- data.table(All)
+
+for (i in myFiles) {
+  x <- read.table(i, header=TRUE)
+  x <- data.table(x)  # make it a data table
+  x <- cSplit(x,"locus",":") #split the locus column into "chr" and "locus"
+  names <- c("test_id","gene_id","gene","sample_1","sample_2","status","value_1","value_2","log2.fold_change",
+             "test_stat","p_value","q_value","significant","chr","locus")
+  colnames(x) <- names
+  chrms <- c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI") #need to count number of rows where sample1$chr == "1" 
+  #and so on for each chromosome
+  x.1 <- subset(x,significant=="yes") #subset data into the "yeses"
+  x.2 <- x.1[,.N,by=chr] #count the number of rows of each chromosome that are DE (this is the number of genes on each chromosome)
+  x.1.N <- x[,.N,by=chr] #count the number of rows of each chromosome (this is the number of genes on each chromosome)
+  x.all <- merge(x.2, x.1.N, by="chr")
+  names(x.all) <- c("chr","DE","all")
+  x.all <- data.table(x.all)
+  assign(i,x)
+}
+
+myData <- print(myFiles)
+for(i in myFiles) {
+  x <- read.table(i, header=TRUE)
+  assign(i,x)  
+}
 

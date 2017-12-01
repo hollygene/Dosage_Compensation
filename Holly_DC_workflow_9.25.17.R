@@ -4929,3 +4929,8 @@ for(i in myFiles) {
   assign(i,x)  
 }
 
+########################################################################################################
+#plot number of reads versus variance for non aneuploid chromosome
+#use variance as response variable, ploidy as explanatory variable
+########################################################################################################
+

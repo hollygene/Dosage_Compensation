@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N assembly_test_2
 #PBS -q batch
-#PBS -l nodes=3:ppn=2:AMD
+#PBS -l nodes=3:ppn=4:AMD
 #PBS -l walltime=480:00:00
 #PBS -l mem=80gb
 #PBS -M hmcqueary@uga.edu

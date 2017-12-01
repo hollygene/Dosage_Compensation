@@ -257,9 +257,9 @@ getChrmRatio.old <- function(line, chr){ #input line as "XXX", chr as a number
   return(rat.cs.old)
 }
 
-rat.old <- getFPKMRatio.old(line) #get list of ratios which includes chrm and gene
-rat.c.old <- rat.old[(rat.old[,1]==chr),] #get just the rows for the appropriate chrom
-rat.cs.old <- rat.c.old[order(rat.c.old[,3]),]#order by column 3
+#rat.old <- getFPKMRatio.old(line) #get list of ratios which includes chrm and gene
+#rat.c.old <- rat.old[(rat.old[,1]==chr),] #get just the rows for the appropriate chrom
+#rat.cs.old <- rat.c.old[order(rat.c.old[,3]),]#order by column 3
 ##########
 
 ##########
@@ -433,7 +433,7 @@ for(line in rep.old){
     yl.old <- c(yl.old,median(log2(getChrmRatio.old(line,chrm)[,3])))
   }
 }
-View(yl.old)
+#View(yl.old)
 
 warnings()
 logMat.old <- matrix(yl.old,nrow=16,ncol=15)

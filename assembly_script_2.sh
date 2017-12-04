@@ -138,10 +138,41 @@ THREADS=4
 
 #module unload cufflinks/2.2.1
 
+module load cufflinks/2.2.1
+
+cuffmerge \
+-b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+-p $THREADS \
+-L X11,X18,X1,X21,X2,X31,X3,X49,X4,X59,X61,X66,X69,X6,X76,X77,X7,X8,X9,XAnc \
+-u merged_asm/merged.gtf \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-11-redo_S6_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_11B_S15_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_11C_S12_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-18-redo_S7_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_18B_redo_S13_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_18C_S13_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_1_redo_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_1B_S6_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_1C_S3_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-21-redo_S8_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_21B_S17_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_21C_S14_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_2A_S1_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_2B_S7_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_2C_S4_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-31-redo_S9_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_31B_S19_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_31C_S16_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_3A_S2_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_3B_redo_S12_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_3C_S5_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-49-redo_S10_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_49B_S20_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_49C_S17_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-4-redo_S3_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_4B_S9_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_4C_S6_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_59_S10_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_59B_S22_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_59C_S19_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_5A_S3_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_5B_S10_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_5C_redo_S16_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-61-redo_S11_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_61B_S23_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_61C_S20_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_66_S12_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-66B-redo-136232_S14_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_66C_S21_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_69_S1_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_69B_S25_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_69C_S22_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_6A_S4_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_6B_S11_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_6C_S8_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_76_S2_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_76B_S26_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_76C_redo_S18_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_77_S3_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_77B_S27_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_77C_S24_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-7-redo_S4_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_7B_S12_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_7C_S9_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly-A-8-redo_S5_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_8B_S13_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_8C_S10_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_9A_S5_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_9B_S14_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_9C_S11_R1_001_trimmed_tophat_out/accepted_hits.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_A_Anc_S4_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_GC_Anc_B_S2_R1_001_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out/accepted_hits.bam
+
+
+
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 #run cuffquant to estimate expression levels to put into cuffdiff
-module load cufflinks/2.2.1
+
 while read SampleName
 do
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName}
@@ -211,6 +242,7 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 #not sure if this works yet
 module load cufflinks/2.2.1
+
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
 ls >> output.txt
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks

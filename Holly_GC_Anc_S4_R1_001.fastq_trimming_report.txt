@@ -1,0 +1,126 @@
+
+SUMMARISING RUN PARAMETERS
+==========================
+Input filename: Holly_GC_Anc_S4_R1_001.fastq
+Trimming mode: single-end
+Trim Galore version: 0.4.4
+Cutadapt version: 1.14
+Quality Phred score cutoff: 20
+Quality encoding type selected: ASCII+33
+Adapter sequence: 'AGATCGGAAGAGC' (Illumina TruSeq, Sanger iPCR; auto-detected)
+Maximum trimming error rate: 0.1 (default)
+Minimum required adapter overlap (stringency): 1 bp
+Minimum required sequence length before a sequence gets removed: 20 bp
+
+
+This is cutadapt 1.14 with Python 2.7.8
+Command line parameters: -f fastq -e 0.1 -q 20 -O 1 -a AGATCGGAAGAGC Holly_GC_Anc_S4_R1_001.fastq
+Trimming 1 adapter with at most 10.0% errors in single-end mode ...
+Finished in 362.82 s (26 us/read; 2.35 M reads/minute).
+
+=== Summary ===
+
+Total reads processed:              14,209,714
+Reads with adapters:                 4,884,614 (34.4%)
+Reads written (passing filters):    14,209,714 (100.0%)
+
+Total basepairs processed: 1,079,938,264 bp
+Quality-trimmed:               2,040,765 bp (0.2%)
+Total written (filtered):  1,070,677,472 bp (99.1%)
+
+=== Adapter 1 ===
+
+Sequence: AGATCGGAAGAGC; Type: regular 3'; Length: 13; Trimmed: 4884614 times.
+
+No. of allowed errors:
+0-9 bp: 0; 10-13 bp: 1
+
+Bases preceding removed adapters:
+  A: 35.1%
+  C: 26.1%
+  G: 15.6%
+  T: 23.1%
+  none/other: 0.0%
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+1	3702064	3552428.5	0	3702064
+2	804289	888107.1	0	804289
+3	230587	222026.8	0	230587
+4	74202	55506.7	0	74202
+5	16152	13876.7	0	16152
+6	6372	3469.2	0	6372
+7	5008	867.3	0	5008
+8	4308	216.8	0	4308
+9	4407	54.2	0	4087 320
+10	4381	13.6	1	3880 501
+11	3339	3.4	1	2853 486
+12	3279	0.8	1	3021 258
+13	3102	0.2	1	2915 187
+14	2097	0.2	1	1971 126
+15	2360	0.2	1	2218 142
+16	1579	0.2	1	1487 92
+17	1737	0.2	1	1619 118
+18	1519	0.2	1	1407 112
+19	1375	0.2	1	1243 132
+20	1225	0.2	1	1122 103
+21	1123	0.2	1	1013 110
+22	1151	0.2	1	1009 142
+23	1012	0.2	1	896 116
+24	759	0.2	1	694 65
+25	758	0.2	1	655 103
+26	661	0.2	1	550 111
+27	652	0.2	1	519 133
+28	584	0.2	1	470 114
+29	441	0.2	1	341 100
+30	424	0.2	1	331 93
+31	481	0.2	1	351 130
+32	353	0.2	1	282 71
+33	246	0.2	1	186 60
+34	241	0.2	1	181 60
+35	262	0.2	1	166 96
+36	207	0.2	1	137 70
+37	222	0.2	1	140 82
+38	163	0.2	1	94 69
+39	201	0.2	1	105 96
+40	229	0.2	1	134 95
+41	128	0.2	1	69 59
+42	129	0.2	1	69 60
+43	34	0.2	1	14 20
+44	67	0.2	1	28 39
+45	47	0.2	1	28 19
+46	74	0.2	1	32 42
+47	90	0.2	1	43 47
+48	29	0.2	1	9 20
+49	33	0.2	1	13 20
+50	29	0.2	1	10 19
+51	13	0.2	1	2 11
+52	16	0.2	1	10 6
+53	4	0.2	1	3 1
+54	2	0.2	1	1 1
+55	1	0.2	1	1
+56	2	0.2	1	0 2
+57	5	0.2	1	3 2
+58	5	0.2	1	1 4
+59	3	0.2	1	0 3
+60	2	0.2	1	0 2
+61	3	0.2	1	0 3
+62	3	0.2	1	0 3
+63	1	0.2	1	1
+64	3	0.2	1	0 3
+67	1	0.2	1	1
+68	2	0.2	1	1 1
+69	2	0.2	1	2
+71	11	0.2	1	9 2
+72	9	0.2	1	3 6
+73	8	0.2	1	5 3
+74	2	0.2	1	1 1
+75	4	0.2	1	0 4
+76	300	0.2	1	3 297
+
+
+RUN STATISTICS FOR INPUT FILE: Holly_GC_Anc_S4_R1_001.fastq
+=============================================
+14209714 sequences processed in total
+Sequences removed because they became shorter than the length cutoff of 20 bp:	517 (0.0%)
+

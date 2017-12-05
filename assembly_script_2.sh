@@ -106,7 +106,7 @@ cuffmerge \
 -s /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
 -p $THREADS \
-/home/hcm14449/Github/Dosage_Compensation/asembly_GTF_list.txt
+/home/hcm14449/Github/Dosage_Compensation/assembly_GTF_list.txt
 
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test

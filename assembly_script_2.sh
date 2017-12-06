@@ -13,95 +13,97 @@ THREADS=4
 
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 #trying to rename files so that I can eventually run a loop with cuffdiff
 #rename 'GC' A *.fq
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
-module load trimgalore/0.4.4
+#module load trimgalore/0.4.4
 
-for file in ./*.fastq
+#for file in ./*.fastq
 
-do
+#do
 
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
+#FBASE=$(basename $file .fastq)
+#BASE=${FBASE%.fastq}
 
-trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
+#trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
-done
+#done
 
-module unload trimgalore/0.4.4
+#module unload trimgalore/0.4.4
 
 #map to reference using bowtie2
-module load bowtie2/2.2.9
+#module load bowtie2/2.2.9
 #build index for ref genome
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/
-bowtie2-build genome.fa genome
-bowtie2-inspect -s genome
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/
+#bowtie2-build genome.fa genome
+#bowtie2-inspect -s genome
 
 
 #load in tophat
-module load tophat/2.1.1
+#module load tophat/2.1.1
 
 #index transcriptome file
-tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
+#tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 
 #run tophat on all samples
 #do GC ones first
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#./${BASE}.fq
 
-done
+#done
 
 #unload tophat
-module unload tophat/2.1.1
+#module unload tophat/2.1.1
 
 #load in cufflinks
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
 #then run cufflinks on all GC samples
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test
 
-ls >> output.txt
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
+#ls >> output.txt
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
 
 #run cufflinks on all samples
-while read SampleName
-do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName}
+#while read SampleName
+#do
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName}
 
-cufflinks \
--p $THREADS \
--g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName} \
--b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}/accepted_hits.bam
+#cufflinks \
+#-p $THREADS \
+#-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
+#-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks/cufflinks${SampleName} \
+#-b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
+#done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
 #module unload cufflinks/2.2.1
 
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
 #need to run cuffmerge for later input into edgeR
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
+
 cuffmerge \
 -s /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
@@ -130,34 +132,34 @@ module unload cufflinks/2.2.1
 #####################################################################################################################
 #then MA new
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 #trying to rename files so that I can eventually run a loop with cuffdiff
-rename 'GC' A *.fq
+#rename 'GC' A *.fq
 #these work
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
-module load trimgalore/0.4.4
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+#module load trimgalore/0.4.4
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
-for file in ./*.fastq
+#for file in ./*.fastq
 
-do
+#do
 
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
+#FBASE=$(basename $file .fastq)
+#BASE=${FBASE%.fastq}
 
-trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
+#trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
-done
+#done
 
-module unload trimgalore/0.4.4
+#module unload trimgalore/0.4.4
 
 module load tophat/2.1.1
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
@@ -181,7 +183,7 @@ done
 module unload tophat/2.1.1
 
 #not sure if this works yet
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
 ls >> output.txt
@@ -202,6 +204,8 @@ cufflinks \
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/output.txt
 
 module unload cufflinks/2.2.1
+
+
 
 #run cuffquant to estimate expression levels to put into cuffdiff
 #while read SampleName
@@ -228,52 +232,52 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 #these codes work
 
-mkdir fastqc
-module load java/jdk1.8.0_20 fastqc
-fastqc *.fastq -o fastqc
+#mkdir fastqc
+#module load java/jdk1.8.0_20 fastqc
+#fastqc *.fastq -o fastqc
 
-module unload java/jdk1.8.0_20 fastqc
+#module unload java/jdk1.8.0_20 fastqc
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
 
-module load trimgalore/0.4.4
+#module load trimgalore/0.4.4
 
-for file in ./*.fastq
+#for file in ./*.fastq
 
-do
+#do
 
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
+#FBASE=$(basename $file .fastq)
+#BASE=${FBASE%.fastq}
 
-trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
+#trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
-done
+#done
 
-module unload trimgalore/0.4.4
+#module unload trimgalore/0.4.4
 
 
-module load tophat/2.1.1
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/"
+#module load tophat/2.1.1
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#./${BASE}.fq
 
-done
+#done
 
 #unload tophat
-module unload tophat/2.1.1
+#module unload tophat/2.1.1
 
 #not sure if this works yet
 

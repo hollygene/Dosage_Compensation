@@ -48,32 +48,32 @@ THREADS=4
 
 
 #load in tophat
-#module load tophat/2.1.1
+module load tophat/2.1.1
 
 #index transcriptome file
 #tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 
 #run tophat on all samples
 #do GC ones first
-#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
-#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
+mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
 
-#for file in ./*.fq
+for file in ./*.fq
 
-#do
+do
 
-#FBASE=$(basename $file .fq)
-#BASE=${FBASE%.fq}
-#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
-#-i 10 -I 1000 \
-#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-#./${BASE}.fq
+FBASE=$(basename $file .fq)
+BASE=${FBASE%.fq}
+tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
+-i 10 -I 1000 \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+./${BASE}.fq
 
-#done
+done
 
 #unload tophat
-#module unload tophat/2.1.1
+module unload tophat/2.1.1
 
 #load in cufflinks
 #module load cufflinks/2.2.1

@@ -11,4 +11,4 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/
 
 module load samtools/1.3.1
 
-samtools depth  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Holly-66B-redo-136232_S14_R1_001_tophat_out.sorted.bam |  awk '{sum+=$3} END { print "Average = ",sum/NR}' > 66B_depth.txt
+samtools depth  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/SORTHolly-66B-redo-136232_S14_R1_001_tophat_out/Holly-66B-redo-136232_S14_R1_001_tophat_out.sorted.bam |  awk '{sum+=$3} END { print "Average = ",sum/NR}' > 66B_depth.txt

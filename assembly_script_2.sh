@@ -48,32 +48,32 @@ THREADS=4
 
 
 #load in tophat
-module load tophat/2.1.1
+#module load tophat/2.1.1
 
 #index transcriptome file
 #tophat -G genes.gtf --transcriptome-index=transcriptome_data/known genome
 
 #run tophat on all samples
 #do GC ones first
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#./${BASE}.fq
 
-done
+#done
 
 #unload tophat
-module unload tophat/2.1.1
+#module unload tophat/2.1.1
 
 #load in cufflinks
 #module load cufflinks/2.2.1
@@ -99,7 +99,7 @@ module unload tophat/2.1.1
 #done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
 #module unload cufflinks/2.2.1
 
-#module load cufflinks/2.2.1
+module load cufflinks/2.2.1
 
 #need to run cuffmerge for later input into edgeR
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
@@ -161,29 +161,29 @@ module unload cufflinks/2.2.1
 
 #module unload trimgalore/0.4.4
 
-module load tophat/2.1.1
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/"
+#module load tophat/2.1.1
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#./${BASE}.fq
 
-done
+#done
 
 #unload tophat
-module unload tophat/2.1.1
+#module unload tophat/2.1.1
 
 #not sure if this works yet
-#module load cufflinks/2.2.1
+module load cufflinks/2.2.1
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
 ls >> output.txt
@@ -205,6 +205,18 @@ done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
 
 module unload cufflinks/2.2.1
 
+#run cuffmerge
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks
+
+#cuffmerge \
+#-s /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+#-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
+#-p $THREADS \
+#/home/hcm14449/Github/Dosage_Compensation/assembly_GTF_list.txt
+
+
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 
 
 #run cuffquant to estimate expression levels to put into cuffdiff
@@ -281,9 +293,9 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 #not sure if this works yet
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat
-ls >> output.txt
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat
+#ls >> output.txt
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks
 
 module load cufflinks/2.2.1
 

@@ -3,7 +3,7 @@
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:AMD
 #PBS -l walltime=480:00:00
-#PBS -l mem=10gb
+#PBS -l mem=200gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
@@ -11,4 +11,13 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/
 
 module load samtools/1.3.1
 
-samtools depth  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/SORTHolly-66B-redo-136232_S14_R1_001_tophat_out/Holly-66B-redo-136232_S14_R1_001_tophat_out.sorted.bam |  awk '{sum+=$3} END { print "Average = ",sum/NR}' > 66B_depth.txt
+while read SampleName
+do
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Depth${SampleName}
+
+samtools depth \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/${SampleName}/${SampleName}.sorted.bam \
+|  awk '{sum+=$3} END { print "Average = ",sum/NR}' > ${SampleName}.txt
+
+
+done < /home/hcm14449/Github/Dosage_Compensation/bams.txt

@@ -21,11 +21,19 @@ library(RColorBrewer)
 library(qdapTools)
 library(data.table)
 library(ggpubr)
+#install.packages("refGenome")
+library(refGenome)
+ 
 ```
 
 Then we read in our data
 ``` {r read data, include=TRUE}
-raw <- read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/September_2017/genes.count_table",row.names="tracking_id")
+setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Merged/"
+
+raw <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Merged/merged.csv",header=TRUE)
+
+raw <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Merged/merged.csv", header = FALSE, sep = '\t')
+raw2 <- fread("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Merged/merged.csv")
 ##add a grouping factor (for us this is the sample)
 group <- as.factor(c("X112","X112","X112","X115","X115","X115","X117","X117","X117","X11","X11","X11","X123","X123","X123","X141","X141","X141","X152","X152","X152","X18","X18","X18","X1","X1","X1","X21","X21","X21","X29","X29","X29","X2","X2","X2","X31","X31","X31","X3","X3","X3","X49","X49","X49","X4","X4","X4","X50","X50","X50","X59","X59","X59","X5","X5","X5","X61","X61","X61","X66","X66","X66","X69","X69","X69","X6","X6","X6","X76","X76","X76","X77","X77","X77","X7","X7","X7","X8","X8","X8","X9","X9","X9","GCA","GCA","GCA","MAA","MAA","MAA"))
 ##convert the data into a DGEList-object (this uses edgeR)

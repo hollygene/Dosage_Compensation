@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N depth_test
 #PBS -q batch
-#PBS -l nodes=1:ppn=1:AMD
+#PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=480:00:00
 #PBS -l mem=200gb
 #PBS -M hmcqueary@uga.edu

@@ -21,4 +21,48 @@ module load kallisto/0.42.5
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 
-/usr/local/apps/kallisto/0.42.5/bin/kallisto quant -i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx -o test.kallisto --single -l 200 -s 20 Holly-66B-redo-136232_S14_R1_001.fastq
+#/usr/local/apps/kallisto/0.42.5/bin/kallisto quant -i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx -o test.kallisto --single -l 200 -s 20 Holly-66B-redo-136232_S14_R1_001.fastq
+
+for file in ./*.fastq
+
+do
+
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
+
+/usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
+-i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
+-o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+
+done
+
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+
+for file in ./*.fastq
+
+do
+
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
+
+/usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
+-i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
+-o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+
+done
+
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
+
+for file in ./*.fastq
+
+do
+
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
+
+/usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
+-i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
+-o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+
+done
+module unload kallisto/0.42.5

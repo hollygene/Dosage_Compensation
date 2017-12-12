@@ -32,7 +32,7 @@ BASE=${FBASE%.fastq}
 
 /usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
 -i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
--o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+-o ${BASE}.kallisto --single -l 200 -s 20 ${BASE}.fastq
 
 done
 
@@ -47,7 +47,7 @@ BASE=${FBASE%.fastq}
 
 /usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
 -i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
--o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+-o ${BASE}.kallisto --single -l 200 -s 20 ${BASE}.fastq
 
 done
 
@@ -62,7 +62,7 @@ BASE=${FBASE%.fastq}
 
 /usr/local/apps/kallisto/0.42.5/bin/kallisto quant \
 -i /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcripts.idx \
--o test.kallisto --single -l 200 -s 20 ${BASE}.fastq
+-o ${BASE}.kallisto --single -l 200 -s 20 ${BASE}.fastq
 
 done
 module unload kallisto/0.42.5

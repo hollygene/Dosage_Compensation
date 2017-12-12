@@ -13,7 +13,7 @@ THREADS=4
 
 module load kallisto/0.42.5
 #first need to build a kallisto index
-/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i index genome.fa
+/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i transcripts.idx genes.gtf
 
 #test it on one line first
 

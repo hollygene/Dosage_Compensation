@@ -16,7 +16,7 @@ do
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Depth${SampleName}
 
 samtools depth \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/${SampleName}/${SampleName}.sorted.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/SORT${SampleName}/${SampleName}.sorted.bam \
 |  awk '{sum+=$3} END { print "Average = ",sum/NR}' > ${SampleName}.txt
 
 

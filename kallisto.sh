@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N assembly_test_2
+#PBS -N kallisto
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=480:00:00
@@ -13,7 +13,7 @@ THREADS=4
 
 module load kallisto/0.42.5
 #first need to build a kallisto index
-/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i genome genome.fa
+/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i genome.fa genome.fa
 
 #test it on one line first
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC

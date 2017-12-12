@@ -13,9 +13,10 @@ THREADS=4
 
 module load kallisto/0.42.5
 #first need to build a kallisto index
-/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i genome.fa genome.fa
+/usr/local/apps/kallisto/0.42.5/bin/kallisto index -i index genome.fa
 
 #test it on one line first
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
 
-/usr/local/apps/kallisto/0.42.5/bin/kallisto quant -i genome -o test.kallisto --single -l 200 -s 20 Holly-66B-redo-136232_S14_R1_001.fastq
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC
+
+#/usr/local/apps/kallisto/0.42.5/bin/kallisto quant -i genome -o test.kallisto --single -l 200 -s 20 Holly-66B-redo-136232_S14_R1_001.fastq

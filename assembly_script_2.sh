@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N assembly_test_2
 #PBS -q batch
-#PBS -l nodes=2:ppn=1:HIGHMEM
+#PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=480:00:00
 #PBS -l mem=200gb
 #PBS -M hmcqueary@uga.edu
@@ -99,35 +99,35 @@ THREADS=4
 #done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
 #module unload cufflinks/2.2.1
 
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
 #need to run cuffmerge for later input into edgeR
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/Cufflinks
 
-cuffmerge \
--s /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
--g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
--p $THREADS \
-/home/hcm14449/Github/Dosage_Compensation/assembly_GTF_list.txt
+#cuffmerge \
+#-s /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+#-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
+#-p $THREADS \
+#/home/hcm14449/Github/Dosage_Compensation/assembly_GTF_list.txt
 
 
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test
 #run cuffquant to estimate expression levels to put into cuffdiff
 
-while read SampleName
-do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName}
+#while read SampleName
+#do
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName}
 
-cuffquant \
--p $THREADS \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName} \
--b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out/accepted_hits.bam
+#cuffquant \
+#-p $THREADS \
+#-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/quant_test/cuffquant${SampleName} \
+#-b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/tophat_test/${BASE}_tophat_out/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
+#done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
 
-module unload cufflinks/2.2.1
+#module unload cufflinks/2.2.1
 
 #####################################################################################################################
 #then MA new
@@ -183,11 +183,11 @@ module unload cufflinks/2.2.1
 #module unload tophat/2.1.1
 
 #not sure if this works yet
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
-ls >> output.txt
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks
+#ls >> output.txt
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks
 
 #run cufflinks on all samples
 while read SampleName
@@ -240,7 +240,7 @@ module unload cufflinks/2.2.1
 #then MA old
 
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 #these codes work
 
@@ -297,22 +297,22 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 #ls >> output.txt
 #mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks
 
-module load cufflinks/2.2.1
+#module load cufflinks/2.2.1
 
-while read SampleName
-do
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks/cufflinks${SampleName}
+#while read SampleName
+#do
+#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks/cufflinks${SampleName}
 
-cufflinks \
--p $THREADS \
--g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks/cufflinks${SampleName} \
--b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/${SampleName}/accepted_hits.bam
+#cufflinks \
+#-p $THREADS \
+#-g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
+#-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cufflinks/cufflinks${SampleName} \
+#-b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/${SampleName}/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/output.txt
+#done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/output.txt
 
-module unload cufflinks/2.2.1
+#module unload cufflinks/2.2.1
 
 
 #run cuffquant to estimate expression levels to put into cuffdiff

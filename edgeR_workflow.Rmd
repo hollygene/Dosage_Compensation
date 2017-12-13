@@ -23,8 +23,15 @@ library(data.table)
 library(ggpubr)
 #install.packages("refGenome")
 library(refGenome)
- 
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("Rsubread")
+library(Rsubread)
 ```
+
+``` {r Rsubread, include=FALSE}
+featureCounts -t exon -g gene_id -a annotation.gtf -o counts.txt mapping_results_SE.bam
+```
+
 
 Then we read in our data
 ``` {r read data, include=TRUE}

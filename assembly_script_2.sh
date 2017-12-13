@@ -183,7 +183,7 @@ THREADS=4
 #module unload tophat/2.1.1
 
 #not sure if this works yet
-#module load cufflinks/2.2.1
+module load cufflinks/2.2.1
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat
 #ls >> output.txt

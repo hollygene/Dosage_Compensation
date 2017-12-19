@@ -1,9 +1,9 @@
 #!/bin/bash
 #PBS -N assembly_test_2
 #PBS -q batch
-#PBS -l nodes=1:ppn=1:HIGHMEM
+#PBS -l nodes=2:ppn=1:HIGHMEM
 #PBS -l walltime=480:00:00
-#PBS -l mem=200gb
+#PBS -l mem=100gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
@@ -189,6 +189,7 @@ tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly
 #unload tophat
 module unload tophat/2.1.1
 
+
 #not sure if this works yet
 module load cufflinks/2.2.1
 
@@ -210,8 +211,7 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/top
 
 #done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/output.txt
 
-cufflinks \
--p $THREADS \
+cufflinks -p $THREADS \
 -g /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Cufflinks/cufflinksHolly_50C_S18_R1_001_trimmed_tophat_out \
 -b /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome.fa \

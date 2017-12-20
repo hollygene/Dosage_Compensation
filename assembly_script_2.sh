@@ -144,9 +144,9 @@ THREADS=4
 
 #trim sequences a little
 #trying trimgalore since trimmomatic didnt seem to work
-#module load trimgalore/0.4.4
+module load trimgalore/0.4.4
 #mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 #for file in ./*.fastq
 
@@ -158,8 +158,9 @@ THREADS=4
 #trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
 #done
+trim_galore --phred33 -q 20 -o trimmed Holly_50C_S18_R1_001.fastq
 
-#module unload trimgalore/0.4.4
+module unload trimgalore/0.4.4
 
 module load tophat/2.1.1
 #cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed

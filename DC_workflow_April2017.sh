@@ -274,7 +274,7 @@ if ($7=="XIII") print "13", ",", $0;
 if ($7=="XIV") print "14", ",", $0;
 if ($7=="XV") print "15", ",", $0;
 if ($7=="XVI") print "16", ",", $0  } else print $0
-}' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv
+}' genes.fpkm_table.joined.rmcom.split.commas.nomito.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv
 
 
 
@@ -283,24 +283,25 @@ if ($7=="XVI") print "16", ",", $0  } else print $0
 #How to print one string in one column in one line?
 #Or just make a new header?
 #this code works but I have to put it into textwrangler to get it all on one line so that command line likes it
-#awk 'BEGIN{print #"chr",",","tracking_id",",","class_code",",","nearest_ref_id",",","gene_id",",","gene_short_name",",","tss_id",",","chr_roman",",","length",",","null",",","X112_2",",","X112_0",",","X112_1",",","X115_0",",","X115_1",",","X117_0",",","X117_1",",","X117_2",",","X11_1",",","X11_0",",","X11_2",",","X123_1",",","X123_0,",","X123_2",",","X141_1",",","X141_0",",","X141_2",",","X152_1",",","X152_0",",","X152_2",",","X18_1",",","X18_0",",","X18_2",",","X1_0",",","X1_1",",","X1_2",",","X21_1",",","X21_0"#,",","X21_2",",","X29_1",",","X29_0",",","X29_2",",","X2_0",",","X2_1",",","X2_2",",","X31_1",",","X31_0",",","X31_2",",","X3_0",",","X3_1",",","X3_2",",","X49_0",",","X49_1",",","X49_2",",","X4_1",",","X4_0",",","X4_2",",","X50_1",",","X50_0",",","X50_2",",","X59_0",",","X59_1",",","X59_2",",","X5_1",",","X5_0",",","X5_2",",","X61_1",",","X61_0",",","X61_2",",","X66_0",",","X66_1",",","X66_2",",","X69_1",",","X69_0",",","X69_2",",","X6_0",",","X6_1",",","X6_2",",","X76_0",",","X76_1",",","X76_#2",",","X77_1",",","X77_0",",","X77_2",",","X7_1",",","X7_0",",","X7_2",",","X8_0",",","X_1",",","X8_2",",","X9_0",",","X9_1",",","X9_2",",","GC_Anc_1",",",GC_Anc_0",",","GC_Anc_2",",","MA_Anc_1",",","MA_Anc_0",",","MA_Anc_2"}; {print}' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.nwhead.csv
+#awk 'BEGIN{print #"chr",",","tracking_id",",","class_code",",","nearest_ref_id",",","gene_id",",","gene_short_name",",","tss_id",",","chr_roman",",","length",",","null",",","X112_2",",","X112_0",",","X112_1",",","X115_0",",","X115_1",",","X117_0",",","X117_1",",","X117_2",",","X11_1",",","X11_0",",","X11_2",",","X123_1",",","X123_0,",","X123_2",",","X141_1",",","X141_0",",","X141_2",",","X152_1",",","X152_0",",","X152_2",",","X18_1",",","X18_0",",","X18_2",",","X1_0",",","X1_1",",","X1_2",",","X21_1",",","X21_0"#,",","X21_2",",","X29_1",",","X29_0",",","X29_2",",","X2_0",",","X2_1",",","X2_2",",","X31_1",",","X31_0",",","X31_2",",","X3_0",",","X3_1",",","X3_2",",","X49_0",",","X49_1",",","X49_2",",","X4_1",",","X4_0",",","X4_2",",","X50_1",",","X50_0",",","X50_2",",","X59_0",",","X59_1",",","X59_2",",","X5_1",",","X5_0",",","X5_2",",","X61_1",",","X61_0",",","X61_2",",","X66_0",",","X66_1",",","X66_2",",","X69_1",",","X69_0",",","X69_2",",","X6_0",",","X6_1",",","X6_2",",","X76_0",","
+#,"X76_1",",","X76_#2",",","X77_1",",","X77_0",",","X77_2",",","X7_1",",","X7_0",",","X7_2",",","X8_0",",","X_1",",","X8_2",",","X9_0",",","X9_1",",","X9_2",",","GC_Anc_1",",",GC_Anc_0",",","GC_Anc_2",",","MA_Anc_1",",","MA_Anc_0",",","MA_Anc_2"}; {print}' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.nwhead.csv
 
 
 #get rid of old header
 grep -v "locus"  genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv > temp && mv temp genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.csv
 
 #9/25
-grep -v "locus"  genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.csv > temp && mv temp genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv
+grep -v "locus"  genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.csv > temp && mv temp genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv
 
 #add new header
 echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_id,chr_roman,length,null,X112_2,X112_0,X112_1,X115_0,X115_1,X115_2,X117_0,X117_1,X117_2,X11_1,X11_0,X11_2,X123_1,X123_0,X123_2,X141_1,X141_0,X141_2,X152_1,X152_0,X152_2,X18_1,X18_0,X18_2,X1_0,X1_1,X1_2,X21_1,X21_0,X21_2,X29_1,X29_0,X29_2,X2_0,X2_1,X2_2,X31_1,X31_0,X31_2,X3_0,X3_1,X3_2,X49_0,X49_1,X49_2,X4_1,X4_0,X4_2,X50_1,X50_0,X50_2,X59_0,X59_1,X59_2,X5_1,X5_0,X5_2,X61_1,X61_0,X61_2,X66_0,X66_1,X66_2,X69_1,X69_0,X69_2,X6_0,X6_1,X6_2,X76_0,X76_1,X76_2,X77_1,X77_0,X77_2,X7_1,X7_0,X7_2,X8_0,X8_1,X8_2,X9_0,X9_1,X9_2,GC_Anc_1,GC_Anc_0,GC_Anc_2,MA_Anc_1,MA_Anc_0,MA_Anc_2" | cat - genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv
 
 #9/25
-echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_id,chr_roman,length,null,X112_2,X112_0,X112_1,X115_0,X115_1,X115_2,X117_0,X117_1,X117_2,X11_1,X11_0,X11_2,X123_1,X123_0,X123_2,X141_1,X141_0,X141_2,X152_1,X152_0,X152_2,X18_1,X18_0,X18_2,X1_0,X1_1,X1_2,X21_1,X21_0,X21_2,X29_1,X29_0,X29_2,X2_0,X2_1,X2_2,X31_1,X31_0,X31_2,X3_0,X3_1,X3_2,X49_0,X49_1,X49_2,X4_1,X4_0,X4_2,X50_1,X50_0,X50_2,X59_0,X59_1,X59_2,X5_1,X5_0,X5_2,X61_1,X61_0,X61_2,X66_0,X66_1,X66_2,X69_1,X69_0,X69_2,X6_0,X6_1,X6_2,X76_0,X76_1,X76_2,X77_1,X77_0,X77_2,X7_1,X7_0,X7_2,X8_0,X8_1,X8_2,X9_0,X9_1,X9_2,GC_Anc_1,GC_Anc_0,GC_Anc_2,MA_Anc_1,MA_Anc_0,MA_Anc_2" | cat - genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv> genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.csv
+echo -e "chr,tracking_id,class_code,nearest_ref_id,gene_id,gene_short_name,tss_id,chr_roman,length,null,SCA1_0,SCA1_2,SCA1_1,SC001_0,SC001_1,SC001_2,SC002_0,SC002_2,SC002_1,SC003_2,SC003_0,SC003_1,SC004_0,SC004_1,SC004_2,SC005_2,SC005_0,SC005_1,SC006_0,SC006_1,SC006_2,SC007_0,SC007_1,SC007_2,SC008_0,SC008_1,SC008_2,SC009_2,SC009_0,SC009_1,SC011_0,SC011_1,SC011_2,SC015_0,SC015_1,SC015_2,SC028_0,SC028_2,SC028_1,SC088_0,SC088_1,SC088_2,SC108_0,SC108_1,SC108_2,SC119_0,SC119_2,SC119_1" | cat - genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.csv> genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.csv
 
 #need to get rid of columns that I don't actually need
 #don't need: 3-10
-cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv
+cut -f1,2,11- -d',' genes.fpkm_table.joined.rmcom.split.commas.nomito.chgchr.rmhead.nwhd.csv > genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv
 
 #9/25
 #getting rid of anything not MA also

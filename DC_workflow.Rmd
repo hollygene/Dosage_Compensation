@@ -331,7 +331,7 @@ logMatsd2.old <-cbind(chrms,logMatsd.old)
 ######################################################################################
 #how to make a graph of the chromosomes and their respective error bars 
 #changes the margins to the standard margin width
-setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
+setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/January2018_Final_Graphs"
 par(mar=c(5, 4, 4, 2) + 0.1)
 par(mfrow=c(1,1))
 #line 112
@@ -3793,6 +3793,7 @@ library(ggplot2)
 myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables",pattern = "*.diff", full.names = TRUE)
 str(myFiles)
 length(myFiles)
+print(myFiles)
 #View(myFiles)
 # Make plots.
 plot_list = list()
@@ -3813,6 +3814,7 @@ for (i in 1:length(myFiles)) {
        xlim=c(0,1),ylim=c(0,10000),main=list_of_titles[i])
   dev.off() 
 }
+
 
 ```
 

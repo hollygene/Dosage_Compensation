@@ -3773,7 +3773,7 @@ for (i in seq_along(ratioFiles)){
 ``` {r fpkm vs p-value, echo=FALSE}
 #first need to read in the Cuffdiff data 
 #first do this for one line, then make a loop to do it for each line
-setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff"
+setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
 samples <- c(1,2,3,4,5,6,7,8,9,11,18,21,29,31,49,50,59,61,66,69,76,77,112,115,123,141,152)
 
 #sample1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/gene_exp_S1.diff",header=TRUE)
@@ -3790,18 +3790,23 @@ list_of_titles <- c("Sample1","Sample2","Sample3","Sample4","Sample5","Sample6",
 library(ggplot2)
 
 # Make list of variable names to loop over.
-myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff",pattern = "*.diff")
+myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables",pattern = "*.diff", full.names = TRUE)
 str(myFiles)
 length(myFiles)
-View(myFiles)
+#View(myFiles)
 # Make plots.
 plot_list = list()
 
 #plot each sample in myFiles, then save to a .pdf in the working directory 
 for (i in 1:length(myFiles)) {
+  setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
   pdf(paste("FPKM_vs_p_val_",list_of_titles[i],".pdf",sep=""))
   sample <- read.table(myFiles[i],header=TRUE)
   sample <- data.frame(sample)
+  sample <- cSplit(sample,"locus",":") #split the locus column into "chr" and "locus"
+  names <- c("test_id","gene_id","gene","sample_1","sample_2","status","value_1","value_2","log2.fold_change","test_stat","p_value","q_value","significant","chr","locus")
+  colnames(sample) <- names
+  sample <-  subset(sample, !grepl("MT", sample$chr))
   qval <- sample$q_value
   val2 <- sample$value_2
   plot(qval,val2,ylab="ancestor FPKM",xlab="FDR-adj p-value", 

@@ -1753,7 +1753,7 @@ dev.off()}
   euRatio.c9 <- c(l001.9[,3],l002.9[,3],l003.9[,3],l004.9[,3],l005.9[,3],l006.9[,3],l007.9[,3],l008.9[,3],l009.9[,3],l011.9[,3],l028.9[,3])
 pdf("Chrm_9_old.pdf")
 boxplot((log2(l001.9[,3])),(log2(l002.9[,3])),(log2(l003.9[,3])),(log2(l004.9[,3])),(log2(l005.9[,3])),
-        (log2(l006.9[,3])),(log2(l007.9[,3])),(log2(l008.8[,3])),(log2(l009.9[,3])),(log2(l011.9[,3])),
+        (log2(l006.9[,3])),(log2(l007.9[,3])),(log2(l008.9[,3])),(log2(l009.9[,3])),(log2(l011.9[,3])),
         (log2(l015.9[,3])),(log2(l028.9[,3])),(log2(l088.9[,3])),(log2(l108.9[,3])),(log2(l119.9[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
         ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
                                         "green",
@@ -1802,40 +1802,48 @@ dev.off()}
 #RATIOS FOR CHROMOSOME 9
 
 {
-  euRatio.c8 <- c(l001.8.red[,3],l002.8.red[,3],l003.8.red[,3],l004.8.red[,3],l005.8.red[,3],l006.8.red[,3],l007.8.red[,3],l008.8.red[,3],l009.8.red[,3],l011.8.red[,3],l028.8.red[,3])
-pdf("Chrm_8_red_old.pdf")
-boxplot((log2(l001.8.red[,3])),(log2(l002.8.red[,3])),(log2(l003.8.red[,3])),(log2(l004.8.red[,3])),(log2(l005.8.red[,3])),
-        (log2(l006.8.red[,3])),(log2(l007.8.red[,3])),(log2(l008.8.red[,3])),(log2(l009.8.red[,3])),(log2(l011.8.red[,3])),
-        (log2(l015.8.red[,3])),(log2(l028.8.red[,3])),(log2(l088.8.red[,3])),(log2(l108.8.red[,3])),(log2(l119.8.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+  euRatio.c9 <- c(l001.9.red[,3],l002.9.red[,3],l003.9.red[,3],l004.9.red[,3],l005.9.red[,3],l006.9.red[,3],l007.9.red[,3],l008.9.red[,3],l009.9.red[,3],l011.9.red[,3],l028.9.red[,3])
+pdf("Chrm_9_red_old.pdf")
+boxplot((log2(l001.9.red[,3])),(log2(l002.9.red[,3])),(log2(l003.9.red[,3])),(log2(l004.9.red[,3])),(log2(l005.9.red[,3])),
+        (log2(l006.9.red[,3])),(log2(l007.9.red[,3])),(log2(l008.9.red[,3])),(log2(l009.9.red[,3])),(log2(l011.9.red[,3])),
+        (log2(l015.9.red[,3])),(log2(l028.9.red[,3])),(log2(l088.9.red[,3])),(log2(l108.9.red[,3])),(log2(l119.9.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
         ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
                                         "green",
                         "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
         ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l001.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l002.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l003.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l004.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l005.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l006.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l007.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l008.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l009.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l011.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l015.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l028.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l088.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l108.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l119.8.red[,3])), (log2(euRatio.c8)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l001.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l007.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l015.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l088.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l108.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l119.9.red[,3])), (log2(euRatio.c9)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=18.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19.3, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=10.7, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=11, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1.8, "*", pos=3, cex=2, col="red")
+
+text(x=12.7, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=13, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=13.3, y=1.8, "*", pos=3, cex=2, col="red")
+
+text(x=14.7, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=15, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=15.3, y=1.8, "*", pos=3, cex=2, col="red")
 
 dev.off()}
 
@@ -1844,57 +1852,38 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 10
 
-{euRatio.c10 <- c(l002.10[,3],l003.10[,3],l005.10[,3],l006.10[,3],l008.10[,3],l009.10[,3],l069.10[,3])
-
-pdf("Chrm_10.pdf")
+{ 
+  euRatio.c10 <- c(l001.10[,3],l002.10[,3],l003.10[,3],l004.10[,3],l005.10[,3],l006.10[,3],l007.10[,3],l008.10[,3],l009.10[,3],l011.10[,3],l028.10[,3])
+pdf("Chrm_10_old.pdf")
 boxplot((log2(l001.10[,3])),(log2(l002.10[,3])),(log2(l003.10[,3])),(log2(l004.10[,3])),(log2(l005.10[,3])),
         (log2(l006.10[,3])),(log2(l007.10[,3])),(log2(l008.10[,3])),(log2(l009.10[,3])),(log2(l011.10[,3])),
-        (log2(l018.10[,3])),(log2(l021.10[,3])),(log2(l031.10[,3])),(log2(l049.10[,3])),(log2(l059.10[,3])),
-        (log2(l061.10[,3])),(log2(l066.10[,3])),(log2(l069.10[,3])),(log2(l076.10[,3])),(log2(l077.10[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-       "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 10",las=3,ylim=c(-2,2.5))
+        (log2(l015.10[,3])),(log2(l028.10[,3])),(log2(l088.10[,3])),(log2(l108.10[,3])),(log2(l119.10[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
 t.test((log2(l005.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoic for 3
-t.test((log2(l049.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value = 9.705e-11
-wilcox.test((log2(l076.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value = 1.79e-15
-
-t.test((log2(l077.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.10[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=18.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19.3, y=1.8, "*", pos=3, cex=2, col="red")
 
 dev.off()}
 ###############################################################################################
@@ -1903,57 +1892,37 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 10
 
-{euRatio.c10 <- c(l002.10.red[,3],l003.10.red[,3],l005.10.red[,3],l006.10.red[,3],l008.10.red[,3],l009.10.red[,3],l069.10.red[,3])
-
-pdf("Chrm_10_red.pdf")
+{
+  euRatio.c10 <- c(l001.10.red[,3],l002.10.red[,3],l003.10.red[,3],l004.10.red[,3],l005.10.red[,3],l006.10.red[,3],l007.10.red[,3],l008.10.red[,3],l009.10.red[,3],l011.10.red[,3],l028.10.red[,3])
+pdf("Chrm_10_red_old.pdf")
 boxplot((log2(l001.10.red[,3])),(log2(l002.10.red[,3])),(log2(l003.10.red[,3])),(log2(l004.10.red[,3])),(log2(l005.10.red[,3])),
         (log2(l006.10.red[,3])),(log2(l007.10.red[,3])),(log2(l008.10.red[,3])),(log2(l009.10.red[,3])),(log2(l011.10.red[,3])),
-        (log2(l018.10.red[,3])),(log2(l021.10.red[,3])),(log2(l031.10.red[,3])),(log2(l049.10.red[,3])),(log2(l059.10.red[,3])),
-        (log2(l061.10.red[,3])),(log2(l066.10.red[,3])),(log2(l069.10.red[,3])),(log2(l076.10.red[,3])),(log2(l077.10.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-       "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 10",las=3,ylim=c(-2,2.5))
+        (log2(l015.10.red[,3])),(log2(l028.10.red[,3])),(log2(l088.10.red[,3])),(log2(l108.10.red[,3])),(log2(l119.10.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
 t.test((log2(l005.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoic for 3
-t.test((log2(l049.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value = 9.705e-11
-wilcox.test((log2(l076.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
-#p-value = 1.79e-15
-
-t.test((log2(l077.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.10.red[,3])), (log2(euRatio.c10)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
-
-text(x=18.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=19.3, y=1.8, "*", pos=3, cex=2, col="red")
 
 dev.off()}
 ###############################################################################################
@@ -1961,45 +1930,33 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 11
 
-{euRatio.c11 <- c(l002.11.red[,3],l003.11.red[,3],l005.11.red[,3],l006.11.red[,3],l008.11.red[,3],l009.11[,3],l069.11.red[,3])
-
-pdf("Chrm_11.red.pdf")
+{ 
+  euRatio.c11 <- c(l001.11.red[,3],l002.11.red[,3],l003.11.red[,3],l004.11.red[,3],l005.11.red[,3],l006.11.red[,3],l007.11.red[,3],l008.11.red[,3],l009.11.red[,3],l011.11.red[,3],l028.11.red[,3])
+pdf("Chrm_11_red_old.pdf")
 boxplot((log2(l001.11.red[,3])),(log2(l002.11.red[,3])),(log2(l003.11.red[,3])),(log2(l004.11.red[,3])),(log2(l005.11.red[,3])),
         (log2(l006.11.red[,3])),(log2(l007.11.red[,3])),(log2(l008.11.red[,3])),(log2(l009.11.red[,3])),(log2(l011.11.red[,3])),
-        (log2(l018.11.red[,3])),(log2(l021.11.red[,3])),(log2(l031.11.red[,3])),(log2(l049.11.red[,3])),(log2(l059.11.red[,3])),
-        (log2(l061.11.red[,3])),(log2(l066.11.red[,3])),(log2(l069.11.red[,3])),(log2(l076.11.red[,3])),(log2(l077.11.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 11",las=3,ylim=c(-2,2.5))
+        (log2(l015.11.red[,3])),(log2(l028.11.red[,3])),(log2(l088.11.red[,3])),(log2(l108.11.red[,3])),(log2(l119.11.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
 t.test((log2(l005.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoic for 3
-t.test((log2(l049.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.11.red[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
@@ -2013,45 +1970,33 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 11
 
-{euRatio.c11 <- c(l002.11[,3],l003.11[,3],l005.11[,3],l006.11[,3],l008.11[,3],l009.11[,3],l069.11[,3])
-
-pdf("Chrm_11.pdf")
+{  
+  euRatio.c11 <- c(l001.11[,3],l002.11[,3],l003.11[,3],l004.11[,3],l005.11[,3],l006.11[,3],l007.11[,3],l008.11[,3],l009.11[,3],l011.11[,3],l028.11[,3])
+pdf("Chrm_11_old.pdf")
 boxplot((log2(l001.11[,3])),(log2(l002.11[,3])),(log2(l003.11[,3])),(log2(l004.11[,3])),(log2(l005.11[,3])),
         (log2(l006.11[,3])),(log2(l007.11[,3])),(log2(l008.11[,3])),(log2(l009.11[,3])),(log2(l011.11[,3])),
-        (log2(l018.11[,3])),(log2(l021.11[,3])),(log2(l031.11[,3])),(log2(l049.11[,3])),(log2(l059.11[,3])),
-        (log2(l061.11[,3])),(log2(l066.11[,3])),(log2(l069.11[,3])),(log2(l076.11[,3])),(log2(l077.11[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 11",las=3,ylim=c(-2,2.5))
+        (log2(l015.11[,3])),(log2(l028.11[,3])),(log2(l088.11[,3])),(log2(l108.11[,3])),(log2(l119.11[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
 t.test((log2(l005.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoic for 3
-t.test((log2(l049.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.11[,3])), (log2(euRatio.c11)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
@@ -2064,85 +2009,39 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 12
 
-{euRatio.c12 <- c(l002.12[,3],l003.12[,3],l005.12[,3],l006.12[,3],l008.12[,3],l009.12[,3],l069.12[,3])
-
-pdf("Chrm_12.pdf")
+{  
+  euRatio.c12 <- c(l001.12[,3],l002.12[,3],l003.12[,3],l004.12[,3],l005.12[,3],l006.12[,3],l007.12[,3],l008.12[,3],l009.12[,3],l011.12[,3],l028.12[,3])
+pdf("Chrm_12_old.pdf")
 boxplot((log2(l001.12[,3])),(log2(l002.12[,3])),(log2(l003.12[,3])),(log2(l004.12[,3])),(log2(l005.12[,3])),
         (log2(l006.12[,3])),(log2(l007.12[,3])),(log2(l008.12[,3])),(log2(l009.12[,3])),(log2(l011.12[,3])),
-        (log2(l018.12[,3])),(log2(l021.12[,3])),(log2(l031.12[,3])),(log2(l049.12[,3])),(log2(l059.12[,3])),
-        (log2(l061.12[,3])),(log2(l066.12[,3])),(log2(l069.12[,3])),(log2(l076.12[,3])),(log2(l077.12[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-       "green","darkcyan","deeppink1","cyan","green","cyan","cyan","cyan","cyan","green","cyan","deeppink1"),
-        main="GC Lines Chromsome 12",las=3,ylim=c(-2,2.5))
+        (log2(l015.12[,3])),(log2(l028.12[,3])),(log2(l088.12[,3])),(log2(l108.12[,3])),(log2(l119.12[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
 t.test((log2(l005.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l018.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#significant difference between line 11 and euploid line average ratios
-wilcox.test((log2(l011.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l077.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#significant difference between 18 and 11
-wilcox.test((log2(l018.12[,3])), (log2(l011.12[,3])), paired=FALSE, var.equal=TRUE)
-#no significant difference between 18 and 77
-wilcox.test((log2(l018.12[,3])), (log2(l077.12[,3])), paired=FALSE, var.equal=TRUE)
-#significant difference between 11 and 77 
-wilcox.test((log2(l011.12[,3])), (log2(l077.12[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.12[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-brackets(10, 2.1, 11, 2.1, h = 0.2,  ticks = 0.5, curvature = 0.5, type = 1,
-col = 1, lwd = 1, lty = 1, xpd = FALSE)
-brackets(10, 2.2, 20, 2.2, h = 0.2,  ticks = 0.5, curvature = 0.5, type = 1,
-col = 1, lwd = 1, lty = 1, xpd = FALSE)
 
-
-text(x=10.2, y=2.11, "*", pos=3, cex=2, col="red")
-text(x=10.5, y=2.11, "*", pos=3, cex=2, col="red")
-text(x=10.8, y=2.11, "*", pos=3, cex=2, col="red")
-
-text(x=14.7, y=2.21, "*", pos=3, cex=2, col="red")
-text(x=15, y=2.21, "*", pos=3, cex=2, col="red")
-text(x=15.3, y=2.21, "*", pos=3, cex=2, col="red")
-
-
-
-text(x=9.7, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=10, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=1.7, "*", pos=3, cex=2, col="red")
-
-text(x=10.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=11, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1.8, "*", pos=3, cex=2, col="red")
-
-text(x=19.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=20, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=20.3, y=1.8, "*", pos=3, cex=2, col="red")
 dev.off()}
 
 ###############################################################################################
@@ -2151,83 +2050,39 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 12
 
-{euRatio.c12 <- c(l002.12.red[,3],l003.12.red[,3],l005.12.red[,3],l006.12.red[,3],l008.12.red[,3],l009.12.red[,3],l069.12.red[,3])
-
-pdf("Chrm_12.red.pdf")
+{
+  euRatio.c12 <- c(l001.12.red[,3],l002.12.red[,3],l003.12.red[,3],l004.12.red[,3],l005.12.red[,3],l006.12.red[,3],l007.12.red[,3],l008.12.red[,3],l009.12.red[,3],l011.12.red[,3],l028.12.red[,3])
+pdf("Chrm_12_red_old.pdf")
 boxplot((log2(l001.12.red[,3])),(log2(l002.12.red[,3])),(log2(l003.12.red[,3])),(log2(l004.12.red[,3])),(log2(l005.12.red[,3])),
         (log2(l006.12.red[,3])),(log2(l007.12.red[,3])),(log2(l008.12.red[,3])),(log2(l009.12.red[,3])),(log2(l011.12.red[,3])),
-        (log2(l018.12.red[,3])),(log2(l021.12.red[,3])),(log2(l031.12.red[,3])),(log2(l049.12.red[,3])),(log2(l059.12.red[,3])),
-        (log2(l061.12.red[,3])),(log2(l066.12.red[,3])),(log2(l069.12.red[,3])),(log2(l076.12.red[,3])),(log2(l077.12.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-       "green","darkcyan","deeppink1","cyan","green","cyan","cyan","cyan","cyan","green","cyan","deeppink1"),
-        main="GC Lines Chromsome 12",las=3,ylim=c(-2,2.5))
+        (log2(l015.12.red[,3])),(log2(l028.12.red[,3])),(log2(l088.12.red[,3])),(log2(l108.12.red[,3])),(log2(l119.12.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
 t.test((log2(l005.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l018.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#significant difference between line 11 and euploid line average ratios
-wilcox.test((log2(l011.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-
-t.test((log2(l061.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l077.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
-#significant difference between 18 and 11
-wilcox.test((log2(l018.12.red[,3])), (log2(l011.12[,3])), paired=FALSE, var.equal=TRUE)
-#no significant difference between 18 and 77
-wilcox.test((log2(l018.12.red[,3])), (log2(l077.12[,3])), paired=FALSE, var.equal=TRUE)
-#significant difference between 11 and 77 
-wilcox.test((log2(l011.12.red[,3])), (log2(l077.12[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.12.red[,3])), (log2(euRatio.c12)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-brackets(10, 2.1, 11, 2.1, h = 0.2,  ticks = 0.5, curvature = 0.5, type = 1,
-col = 1, lwd = 1, lty = 1, xpd = FALSE)
-brackets(10, 2.2, 20, 2.2, h = 0.2,  ticks = 0.5, curvature = 0.5, type = 1,
-col = 1, lwd = 1, lty = 1, xpd = FALSE)
 
-text(x=10.2, y=2.11, "*", pos=3, cex=2, col="red")
-text(x=10.5, y=2.11, "*", pos=3, cex=2, col="red")
-text(x=10.8, y=2.11, "*", pos=3, cex=2, col="red")
-
-text(x=14.7, y=2.21, "*", pos=3, cex=2, col="red")
-text(x=15, y=2.21, "*", pos=3, cex=2, col="red")
-text(x=15.3, y=2.21, "*", pos=3, cex=2, col="red")
-
-
-text(x=9.7, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=10, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=1.7, "*", pos=3, cex=2, col="red")
-
-text(x=10.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=11, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1.8, "*", pos=3, cex=2, col="red")
-
-text(x=19.7, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=20, y=1.8, "*", pos=3, cex=2, col="red")
-text(x=20.3, y=1.8, "*", pos=3, cex=2, col="red")
 dev.off()}
 
 ###############################################################################################
@@ -2235,97 +2090,73 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 13
 
-{euRatio.c13 <- c(l002.13.red[,3],l003.13.red[,3],l005.13.red[,3],l006.13.red[,3],l008.13.red[,3],l009.13.red[,3],l069.13.red[,3])
-
-pdf("Chrm_13.red.pdf")
-boxplot((log2(l001.13.red[,3])),(log2(l002.13.red[,3])),(log2(l003.13.red[,3])),(log2(l004.13.red[,3])),(log2(l005.13.red[,3])),
-        (log2(l006.13.red[,3])),(log2(l007.13.red[,3])),(log2(l008.13.red[,3])),(log2(l009.13.red[,3])),(log2(l011.13.red[,3])),
-        (log2(l018.13.red[,3])),(log2(l021.13.red[,3])),(log2(l031.13.red[,3])),(log2(l049.13.red[,3])),(log2(l059.13.red[,3])),
-        (log2(l061.13.red[,3])),(log2(l066.13.red[,3])),(log2(l069.13.red[,3])),(log2(l076.13.red[,3])),(log2(l077.13.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 13",las=3,ylim=c(-2,2.5))
-#use non-parametric because these are not normally distributed
-#run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l001.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l002.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l003.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l004.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l005.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l006.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l007.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l008.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l009.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l011.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet")
-
-#text(x=11, y=3.9, "*", pos=3, cex=1.5, col="red")
-#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
-dev.off()}
-###############################################################################################
-#CHROMOSOME 13
-
-#RATIOS FOR CHROMOSOME 13
-
-{euRatio.c13 <- c(l002.13[,3],l003.13[,3],l005.13[,3],l006.13[,3],l008.13[,3],l009.13[,3],l069.13[,3])
-
-pdf("Chrm_13.pdf")
+{  
+euRatio.c13 <- c(l001.13[,3],l002.13[,3],l003.13[,3],l004.13[,3],l005.13[,3],l006.13[,3],l007.13[,3],l008.13[,3],l009.13[,3],l011.13[,3],l028.13[,3])
+pdf("Chrm_13_old.pdf")
 boxplot((log2(l001.13[,3])),(log2(l002.13[,3])),(log2(l003.13[,3])),(log2(l004.13[,3])),(log2(l005.13[,3])),
         (log2(l006.13[,3])),(log2(l007.13[,3])),(log2(l008.13[,3])),(log2(l009.13[,3])),(log2(l011.13[,3])),
-        (log2(l018.13[,3])),(log2(l021.13[,3])),(log2(l031.13[,3])),(log2(l049.13[,3])),(log2(l059.13[,3])),
-        (log2(l061.13[,3])),(log2(l066.13[,3])),(log2(l069.13[,3])),(log2(l076.13[,3])),(log2(l077.13[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 13",las=3,ylim=c(-2,2.5))
+        (log2(l015.13[,3])),(log2(l028.13[,3])),(log2(l088.13[,3])),(log2(l108.13[,3])),(log2(l119.13[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
 t.test((log2(l005.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.13[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+#text(x=11, y=3.9, "*", pos=3, cex=1.5, col="red")
+#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
+dev.off()}
+###############################################################################################
+#CHROMOSOME 13
+
+#RATIOS FOR CHROMOSOME 13
+
+{  
+  euRatio.c13 <- c(l001.13.red[,3],l002.13.red[,3],l003.13.red[,3],l004.13.red[,3],l005.13.red[,3],l006.13.red[,3],l007.13.red[,3],l008.13.red[,3],l009.13.red[,3],l011.13.red[,3],l028.13.red[,3])
+pdf("Chrm_13_red_old.pdf")
+boxplot((log2(l001.13.red[,3])),(log2(l002.13.red[,3])),(log2(l003.13.red[,3])),(log2(l004.13.red[,3])),(log2(l005.13.red[,3])),
+        (log2(l006.13.red[,3])),(log2(l007.13.red[,3])),(log2(l008.13.red[,3])),(log2(l009.13.red[,3])),(log2(l011.13.red[,3])),
+        (log2(l015.13.red[,3])),(log2(l028.13.red[,3])),(log2(l088.13.red[,3])),(log2(l108.13.red[,3])),(log2(l119.13.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l001.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l007.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.13.red[,3])), (log2(euRatio.c13)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
@@ -2340,54 +2171,39 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 14
 
-{euRatio.c14 <- c(l002.14[,3],l003.14[,3],l005.14[,3],l006.14[,3],l008.14[,3],l009.14[,3],l069.14[,3])
-
-pdf("Chrm_14.pdf")
+{
+  euRatio.c14 <- c(l001.14[,3],l002.14[,3],l003.14[,3],l004.14[,3],l005.14[,3],l006.14[,3],l007.14[,3],l008.14[,3],l009.14[,3],l011.14[,3],l028.14[,3])
+pdf("Chrm_14_old.pdf")
 boxplot((log2(l001.14[,3])),(log2(l002.14[,3])),(log2(l003.14[,3])),(log2(l004.14[,3])),(log2(l005.14[,3])),
         (log2(l006.14[,3])),(log2(l007.14[,3])),(log2(l008.14[,3])),(log2(l009.14[,3])),(log2(l011.14[,3])),
-        (log2(l018.14[,3])),(log2(l021.14[,3])),(log2(l031.14[,3])),(log2(l049.14[,3])),(log2(l059.14[,3])),
-        (log2(l061.14[,3])),(log2(l066.14[,3])),(log2(l069.14[,3])),(log2(l076.14[,3])),(log2(l077.14[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-               "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","deeppink1","cyan"),
-        main="GC Lines Chromsome 14",las=3,ylim=c(-2,2.5))
+        (log2(l015.14[,3])),(log2(l028.14[,3])),(log2(l088.14[,3])),(log2(l108.14[,3])),(log2(l119.14[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
 t.test((log2(l005.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l076.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.14[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=18.7, y=1.65, "*", pos=3, cex=2, col="red")
-text(x=19, y=1.65, "*", pos=3, cex=2, col="red")
-text(x=19.3, y=1.65, "*", pos=3, cex=2, col="red")
-#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
+
 dev.off()}
 ###############################################################################################
 
@@ -2395,107 +2211,76 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 14
 
-{euRatio.c14 <- c(l002.14.red[,3],l003.14.red[,3],l005.14.red[,3],l006.14.red[,3],l008.14.red[,3],l009.14.red[,3],l069.14.red[,3])
-
-pdf("Chrm_14.red.pdf")
+{  euRatio.c14 <- c(l001.14.red[,3],l002.14.red[,3],l003.14.red[,3],l004.14.red[,3],l005.14.red[,3],l006.14.red[,3],l007.14.red[,3],l008.14.red[,3],l009.14.red[,3],l011.14.red[,3],l028.14.red[,3])
+pdf("Chrm_14_red_old.pdf")
 boxplot((log2(l001.14.red[,3])),(log2(l002.14.red[,3])),(log2(l003.14.red[,3])),(log2(l004.14.red[,3])),(log2(l005.14.red[,3])),
         (log2(l006.14.red[,3])),(log2(l007.14.red[,3])),(log2(l008.14.red[,3])),(log2(l009.14.red[,3])),(log2(l011.14.red[,3])),
-        (log2(l018.14.red[,3])),(log2(l021.14.red[,3])),(log2(l031.14.red[,3])),(log2(l049.14.red[,3])),(log2(l059.14.red[,3])),
-        (log2(l061.14.red[,3])),(log2(l066.14.red[,3])),(log2(l069.14.red[,3])),(log2(l076.14.red[,3])),(log2(l077.14.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-               "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","deeppink1","cyan"),
-        main="GC Lines Chromsome 14",las=3,ylim=c(-2,2.5))
+        (log2(l015.14.red[,3])),(log2(l028.14.red[,3])),(log2(l088.14.red[,3])),(log2(l108.14.red[,3])),(log2(l119.14.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
 t.test((log2(l005.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi for 3
-t.test((log2(l049.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l076.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.14.red[,3])), (log2(euRatio.c14)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=18.7, y=1.65, "*", pos=3, cex=2, col="red")
-text(x=19, y=1.65, "*", pos=3, cex=2, col="red")
-text(x=19.3, y=1.65, "*", pos=3, cex=2, col="red")
-#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
+
 dev.off()}
 ###############################################################################################
 #CHROMOSOME 15
 
 #RATIOS FOR CHROMOSOME 15
 
-{euRatio.c15 <- c(l002.15[,3],l003.15[,3],l005.15[,3],l006.15[,3],l008.15[,3],l009.15[,3],l069.15[,3])
-
-pdf("Chrm_15.pdf")
+{  
+  euRatio.c15 <- c(l001.15[,3],l002.15[,3],l003.15[,3],l004.15[,3],l005.15[,3],l006.15[,3],l007.15[,3],l008.15[,3],l009.15[,3],l011.15[,3],l028.15[,3])
+pdf("Chrm_15_old.pdf")
 boxplot((log2(l001.15[,3])),(log2(l002.15[,3])),(log2(l003.15[,3])),(log2(l004.15[,3])),(log2(l005.15[,3])),
         (log2(l006.15[,3])),(log2(l007.15[,3])),(log2(l008.15[,3])),(log2(l009.15[,3])),(log2(l011.15[,3])),
-        (log2(l018.15[,3])),(log2(l021.15[,3])),(log2(l031.15[,3])),(log2(l049.15[,3])),(log2(l059.15[,3])),
-        (log2(l061.15[,3])),(log2(l066.15[,3])),(log2(l069.15[,3])),(log2(l076.15[,3])),(log2(l077.15[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","deeppink1","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 15",las=3,ylim=c(-2,2.5))
+        (log2(l015.15[,3])),(log2(l028.15[,3])),(log2(l088.15[,3])),(log2(l108.15[,3])),(log2(l119.15[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.25
 t.test((log2(l005.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l011.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi5for 3
-t.test((log2(l049.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.15[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=9.7, y=1.85, "*", pos=3, cex=2, col="red")
-text(x=10, y=1.85, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=1.85, "*", pos=3, cex=2, col="red")
-#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
 dev.off()}
 ###############################################################################################
 
@@ -2503,53 +2288,38 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 15
 
-{euRatio.c15 <- c(l002.15.red[,3],l003.15.red[,3],l005.15.red[,3],l006.15.red[,3],l008.15.red[,3],l009.15.red[,3],l069.15.red[,3])
-
-pdf("Chrm_15.red.pdf")
+{ 
+  euRatio.c15 <- c(l001.15.red[,3],l002.15.red[,3],l003.15.red[,3],l004.15.red[,3],l005.15.red[,3],l006.15.red[,3],l007.15.red[,3],l008.15.red[,3],l009.15.red[,3],l011.15.red[,3],l028.15.red[,3])
+pdf("Chrm_15_red_old.pdf")
 boxplot((log2(l001.15.red[,3])),(log2(l002.15.red[,3])),(log2(l003.15.red[,3])),(log2(l004.15.red[,3])),(log2(l005.15.red[,3])),
         (log2(l006.15.red[,3])),(log2(l007.15.red[,3])),(log2(l008.15.red[,3])),(log2(l009.15.red[,3])),(log2(l011.15.red[,3])),
-        (log2(l018.15.red[,3])),(log2(l021.15.red[,3])),(log2(l031.15.red[,3])),(log2(l049.15.red[,3])),(log2(l059.15.red[,3])),
-        (log2(l061.15.red[,3])),(log2(l066.15.red[,3])),(log2(l069.15.red[,3])),(log2(l076.15.red[,3])),(log2(l077.15.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","cyan",
-           "green","deeppink1","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 15",las=3,ylim=c(-2,2.5))
+        (log2(l015.15.red[,3])),(log2(l028.15.red[,3])),(log2(l088.15.red[,3])),(log2(l108.15.red[,3])),(log2(l119.15.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.25
 t.test((log2(l005.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l008.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l011.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi5for 3
-t.test((log2(l049.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l011.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.15.red[,3])), (log2(euRatio.c15)), paired=FALSE, var.equal=TRUE)
+
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=9.7, y=1.85, "*", pos=3, cex=2, col="red")
-text(x=10, y=1.85, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=1.85, "*", pos=3, cex=2, col="red")
-#text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
 dev.off()}
 ###############################################################################################
 
@@ -2558,53 +2328,40 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 16
 
-{euRatio.c16 <- c(l002.16[,3],l003.16[,3],l005.16[,3],l006.16[,3],l008.16[,3],l009.16[,3],l069.16[,3])
-
-pdf("Chrm_16.pdf")
+{ 
+  euRatio.c16 <- c(l001.16[,3],l002.16[,3],l003.16[,3],l004.16[,3],l005.16[,3],l006.16[,3],l007.16[,3],l008.16[,3],l009.16[,3],l011.16[,3],l028.16[,3])
+pdf("Chrm_16_old.pdf")
 boxplot((log2(l001.16[,3])),(log2(l002.16[,3])),(log2(l003.16[,3])),(log2(l004.16[,3])),(log2(l005.16[,3])),
         (log2(l006.16[,3])),(log2(l007.16[,3])),(log2(l008.16[,3])),(log2(l009.16[,3])),(log2(l011.16[,3])),
-        (log2(l018.16[,3])),(log2(l021.16[,3])),(log2(l031.16[,3])),(log2(l049.16[,3])),(log2(l059.16[,3])),
-        (log2(l061.16[,3])),(log2(l066.16[,3])),(log2(l069.16[,3])),(log2(l076.16[,3])),(log2(l077.16[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","deeppink1",
-              "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 16",las=3,ylim=c(-2,2.5))
+        (log2(l015.16[,3])),(log2(l028.16[,3])),(log2(l088.16[,3])),(log2(l108.16[,3])),(log2(l119.16[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.26
 t.test((log2(l005.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l008.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi5for 3
-t.test((log2(l049.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.16[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=7.7, y=1.9, "*", pos=3, cex=2, col="red")
-text(x=8, y=1.9, "*", pos=3, cex=2, col="red")
-text(x=8.3, y=1.9, "*", pos=3, cex=2, col="red")
+
 dev.off()}
 ###############################################################################################
 
@@ -2613,53 +2370,39 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 16
 
-{euRatio.c16 <- c(l002.16.red[,3],l003.16.red[,3],l005.16.red[,3],l006.16.red[,3],l008.16.red[,3],l009.16.red[,3],l069.16.red[,3])
-
-pdf("Chrm_16.red.pdf")
+{ 
+  euRatio.c16 <- c(l001.16.red[,3],l002.16.red[,3],l003.16.red[,3],l004.16.red[,3],l005.16.red[,3],l006.16.red[,3],l007.16.red[,3],l008.16.red[,3],l009.16.red[,3],l011.16.red[,3],l028.16.red[,3])
+pdf("Chrm_16_red_old.pdf")
 boxplot((log2(l001.16.red[,3])),(log2(l002.16.red[,3])),(log2(l003.16.red[,3])),(log2(l004.16.red[,3])),(log2(l005.16.red[,3])),
         (log2(l006.16.red[,3])),(log2(l007.16.red[,3])),(log2(l008.16.red[,3])),(log2(l009.16.red[,3])),(log2(l011.16.red[,3])),
-        (log2(l018.16.red[,3])),(log2(l021.16.red[,3])),(log2(l031.16.red[,3])),(log2(l049.16.red[,3])),(log2(l059.16.red[,3])),
-        (log2(l061.16.red[,3])),(log2(l066.16.red[,3])),(log2(l069.16.red[,3])),(log2(l076.16.red[,3])),(log2(l077.16.red[,3])),
-        names=c( "1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),
-        ylab="log2(fold change)", col=c("green", "green","green","cyan","green","green","cyan","deeppink1",
-              "green","darkcyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan"),
-        main="GC Lines Chromsome 16",las=3,ylim=c(-2,2.5))
+        (log2(l015.16.red[,3])),(log2(l028.16.red[,3])),(log2(l088.16.red[,3])),(log2(l108.16.red[,3])),(log2(l119.16.red[,3])),names=c( "1","2","3","4","5","6","7","8","9","11","15","28","88","108","119"),
+        ylab="log2(fold change)", col=c("green", "green","green","green","green","green","green","green",
+                                        "green",
+                        "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Old Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 t.test((log2(l001.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l002.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l003.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l004.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.26
 t.test((log2(l005.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l006.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l007.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l008.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l009.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 t.test((log2(l011.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l018.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l021.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#clearly not trisoi5for 3
-t.test((log2(l049.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l059.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e
-t.test((log2(l061.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-16
-t.test((log2(l066.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-#p-value < 2.2e-1
-t.test((log2(l069.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l015.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l028.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l088.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l108.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l119.16.red[,3])), (log2(euRatio.c16)), paired=FALSE, var.equal=TRUE)
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
-text(x=7.7, y=1.9, "*", pos=3, cex=2, col="red")
-text(x=8, y=1.9, "*", pos=3, cex=2, col="red")
-text(x=8.3, y=1.9, "*", pos=3, cex=2, col="red")
+
 dev.off()}
 
 ```
@@ -2670,7 +2413,7 @@ dev.off()}
 
 #ratioFiles<- list("l001.1","l001.10","l001.11","l001.12","l001.13","l001.14","l001.15","l001.16","l001.2","l001.3","l001.4","l001.5","l001.6","l001.7","l001.8","l001.9","l002.1","l002.10","l002.11","l002.12","l002.13","l002.14","l002.15","l002.16","l002.2","l002.3","l002.4","l002.5","l002.6","l002.7","l002.8","l002.9","l003.1","l003.10","l003.11","l003.12","l003.13","l003.14","l003.15","l003.16","l003.2","l003.3","l003.4","l003.5","l003.6","l003.7","l003.8","l003.9","l004.1","l004.10","l004.11","l004.12","l004.13","l004.14","l004.15","l004.16","l004.2","l004.3","l004.4","l004.5","l004.6","l004.7","l004.8","l004.9")
 #ratioFiles<- c("l001.1","l001.10")
-setwd="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/ratioFiles"
+#setwd="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/ratioFiles"
 
 #for (i in ratioFiles) {
  # sample <- data.table(ratioFiles[i])
@@ -2681,17 +2424,14 @@ setwd="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/ra
 
 
 #setNames(list(l001.2,l002.2), c("l001.2","l002.2"))
-ratioFiles <- list(l001.1,  l001.10,  l001.11,  l001.12,  l001.13,  l001.14,  l001.15,  l001.16,  l001.2,  l001.3,  l001.4,  l001.5,  l001.6,  l001.7,  l001.8,  l001.9,  l002.1,  l002.10,  l002.11,  l002.12,  l002.13,  l002.14,  l002.15,  l002.16,  l002.2,  l002.3,  l002.4,  l002.5,  l002.6,  l002.7,  l002.8,  l002.9,  l003.1,  l003.10,  l003.11,  l003.12,  l003.13,  l003.14,  l003.15,  l003.16,  l003.2,  l003.3, l003.4, l003.5,  l003.6,  l003.7, l003.8,  l003.9,  l004.1,  l004.10,  l004.11,  l004.12,  l004.13, l004.14, l004.15, l004.16, l004.2,  l004.3,  l004.4,  l004.5,  l004.6,  l004.7,  l004.8,  l004.9, l005.1, l005.10, l005.11, l005.12, l005.13, l005.14, l005.15, l005.16, l005.2, l005.3, l005.4, l005.6, l005.7, l005.8, l005.9, l006.1, l006.10, l006.11, l006.12, l006.13, l006.14, l006.15, l006.16, l006.2, l006.3, l006.4, l006.5, l006.6, l006.7, l006.8, l006.9, l007.1, l007.10, l007.11, l007.12, l007.13, l007.14, l007.15, l007.16, l007.2, l007.3, l007.4, l007.5, l007.6, l007.8, l007.9, l008.1, l008.10, l008.11, l001.12, l008.13, l008.14, l008.15, l008.16, l008.2, l008.3, l008.4, l008.5, l008.6, l008.7, l008.8, l008.9, l009.1, l009.10, l009.11, l009.12, l009.13, l009.14, l009.15, l009.16, l009.2, l009.3, l009.4, l009.5, l009.6, l009.7, l009.8, l009.9, l011.1, l011.10, l011.11, l011.12, l011.13, l011.14, l011.15, l011.16, l011.2, l011.3, l011.4, l011.5, l011.6, l011.7, l011.8, l011.9, l018.1, l018.10, l018.11, l018.12, l018.13, l018.14, l018.15, l018.16, l018.2, l018.3, l018.4, l018.5, l018.7, l018.6, l018.8, l018.9, l021.1, l021.10, l021.11, l021.12, l021.13, l021.14, l021.15, l021.16, l021.2, l021.3, l021.4, l021.5, l021.6, l021.7, l021.8, l021.9, l031.1, l031.10, l031.11, l031.12, l031.13, l031.14, l031.15, l031.16, l031.2, l031.3, l031.4, l031.5, l031.6, l031.7, l031.8, l031.9, l049.1, l049.10, l049.11, l049.12, l049.13, l049.15, l049.16, l049.2, l049.3, l049.4, l049.5, l049.6, l049.7, l049.8, l049.9, l059.1, l059.10, l059.11, l059.12, l059.13, l059.14, l059.15, l059.16, l059.2, l059.3, l059.4, l059.5, l059.6, l059.7, l059.8, l059.9, l061.1, l061.10, l061.11, l061.12, l061.13, l061.14, l061.15, l061.16, l061.2, l061.3, l061.4, l061.5, l061.6, l061.7, l061.8, l061.9, l066.1, l066.10, l066.11, l066.12, l066.13, l066.14, l066.15, l066.16, l066.2, l066.3, l066.4, l066.5, l066.6, l066.7, l066.8, l066.9, l069.1, l069.10, l069.11, l069.12, l069.13, l069.14, l069.15, l069.16, l069.2, l069.3, l069.4, l069.5, l069.6, l069.7, l069.8, l069.9, l076.1, l076.10, l076.11, l076.12, l076.13, l076.14, l076.15, l076.16, l076.2, l076.3, l076.4, l076.5, l076.6, l076.7, l076.8, l076.9, l077.1, l077.10, l077.11, l077.12, l077.13, l077.14, l077.15, l077.16, l077.2, l077.3, l077.4, l077.5, l077.6, l077.7, l077.8, l077.9)
-names(ratioFiles) <-  c("l001.1","l001.10","l001.11","l001.12","l001.13","l001.14","l001.15","l001.16","l001.2","l001.3","l001.4","l001.5","l001.6","l001.7","l001.8","l001.9","l002.1","l002.10","l002.11","l002.12","l002.13","l002.14","l002.15","l002.16","l002.2","l002.3","l002.4","l002.5","l002.6","l002.7","l002.8","l002.9","l003.1","l003.10","l003.11","l003.12","l003.13","l003.14","l003.15","l003.16","l003.2","l003.3","l003.4","l003.5","l003.6","l003.7","l003.8","l003.9","l004.1","l004.10","l004.11","l004.12","l004.13","l004.14","l004.15","l004.16","l004.2","l004.3","l004.4","l004.5","l004.6","l004.7","l004.8","l004.9","l005.1","l005.10","l005.11","l005.12","l005.13","l005.14","l005.15","l005.16","l005.2","l005.3","l005.4","l005.6","l005.7","l005.8","l005.9","l006.1","l006.10","l006.11","l006.12","l006.13","l006.14","l006.15","l006.16","l006.2","l006.3","l006.4","l006.5","l006.6","l006.7","l006.8","l006.9","l007.1","l007.10","l007.11","l007.12","l007.13","l007.14","l007.15","l007.16","l007.2","l007.3","l007.4","l007.5","l007.6","l007.8","l007.9","l008.1","l008.10","l008.11","l001.12","l008.13","l008.14","l008.15","l008.16","l008.2","l008.3","l008.4","l008.5","l008.6","l008.7","l008.8","l008.9","l009.1","l009.10","l009.11","l009.12","l009.13","l009.14","l009.15","l009.16","l009.2","l009.3","l009.4","l009.5","l009.6","l009.7","l009.8","l009.9","l011.1","l011.10","l011.11","l011.12","l011.13","l011.14","l011.15","l011.16","l011.2","l011.3","l011.4","l011.5","l011.6","l011.7","l011.8","l011.9","l018.1","l018.10","l018.11","l018.12","l018.13","l018.14","l018.15","l018.16","l018.2","l018.3","l018.4","l018.5","l018.7","l018.6","l018.8","l018.9","l021.1","l021.10","l021.11","l021.12","l021.13","l021.14","l021.15","l021.16","l021.2","l021.3","l021.4","l021.5","l021.6","l021.7","l021.8","l021.9","l031.1","l031.10","l031.11","l031.12","l031.13","l031.14","l031.15","l031.16","l031.2","l031.3","l031.4","l031.5","l031.6","l031.7","l031.8","l031.9","l049.1","l049.10","l049.11","l049.12","l049.13","l049.15","l049.16","l049.2","l049.3","l049.4","l049.5","l049.6","l049.7","l049.8","l049.9","l059.1","l059.10","l059.11","l059.12","l059.13","l059.14","l059.15","l059.16","l059.2","l059.3","l059.4","l059.5","l059.6","l059.7","l059.8","l059.9","l061.1","l061.10","l061.11","l061.12","l061.13","l061.14","l061.15","l061.16","l061.2","l061.3","l061.4","l061.5","l061.6","l061.7","l061.8","l061.9","l066.1","l066.10","l066.11","l066.12","l066.13","l066.14","l066.15","l066.16","l066.2","l066.3","l066.4","l066.5","l066.6","l066.7","l066.8","l066.9","l069.1","l069.10","l069.11","l069.12","l069.13","l069.14","l069.15","l069.16","l069.2","l069.3","l069.4","l069.5","l069.6","l069.7","l069.8","l069.9","l076.1","l076.10","l076.11","l076.12","l076.13","l076.14","l076.15","l076.16","l076.2","l076.3","l076.4","l076.5","l076.6","l076.7","l076.8","l076.9","l077.1","l077.10","l077.11","l077.12","l077.13","l077.14","l077.15","l077.16","l077.2","l077.3","l077.4","l077.5","l077.6","l077.7","l077.8","l077.9")
+ratioFiles <- list(l001.1,  l001.10,  l001.11,  l001.12,  l001.13,  l001.14,  l001.15,  l001.16,  l001.2,  l001.3,  l001.4,  l001.5,  l001.6,  l001.7,  l001.8,  l001.9,  l002.1,  l002.10,  l002.11,  l002.12,  l002.13,  l002.14,  l002.15,  l002.16,  l002.2,  l002.3,  l002.4,  l002.5,  l002.6,  l002.7,  l002.8,  l002.9,  l003.1,  l003.10,  l003.11,  l003.12,  l003.13,  l003.14,  l003.15,  l003.16,  l003.2,  l003.3, l003.4, l003.5,  l003.6,  l003.7, l003.8,  l003.9,  l004.1,  l004.10,  l004.11,  l004.12,  l004.13, l004.14, l004.15, l004.16, l004.2,  l004.3,  l004.4,  l004.5,  l004.6,  l004.7,  l004.8,  l004.9, l005.1, l005.10, l005.11, l005.12, l005.13, l005.14, l005.15, l005.16, l005.2, l005.3, l005.4, l005.6, l005.7, l005.8, l005.9, l006.1, l006.10, l006.11, l006.12, l006.13, l006.14, l006.15, l006.16, l006.2, l006.3, l006.4, l006.5, l006.6, l006.7, l006.8, l006.9, l007.1, l007.10, l007.11, l007.12, l007.13, l007.14, l007.15, l007.16, l007.2, l007.3, l007.4, l007.5, l007.6, l007.8, l007.9, l008.1, l008.10, l008.11, l001.12, l008.13, l008.14, l008.15, l008.16, l008.2, l008.3, l008.4, l008.5, l008.6, l008.7, l008.8, l008.9, l009.1, l009.10, l009.11, l009.12, l009.13, l009.14, l009.15, l009.16, l009.2, l009.3, l009.4, l009.5, l009.6, l009.7, l009.8, l009.9, l011.1, l011.10, l011.11, l011.12, l011.13, l011.14, l011.15, l011.16, l011.2, l011.3, l011.4, l011.5, l011.6, l011.7, l011.8, l011.9, l015.1, l015.10, l015.11, l015.12, l015.13, l015.14, l015.15, l015.16, l015.2, l015.3, l015.4, l015.5, l015.7, l015.6, l015.8, l015.9, l028.1, l028.10, l028.11, l028.12, l028.13, l028.14, l028.15, l028.16, l028.2, l028.3, l028.4, l028.5, l028.6, l028.7, l028.8, l028.9, l088.1, l088.10, l088.11, l088.12, l088.13, l088.14, l088.15, l088.16, l088.2, l088.3, l088.4, l088.5, l088.6, l088.7, l088.8, l088.9, l108.1, l108.10, l108.11, l108.12, l108.13, l108.15, l108.16, l108.2, l108.3, l108.4, l108.5, l108.6, l108.7, l108.8, l108.9, l119.1, l119.10, l119.11, l119.12, l119.13, l119.14, l119.15, l119.16, l119.2, l119.3, l119.4, l119.5, l119.6, l119.7, l119.8, l119.9)
+names(ratioFiles) <-  c("l001.1","l001.10","l001.11","l001.12","l001.13","l001.14","l001.15","l001.16","l001.2","l001.3","l001.4","l001.5","l001.6","l001.7","l001.8","l001.9","l002.1","l002.10","l002.11","l002.12","l002.13","l002.14","l002.15","l002.16","l002.2","l002.3","l002.4","l002.5","l002.6","l002.7","l002.8","l002.9","l003.1","l003.10","l003.11","l003.12","l003.13","l003.14","l003.15","l003.16","l003.2","l003.3","l003.4","l003.5","l003.6","l003.7","l003.8","l003.9","l004.1","l004.10","l004.11","l004.12","l004.13","l004.14","l004.15","l004.16","l004.2","l004.3","l004.4","l004.5","l004.6","l004.7","l004.8","l004.9","l005.1","l005.10","l005.11","l005.12","l005.13","l005.14","l005.15","l005.16","l005.2","l005.3","l005.4","l005.6","l005.7","l005.8","l005.9","l006.1","l006.10","l006.11","l006.12","l006.13","l006.14","l006.15","l006.16","l006.2","l006.3","l006.4","l006.5","l006.6","l006.7","l006.8","l006.9","l007.1","l007.10","l007.11","l007.12","l007.13","l007.14","l007.15","l007.16","l007.2","l007.3","l007.4","l007.5","l007.6","l007.8","l007.9","l008.1","l008.10","l008.11","l001.12","l008.13","l008.14","l008.15","l008.16","l008.2","l008.3","l008.4","l008.5","l008.6","l008.7","l008.8","l008.9","l009.1","l009.10","l009.11","l009.12","l009.13","l009.14","l009.15","l009.16","l009.2","l009.3","l009.4","l009.5","l009.6","l009.7","l009.8","l009.9","l011.1","l011.10","l011.11","l011.12","l011.13","l011.14","l011.15","l011.16","l011.2","l011.3","l011.4","l011.5","l011.6","l011.7","l011.8","l011.9","l015.1","l015.10","l015.11","l015.12","l015.13","l015.14","l015.15","l015.16","l015.2","l015.3","l015.4","l015.5","l015.7","l015.6","l015.8","l015.9","l028.1","l028.10","l028.11","l028.12","l028.13","l028.14","l028.15","l028.16","l028.2","l028.3","l028.4","l028.5","l028.6","l028.7","l028.8","l028.9","l088.1","l088.10","l088.11","l088.12","l088.13","l088.14","l088.15","l088.16","l088.2","l088.3","l088.4","l088.5","l088.6","l088.7","l088.8","l088.9","l108.1","l108.10","l108.11","l108.12","l108.13","l108.15","l108.16","l108.2","l108.3","l108.4","l108.5","l108.6","l108.7","l108.8","l108.9","l119.1","l119.10","l119.11","l119.12","l119.13","l119.14","l119.15","l119.16","l119.2","l119.3","l119.4","l119.5","l119.6","l119.7","l119.8","l119.9")
 ratioFiles
 for (i in seq_along(ratioFiles)){
   file <- data.table(ratioFiles[[i]])
  clean.file <- ratioFiles[[i]][(ratioFiles[[i]][3] < 0.1), ]
-  write.csv(clean.file, file=paste(names(ratioFiles)[i], "low_exp_genes.csv", sep="_"), row.names = F)
+  write.csv(clean.file, file=paste(names(ratioFiles)[i], "low_exp_genes_old.csv", sep="_"), row.names = F)
 }
-
-
-
 
 #low_expr_genes <- function(filename) {
 #    file <- data.table(filename)
@@ -2755,23 +2495,21 @@ for (i in seq_along(ratioFiles)){
 #first need to read in the Cuffdiff data 
 #first do this for one line, then make a loop to do it for each line
 setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
-samples <- c(1,2,3,4,5,6,7,8,9,11,18,21,29,31,49,50,59,61,66,69,76,77,112,115,123,141,152)
+samples <- c(1,3,4,5,7,8,9,11,28,88,119)
 
 #sample1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/gene_exp_S1.diff",header=TRUE)
 
 #plot(sample1$q_value,sample1$value_2,ylab="ancestor FPKM",xlab="FDR-adj p-value",main="Sample1")
 
-list_of_titles <- c("Sample1","Sample2","Sample3","Sample4","Sample5","Sample6","Sample7","Sample8",
-                    "Sample9","Sample11","Sample18","Sample21","Sample29","Sample31","Sample49","Sample50",
-                    "Sample59","Sample61","Sample66","Sample69","Sample76","Sample77","Sample112","Sample115",
-                    "Sample117","Sample123","Sample141","Sample152")
+list_of_titles <- c("Sample1","Sample11","Sample119","Sample28","Sample3","Sample4","Sample5",
+                    "Sample7","Sample8","Sample88","Sample9")
 
 
 # Plot separate ggplot figures in a loop.
 library(ggplot2)
 
 # Make list of variable names to loop over.
-myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables",pattern = "*.diff", full.names = TRUE)
+myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Cuffdiff_MA_old",pattern = "*.diff", full.names = TRUE)
 str(myFiles)
 length(myFiles)
 print(myFiles)
@@ -2782,7 +2520,7 @@ plot_list = list()
 #plot each sample in myFiles, then save to a .pdf in the working directory 
 for (i in 1:length(myFiles)) {
   setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
-  pdf(paste("FPKM_vs_p_val_",list_of_titles[i],".pdf",sep=""))
+  pdf(paste("FPKM_vs_p_val_",list_of_titles[i],"_old.pdf",sep=""))
   sample <- read.table(myFiles[i],header=TRUE)
   sample <- data.frame(sample)
   sample <- cSplit(sample,"locus",":") #split the locus column into "chr" and "locus"

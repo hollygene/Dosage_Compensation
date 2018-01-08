@@ -337,7 +337,7 @@ cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC001_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC001_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC001_2_raw_tophat_out/accepted_hits.bam
 
-cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_2 \
+cuffdiff --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_2 \
 --labels Anc,SC002 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf  \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC002_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC002_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC002_3_raw_tophat_out/accepted_hits.bam
@@ -357,10 +357,10 @@ cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC005_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC005_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC005_3_raw_tophat_out/accepted_hits.bam
 
-cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_6 \
+cuffdiff --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_6 \
 --labels Anc,SC006 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf  \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC006_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC006_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC006_3_raw_tophat_out/accepted_hits.bam
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/SC006_1_raw_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/SC006_1_raw_trimmed_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/SC006_3_raw_trimmed_tophat_out/accepted_hits.bam
 
 cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_7 \
 --labels Anc,SC007 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf  \
@@ -382,7 +382,7 @@ cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC011_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC011_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC011_3_raw_tophat_out/accepted_hits.bam
 
-cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_15 \
+cuffdiff --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_15 \
 --labels Anc,SC015 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf  \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC015_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC015_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC015_3_raw_tophat_out/accepted_hits.bam
@@ -397,7 +397,7 @@ cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC088_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC088_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC088_3_raw_tophat_out/accepted_hits.bam
 
-cuffdiff -p $THREADS --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_108 \
+cuffdiff --library-type fr-unstranded -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/Cuffdiff/cuffdiff_108 \
 --labels Anc,SC108 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf  \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_3_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SCA_2_raw_tophat_out/accepted_hits.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC108_1_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC108_2_raw_tophat_out/accepted_hits.bam,/lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_old/tophat/SC108_3_raw_tophat_out/accepted_hits.bam

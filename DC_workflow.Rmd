@@ -108,17 +108,6 @@ getAvgFPKM.GC <- function(line) { #for line as "###" string
   return(desAvg.GC) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
 }
 
-getAvgFPKM.old <- function(line) { #for line as "###" string
-  r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
-  r2 <- paste(c("X",line,"_1"),collapse="")
-  r3 <- paste(c("X",line,"_2"),collapse="")
-  reps <- sc_des.old[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
-  reps[reps==0] <- NA #replace 0 values with NA as before
-  desAvg.old <- rowMeans(reps[,c(-1,-2)],na.rm=T)
-  desAvg.old <- cbind(sc_des.old[,c(1,2)],desAvg.old)
-  #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
-  return(desAvg.old) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
-}
 
 getFPKMRatio.MA <- function(line) { #line must be a 3 digit character
   desAvg.MA <- getAvgFPKM.MA(line) #first call avg fpkm script, which returns a 3 column matrix
@@ -136,14 +125,6 @@ getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
   return(rat.GC)
 }
 
-getFPKMRatio.old <- function(line) { #line must be a 3 digit character
-  desAvg.old <- getAvgFPKM.old(line) #first call avg fpkm script, which returns a 3 column matrix
-  ratioByGene.old <- desAvg.old[,3]/ancAvg.old[,3]
-  rat.old <- cbind(sc_des.old[,1:2],ratioByGene.old) #add gene and chrm values
-  colnames(rat.old) <- c("chr","tracking_id","ratio")
-  return(rat.old)
-}
-
 getChrmRatio.MA <- function(line, chr){ #input line as "XXX", chr as a number
   rat.MA <- getFPKMRatio.MA(line) #get list of ratios which includes chrm and gene
   rat.c.MA <- rat.MA[(rat.MA[,1]==chr),] #get just the rows for the appropriate chrom
@@ -158,12 +139,6 @@ getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
   return(rat.cs.GC)
 }
 
-getChrmRatio.old <- function(line, chr){ #input line as "XXX", chr as a number
-  rat.old <- getFPKMRatio.old(line) #get list of ratios which includes chrm and gene
-  rat.c.old <- rat.old[(rat.old[,1]==chr),] #get just the rows for the appropriate chrom
-  rat.cs.old <- rat.c.old[order(rat.c.old[,3]),]#order by column 3
-  return(rat.cs.old)
-}
 
 y.MA=NULL
 rep.MA <- c("112","115","117","123","141","152","29","50")
@@ -201,20 +176,6 @@ colnames(ratMatMed.GC)[1] <- "chr"
 #ratMatMedRed.GC <- ratMatMed.GC
 #ratMatMedRed.GC[ratMatMedRed.GC<1.35] <- NA
 #ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
-
-y.old=NULL
-rep.old <- c("001","002","003","004","005","006","007","008","009","011","015","028","088","108","119")
-for(line in rep.old){
-  for(chrm in 1:16){
-    y.old <- c(y.old,median(getChrmRatio.old(line,chrm)[,3],na.rm=T))
-  }
-}
-
-#make a matrix out of it
-ratMatMed.old <- matrix(y.old,nrow=16,ncol=15)
-colnames(ratMatMed.old) <- rep.old
-ratMatMed.old <- cbind(c(1:16),ratMatMed.old)
-colnames(ratMatMed.old)[1] <- "chr"
 
 #make a matrix that is the LOG2 RATIO
 yl.MA=NULL
@@ -266,20 +227,6 @@ logMat.GC.test <- data.frame(logMat.GC.test)
 genes <- ancAvg.GC[,2]
 logMat2.GC.test <-cbind(genes,logMat.GC.test)
 
-yl.old=NULL
-for(line in rep.old){
-  for(chrm in 1:16){
-    yl.old <- c(yl.old,median(log2(getChrmRatio.old(line,chrm)[,3])))
-  }
-}
-#View(yl.old)
-
-warnings()
-logMat.old <- matrix(yl.old,nrow=16,ncol=15)
-colnames(logMat.old) <- rep.old
-logMat.old <- data.frame(logMat.old)
-chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-logMat2.old <-cbind(chrms,logMat.old)
 
 ##make a matrix of the standard deviations for each line and each chromosome
 ysd.MA=NULL
@@ -310,19 +257,7 @@ logMatsd.GC <- data.frame(logMatsd.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.GC <-cbind(chrms,logMatsd.GC)
 
-#for old lines
-ysd.old=NULL
-for(line in rep.old){
-  for(chrm in 1:16){
-    ysd.old <- c(ysd.old,sd(log2(getChrmRatio.old(line,chrm)[,3])))
-  }
-}
 
-logMatsd.old <- matrix(ysd.old,nrow=16,ncol=15)
-colnames(logMatsd.old) <- rep.old
-logMatsd.old <- data.frame(logMatsd.old)
-chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-logMatsd2.old <-cbind(chrms,logMatsd.old)
 
 
 ```
@@ -1135,6 +1070,23 @@ l007.1 <- getChrmRatio.GC("7",1)
 l007.1.red <- l007.1[which(l007.1[,3]>0.1),]
 
 
+l029.1 <- getChrmRatio.MA("29",1)
+l029.1.red <- l029.1[which(l029.1[,3]>0.1),]
+l050.1 <- getChrmRatio.MA("50",1)
+l050.1.red <- l050.1[which(l050.1[,3]>0.1),]
+l112.1 <- getChrmRatio.MA("112",1)
+l112.1.red <- l112.1[which(l112.1[,3]>0.1),]
+l115.1 <- getChrmRatio.MA("115",1)
+l115.1.red <- l115.1[which(l115.1[,3]>0.1),]
+l117.1 <- getChrmRatio.MA("117",1)
+l117.1.red <- l117.1[which(l117.1[,3]>0.1),]
+l123.1 <- getChrmRatio.MA("123",1)
+l123.1.red <- l123.1[which(l123.1[,3]>0.1),]
+l141.1 <- getChrmRatio.MA("141",1)
+l141.1.red <- l141.1[which(l141.1[,3]>0.1),]
+l152.1 <- getChrmRatio.MA("152",1)
+l152.1.red <- l152.1[which(l152.1[,3]>0.1),]
+
 l002.2 <- getChrmRatio.GC("2",2)
 l002.2.red <- l002.2[which(l002.2[,3]>0.1),]
 l003.2 <- getChrmRatio.GC("3",2)
@@ -1175,6 +1127,23 @@ l077.2 <- getChrmRatio.GC("77",2)
 l077.2.red <- l077.2[which(l077.2[,3]>0.1),]
 l007.2 <- getChrmRatio.GC("7",2)
 l007.2.red <- l007.2[which(l007.2[,3]>0.1),]
+
+l029.2 <- getChrmRatio.MA("29",2)
+l029.2.red <- l029.2[which(l029.2[,3]>0.1),]
+l050.2 <- getChrmRatio.MA("50",2)
+l050.2.red <- l050.2[which(l050.2[,3]>0.1),]
+l112.2 <- getChrmRatio.MA("112",2)
+l112.2.red <- l112.2[which(l112.2[,3]>0.1),]
+l115.2 <- getChrmRatio.MA("115",2)
+l115.2.red <- l115.2[which(l115.2[,3]>0.1),]
+l117.2 <- getChrmRatio.MA("117",2)
+l117.2.red <- l117.2[which(l117.2[,3]>0.1),]
+l123.2 <- getChrmRatio.MA("123",2)
+l123.2.red <- l123.2[which(l123.2[,3]>0.1),]
+l141.2 <- getChrmRatio.MA("141",2)
+l141.2.red <- l141.2[which(l141.2[,3]>0.1),]
+l152.2 <- getChrmRatio.MA("152",2)
+l152.2.red <- l152.2[which(l152.2[,3]>0.1),]
 
 l002.3 <- getChrmRatio.GC("2",3)
 l002.3.red <- l002.3[which(l002.3[,3]>0.1),]
@@ -1217,6 +1186,23 @@ l077.3.red <- l077.3[which(l077.3[,3]>0.1),]
 l007.3 <- getChrmRatio.GC("7",3)
 l007.3.red <- l007.3[which(l007.3[,3]>0.1),]
 
+l029.3 <- getChrmRatio.MA("29",3)
+l029.3.red <- l029.3[which(l029.3[,3]>0.1),]
+l050.3 <- getChrmRatio.MA("50",3)
+l050.3.red <- l050.3[which(l050.3[,3]>0.1),]
+l112.3 <- getChrmRatio.MA("112",3)
+l112.3.red <- l112.3[which(l112.3[,3]>0.1),]
+l115.3 <- getChrmRatio.MA("115",3)
+l115.3.red <- l115.3[which(l115.3[,3]>0.1),]
+l117.3 <- getChrmRatio.MA("117",3)
+l117.3.red <- l117.3[which(l117.3[,3]>0.1),]
+l123.3 <- getChrmRatio.MA("123",3)
+l123.3.red <- l123.3[which(l123.3[,3]>0.1),]
+l141.3 <- getChrmRatio.MA("141",3)
+l141.3.red <- l141.3[which(l141.3[,3]>0.1),]
+l152.3 <- getChrmRatio.MA("152",3)
+l152.3.red <- l152.3[which(l152.3[,3]>0.1),]
+
 l002.4 <- getChrmRatio.GC("2",4)
 l002.4.red <- l002.4[which(l002.4[,3]>0.1),]
 l003.4 <- getChrmRatio.GC("3",4)
@@ -1257,6 +1243,23 @@ l077.4 <- getChrmRatio.GC("77",4)
 l077.4.red <- l077.4[which(l077.4[,3]>0.1),]
 l007.4 <- getChrmRatio.GC("7",4)
 l007.4.red <- l007.4[which(l007.4[,3]>0.1),]
+
+l029.4 <- getChrmRatio.MA("29",4)
+l029.4.red <- l029.4[which(l029.4[,3]>0.1),]
+l050.4 <- getChrmRatio.MA("50",4)
+l050.4.red <- l050.4[which(l050.4[,3]>0.1),]
+l112.4 <- getChrmRatio.MA("112",4)
+l112.4.red <- l112.4[which(l112.4[,3]>0.1),]
+l115.4 <- getChrmRatio.MA("115",4)
+l115.4.red <- l115.4[which(l115.4[,3]>0.1),]
+l117.4 <- getChrmRatio.MA("117",4)
+l117.4.red <- l117.4[which(l117.4[,3]>0.1),]
+l123.4 <- getChrmRatio.MA("123",4)
+l123.4.red <- l123.4[which(l123.4[,3]>0.1),]
+l141.4 <- getChrmRatio.MA("141",4)
+l141.4.red <- l141.4[which(l141.4[,3]>0.1),]
+l152.4 <- getChrmRatio.MA("152",4)
+l152.4.red <- l152.4[which(l152.4[,3]>0.1),]
 
 l002.5 <- getChrmRatio.GC("2",5)
 l002.5.red <- l002.5[which(l002.5[,3]>0.1),]
@@ -1299,6 +1302,23 @@ l077.5.red <- l077.5[which(l077.5[,3]>0.1),]
 l007.5 <- getChrmRatio.GC("7",5)
 l007.5.red <- l007.5[which(l007.5[,3]>0.1),]
 
+l029.5 <- getChrmRatio.MA("29",5)
+l029.5.red <- l029.5[which(l029.5[,3]>0.1),]
+l050.5 <- getChrmRatio.MA("50",5)
+l050.5.red <- l050.5[which(l050.5[,3]>0.1),]
+l112.5 <- getChrmRatio.MA("112",5)
+l112.5.red <- l112.5[which(l112.5[,3]>0.1),]
+l115.5 <- getChrmRatio.MA("115",5)
+l115.5.red <- l115.5[which(l115.5[,3]>0.1),]
+l117.5 <- getChrmRatio.MA("117",5)
+l117.5.red <- l117.5[which(l117.5[,3]>0.1),]
+l123.5 <- getChrmRatio.MA("123",5)
+l123.5.red <- l123.5[which(l123.5[,3]>0.1),]
+l141.5 <- getChrmRatio.MA("141",5)
+l141.5.red <- l141.5[which(l141.5[,3]>0.1),]
+l152.5 <- getChrmRatio.MA("152",5)
+l152.5.red <- l152.5[which(l152.5[,3]>0.1),]
+
 l002.6 <- getChrmRatio.GC("2",6)
 l002.6.red <- l002.6[which(l002.6[,3]>0.1),]
 l003.6 <- getChrmRatio.GC("3",6)
@@ -1339,6 +1359,23 @@ l077.6 <- getChrmRatio.GC("77",6)
 l077.6.red <- l077.6[which(l077.6[,3]>0.1),]
 l007.6 <- getChrmRatio.GC("7",6)
 l007.6.red <- l007.6[which(l007.6[,3]>0.1),]
+
+l029.6 <- getChrmRatio.MA("29",6)
+l029.6.red <- l029.6[which(l029.6[,3]>0.1),]
+l050.6 <- getChrmRatio.MA("50",6)
+l050.6.red <- l050.6[which(l050.6[,3]>0.1),]
+l112.6 <- getChrmRatio.MA("112",6)
+l112.6.red <- l112.6[which(l112.6[,3]>0.1),]
+l115.6 <- getChrmRatio.MA("115",6)
+l115.6.red <- l115.6[which(l115.6[,3]>0.1),]
+l117.6 <- getChrmRatio.MA("117",6)
+l117.6.red <- l117.6[which(l117.6[,3]>0.1),]
+l123.6 <- getChrmRatio.MA("123",6)
+l123.6.red <- l123.6[which(l123.6[,3]>0.1),]
+l141.6 <- getChrmRatio.MA("141",6)
+l141.6.red <- l141.6[which(l141.6[,3]>0.1),]
+l152.6 <- getChrmRatio.MA("152",6)
+l152.6.red <- l152.6[which(l152.6[,3]>0.1),]
 
 l002.7 <- getChrmRatio.GC("2",7)
 l002.7.red <- l002.7[which(l002.7[,3]>0.1),]
@@ -1381,6 +1418,23 @@ l077.7.red <- l077.7[which(l077.7[,3]>0.1),]
 l007.7 <- getChrmRatio.GC("7",7)
 l007.7.red <- l007.7[which(l007.7[,3]>0.1),]
 
+l029.7 <- getChrmRatio.MA("29",7)
+l029.7.red <- l029.7[which(l029.7[,3]>0.1),]
+l050.7 <- getChrmRatio.MA("50",7)
+l050.7.red <- l050.7[which(l050.7[,3]>0.1),]
+l112.7 <- getChrmRatio.MA("112",7)
+l112.7.red <- l112.7[which(l112.7[,3]>0.1),]
+l115.7 <- getChrmRatio.MA("115",7)
+l115.7.red <- l115.7[which(l115.7[,3]>0.1),]
+l117.7 <- getChrmRatio.MA("117",7)
+l117.7.red <- l117.7[which(l117.7[,3]>0.1),]
+l123.7 <- getChrmRatio.MA("123",7)
+l123.7.red <- l123.7[which(l123.7[,3]>0.1),]
+l141.7 <- getChrmRatio.MA("141",7)
+l141.7.red <- l141.7[which(l141.7[,3]>0.1),]
+l152.7 <- getChrmRatio.MA("152",7)
+l152.7.red <- l152.7[which(l152.7[,3]>0.1),]
+
 l002.8 <- getChrmRatio.GC("2",8)
 l002.8.red <- l002.8[which(l002.8[,3]>0.1),]
 l003.8 <- getChrmRatio.GC("3",8)
@@ -1421,6 +1475,23 @@ l077.8 <- getChrmRatio.GC("77",8)
 l077.8.red <- l077.8[which(l077.8[,3]>0.1),]
 l007.8 <- getChrmRatio.GC("7",8)
 l007.8.red <- l007.8[which(l007.8[,3]>0.1),]
+
+l029.8 <- getChrmRatio.MA("29",8)
+l029.8.red <- l029.8[which(l029.8[,3]>0.1),]
+l050.8 <- getChrmRatio.MA("50",8)
+l050.8.red <- l050.8[which(l050.8[,3]>0.1),]
+l112.8 <- getChrmRatio.MA("112",8)
+l112.8.red <- l112.8[which(l112.8[,3]>0.1),]
+l115.8 <- getChrmRatio.MA("115",8)
+l115.8.red <- l115.8[which(l115.8[,3]>0.1),]
+l117.8 <- getChrmRatio.MA("117",8)
+l117.8.red <- l117.8[which(l117.8[,3]>0.1),]
+l123.8 <- getChrmRatio.MA("123",8)
+l123.8.red <- l123.8[which(l123.8[,3]>0.1),]
+l141.8 <- getChrmRatio.MA("141",8)
+l141.8.red <- l141.8[which(l141.8[,3]>0.1),]
+l152.8 <- getChrmRatio.MA("152",8)
+l152.8.red <- l152.8[which(l152.8[,3]>0.1),]
 
 l002.9 <- getChrmRatio.GC("2",9)
 l002.9.red <- l002.9[which(l002.9[,3]>0.1),]
@@ -1463,6 +1534,23 @@ l077.9.red <- l077.9[which(l077.9[,3]>0.1),]
 l007.9 <- getChrmRatio.GC("7",9)
 l007.9.red <- l007.9[which(l007.9[,3]>0.1),]
 
+l029.9 <- getChrmRatio.MA("29",9)
+l029.9.red <- l029.9[which(l029.9[,3]>0.1),]
+l050.9 <- getChrmRatio.MA("50",9)
+l050.9.red <- l050.9[which(l050.9[,3]>0.1),]
+l112.9 <- getChrmRatio.MA("112",9)
+l112.9.red <- l112.9[which(l112.9[,3]>0.1),]
+l115.9 <- getChrmRatio.MA("115",9)
+l115.9.red <- l115.9[which(l115.9[,3]>0.1),]
+l117.9 <- getChrmRatio.MA("117",9)
+l117.9.red <- l117.9[which(l117.9[,3]>0.1),]
+l123.9 <- getChrmRatio.MA("123",9)
+l123.9.red <- l123.9[which(l123.9[,3]>0.1),]
+l141.9 <- getChrmRatio.MA("141",9)
+l141.9.red <- l141.9[which(l141.9[,3]>0.1),]
+l152.9 <- getChrmRatio.MA("152",9)
+l152.9.red <- l152.9[which(l152.9[,3]>0.1),]
+
 l002.10 <- getChrmRatio.GC("2",10)
 l002.10.red <- l002.10[which(l002.10[,3]>0.1),]
 l003.10 <- getChrmRatio.GC("3",10)
@@ -1503,6 +1591,23 @@ l077.10 <- getChrmRatio.GC("77",10)
 l077.10.red <- l077.10[which(l077.10[,3]>0.1),]
 l007.10 <- getChrmRatio.GC("7",10)
 l007.10.red <- l007.10[which(l007.10[,3]>0.1),]
+
+l029.10 <- getChrmRatio.MA("29",10)
+l029.10.red <- l029.10[which(l029.10[,3]>0.1),]
+l050.10 <- getChrmRatio.MA("50",10)
+l050.10.red <- l050.10[which(l050.10[,3]>0.1),]
+l112.10 <- getChrmRatio.MA("112",10)
+l112.10.red <- l112.10[which(l112.10[,3]>0.1),]
+l115.10 <- getChrmRatio.MA("115",10)
+l115.10.red <- l115.10[which(l115.10[,3]>0.1),]
+l117.10 <- getChrmRatio.MA("117",10)
+l117.10.red <- l117.10[which(l117.10[,3]>0.1),]
+l123.10 <- getChrmRatio.MA("123",10)
+l123.10.red <- l123.10[which(l123.10[,3]>0.1),]
+l141.10 <- getChrmRatio.MA("141",10)
+l141.10.red <- l141.10[which(l141.10[,3]>0.1),]
+l152.10 <- getChrmRatio.MA("152",10)
+l152.10.red <- l152.10[which(l152.10[,3]>0.1),]
 
 l002.11 <- getChrmRatio.GC("2",11)
 l002.11.red <- l002.11[which(l002.11[,3]>0.1),]
@@ -1545,6 +1650,23 @@ l077.11.red <- l077.11[which(l077.11[,3]>0.1),]
 l007.11 <- getChrmRatio.GC("7",11)
 l007.11.red <- l007.11[which(l007.11[,3]>0.1),]
 
+l029.11 <- getChrmRatio.MA("29",11)
+l029.11.red <- l029.11[which(l029.11[,3]>0.1),]
+l050.11 <- getChrmRatio.MA("50",11)
+l050.11.red <- l050.11[which(l050.11[,3]>0.1),]
+l112.11 <- getChrmRatio.MA("112",11)
+l112.11.red <- l112.11[which(l112.11[,3]>0.1),]
+l115.11 <- getChrmRatio.MA("115",11)
+l115.11.red <- l115.11[which(l115.11[,3]>0.1),]
+l117.11 <- getChrmRatio.MA("117",11)
+l117.11.red <- l117.11[which(l117.11[,3]>0.1),]
+l123.11 <- getChrmRatio.MA("123",11)
+l123.11.red <- l123.11[which(l123.11[,3]>0.1),]
+l141.11 <- getChrmRatio.MA("141",11)
+l141.11.red <- l141.11[which(l141.11[,3]>0.1),]
+l152.11 <- getChrmRatio.MA("152",11)
+l152.11.red <- l152.11[which(l152.11[,3]>0.1),]
+
 l002.12 <- getChrmRatio.GC("2",12)
 l002.12.red <- l002.12[which(l002.12[,3]>0.1),]
 l003.12 <- getChrmRatio.GC("3",12)
@@ -1585,6 +1707,23 @@ l077.12 <- getChrmRatio.GC("77",12)
 l077.12.red <- l077.12[which(l077.12[,3]>0.1),]
 l007.12 <- getChrmRatio.GC("7",12)
 l007.12.red <- l007.12[which(l007.12[,3]>0.1),]
+
+l029.12 <- getChrmRatio.MA("29",12)
+l029.12.red <- l029.12[which(l029.12[,3]>0.1),]
+l050.12 <- getChrmRatio.MA("50",12)
+l050.12.red <- l050.12[which(l050.12[,3]>0.1),]
+l112.12 <- getChrmRatio.MA("112",12)
+l112.12.red <- l112.12[which(l112.12[,3]>0.1),]
+l115.12 <- getChrmRatio.MA("115",12)
+l115.12.red <- l115.12[which(l115.12[,3]>0.1),]
+l117.12 <- getChrmRatio.MA("117",12)
+l117.12.red <- l117.12[which(l117.12[,3]>0.1),]
+l123.12 <- getChrmRatio.MA("123",12)
+l123.12.red <- l123.12[which(l123.12[,3]>0.1),]
+l141.12 <- getChrmRatio.MA("141",12)
+l141.12.red <- l141.12[which(l141.12[,3]>0.1),]
+l152.12 <- getChrmRatio.MA("152",12)
+l152.12.red <- l152.12[which(l152.12[,3]>0.1),]
 
 l002.13 <- getChrmRatio.GC("2",13)
 l002.13.red <- l002.13[which(l002.13[,3]>0.1),]
@@ -1627,6 +1766,23 @@ l077.13.red <- l077.13[which(l077.13[,3]>0.1),]
 l007.13 <- getChrmRatio.GC("7",13)
 l007.13.red <- l007.13[which(l007.13[,3]>0.1),]
 
+l029.13 <- getChrmRatio.MA("29",13)
+l029.13.red <- l029.13[which(l029.13[,3]>0.1),]
+l050.13 <- getChrmRatio.MA("50",13)
+l050.13.red <- l050.13[which(l050.13[,3]>0.1),]
+l112.13 <- getChrmRatio.MA("112",13)
+l112.13.red <- l112.13[which(l112.13[,3]>0.1),]
+l115.13 <- getChrmRatio.MA("115",13)
+l115.13.red <- l115.13[which(l115.13[,3]>0.1),]
+l117.13 <- getChrmRatio.MA("117",13)
+l117.13.red <- l117.13[which(l117.13[,3]>0.1),]
+l123.13 <- getChrmRatio.MA("123",13)
+l123.13.red <- l123.13[which(l123.13[,3]>0.1),]
+l141.13 <- getChrmRatio.MA("141",13)
+l141.13.red <- l141.13[which(l141.13[,3]>0.1),]
+l152.13 <- getChrmRatio.MA("152",13)
+l152.13.red <- l152.13[which(l152.13[,3]>0.1),]
+
 l002.14 <- getChrmRatio.GC("2",14)
 l002.14.red <- l002.14[which(l002.14[,3]>0.1),]
 l003.14 <- getChrmRatio.GC("3",14)
@@ -1667,6 +1823,23 @@ l077.14 <- getChrmRatio.GC("77",14)
 l077.14.red <- l077.14[which(l077.14[,3]>0.1),]
 l007.14 <- getChrmRatio.GC("7",14)
 l007.14.red <- l007.14[which(l007.14[,3]>0.1),]
+
+l029.14 <- getChrmRatio.MA("29",14)
+l029.14.red <- l029.14[which(l029.14[,3]>0.1),]
+l050.14 <- getChrmRatio.MA("50",14)
+l050.14.red <- l050.14[which(l050.14[,3]>0.1),]
+l112.14 <- getChrmRatio.MA("112",14)
+l112.14.red <- l112.14[which(l112.14[,3]>0.1),]
+l115.14 <- getChrmRatio.MA("115",14)
+l115.14.red <- l115.14[which(l115.14[,3]>0.1),]
+l117.14 <- getChrmRatio.MA("117",14)
+l117.14.red <- l117.14[which(l117.14[,3]>0.1),]
+l123.14 <- getChrmRatio.MA("123",14)
+l123.14.red <- l123.14[which(l123.14[,3]>0.1),]
+l141.14 <- getChrmRatio.MA("141",14)
+l141.14.red <- l141.14[which(l141.14[,3]>0.1),]
+l152.14 <- getChrmRatio.MA("152",14)
+l152.14.red <- l152.14[which(l152.14[,3]>0.1),]
 
 l002.15 <- getChrmRatio.GC("2",15)
 l002.15.red <- l002.15[which(l002.15[,3]>0.1),]
@@ -1709,6 +1882,23 @@ l077.15.red <- l077.15[which(l077.15[,3]>0.1),]
 l007.15 <- getChrmRatio.GC("7",15)
 l007.15.red <- l007.15[which(l007.15[,3]>0.1),]
 
+l029.15 <- getChrmRatio.MA("29",15)
+l029.15.red <- l029.15[which(l029.15[,3]>0.1),]
+l050.15 <- getChrmRatio.MA("50",15)
+l050.15.red <- l050.15[which(l050.15[,3]>0.1),]
+l112.15 <- getChrmRatio.MA("112",15)
+l112.15.red <- l112.15[which(l112.15[,3]>0.1),]
+l115.15 <- getChrmRatio.MA("115",15)
+l115.15.red <- l115.15[which(l115.15[,3]>0.1),]
+l117.15 <- getChrmRatio.MA("117",15)
+l117.15.red <- l117.15[which(l117.15[,3]>0.1),]
+l123.15 <- getChrmRatio.MA("123",15)
+l123.15.red <- l123.15[which(l123.15[,3]>0.1),]
+l141.15 <- getChrmRatio.MA("141",15)
+l141.15.red <- l141.15[which(l141.15[,3]>0.1),]
+l152.15 <- getChrmRatio.MA("152",15)
+l152.15.red <- l152.15[which(l152.15[,3]>0.1),]
+
 l002.16 <- getChrmRatio.GC("2",16)
 l002.16.red <- l002.16[which(l002.16[,3]>0.1),]
 l003.16 <- getChrmRatio.GC("3",16)
@@ -1750,6 +1940,23 @@ l077.16 <- getChrmRatio.GC("77",16)
 l077.16.red <- l077.16[which(l077.16[,3]>0.1),]
 l007.16 <- getChrmRatio.GC("7",16)
 l007.16.red <- l007.16[which(l007.16[,3]>0.1),]
+
+l029.16 <- getChrmRatio.MA("29",16)
+l029.16.red <- l029.16[which(l029.16[,3]>0.1),]
+l050.16 <- getChrmRatio.MA("50",16)
+l050.16.red <- l050.16[which(l050.16[,3]>0.1),]
+l112.16 <- getChrmRatio.MA("112",16)
+l112.16.red <- l112.16[which(l112.16[,3]>0.1),]
+l115.16 <- getChrmRatio.MA("115",16)
+l115.16.red <- l115.16[which(l115.16[,3]>0.1),]
+l117.16 <- getChrmRatio.MA("117",16)
+l117.16.red <- l117.16[which(l117.16[,3]>0.1),]
+l123.16 <- getChrmRatio.MA("123",16)
+l123.16.red <- l123.16[which(l123.16[,3]>0.1),]
+l141.16 <- getChrmRatio.MA("141",16)
+l141.16.red <- l141.16[which(l141.16[,3]>0.1),]
+l152.16 <- getChrmRatio.MA("152",16)
+l152.16.red <- l152.16[which(l152.16[,3]>0.1),]
 
 #############################################################################################
 
@@ -1932,6 +2139,88 @@ t.test((log2(l077.1.red[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 
+#############################################################################################
+
+#CHROMOSOME 1 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_1_newMA.pdf")
+boxplot((log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
+        (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 1",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=8, y=1, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+wilcox.test((log2(l152.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 1 Reduced
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_1_red_newMA.pdf")
+boxplot((log2(l029.1.red[,3])),(log2(l050.1.red[,3])),(log2(l112.1.red[,3])),(log2(l115.1.red[,3])),(log2(l117.1.red[,3])),
+        (log2(l123.1.red[,3])),(log2(l141.1.red[,3])),(log2(l152.1.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 1 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+wilcox.test((log2(l152.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
 ##############################################################################################
 #CHROMOSOME 2
 
@@ -1986,7 +2275,6 @@ abline(h=-1,lty=2,col="darkviolet")
 #text(x=4, y=2.5, "*", pos=3, cex=1.5, col="red")
 #text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 dev.off()}
-###############################################################################################
 
 ##############################################################################################
 #CHROMOSOME 2
@@ -2043,6 +2331,88 @@ abline(h=-1,lty=2,col="darkviolet")
 #text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 dev.off()}
 ###############################################################################################
+
+#CHROMOSOME 2 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_2_newMA.pdf")
+boxplot((log2(l029.2[,3])),(log2(l050.2[,3])),(log2(l112.2[,3])),(log2(l115.2[,3])),(log2(l117.2[,3])),
+        (log2(l123.2[,3])),(log2(l141.2[,3])),(log2(l152.2[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 2",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=8, y=1, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 2 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_2_red_newMA.pdf")
+boxplot((log2(l029.2.red[,3])),(log2(l050.2.red[,3])),(log2(l112.2.red[,3])),(log2(l115.2.red[,3])),(log2(l117.2.red[,3])),
+        (log2(l123.2.red[,3])),(log2(l141.2.red[,3])),(log2(l152.2.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 2 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
+#############################################################################################
 #CHROMOSOME 3
 
 #RATIOS FOR CHROMOSOME 3
@@ -2153,6 +2523,84 @@ abline(h=-1,lty=2,col="darkviolet")
 #text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 dev.off()}
 ###############################################################################################
+
+#CHROMOSOME 3 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_3_newMA.pdf")
+boxplot((log2(l029.3[,3])),(log2(l050.3[,3])),(log2(l112.3[,3])),(log2(l115.3[,3])),(log2(l117.3[,3])),
+        (log2(l123.3[,3])),(log2(l141.3[,3])),(log2(l152.3[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 3",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 3 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_3_red_newMA.pdf")
+boxplot((log2(l029.3.red[,3])),(log2(l050.3.red[,3])),(log2(l112.3.red[,3])),(log2(l115.3.red[,3])),(log2(l117.3.red[,3])),
+        (log2(l123.3.red[,3])),(log2(l141.3.red[,3])),(log2(l152.3.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 3 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
+#############################################################################################
 #CHROMOSOME 4
 
 #RATIOS FOR CHROMOSOME 4
@@ -2260,6 +2708,86 @@ abline(h=-1,lty=2,col="darkviolet")
 #text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 dev.off()}
 ###############################################################################################
+
+###############################################################################################
+
+#CHROMOSOME 4 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_4_newMA.pdf")
+boxplot((log2(l029.4[,3])),(log2(l050.4[,3])),(log2(l112.4[,3])),(log2(l115.4[,3])),(log2(l117.4[,3])),
+        (log2(l123.4[,3])),(log2(l141.4[,3])),(log2(l152.4[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 4",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 4 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_4_red_newMA.pdf")
+boxplot((log2(l029.4.red[,3])),(log2(l050.4.red[,3])),(log2(l112.4.red[,3])),(log2(l115.4.red[,3])),(log2(l117.4.red[,3])),
+        (log2(l123.4.red[,3])),(log2(l141.4.red[,3])),(log2(l152.4.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 4 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
+#############################################################################################
 #CHROMOSOME 5 
 
 #RATIOS FOR CHROMOSOME 5
@@ -2379,6 +2907,95 @@ text(x=14, y=1.6, "*", pos=3, cex=2, col="red")
 text(x=14.3, y=1.6, "*", pos=3, cex=2, col="red")
 dev.off()
 }
+###############################################################################################
+
+#CHROMOSOME 5 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_5_newMA.pdf")
+boxplot((log2(l029.5[,3])),(log2(l050.5[,3])),(log2(l112.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),
+        (log2(l123.5[,3])),(log2(l141.5[,3])),(log2(l152.5[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        main="New MA Lines Chromsome 5",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=4.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=5, y=1, "*", pos=3, cex=2, col="red")
+text(x=5.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=5.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=6, y=1, "*", pos=3, cex=2, col="red")
+text(x=6.3, y=1, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l117.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l123.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l050.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 5 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_5_red_newMA.pdf")
+boxplot((log2(l029.5.red[,3])),(log2(l050.5.red[,3])),(log2(l112.5.red[,3])),(log2(l115.5.red[,3])),(log2(l117.5.red[,3])),
+        (log2(l123.5.red[,3])),(log2(l141.5.red[,3])),(log2(l152.5.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        main="New MA Lines Chromsome 5 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=4.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=5, y=1, "*", pos=3, cex=2, col="red")
+text(x=5.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=5.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=6, y=1, "*", pos=3, cex=2, col="red")
+text(x=6.3, y=1, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l117.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l123.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
 ########################################################################################
 #CHROMOSOME 6 
 
@@ -2480,6 +3097,84 @@ abline(h=-1,lty=2,col="darkviolet")
 #text(x=4, y=2.5, "*", pos=3, cex=1.5, col="red")
 #text(x=14, y=2.5, "*", pos=3, cex=1.5, col="red")
 dev.off()}
+
+################################################################################
+#CHROMOSOME 6 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_6_newMA.pdf")
+boxplot((log2(l029.6[,3])),(log2(l050.6[,3])),(log2(l112.6[,3])),(log2(l115.6[,3])),(log2(l117.6[,3])),
+        (log2(l123.6[,3])),(log2(l141.6[,3])),(log2(l152.6[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 6",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 6 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_6_red_newMA.pdf")
+boxplot((log2(l029.6.red[,3])),(log2(l050.6.red[,3])),(log2(l112.6.red[,3])),(log2(l115.6.red[,3])),(log2(l117.6.red[,3])),
+        (log2(l123.6.red[,3])),(log2(l141.6.red[,3])),(log2(l152.6.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        main="New MA Lines Chromsome 6 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
 ################################################################################
 
 #CHROMOSOME 7 
@@ -2647,6 +3342,92 @@ text(x=16.7, y=1.4, "*", pos=3, cex=2, col="red")
 text(x=17, y=1.4, "*", pos=3, cex=2, col="red")
 text(x=17.3, y=1.4, "*", pos=3, cex=2, col="red")
 dev.off()}
+
+############################################################
+#CHROMOSOME 7 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_7_newMA.pdf")
+boxplot((log2(l029.7[,3])),(log2(l050.7[,3])),(log2(l112.7[,3])),(log2(l115.7[,3])),(log2(l117.7[,3])),
+        (log2(l123.7[,3])),(log2(l141.7[,3])),(log2(l152.7[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","darkcyan"),
+        main="New MA Lines Chromsome 7",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 7 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_7_red_newMA.pdf")
+boxplot((log2(l029.7.red[,3])),(log2(l050.7.red[,3])),(log2(l112.7.red[,3])),(log2(l115.7.red[,3])),(log2(l117.7.red[,3])),
+        (log2(l123.7.red[,3])),(log2(l141.7.red[,3])),(log2(l152.7.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","darkcyan"),
+        main="New MA Lines Chromsome 7 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
+
 ###############################################################################################
 
 #CHROMOSOME 8 
@@ -2747,6 +3528,90 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 dev.off()}
+###############################################################################################
+#CHROMOSOME 8 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_8_newMA.pdf")
+boxplot((log2(l029.8[,3])),(log2(l050.8[,3])),(log2(l112.8[,3])),(log2(l115.8[,3])),(log2(l117.8[,3])),
+        (log2(l123.8[,3])),(log2(l141.8[,3])),(log2(l152.8[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 8",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 8 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_8_red_newMA.pdf")
+boxplot((log2(l029.8.red[,3])),(log2(l050.8.red[,3])),(log2(l112.8.red[,3])),(log2(l115.8.red[,3])),(log2(l117.8.red[,3])),
+        (log2(l123.8.red[,3])),(log2(l141.8.red[,3])),(log2(l152.8.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 8 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+
 ###############################################################################################
 #CHROMOSOME 9
 
@@ -2858,6 +3723,89 @@ text(x=19.3, y=1.8, "*", pos=3, cex=2, col="red")
 
 dev.off()}
 
+###############################################################################################
+#CHROMOSOME 9 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_9_newMA.pdf")
+boxplot((log2(l029.9[,3])),(log2(l050.9[,3])),(log2(l112.9[,3])),(log2(l115.9[,3])),(log2(l117.9[,3])),
+        (log2(l123.9[,3])),(log2(l141.9[,3])),(log2(l152.9[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 9",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 8 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_8_red_newMA.pdf")
+boxplot((log2(l029.8.red[,3])),(log2(l050.8.red[,3])),(log2(l112.8.red[,3])),(log2(l115.8.red[,3])),(log2(l117.8.red[,3])),
+        (log2(l123.8.red[,3])),(log2(l141.8.red[,3])),(log2(l152.8.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 8 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+#p-value = 3.387e-11
+t.test((log2(l112.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
 ###############################################################################################
 #CHROMOSOME 10 
 

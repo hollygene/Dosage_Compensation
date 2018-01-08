@@ -2494,15 +2494,14 @@ for (i in seq_along(ratioFiles)){
 ``` {r fpkm vs p-value, echo=FALSE}
 #first need to read in the Cuffdiff data 
 #first do this for one line, then make a loop to do it for each line
-setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
-samples <- c(1,3,4,5,7,8,9,11,28,88,119)
+#setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables"
+samples <- c(1,2,3,4,5,6,7,8,9,11,15,28,88,119)
 
 #sample1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/gene_exp_S1.diff",header=TRUE)
 
 #plot(sample1$q_value,sample1$value_2,ylab="ancestor FPKM",xlab="FDR-adj p-value",main="Sample1")
 
-list_of_titles <- c("Sample1","Sample11","Sample119","Sample28","Sample3","Sample4","Sample5",
-                    "Sample7","Sample8","Sample88","Sample9")
+list_of_titles <- c("Sample1","Sample108","Sample11","Sample119","Sample15","Sample2","Sample28","Sample3","Sample4","Sample5", "Sample6", "Sample7","Sample8","Sample88","Sample9")
 
 
 # Plot separate ggplot figures in a loop.
@@ -2580,18 +2579,16 @@ write.csv(sample,file=(paste("Depth_of_coverage_",list_of_titles[i],".csv",sep="
 ########################################################################################################
 
 #read in the data
-myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables",pattern = "*.diff")
+myFiles <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Cuffdiff_MA_old",pattern = "*.diff", full.names = TRUE)
 
 print(myFiles)
 getwd()
-setwd("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables")
+#setwd("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/Diff/Tables")
 
-list_of_titles <- c("Sample1","Sample2","Sample3","Sample4","Sample5","Sample6","Sample7","Sample8",
-                    "Sample9","Sample11","Sample18","Sample21","Sample29","Sample31","Sample49","Sample50",
-                    "Sample59","Sample61","Sample66","Sample69","Sample76","Sample77","Sample112","Sample115","Sample117","Sample123","Sample141","Sample152")
+list_of_titles <- c("Sample1","Sample108","Sample11","Sample119","Sample15","Sample2","Sample28","Sample3","Sample4","Sample5","Sample6","Sample7","Sample8","Sample88","Sample9")
 
 for (i in 1:length(myFiles)) {
-  pdf(paste("DE_by_total_",list_of_titles[i],".pdf",sep=""))
+  pdf(paste("DE_by_total_old_",list_of_titles[i],".pdf",sep=""))
   sample <- read.table(myFiles[i],header=TRUE)
   sample <- data.table(sample)  # make it a data table
   sample <- cSplit(sample,"locus",":") #split the locus column into "chr" and "locus"

@@ -2051,7 +2051,7 @@ boxplot((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3
 #str(log2.GC.all)
 #tracking.id.Chr1 <- log2.GC.all$tracking_id
 #View(tracking.id.Chr1)
-#n <- length(log2.GC.1$tracking_id)
+n <- length(log2.GC.1$tracking_id)
 #n
 
 #this code works beautifully to produce a table with all of the log2 values for chromosome 1 
@@ -2450,6 +2450,44 @@ boxplot((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3
         ylab="log2(fold change)", 
         col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
               "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 2",las=3,ylim=c(-2,2.5))
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+
+chr2Data <- data.frame(y=c((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3])),
+        (log2(l005.2[,3])),(log2(l006.2[,3])),(log2(l007.2[,3])),(log2(l008.2[,3])),
+        (log2(l009.2[,3])),(log2(l011.2[,3])),(log2(l018.2[,3])),(log2(l021.2[,3])),
+        (log2(l031.2[,3])),(log2(l049.2[,3])),(log2(l059.2[,3])),(log2(l061.2[,3])),
+        (log2(l066.2[,3])),(log2(l069.2[,3])),(log2(l076.2[,3])),(log2(l077.2[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.2$tracking_id))))
+
+#This code works beautifully to produce a boxplot 
+pdf("Chrm_2.pdf")
+boxplot(y~Line,data=chr2Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 2",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+aov.chr2 <- aov(y~Line,data=chr1Data)
+summary(aov.chr2)
+resids.chr2 <- resid(aov.chr1)
+pdf("Chrm2.resids.pdf")
+hist(resids.chr1,col="turquoise",breaks=10,xlab="Residuals.Chr.2")
+shapiro.test(resids.chr2)
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr2 <- kruskal.test(y~Line,data=chr2Data)
+summary(kruskal.chr2)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+TukeyHSD(aov.chr2)
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+multiCompsChr2 <- kruskalmc(y~Line,data=chr2Data)
+plot(TukeyHSD(aov.chr2))
+#many pairwise t-tests
+pairwise.t.test(chr2Data$y,chr2Data$Line,p.adjust.method = "fdr")
+wilcox.chr2 <- pairwise.wilcox.test(chr2Data$y,chr2Data$Line,p.adjust.method = "fdr")
+
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid

@@ -26,6 +26,7 @@ library(data.table)
 library(Rsamtools)
 library(splitstackshape)
 library(ggplot2)
+library(pgirmess)
 ```
 
 ``` {r load in data,make matrices}
@@ -39,7 +40,7 @@ sc_counts.z[,3:140] <- sc_counts.z[,3:140]+.5 #add .5 to dataset so the zeroes d
 gene.means <- rowMeans(sc_counts.z[,3:140]) #average across the sample
 anc.means.MA <- rowMeans(sc_counts.z[,90:92]) #average in the ancestor
 anc.means.GC <- rowMeans(sc_counts.z[87:89]) #average in the GC ancestor
-anc.means.old <- rowMeans(sc_counts.z[,138:140]) #average in the old ancestor
+
 
 #if the average fpkm is less than 5 in the ancestor or less than 5 in the overall, remove the gene
 sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.GC<5 |anc.means.old<5),]
@@ -48,7 +49,9 @@ sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.
 sc_anc <- sc_counts.final[,c(1,2,87,88,89,90,91,92,138,139,140)]
 sc_des.GC <- sc_counts.final[,c(1:2,12:14,24:32,36:50,54:86)] #average for each GC line
 sc_des.MA <- sc_counts.final[,c(1:11,15:23,33:35,51:53)] #average for each MA line
-sc_des.old <- sc_counts.final[,c(1:2,93:137)] #average for each old (MA) line 
+
+write.csv(sc_des.MA,file="sc_des.MA.csv")
+
 
 index1 <- which(sc_anc[,1]==1)
 index2 <- which(sc_anc[,1]==2)
@@ -1978,6 +1981,114 @@ boxplot((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3
                         "orange","deeppink1","deeppink1","green","cyan","cyan","cyan","cyan",
                         "green","cyan","cyan","cyan"),main="GC Lines Chromsome 1",las=3
         ,ylim=c(-2,2.5))
+
+#put data into vectors
+#log2.GC.1 <- data.frame(log2(l001.1[,3]))
+#View(log2.GC.1)
+#log2.GC.1 <- log2.GC.1[,3]
+#chr1.tracking.id <- data.frame(l001.1[,1:2])
+#log2.GC.1 <- cbind(chr1.tracking.id,log2.GC.1)
+#View(log2.GC.1)
+#log2.GC.2 <- data.frame(log2(l002.1[,3]))
+#log2.GC.all <- cbind(log2.GC.1,log2.GC.2)
+#View(log2.GC.all)
+#names(log2.GC.all)
+#log2.GC.3 <- data.frame(log2(l003.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.3)
+#View(log2.GC.all)
+#log2.GC.4 <- data.frame(log2(l004.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.4)
+#View(log2.GC.all)
+#log2.GC.5 <- data.frame(log2(l005.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.5)
+#View(log2.GC.all)
+#log2.GC.6 <- data.frame(log2(l006.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.6)
+#View(log2.GC.all)
+#log2.GC.7 <- data.frame(log2(l007.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.7)
+#View(log2.GC.all)
+#log2.GC.8 <- data.frame(log2(l008.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.8)
+#View(log2.GC.all)
+#log2.GC.9 <- data.frame(log2(l009.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.9)
+#View(log2.GC.all)
+#log2.GC.11 <- data.frame(log2(l011.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.11)
+#View(log2.GC.all)
+#log2.GC.18 <- data.frame(log2(l018.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.18)
+#View(log2.GC.all)
+#log2.GC.21 <- data.frame(log2(l021.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.21)
+#View(log2.GC.all)
+#log2.GC.31 <- data.frame(log2(l031.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.31)
+#View(log2.GC.all)
+#log2.GC.49 <- data.frame(log2(l049.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.49)
+#View(log2.GC.all)
+#log2.GC.59 <- data.frame(log2(l059.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.59)
+#View(log2.GC.all)
+#log2.GC.61 <- data.frame(log2(l061.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.61)
+#View(log2.GC.all)
+#log2.GC.66 <- data.frame(log2(l066.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.66)
+#View(log2.GC.all)
+#log2.GC.69 <- data.frame(log2(l069.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.69)
+#View(log2.GC.all)
+#log2.GC.76 <- data.frame(log2(l076.1[,3]))
+#View(log2.GC.76 )
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.76)
+#View(log2.GC.all)
+#log2.GC.77 <- data.frame(log2(l077.1[,3]))
+#log2.GC.all <- cbind(log2.GC.all,log2.GC.77)
+#View(log2.GC.all)
+#str(log2.GC.all)
+#tracking.id.Chr1 <- log2.GC.all$tracking_id
+#View(tracking.id.Chr1)
+#n <- length(log2.GC.1$tracking_id)
+#n
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
+        (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
+        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
+        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),each=n))
+
+#This code works beautifully to produce a boxplot 
+pdf("Chrm_1.pdf")
+boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col="darkcyan",main="GC Lines Chromsome 1",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+aov.chr1 <- aov(y~Line,data=chr1Data)
+summary(aov.chr1)
+resids.chr1 <- resid(aov.chr1)
+pdf("Chrm1.resids.pdf")
+hist(resids.chr1,col="turquoise",breaks=10,xlab="Residuals.Chr.1")
+shapiro.test(resids.chr1)
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr1 <- kruskal.test(y~Line,data=chr1Data)
+summary(kruskal.chr1)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+TukeyHSD(aov.chr1)
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+multiCompsChr1 <- kruskalmc(y~Line,data=chr1Data)
+plot(TukeyHSD(aov.chr1))
+#many pairwise t-tests
+pairwise.t.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
+wilcox.chr1 <- pairwise.wilcox.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
+
+
 brackets(7, 1.1, 11, 1.1, h = NULL,  ticks = 0.5, curvature = 0.5, type = 1,
 col = 1, lwd = 1, lty = 1, xpd = FALSE)
 brackets(7, 1.4, 12, 1.4, h = NULL,  ticks = 0.5, curvature = 0.5, type = 1,
@@ -2013,39 +2124,90 @@ text(x=9.8, y=1.7, "*", pos=3, cex=2, col="red")
 text(x=11.2, y=1.8, "*", pos=3, cex=2, col="red")
 text(x=11.5, y=1.8, "*", pos=3, cex=2, col="red")
 text(x=11.8, y=1.8, "*", pos=3, cex=2, col="red")
-euRatio.c1 <- c(l002.1[,3],l003.1[,3],l005.1[,3],l006.1[,3],l009.1[,3],l069.1[,3])
+euRatio.c1.GC <- c(l002.1[,3],l003.1[,3],l005.1[,3],l006.1[,3],l009.1[,3],l069.1[,3])
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 wilcox.test((log2(l007.1[,3])), (log2(l018.1[,3])), paired=FALSE, var.equal=TRUE)
-#p=0.02735
+
 wilcox.test((log2(l007.1[,3])), (log2(l021.1[,3])), paired=FALSE, var.equal=TRUE)
 wilcox.test((log2(l018.1[,3])), (log2(l021.1[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 7.605e-14
-t.test((log2(l001.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l002.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l003.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l004.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l005.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l006.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l007.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l008.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l009.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l011.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l018.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l001.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l007.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l011.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l018.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 wilcox.test((log2(l011.1[,3])), (log2(0.5)), paired=FALSE, var.equal=TRUE)
 wilcox.test((log2(l011.1[,3])), 0, paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l031.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l049.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l031.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l049.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 #0.0468 weird. maybe because it's non parametric?
-t.test((log2(l059.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l061.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l059.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 #I think so, because now the p-value is 0.4
-t.test((log2(l066.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l069.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l076.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
-t.test((log2(l077.1[,3])), (log2(euRatio.c1)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l066.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 
+#compare to expected if euploid (0)
+wilcox.test((log2(l007.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p=0.1354
+wilcox.test((log2(l018.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2246
+t.test((log2(l001.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l011.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l021.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l031.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l049.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#0.0468 weird. maybe because it's non parametric?
+t.test((log2(l059.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#I think so, because now the p-value is 0.4
+t.test((log2(l066.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.1[,3])),0, paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+
+#compare to expected if trisomic (.5)
+wilcox.test((log2(l007.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+#p=0.1354
+wilcox.test((log2(l018.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2246
+t.test((log2(l001.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l002.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l003.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l004.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l005.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l006.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l008.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l009.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l011.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l021.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l031.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l049.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+#0.0468 weird. maybe because it's non parametric?
+t.test((log2(l059.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l061.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+#I think so, because now the p-value is 0.4
+t.test((log2(l066.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l069.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l076.1[,3])),0.5, paired=FALSE, var.equal=TRUE)
+t.test((log2(l077.1[,3])), 0.5, paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 #############################################################################################
@@ -2103,7 +2265,7 @@ text(x=9.8, y=1.7, "*", pos=3, cex=2, col="red")
 text(x=11.2, y=1.8, "*", pos=3, cex=2, col="red")
 text(x=11.5, y=1.8, "*", pos=3, cex=2, col="red")
 text(x=11.8, y=1.8, "*", pos=3, cex=2, col="red")
-euRatio.c1 <- c(l002.1.red[,3],l003.1.red[,3],l005.1.red[,3],l006.1.red[,3],l009.1.red[,3],l069.1.red[,3])
+euRatio.c1.GC.red <- c(l002.1.red[,3],l003.1.red[,3],l005.1.red[,3],l006.1.red[,3],l009.1.red[,3],l069.1.red[,3])
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
 wilcox.test((log2(l007.1.red[,3])), (log2(l018.1.red[,3])), paired=FALSE, var.equal=TRUE)
@@ -2152,7 +2314,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
         (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
         main="New MA Lines Chromsome 1",las=3
         ,ylim=c(-2,2.5))
 
@@ -2168,14 +2330,65 @@ text(x=8.3, y=1, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-wilcox.test((log2(l152.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.1[,3])), (log2(l029.1[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.1[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+
+wilcox.test((log2(l152.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.1[,3])), log2(euRatio.c1.GC), paired=FALSE, var.equal=TRUE)
+
+
+#compare log2 ratios to what is expected for euploids (0)
+wilcox.test((log2(l152.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.1822
+t.test((log2(l152.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2062
+t.test((log2(l112.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.9559
+t.test((log2(l115.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.8522
+t.test((log2(l117.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.8694
+t.test((log2(l123.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.8312
+t.test((log2(l141.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.982
+t.test((log2(l050.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.821
+t.test((log2(l029.1[,3])), 0, paired=FALSE, var.equal=TRUE)
+#p-value = 0.9637
+
+#compare log2 ratios to what is expected for trisomics (0.5)
+wilcox.test((log2(l152.1[,3])), log2(1.5), paired=FALSE, var.equal=TRUE)
+#p-value = 0.647
+t.test((log2(l152.1[,3])), log2(1.5), paired=FALSE, var.equal=TRUE)
+#p-value = 0.6827
+t.test((log2(l112.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.1859
+t.test((log2(l115.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2285
+t.test((log2(l117.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.3171
+t.test((log2(l123.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2256
+t.test((log2(l141.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2787
+t.test((log2(l050.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.3003
+t.test((log2(l029.1[,3])), 0.585, paired=FALSE, var.equal=TRUE)
+#p-value = 0.2811
+
 
 dev.off()}
 #############################################################################################
@@ -2191,7 +2404,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.1.red[,3])),(log2(l050.1.red[,3])),(log2(l112.1.red[,3])),(log2(l115.1.red[,3])),(log2(l117.1.red[,3])),
         (log2(l123.1.red[,3])),(log2(l141.1.red[,3])),(log2(l152.1.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
         main="New MA Lines Chromsome 1 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -2202,22 +2415,21 @@ abline(h=-1,lty=2,col="darkviolet")
 #mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 #text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=8, y=1, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1, "*", pos=3, cex=2, col="red")
 
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-wilcox.test((log2(l152.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.1.red[,3])), (log2(l029.1.red[,3])), paired=FALSE, var.equal=TRUE)
-
+wilcox.test((log2(l152.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.1.red[,3])), log2(euRatio.c1.old), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 
@@ -2343,31 +2555,33 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.2[,3])),(log2(l050.2[,3])),(log2(l112.2[,3])),(log2(l115.2[,3])),(log2(l117.2[,3])),
         (log2(l123.2[,3])),(log2(l141.2[,3])),(log2(l152.2[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 2",las=3
         ,ylim=c(-2,2.5))
 
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
-#p3 <- 0.0006221
-#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=7.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=8, y=1, "*", pos=3, cex=2, col="red")
-text(x=8.3, y=1, "*", pos=3, cex=2, col="red")
+
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.2[,3])), (log2(l029.2[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+###very low p value for 112-weird?
+t.test((log2(l115.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.2[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
 
+#compare 112 to 0 
+t.test((log2(l112.2[,3])), 0, paired=FALSE, var.equal=TRUE)
+#compare 112 to GC euploid ratio
+t.test((log2(l112.2[,3])), log2(euRatio.c2), paired=FALSE, var.equal=TRUE)
+#compare to 0.5
+t.test((log2(l112.2[,3])), 0.5, paired=FALSE, var.equal=TRUE)
 dev.off()}
 #############################################################################################
 
@@ -2382,7 +2596,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.2.red[,3])),(log2(l050.2.red[,3])),(log2(l112.2.red[,3])),(log2(l115.2.red[,3])),(log2(l117.2.red[,3])),
         (log2(l123.2.red[,3])),(log2(l141.2.red[,3])),(log2(l152.2.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 2 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -2393,21 +2607,19 @@ abline(h=-1,lty=2,col="darkviolet")
 #mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 #text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
 
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
 
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.2.red[,3])), (log2(l029.2.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.2.red[,3])), log2(euRatio.c2.old), paired=FALSE, var.equal=TRUE)
+
 
 
 dev.off()}
@@ -2535,7 +2747,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.3[,3])),(log2(l050.3[,3])),(log2(l112.3[,3])),(log2(l115.3[,3])),(log2(l117.3[,3])),
         (log2(l123.3[,3])),(log2(l141.3[,3])),(log2(l152.3[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 3",las=3
         ,ylim=c(-2,2.5))
 
@@ -2549,14 +2761,15 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
 #p-value = 3.387e-11
-t.test((log2(l112.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.3[,3])), (log2(l029.3[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.3[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 #############################################################################################
@@ -2572,7 +2785,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.3.red[,3])),(log2(l050.3.red[,3])),(log2(l112.3.red[,3])),(log2(l115.3.red[,3])),(log2(l117.3.red[,3])),
         (log2(l123.3.red[,3])),(log2(l141.3.red[,3])),(log2(l152.3.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 3 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -2588,15 +2801,14 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.3.red[,3])), (log2(l029.3.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.3.red[,3])), log2(euRatio.c3.old), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 
@@ -2722,7 +2934,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.4[,3])),(log2(l050.4[,3])),(log2(l112.4[,3])),(log2(l115.4[,3])),(log2(l117.4[,3])),
         (log2(l123.4[,3])),(log2(l141.4[,3])),(log2(l152.4[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 4",las=3
         ,ylim=c(-2,2.5))
 
@@ -2736,14 +2948,19 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.4[,3])), (log2(l029.4[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 1.371e-06
+t.test((log2(l115.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0003841
+t.test((log2(l117.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.004657
+t.test((log2(l050.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.4[,3])), (log2(euRatio.c4.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 3.075e-07
+
 
 dev.off()}
 #############################################################################################
@@ -2759,7 +2976,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.4.red[,3])),(log2(l050.4.red[,3])),(log2(l112.4.red[,3])),(log2(l115.4.red[,3])),(log2(l117.4.red[,3])),
         (log2(l123.4.red[,3])),(log2(l141.4.red[,3])),(log2(l152.4.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 4 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -2775,15 +2992,21 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
 #p-value = 3.387e-11
-t.test((log2(l112.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.4.red[,3])), (log2(l029.4.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l112.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+#112 looks very statistically significantly different
+#p value =1.481e-07
+t.test((log2(l115.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+#115 also looks statistically significantly different
+# pvalue 0.0005553
+t.test((log2(l117.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+# pvalue 0.007256
+t.test((log2(l050.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.4.red[,3])), (log2(euRatio.c4.red.old)), paired=FALSE, var.equal=TRUE)
+#p value 2.292e-08
 
 dev.off()}
 
@@ -2920,7 +3143,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.5[,3])),(log2(l050.5[,3])),(log2(l112.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),
         (log2(l123.5[,3])),(log2(l141.5[,3])),(log2(l152.5[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "deeppink1","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
         main="New MA Lines Chromsome 5",las=3
         ,ylim=c(-2,2.5))
 
@@ -2940,15 +3163,20 @@ text(x=6.3, y=1, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l117.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l123.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l050.5[,3])), (log2(l029.5[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0001236
+t.test((log2(l115.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l117.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l123.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+wilcox.test((log2(l123.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002939
+wilcox.test((log2(l050.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.683
+t.test((log2(l029.5[,3])), (log2(euRatio.c5.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 #############################################################################################
@@ -2964,7 +3192,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.5.red[,3])),(log2(l050.5.red[,3])),(log2(l112.5.red[,3])),(log2(l115.5.red[,3])),(log2(l117.5.red[,3])),
         (log2(l123.5.red[,3])),(log2(l141.5.red[,3])),(log2(l152.5.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","deeppink1","cyan","deeppink1","darkcyan","cyan","cyan"),
         main="New MA Lines Chromsome 5 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -2985,15 +3213,18 @@ text(x=6.3, y=1, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l117.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l123.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.5.red[,3])), (log2(l029.5.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 8.847e-05
+t.test((log2(l115.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l117.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+wilcox.test((log2(l123.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l141.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002926
+t.test((log2(l050.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.5.red[,3])), (log2(euRatio.c5.red.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 ########################################################################################
@@ -3110,7 +3341,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.6[,3])),(log2(l050.6[,3])),(log2(l112.6[,3])),(log2(l115.6[,3])),(log2(l117.6[,3])),
         (log2(l123.6[,3])),(log2(l141.6[,3])),(log2(l152.6[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 6",las=3
         ,ylim=c(-2,2.5))
 
@@ -3124,15 +3355,15 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.6[,3])), (log2(l029.6[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.6[,3])), (log2(euRatio.c6.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 #############################################################################################
@@ -3148,7 +3379,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.6.red[,3])),(log2(l050.6.red[,3])),(log2(l112.6.red[,3])),(log2(l115.6.red[,3])),(log2(l117.6.red[,3])),
         (log2(l123.6.red[,3])),(log2(l141.6.red[,3])),(log2(l152.6.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","deeppink1","darkcyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 6 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -3163,15 +3394,14 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.6.red[,3])), (log2(l029.6.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.6.red[,3])), (log2(euRatio.c6.red.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 
@@ -3355,7 +3585,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.7[,3])),(log2(l050.7[,3])),(log2(l112.7[,3])),(log2(l115.7[,3])),(log2(l117.7[,3])),
         (log2(l123.7[,3])),(log2(l141.7[,3])),(log2(l152.7[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","darkcyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","deeppink1","cyan","cyan","darkcyan"),
         main="New MA Lines Chromsome 7",las=3
         ,ylim=c(-2,2.5))
 
@@ -3371,16 +3601,18 @@ text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.7[,3])), (log2(l029.7[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.01085
+t.test((log2(l112.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0008154
+wilcox.test((log2(l115.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.5956
+#115 is NOT actually line 115, so not trisomic for Chr7, or probably anything for that matter
+t.test((log2(l117.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.7[,3])), (log2(euRatio.c7.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 #############################################################################################
@@ -3396,7 +3628,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.7.red[,3])),(log2(l050.7.red[,3])),(log2(l112.7.red[,3])),(log2(l115.7.red[,3])),(log2(l117.7.red[,3])),
         (log2(l123.7.red[,3])),(log2(l141.7.red[,3])),(log2(l152.7.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","darkcyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","deeppink1","cyan","cyan","cyan","darkcyan"),
         main="New MA Lines Chromsome 7 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -3414,16 +3646,20 @@ text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.7.red[,3])), (log2(l029.7.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001745
+wilcox.test((log2(l152.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.008477
+t.test((log2(l112.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0002213
+wilcox.test((log2(l115.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.651
+t.test((log2(l117.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.7.red[,3])), (log2(euRatio.c7.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.006072
 
 dev.off()}
 
@@ -3540,7 +3776,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.8[,3])),(log2(l050.8[,3])),(log2(l112.8[,3])),(log2(l115.8[,3])),(log2(l117.8[,3])),
         (log2(l123.8[,3])),(log2(l141.8[,3])),(log2(l152.8[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
         main="New MA Lines Chromsome 8",las=3
         ,ylim=c(-2,2.5))
 
@@ -3556,16 +3792,18 @@ text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.8[,3])), (log2(l029.8[,3])), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l112.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.006052
+t.test((log2(l029.8[,3])), (log2(euRatio.c8.old)), paired=FALSE, var.equal=TRUE)
+
 
 dev.off()}
 #############################################################################################
@@ -3581,7 +3819,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.8.red[,3])),(log2(l050.8.red[,3])),(log2(l112.8.red[,3])),(log2(l115.8.red[,3])),(log2(l117.8.red[,3])),
         (log2(l123.8.red[,3])),(log2(l141.8.red[,3])),(log2(l152.8.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
         main="New MA Lines Chromsome 8 Reduced",las=3
         ,ylim=c(-2,2.5))
 
@@ -3599,16 +3837,16 @@ text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l112.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.8.red[,3])), (log2(euRatio.c8.red.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 
@@ -3735,7 +3973,7 @@ par(mfrow=c(1,1))
 boxplot((log2(l029.9[,3])),(log2(l050.9[,3])),(log2(l112.9[,3])),(log2(l115.9[,3])),(log2(l117.9[,3])),
         (log2(l123.9[,3])),(log2(l141.9[,3])),(log2(l152.9[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        ylab="log2(fold change)", col=c("deeppink1", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
         main="New MA Lines Chromsome 9",las=3
         ,ylim=c(-2,2.5))
 
@@ -3745,22 +3983,24 @@ abline(h=-1,lty=2,col="darkviolet")
 #p3 <- 0.0006221
 #mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
 #text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
-text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
-text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=0.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=1, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=1.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.9[,3])), (log2(l029.9[,3])), paired=FALSE, var.equal=TRUE)
+t.test((log2(l152.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0009998
+t.test((log2(l112.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.9[,3])), (log2(euRatio.c9.old)), paired=FALSE, var.equal=TRUE)
+# p-value < 2.2e-16
 
 dev.off()}
 #############################################################################################
@@ -3772,12 +4012,12 @@ par(mfrow=c(1,1))
 #try to plot them all on the same graph? 
 
 #euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
-{pdf("Chrm_8_red_newMA.pdf")
-boxplot((log2(l029.8.red[,3])),(log2(l050.8.red[,3])),(log2(l112.8.red[,3])),(log2(l115.8.red[,3])),(log2(l117.8.red[,3])),
-        (log2(l123.8.red[,3])),(log2(l141.8.red[,3])),(log2(l152.8.red[,3])) 
+{pdf("Chrm_9_red_newMA.pdf")
+boxplot((log2(l029.9.red[,3])),(log2(l050.9.red[,3])),(log2(l112.9.red[,3])),(log2(l115.9.red[,3])),(log2(l117.9.red[,3])),
+        (log2(l123.9.red[,3])),(log2(l141.9.red[,3])),(log2(l152.9.red[,3])) 
         ,names=c("29","50","112","115","117","123","141","152"),
-        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
-        main="New MA Lines Chromsome 8 Reduced",las=3
+        ylab="log2(fold change)", col=c("deeppink1", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 9 Reduced",las=3
         ,ylim=c(-2,2.5))
 
 abline(h=0,lty=2)
@@ -3794,16 +4034,15 @@ text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
 
 #use non-parametric because these are not normally distributed
 #run same test on all lines, even those that are not "supposed" to be aneuploid
-t.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-wilcox.test((log2(l152.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-#p-value = 3.387e-11
-t.test((log2(l112.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l115.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l117.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l123.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l141.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-t.test((log2(l050.8.red[,3])), (log2(l029.8.red[,3])), paired=FALSE, var.equal=TRUE)
-
+t.test((log2(l152.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l152.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.9.red[,3])), (log2(euRatio.c9.red.old)), paired=FALSE, var.equal=TRUE)
 
 dev.off()}
 ###############################################################################################
@@ -3924,11 +4163,109 @@ text(x=19.3, y=1.8, "*", pos=3, cex=2, col="red")
 
 dev.off()}
 ###############################################################################################
+#CHROMOSOME 10 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_10_newMA.pdf")
+boxplot((log2(l029.10[,3])),(log2(l050.10[,3])),(log2(l112.10[,3])),(log2(l115.10[,3])),(log2(l117.10[,3])),
+        (log2(l123.10[,3])),(log2(l141.10[,3])),(log2(l152.10[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 10",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+euRatio.c10.GC <- c(l002.10[,3],l003.10[,3],l005.10[,3],l006.10[,3],l008.10[,3],l009.10[,3],l069.10[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001751
+t.test((log2(l115.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.10[,3])), log2(euRatio.c10.GC), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l152.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0002234
+t.test((log2(l115.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.007844
+t.test((log2(l117.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.10[,3])), (log2(euRatio.c10.old)), paired=FALSE, var.equal=TRUE)
+
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 10 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_10_red_newMA.pdf")
+boxplot((log2(l029.10.red[,3])),(log2(l050.10.red[,3])),(log2(l112.10.red[,3])),(log2(l115.10.red[,3])),(log2(l117.10.red[,3])),
+        (log2(l123.10.red[,3])),(log2(l141.10.red[,3])),(log2(l152.10.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 10 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+
+euRatio.c10.red.GC <- c(l002.10.red[,3],l003.10.red[,3],l005.10.red[,3],l006.10.red[,3],l008.10.red[,3],l009.10.red[,3],l069.10.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.10.red[,3])), log2(euRatio.c10.red.GC), paired=FALSE, var.equal=TRUE)
+
+
+t.test((log2(l152.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+# p-value = 0.0001576
+t.test((log2(l115.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.10.red[,3])), (log2(euRatio.c10.red.old)), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+###############################################################################################
 #CHROMOSOME 11
 
 #RATIOS FOR CHROMOSOME 11
 
-{euRatio.c11 <- c(l002.11.red[,3],l003.11.red[,3],l005.11.red[,3],l006.11.red[,3],l008.11.red[,3],l009.11[,3],l069.11.red[,3])
+{euRatio.c11 <- c(l002.11.red[,3],l003.11.red[,3],l005.11.red[,3],l006.11.red[,3],l008.11.red[,3],l009.11.red[,3],l069.11.red[,3])
 
 pdf("Chrm_11.red.pdf")
 boxplot((log2(l001.11.red[,3])),(log2(l002.11.red[,3])),(log2(l003.11.red[,3])),(log2(l004.11.red[,3])),(log2(l005.11.red[,3])),
@@ -4025,6 +4362,113 @@ abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 
 #text(x=19, y=2.2, "*", pos=3, cex=1.5, col="red")
+dev.off()}
+
+##############################################################################################
+#CHROMOSOME 11 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_11_newMA.pdf")
+boxplot((log2(l029.11[,3])),(log2(l050.11[,3])),(log2(l112.11[,3])),(log2(l115.11[,3])),(log2(l117.11[,3])),
+        (log2(l123.11[,3])),(log2(l141.11[,3])),(log2(l152.11[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 11",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=7.7, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.4, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.4, "*", pos=3, cex=2, col="red")
+
+euRatio.c11.GC <- c(l002.11[,3],l003.11[,3],l005.11[,3],l006.11[,3],l008.11[,3],l009.11[,3],l069.11[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.008775
+t.test((log2(l117.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.11[,3])), log2(euRatio.c11.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001671
+
+
+t.test((log2(l152.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.11[,3])), (log2(euRatio.c11.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001235
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 11 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_11_red_newMA.pdf")
+boxplot((log2(l029.11.red[,3])),(log2(l050.11.red[,3])),(log2(l112.11.red[,3])),(log2(l115.11.red[,3])),(log2(l117.11.red[,3])),
+        (log2(l123.11.red[,3])),(log2(l141.11.red[,3])),(log2(l152.11.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 11 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+
+
+euRatio.c11.red.GC <- c(l002.11.red[,3],l003.11.red[,3],l005.11.red[,3],l006.11.red[,3],l008.11.red[,3],l009.11.red[,3],l069.11.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002226
+t.test((log2(l115.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.11.red[,3])), log2(euRatio.c11.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0001979
+
+t.test((log2(l152.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.003233
+t.test((log2(l112.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001511
+t.test((log2(l115.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.11.red[,3])), (log2(euRatio.c11.red.old)), paired=FALSE, var.equal=TRUE)
+#p-value = 3.548e-05
+
 dev.off()}
 ###############################################################################################
 #CHROMOSOME 12
@@ -4197,6 +4641,112 @@ text(x=20, y=1.8, "*", pos=3, cex=2, col="red")
 text(x=20.3, y=1.8, "*", pos=3, cex=2, col="red")
 dev.off()}
 
+
+##############################################################################################
+#CHROMOSOME 12 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_12_newMA.pdf")
+boxplot((log2(l029.12[,3])),(log2(l050.12[,3])),(log2(l112.12[,3])),(log2(l115.12[,3])),(log2(l117.12[,3])),
+        (log2(l123.12[,3])),(log2(l141.12[,3])),(log2(l152.12[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","cyan","cyan","deeppink1"),
+        main="New MA Lines Chromsome 12",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c12.GC <- c(l002.12[,3],l003.12[,3],l005.12[,3],l006.12[,3],l008.12[,3],l009.12[,3],l069.12[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0001779
+t.test((log2(l123.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.007341
+wilcox.test((log2(l123.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0006668
+t.test((log2(l141.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.12[,3])), log2(euRatio.c12.GC), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l152.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l123.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.003949
+t.test((log2(l141.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0003853
+t.test((log2(l050.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.12[,3])), log2(euRatio.c12.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002176
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 12 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_12_red_newMA.pdf")
+boxplot((log2(l029.12.red[,3])),(log2(l050.12.red[,3])),(log2(l112.12.red[,3])),(log2(l115.12.red[,3])),(log2(l117.12.red[,3])),(log2(l123.12.red[,3])),(log2(l141.12.red[,3])),(log2(l152.12.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("green", "cyan","cyan","cyan","cyan","deeppink1","cyan","cyan"),
+        main="New MA Lines Chromsome 12 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c12.red.GC <- c(l002.12.red[,3],l003.12.red[,3],l005.12.red[,3],l006.12.red[,3],l008.12.red[,3],l009.12.red[,3],l069.12.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002428
+t.test((log2(l112.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0004238
+wilcox.test((log2(l123.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0005332
+t.test((log2(l141.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.003095
+t.test((log2(l029.12.red[,3])), log2(euRatio.c12.red.GC), paired=FALSE, var.equal=TRUE)
+
+
+
+t.test((log2(l152.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001807
+t.test((log2(l115.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.007395
+wilcox.test((log2(l123.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002079
+t.test((log2(l141.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0008735
+t.test((log2(l050.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.12.red[,3])), log2(euRatio.c12.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.006992
+
+dev.off()}
+
+
 ###############################################################################################
 #CHROMOSOME 13
 
@@ -4254,7 +4804,8 @@ dev.off()}
 
 #RATIOS FOR CHROMOSOME 13
 
-{euRatio.c13 <- c(l002.13[,3],l003.13[,3],l005.13[,3],l006.13[,3],l008.13[,3],l009.13[,3],l069.13[,3])
+{
+  euRatio.c13 <- c(l002.13[,3],l003.13[,3],l005.13[,3],l006.13[,3],l008.13[,3],l009.13[,3],l069.13[,3])
 
 pdf("Chrm_13.pdf")
 boxplot((log2(l001.13[,3])),(log2(l002.13[,3])),(log2(l003.13[,3])),(log2(l004.13[,3])),(log2(l005.13[,3])),
@@ -4300,6 +4851,103 @@ abline(h=-1,lty=2,col="darkviolet")
 
 #text(x=11, y=3.9, "*", pos=3, cex=1.5, col="red")
 #text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
+dev.off()}
+
+##############################################################################################
+#CHROMOSOME 13 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_13_newMA.pdf")
+boxplot((log2(l029.13[,3])),(log2(l050.13[,3])),(log2(l112.13[,3])),(log2(l115.13[,3])),(log2(l117.13[,3])),
+        (log2(l123.13[,3])),(log2(l141.13[,3])),(log2(l152.13[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 13",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c13.GC <- c(l002.13[,3],l003.13[,3],l005.13[,3],l006.13[,3],l008.13[,3],l009.13[,3],l069.13[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.13[,3])), log2(euRatio.c13.GC), paired=FALSE, var.equal=TRUE)
+
+
+t.test((log2(l152.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+#p-value = 1.888e-06
+t.test((log2(l117.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.005271
+t.test((log2(l050.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.13[,3])), log2(euRatio.c13.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.004599
+
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 13 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_13_red_newMA.pdf")
+boxplot((log2(l029.13.red[,3])),(log2(l050.13.red[,3])),(log2(l112.13.red[,3])),(log2(l115.13.red[,3])),(log2(l117.13.red[,3])),(log2(l123.13.red[,3])),(log2(l141.13.red[,3])),(log2(l152.13.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 13 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c13.red.GC <- c(l002.13.red[,3],l003.13.red[,3],l005.13.red[,3],l006.13.red[,3],l008.13.red[,3],l009.13.red[,3],l069.13.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.13.red[,3])), log2(euRatio.c13.red.GC), paired=FALSE, var.equal=TRUE)
+
+
+t.test((log2(l152.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 1.092e-06
+t.test((log2(l115.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0006489
+t.test((log2(l117.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.007709
+t.test((log2(l050.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.13.red[,3])), log2(euRatio.c13.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0002415
+
 dev.off()}
 ###############################################################################################
 
@@ -4411,6 +5059,105 @@ text(x=19, y=1.65, "*", pos=3, cex=2, col="red")
 text(x=19.3, y=1.65, "*", pos=3, cex=2, col="red")
 #text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
 dev.off()}
+
+##############################################################################################
+#CHROMOSOME 14 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_14_newMA.pdf")
+boxplot((log2(l029.14[,3])),(log2(l050.14[,3])),(log2(l112.14[,3])),(log2(l115.14[,3])),(log2(l117.14[,3])),
+        (log2(l123.14[,3])),(log2(l141.14[,3])),(log2(l152.14[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 14",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c14.GC <- c(l002.14[,3],l003.14[,3],l005.14[,3],l006.14[,3],l008.14[,3],l009.14[,3],l069.14[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0004818
+t.test((log2(l112.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.14[,3])), log2(euRatio.c14.GC), paired=FALSE, var.equal=TRUE)
+
+
+
+t.test((log2(l152.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0002275
+t.test((log2(l112.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.14[,3])), log2(euRatio.c14.old), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 14 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_14_red_newMA.pdf")
+boxplot((log2(l029.14.red[,3])),(log2(l050.14.red[,3])),(log2(l112.14.red[,3])),(log2(l115.14.red[,3])),(log2(l117.14.red[,3])),(log2(l123.14.red[,3])),(log2(l141.14.red[,3])),(log2(l152.14.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 14 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c14.red.GC <- c(l002.14.red[,3],l003.14.red[,3],l005.14.red[,3],l006.14.red[,3],l008.14.red[,3],l009.14.red[,3],l069.14.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.001317
+t.test((log2(l112.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.14.red[,3])), log2(euRatio.c14.red.GC), paired=FALSE, var.equal=TRUE)
+
+
+
+t.test((log2(l152.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 6.066e-06
+t.test((log2(l112.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l115.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.008809
+t.test((log2(l123.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.00388
+t.test((log2(l141.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.008024
+t.test((log2(l050.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.14.red[,3])), log2(euRatio.c14.red.old), paired=FALSE, var.equal=TRUE)
+
+dev.off()}
+
 ###############################################################################################
 #CHROMOSOME 15
 
@@ -4517,6 +5264,105 @@ text(x=9.7, y=1.85, "*", pos=3, cex=2, col="red")
 text(x=10, y=1.85, "*", pos=3, cex=2, col="red")
 text(x=10.3, y=1.85, "*", pos=3, cex=2, col="red")
 #text(x=20, y=3.9, "*", pos=3, cex=1.5, col="red")
+dev.off()}
+
+##############################################################################################
+#CHROMOSOME 15 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_15_newMA.pdf")
+boxplot((log2(l029.15[,3])),(log2(l050.15[,3])),(log2(l112.15[,3])),(log2(l115.15[,3])),(log2(l117.15[,3])),
+        (log2(l123.15[,3])),(log2(l141.15[,3])),(log2(l152.15[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 15",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c15.GC <- c(l002.15[,3],l003.15[,3],l005.15[,3],l006.15[,3],l008.15[,3],l009.15[,3],l069.15[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l112.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 6.269e-06
+t.test((log2(l117.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.15[,3])), log2(euRatio.c15.GC), paired=FALSE, var.equal=TRUE)
+
+
+
+t.test((log2(l152.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l112.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+#p-value = 3.042e-08
+t.test((log2(l117.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.15[,3])), log2(euRatio.c15.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.004554
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 15 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_15_red_newMA.pdf")
+boxplot((log2(l029.15.red[,3])),(log2(l050.15.red[,3])),(log2(l112.15.red[,3])),(log2(l115.15.red[,3])),(log2(l117.15.red[,3])),(log2(l123.15.red[,3])),(log2(l141.15.red[,3])),(log2(l152.15.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","cyan","cyan","cyan","cyan","cyan","cyan"),
+        main="New MA Lines Chromsome 15 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c15.red.GC <- c(l002.15.red[,3],l003.15.red[,3],l005.15.red[,3],l006.15.red[,3],l008.15.red[,3],l009.15.red[,3],l069.15.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+
+t.test((log2(l112.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 5.767e-06
+t.test((log2(l115.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.15.red[,3])), log2(euRatio.c15.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.003846
+
+t.test((log2(l152.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.002111
+t.test((log2(l112.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 8.031e-09
+t.test((log2(l115.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l141.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l050.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.15.red[,3])), log2(euRatio.c15.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0003328
+
 dev.off()}
 ###############################################################################################
 
@@ -4629,6 +5475,115 @@ text(x=8, y=1.9, "*", pos=3, cex=2, col="red")
 text(x=8.3, y=1.9, "*", pos=3, cex=2, col="red")
 dev.off()}
 
+
+##############################################################################################
+#CHROMOSOME 16 MA 
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_16_newMA.pdf")
+boxplot((log2(l029.16[,3])),(log2(l050.16[,3])),(log2(l112.16[,3])),(log2(l115.16[,3])),(log2(l117.16[,3])),
+        (log2(l123.16[,3])),(log2(l141.16[,3])),(log2(l152.16[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","deeppink1","cyan","cyan","cyan","deeppink1","cyan"),
+        main="New MA Lines Chromsome 16",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c16.GC <- c(l002.16[,3],l003.16[,3],l005.16[,3],l006.16[,3],l008.16[,3],l009.16[,3],l069.16[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0009287
+wilcox.test((log2(l112.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l117.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l141.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l050.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.16[,3])), log2(euRatio.c16.GC), paired=FALSE, var.equal=TRUE)
+
+
+
+t.test((log2(l152.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l112.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l117.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0004434
+t.test((log2(l123.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l141.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l050.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.009878
+t.test((log2(l029.16[,3])), log2(euRatio.c16.old), paired=FALSE, var.equal=TRUE)
+#p-value = 2.419e-09
+
+dev.off()}
+#############################################################################################
+
+#CHROMOSOME 16 Reduced MA
+par(mar=c(5, 4, 4, 2) + 0.1)
+par(mfrow=c(1,1))
+#going to do this for all lines for chromosome 1 
+#try to plot them all on the same graph? 
+
+#euRatio.test <- c(logMat2.GC.test[,7],logMat2.GC.test[,7])
+{pdf("Chrm_16_red_newMA.pdf")
+boxplot((log2(l029.16.red[,3])),(log2(l050.16.red[,3])),(log2(l112.16.red[,3])),(log2(l115.16.red[,3])),(log2(l117.16.red[,3])),(log2(l123.16.red[,3])),(log2(l141.16.red[,3])),(log2(l152.16.red[,3])) 
+        ,names=c("29","50","112","115","117","123","141","152"),
+        ylab="log2(fold change)", col=c("cyan", "cyan","deeppink1","cyan","cyan","cyan","deeppink1","cyan"),
+        main="New MA Lines Chromsome 16 Reduced",las=3
+        ,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+euRatio.c16.red.GC <- c(l002.16.red[,3],l003.16.red[,3],l005.16.red[,3],l006.16.red[,3],l008.16.red[,3],l009.16.red[,3],l069.16.red[,3])
+
+#use non-parametric because these are not normally distributed
+#run same test on all lines, even those that are not "supposed" to be aneuploid
+t.test((log2(l152.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value = 6.24e-06
+wilcox.test((log2(l112.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l115.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l117.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l123.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+wilcox.test((log2(l141.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l050.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+t.test((log2(l029.16.red[,3])), log2(euRatio.c16.red.GC), paired=FALSE, var.equal=TRUE)
+
+
+t.test((log2(l152.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.678
+wilcox.test((log2(l112.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l115.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 9.362e-10
+t.test((log2(l117.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 2.266e-06
+t.test((log2(l123.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.0005482
+wilcox.test((log2(l141.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value < 2.2e-16
+t.test((log2(l050.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 0.004092
+t.test((log2(l029.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equal=TRUE)
+#p-value = 2.053e-11
+
+dev.off()}
 ```
 
 ``` {r lowly-expr genes, echo=FALSE}

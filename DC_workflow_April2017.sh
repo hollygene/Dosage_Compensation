@@ -526,6 +526,7 @@ awk 'NR==FNR {a[$3]; next} $2 in a {print}'  sig.genes.21.cuffdiff.txt sig.genes
 
 ##compare the .diff file to the fpkm file to find genes that are not differentially expressed between the sample and ancestor
 awk 'NR==FNR {a[$2]; next} !$4 in a {print}' X4.gene_exp.diff.txt X4_genes.fpkm_tracking.txt  > X4_not_diff_exp.txt
+
 #grep -v -f X4.gene_exp.diff.txt X4_genes.fpkm_tracking.txt > X4_not_diff_exp.txt
 
 #comm -23 X4.gene_exp.diff.txt X4_genes.fpkm_tracking.txt > X4_not_diff_exp.txt
@@ -866,3 +867,19 @@ cp genes.attr_table genes.attr_table.txt
 #the ESR
 #also want to look for histone genes
 #so need to come up with pipeline to do that.
+
+####################################################################
+#sort the files by yes or no according to cuffdiff's idea of significant
+awk -F'\t' '{
+if (NR>1) {
+if ($14=="yes") print $0 } else print $0}' gene*.txt > gene*_sig.txt
+#above code doesn't work to do it to all files individually, so need to put it in a for loop
+
+for file in ./*.txt
+do
+  FBASE=$(basename $file .txt)
+  BASE=${FBASE%.txt}
+  awk -F'\t' '{
+  if (NR>1) {
+  if ($14=="yes") print $0 } else print $0}' ${BASE}.txt > ${BASE}.txt
+done

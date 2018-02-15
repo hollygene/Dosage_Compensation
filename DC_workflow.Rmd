@@ -27,6 +27,9 @@ library(Rsamtools)
 library(splitstackshape)
 library(ggplot2)
 library(pgirmess)
+library(FSA)
+library(dunn.test)
+library(rcompanion)
 ```
 
 ``` {r load in data,make matrices}
@@ -43,13 +46,28 @@ anc.means.GC <- rowMeans(sc_counts.z[87:89]) #average in the GC ancestor
 
 
 #if the average fpkm is less than 5 in the ancestor or less than 5 in the overall, remove the gene
-sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.GC<5 |anc.means.old<5),]
-
+sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.GC<5),]
+View(sc_counts.final)
 #final matrix for ancestor and descendans
 sc_anc <- sc_counts.final[,c(1,2,87,88,89,90,91,92,138,139,140)]
 sc_des.GC <- sc_counts.final[,c(1:2,12:14,24:32,36:50,54:86)] #average for each GC line
-sc_des.MA <- sc_counts.final[,c(1:11,15:23,33:35,51:53)] #average for each MA line
+#going to analyze 21 and 59 separately since I need to remove the replicates that don't match to them and I don't know what they are yet. 
+#this one is for line 11 to have the replicate that originally belonged to line 21 
+sc_des.GC.r <- sc_counts.final[,c(1:2,12,14,24:32,36:50,54:86)] #average for each GC line
+View(sc_des.GC.r)
+colnames(sc_des.GC.r)[11] <- "X11_0"
+sc_des.GC.r <- sc_des.GC.r[,c(1:11,14:61)] #average for each GC line
+View(sc_des.GC.r)
+#for lines 21 and 59 
+#need 12:14, 30:32
+sc_des.GC.r1 <- sc_des.GC[,c(1:2,12:14,30:32)] 
+View(sc_des.GC.r1)
+sc_des.GC.r1 <- sc_des.GC.r1[,c(1:2,4:5,7:8)] 
+colnames(sc_des.GC.r1)[3] <- "X21_1"
+View(sc_des.GC.r1)
+str(sc_des.GC.r1)
 
+sc_des.MA <- sc_counts.final[,c(1:11,15:23,33:35,51:53)] #average for each MA line
 write.csv(sc_des.MA,file="sc_des.MA.csv")
 
 
@@ -77,8 +95,8 @@ ancAvg.GC <- rowMeans(sc_anc[,3:5],na.rm=T)
 ancAvg.GC <- cbind(sc_anc[,1:2],ancAvg.GC)
 ancAvg.MA <- rowMeans(sc_anc[,6:8],na.rm=T)
 ancAvg.MA <- cbind(sc_anc[,1:2],ancAvg.MA)
-ancAvg.old <- rowMeans(sc_anc[,9:11],na.rm=T)
-ancAvg.old <- cbind(sc_anc[,1:2],ancAvg.old)
+
+
 
 ```
 
@@ -112,6 +130,30 @@ getAvgFPKM.GC <- function(line) { #for line as "###" string
 }
 
 
+getAvgFPKM.GC.r <- function(line) { #for line as "###" string
+  r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
+  r2 <- paste(c("X",line,"_1"),collapse="")
+  r3 <- paste(c("X",line,"_2"),collapse="")
+  reps <- sc_des.GC.r[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
+  reps[reps==0] <- NA #replace 0 values with NA as before
+  desAvg.GC.r <- rowMeans(reps[,c(-1,-2)],na.rm=T)
+  desAvg.GC.r <- cbind(sc_des.GC.r[,c(1,2)],desAvg.GC.r)
+  #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
+  return(desAvg.GC.r) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
+}
+
+getAvgFPKM.GC.r1 <- function(line) { #for line as "###" string
+  #triplicates are named X[LINE]_[rep]
+  r2 <- paste(c("X",line,"_1"),collapse="")
+  r3 <- paste(c("X",line,"_2"),collapse="")
+  reps <- sc_des.GC.r1[,c("chr","tracking_id",r2,r3)] #get those 4 columns out of the descendant dataset
+  reps[reps==0] <- NA #replace 0 values with NA as before
+  desAvg.GC.r1 <- rowMeans(reps[,c(-1,-2)],na.rm=T)
+  desAvg.GC.r1 <- cbind(sc_des.GC.r1[,c(1,2)],desAvg.GC.r1)
+  #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
+  return(desAvg.GC.r1) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
+}
+
 getFPKMRatio.MA <- function(line) { #line must be a 3 digit character
   desAvg.MA <- getAvgFPKM.MA(line) #first call avg fpkm script, which returns a 3 column matrix
   ratioByGene.MA <- desAvg.MA[,3]/ancAvg.MA[,3]
@@ -128,6 +170,23 @@ getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
   return(rat.GC)
 }
 
+getFPKMRatio.GC.r <- function(line) { #line must be a 3 digit character
+  desAvg.GC.r <- getAvgFPKM.GC.r(line) #first call avg fpkm script, which returns a 3 column matrix
+  ratioByGene.GC.r <- desAvg.GC.r[,3]/ancAvg.GC[,3]
+  rat.GC.r <- cbind(sc_des.GC.r[,1:2],ratioByGene.GC.r) #add gene and chrm values
+  colnames(rat.GC.r) <- c("chr","tracking_id","ratio")
+  return(rat.GC.r)
+}
+
+getFPKMRatio.GC.r1 <- function(line) { #line must be a 3 digit character
+  desAvg.GC.r1 <- getAvgFPKM.GC.r1(line) #first call avg fpkm script, which returns a 3 column matrix
+  ratioByGene.GC.r1 <- desAvg.GC.r1[,3]/ancAvg.GC[,3]
+  rat.GC.r1 <- cbind(sc_des.GC.r1[,1:2],ratioByGene.GC.r1) #add gene and chrm values
+  colnames(rat.GC.r1) <- c("chr","tracking_id","ratio")
+  return(rat.GC.r1)
+}
+
+
 getChrmRatio.MA <- function(line, chr){ #input line as "XXX", chr as a number
   rat.MA <- getFPKMRatio.MA(line) #get list of ratios which includes chrm and gene
   rat.c.MA <- rat.MA[(rat.MA[,1]==chr),] #get just the rows for the appropriate chrom
@@ -142,6 +201,21 @@ getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
   return(rat.cs.GC)
 }
 
+
+getChrmRatio.GC.r <- function(line, chr){ #input line as "XXX", chr as a number
+  rat.GC.r <- getFPKMRatio.GC.r(line) #get list of ratios which includes chrm and gene
+  rat.c.GC.r <- rat.GC.r[(rat.GC.r[,1]==chr),] #get just the rows for the appropriate chrom
+  rat.cs.GC.r <- rat.c.GC.r[order(rat.c.GC.r[,3]),]#order by column 3
+  return(rat.cs.GC.r)
+}
+
+
+getChrmRatio.GC.r1 <- function(line, chr){ #input line as "XXX", chr as a number
+  rat.GC.r1 <- getFPKMRatio.GC.r1(line) #get list of ratios which includes chrm and gene
+  rat.c.GC.r1 <- rat.GC.r1[(rat.GC.r1[,1]==chr),] #get just the rows for the appropriate chrom
+  rat.cs.GC.r1 <- rat.c.GC.r1[order(rat.c.GC.r1[,3]),]#order by column 3
+  return(rat.cs.GC.r1)
+}
 
 y.MA=NULL
 rep.MA <- c("112","115","117","123","141","152","29","50")
@@ -175,10 +249,36 @@ colnames(ratMatMed.GC) <- rep.GC
 ratMatMed.GC <- cbind(c(1:16),ratMatMed.GC)
 colnames(ratMatMed.GC)[1] <- "chr"
 
+
+y.GC.r=NULL
+rep.GC.r <- c("11","18","1","2","31","3","49","4","59","5","61","66","69","6","76","77","7","8","9")
+for(line in rep.GC.r){
+  for(chrm in 1:16){
+    y.GC.r <- c(y.GC.r,median(getChrmRatio.GC.r(line,chrm)[,3],na.rm=T))
+  }
+}
+
+ratMatMed.GC.r <- matrix(y.GC.r,nrow=16,ncol=19)
+colnames(ratMatMed.GC.r) <- rep.GC.r
+ratMatMed.GC.r <- cbind(c(1:16),ratMatMed.GC.r)
+colnames(ratMatMed.GC.r)[1] <- "chr"
 #remove the ratios that are about 1
 #ratMatMedRed.GC <- ratMatMed.GC
 #ratMatMedRed.GC[ratMatMedRed.GC<1.35] <- NA
 #ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
+
+y.GC.r1=NULL
+rep.GC.r1 <- c("21","59")
+for(line in rep.GC.r1){
+  for(chrm in 1:16){
+    y.GC.r1 <- c(y.GC.r1,median(getChrmRatio.GC.r1(line,chrm)[,3],na.rm=T))
+  }
+}
+
+ratMatMed.GC.r1 <- matrix(y.GC.r1,nrow=16,ncol=2)
+colnames(ratMatMed.GC.r1) <- rep.GC.r1
+ratMatMed.GC.r1 <- cbind(c(1:16),ratMatMed.GC.r1)
+colnames(ratMatMed.GC.r1)[1] <- "chr"
 
 #make a matrix that is the LOG2 RATIO
 yl.MA=NULL
@@ -209,6 +309,34 @@ logMat.GC <- data.frame(logMat.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.GC <-cbind(chrms,logMat.GC)
 
+yl.GC.r=NULL
+for(line in rep.GC.r){
+  for(chrm in 1:16){
+    yl.GC.r <- c(yl.GC.r,median(log2(getChrmRatio.GC.r(line,chrm)[,3])))
+  }
+}
+
+warnings()
+logMat.GC.r <- matrix(yl.GC.r,nrow=16,ncol=19)
+colnames(logMat.GC.r) <- rep.GC.r
+logMat.GC.r <- data.frame(logMat.GC.r)
+chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+logMat2.GC.r <-cbind(chrms,logMat.GC.r)
+
+yl.GC.r1=NULL
+for(line in rep.GC.r1){
+  for(chrm in 1:16){
+    yl.GC.r1 <- c(yl.GC.r1,median(log2(getChrmRatio.GC.r1(line,chrm)[,3])))
+  }
+}
+
+warnings()
+logMat.GC.r1 <- matrix(yl.GC.r1,nrow=16,ncol=2)
+colnames(logMat.GC.r1) <- rep.GC.r1
+logMat.GC.r1 <- data.frame(logMat.GC.r1)
+chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+logMat2.GC.r1 <-cbind(chrms,logMat.GC.r1)
+
 #this makes a matrix with the log2 ratio between ancestor and sample of each gene 
 
 getChrmRatio.GC.test <- function(line, chr){ #input line as "XXX", chr as a number
@@ -228,7 +356,7 @@ logMat.GC.test<- matrix(y.GC,nrow=5431,ncol=20)
 colnames(logMat.GC.test) <- rep.GC
 logMat.GC.test <- data.frame(logMat.GC.test)
 genes <- ancAvg.GC[,2]
-logMat2.GC.test <-cbind(genes,logMat.GC.test)
+
 
 
 ##make a matrix of the standard deviations for each line and each chromosome
@@ -261,7 +389,34 @@ chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.GC <-cbind(chrms,logMatsd.GC)
 
 
+ysd.GC.r=NULL
+for(line in rep.GC.r){
+  for(chrm in 1:16){
+    ysd.GC.r <- c(ysd.GC.r,sd(log2(getChrmRatio.GC.r(line,chrm)[,3])))
+  }
+}
 
+
+logMatsd.GC.r <- matrix(ysd.GC.r,nrow=16,ncol=19)
+colnames(logMatsd.GC.r) <- rep.GC.r
+logMatsd.GC.r <- data.frame(logMatsd.GC.r)
+chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+logMatsd2.GC.r <-cbind(chrms,logMatsd.GC.r)
+
+ysd.GC.r1=NULL
+for(line in rep.GC.r1){
+  for(chrm in 1:16){
+    ysd.GC.r1 <- c(ysd.GC.r1,sd(log2(getChrmRatio.GC.r1(line,chrm)[,3])))
+  }
+}
+
+
+
+logMatsd.GC.r1 <- matrix(ysd.GC.r1,nrow=16,ncol=2)
+colnames(logMatsd.GC.r1) <- rep.GC.r1
+logMatsd.GC.r1 <- data.frame(logMatsd.GC.r1)
+chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+logMatsd2.GC.r1 <-cbind(chrms,logMatsd.GC.r1)
 
 ```
 
@@ -381,9 +536,10 @@ title(main="MA Line 117")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 11 
-X11 <- subset(logMat.GC, select=c("X11"))
-X11.sd <- subset(logMatsd2.GC, select=c("X11"))
+X11 <- subset(logMat.GC.r, select=c("X11"))
+X11.sd <- subset(logMatsd2.GC.r, select=c("X11"))
 #merge the stdev with the mean and the chromosome number
 X11.all <- cbind(chrms,X11,X11.sd)
 #change the column names appropriately
@@ -406,6 +562,7 @@ title(main="GC Line 11")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 123
 X123 <- subset(logMat.MA, select=c("X123"))
 X123.sd <- subset(logMatsd2.MA, select=c("X123"))
@@ -531,9 +688,10 @@ title(main="GC Line 1")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 21
-X21 <- subset(logMat.GC, select=c("X21"))
-X21.sd <- subset(logMatsd2.GC, select=c("X21"))
+X21 <- subset(logMat.GC.r1, select=c("X21"))
+X21.sd <- subset(logMatsd2.GC.r1, select=c("X21"))
 #merge the stdev with the mean and the chromosome number
 X21.all <- cbind(chrms,X21,X21.sd)
 #change the column names appropriately
@@ -556,6 +714,7 @@ title(main="GC Line 21")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 29
 X29 <- subset(logMat.MA, select=c("X29"))
 X29.sd <- subset(logMatsd2.MA, select=c("X29"))
@@ -731,9 +890,10 @@ title(main="MA Line 50")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 59
-X59 <- subset(logMat.GC, select=c("X59"))
-X59.sd <- subset(logMatsd2.GC, select=c("X59"))
+X59 <- subset(logMat.GC.r1, select=c("X59"))
+X59.sd <- subset(logMatsd2.GC.r1, select=c("X59"))
 #merge the stdev with the mean and the chromosome number
 X59.all <- cbind(chrms,X59,X59.sd)
 #change the column names appropriately
@@ -756,6 +916,7 @@ title(main="GC Line 59")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+
 #line 5
 X5 <- subset(logMat.GC, select=c("X5"))
 X5.sd <- subset(logMatsd2.GC, select=c("X5"))
@@ -1000,7 +1161,7 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
 ```
 
-``` {r boxplots:per chromosome, echo=FALSE}
+``` {r getRatioFiles, echo=FALSE}
 setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
 l002.1 <- getChrmRatio.GC("2",1)
 l003.1 <- getChrmRatio.GC("3",1)
@@ -1008,14 +1169,14 @@ l005.1 <- getChrmRatio.GC("5",1)
 l006.1 <- getChrmRatio.GC("6",1)
 l008.1 <- getChrmRatio.GC("8",1)
 l009.1 <- getChrmRatio.GC("9",1)
-l011.1 <- getChrmRatio.GC("11",1)
+l011.1 <- getChrmRatio.GC.r("11",1)
 l018.1 <- getChrmRatio.GC("18",1)
 l001.1 <- getChrmRatio.GC("1",1)
-l021.1 <- getChrmRatio.GC("21",1)
+l021.1 <- getChrmRatio.GC.r1("21",1)
 l031.1 <- getChrmRatio.GC("31",1)
 l049.1 <- getChrmRatio.GC("49",1)
 l004.1 <- getChrmRatio.GC("4",1)
-l059.1 <- getChrmRatio.GC("59",1)
+l059.1 <- getChrmRatio.GC.r1("59",1)
 l061.1 <- getChrmRatio.GC("61",1)
 l066.1 <- getChrmRatio.GC("66",1)
 l069.1 <- getChrmRatio.GC("69",1)
@@ -1043,13 +1204,13 @@ l008.1 <- getChrmRatio.GC("8",1)
 l008.1.red <- l008.1[which(l008.1[,3]>0.1),]
 l009.1 <- getChrmRatio.GC("9",1)
 l009.1.red <- l009.1[which(l009.1[,3]>0.1),]
-l011.1 <- getChrmRatio.GC("11",1)
+l011.1 <- getChrmRatio.GC.r("11",1)
 l011.1.red <- l011.1[which(l011.1[,3]>0.1),]
 l018.1 <- getChrmRatio.GC("18",1)
 l018.1.red <- l018.1[which(l018.1[,3]>0.1),]
 l001.1 <- getChrmRatio.GC("1",1)
 l001.1.red <- l001.1[which(l001.1[,3]>0.1),]
-l021.1 <- getChrmRatio.GC("21",1)
+l021.1 <- getChrmRatio.GC.r1("21",1)
 l021.1.red <- l021.1[which(l021.1[,3]>0.1),]
 l031.1 <- getChrmRatio.GC("31",1)
 l031.1.red <- l031.1[which(l031.1[,3]>0.1),]
@@ -1057,7 +1218,7 @@ l049.1 <- getChrmRatio.GC("49",1)
 l049.1.red <- l049.1[which(l049.1[,3]>0.1),]
 l004.1 <- getChrmRatio.GC("4",1)
 l004.1.red <- l004.1[which(l004.1[,3]>0.1),]
-l059.1 <- getChrmRatio.GC("59",1)
+l059.1 <- getChrmRatio.GC.r1("59",1)
 l059.1.red <- l059.1[which(l059.1[,3]>0.1),]
 l061.1 <- getChrmRatio.GC("61",1)
 l061.1.red <- l061.1[which(l061.1[,3]>0.1),]
@@ -1102,13 +1263,13 @@ l008.2 <- getChrmRatio.GC("8",2)
 l008.2.red <- l008.2[which(l008.2[,3]>0.1),]
 l009.2 <- getChrmRatio.GC("9",2)
 l009.2.red <- l009.2[which(l009.2[,3]>0.1),]
-l011.2 <- getChrmRatio.GC("11",2)
+l011.2 <- getChrmRatio.GC.r("11",2)
 l011.2.red <- l011.2[which(l011.2[,3]>0.1),]
 l018.2 <- getChrmRatio.GC("18",2)
 l018.2.red <- l018.2[which(l018.2[,3]>0.1),]
 l001.2 <- getChrmRatio.GC("1",2)
 l001.2.red <- l001.2[which(l001.2[,3]>0.1),]
-l021.2 <- getChrmRatio.GC("21",2)
+l021.2 <- getChrmRatio.GC.r1("21",2)
 l021.2.red <- l021.2[which(l021.2[,3]>0.1),]
 l031.2 <- getChrmRatio.GC("31",2)
 l031.2.red <- l031.2[which(l031.2[,3]>0.1),]
@@ -1116,7 +1277,7 @@ l049.2 <- getChrmRatio.GC("49",2)
 l049.2.red <- l049.2[which(l049.2[,3]>0.1),]
 l004.2 <- getChrmRatio.GC("4",2)
 l004.2.red <- l004.2[which(l004.2[,3]>0.1),]
-l059.2 <- getChrmRatio.GC("59",2)
+l059.2 <- getChrmRatio.GC.r1("59",2)
 l059.2.red <- l059.2[which(l059.2[,3]>0.1),]
 l061.2 <- getChrmRatio.GC("61",2)
 l061.2.red <- l061.2[which(l061.2[,3]>0.1),]
@@ -1160,13 +1321,13 @@ l006.3 <- getChrmRatio.GC("6",3)
 l006.3.red <- l006.3[which(l006.3[,3]>0.1),]
 l009.3 <- getChrmRatio.GC("9",3)
 l009.3.red <- l009.3[which(l009.3[,3]>0.1),]
-l011.3 <- getChrmRatio.GC("11",3)
+l011.3 <- getChrmRatio.GC.r("11",3)
 l011.3.red <- l011.3[which(l011.3[,3]>0.1),]
 l018.3 <- getChrmRatio.GC("18",3)
 l018.3.red <- l018.3[which(l018.3[,3]>0.1),]
 l001.3 <- getChrmRatio.GC("1",3)
 l001.3.red <- l001.3[which(l001.3[,3]>0.1),]
-l021.3 <- getChrmRatio.GC("21",3)
+l021.3 <- getChrmRatio.GC.r1("21",3)
 l021.3.red <- l021.3[which(l021.3[,3]>0.1),]
 l031.3 <- getChrmRatio.GC("31",3)
 l031.3.red <- l031.3[which(l031.3[,3]>0.1),]
@@ -1174,7 +1335,7 @@ l049.3 <- getChrmRatio.GC("49",3)
 l049.3.red <- l049.3[which(l049.3[,3]>0.1),]
 l004.3 <- getChrmRatio.GC("4",3)
 l004.3.red <- l004.3[which(l004.3[,3]>0.1),]
-l059.3 <- getChrmRatio.GC("59",3)
+l059.3 <- getChrmRatio.GC.r1("59",3)
 l059.3.red <- l059.3[which(l059.3[,3]>0.1),]
 l061.3 <- getChrmRatio.GC("61",3)
 l061.3.red <- l061.3[which(l061.3[,3]>0.1),]
@@ -1218,13 +1379,13 @@ l008.4 <- getChrmRatio.GC("8",4)
 l008.4.red <- l008.4[which(l008.4[,3]>0.1),]
 l009.4 <- getChrmRatio.GC("9",4)
 l009.4.red <- l009.4[which(l009.4[,3]>0.1),]
-l011.4 <- getChrmRatio.GC("11",4)
+l011.4 <- getChrmRatio.GC.r("11",4)
 l011.4.red <- l011.4[which(l011.4[,3]>0.1),]
 l018.4 <- getChrmRatio.GC("18",4)
 l018.4.red <- l018.4[which(l018.4[,3]>0.1),]
 l001.4 <- getChrmRatio.GC("1",4)
 l001.4.red <- l001.4[which(l001.4[,3]>0.1),]
-l021.4 <- getChrmRatio.GC("21",4)
+l021.4 <- getChrmRatio.GC.r1("21",4)
 l021.4.red <- l021.4[which(l021.4[,3]>0.1),]
 l031.4 <- getChrmRatio.GC("31",4)
 l031.4.red <- l031.4[which(l031.4[,3]>0.1),]
@@ -1232,7 +1393,7 @@ l049.4 <- getChrmRatio.GC("49",4)
 l049.4.red <- l049.4[which(l049.4[,3]>0.1),]
 l004.4 <- getChrmRatio.GC("4",4)
 l004.4.red <- l004.4[which(l004.4[,3]>0.1),]
-l059.4 <- getChrmRatio.GC("59",4)
+l059.4 <- getChrmRatio.GC.r1("59",4)
 l059.4.red <- l059.4[which(l059.4[,3]>0.1),]
 l061.4 <- getChrmRatio.GC("61",4)
 l061.4.red <- l061.4[which(l061.4[,3]>0.1),]
@@ -1276,13 +1437,13 @@ l008.5 <- getChrmRatio.GC("8",5)
 l008.5.red <- l008.5[which(l008.5[,3]>0.1),]
 l009.5 <- getChrmRatio.GC("9",5)
 l009.5.red <- l009.5[which(l009.5[,3]>0.1),]
-l011.5 <- getChrmRatio.GC("11",5)
+l011.5 <- getChrmRatio.GC.r("11",5)
 l011.5.red <- l011.5[which(l011.5[,3]>0.1),]
 l018.5 <- getChrmRatio.GC("18",5)
 l018.5.red <- l018.5[which(l018.5[,3]>0.1),]
 l001.5 <- getChrmRatio.GC("1",5)
 l001.5.red <- l001.5[which(l001.5[,3]>0.1),]
-l021.5 <- getChrmRatio.GC("21",5)
+l021.5 <- getChrmRatio.GC.r1("21",5)
 l021.5.red <- l021.5[which(l021.5[,3]>0.1),]
 l031.5 <- getChrmRatio.GC("31",5)
 l031.5.red <- l031.5[which(l031.5[,3]>0.1),]
@@ -1290,7 +1451,7 @@ l049.5 <- getChrmRatio.GC("49",5)
 l049.5.red <- l049.5[which(l049.5[,3]>0.1),]
 l004.5 <- getChrmRatio.GC("4",5)
 l004.5.red <- l004.5[which(l004.5[,3]>0.1),]
-l059.5 <- getChrmRatio.GC("59",5)
+l059.5 <- getChrmRatio.GC.r1("59",5)
 l059.5.red <- l059.5[which(l059.5[,3]>0.1),]
 l061.5 <- getChrmRatio.GC("61",5)
 l061.5.red <- l061.5[which(l061.5[,3]>0.1),]
@@ -1334,13 +1495,13 @@ l008.6 <- getChrmRatio.GC("8",6)
 l008.6.red <- l008.6[which(l008.6[,3]>0.1),]
 l009.6 <- getChrmRatio.GC("9",6)
 l009.6.red <- l009.6[which(l009.6[,3]>0.1),]
-l011.6 <- getChrmRatio.GC("11",6)
+l011.6 <- getChrmRatio.GC.r("11",6)
 l011.6.red <- l011.6[which(l011.6[,3]>0.1),]
 l018.6 <- getChrmRatio.GC("18",6)
 l018.6.red <- l018.6[which(l018.6[,3]>0.1),]
 l001.6 <- getChrmRatio.GC("1",6)
 l001.6.red <- l001.6[which(l001.6[,3]>0.1),]
-l021.6 <- getChrmRatio.GC("21",6)
+l021.6 <- getChrmRatio.GC.r1("21",6)
 l021.6.red <- l021.6[which(l021.6[,3]>0.1),]
 l031.6 <- getChrmRatio.GC("31",6)
 l031.6.red <- l031.6[which(l031.6[,3]>0.1),]
@@ -1348,7 +1509,7 @@ l049.6 <- getChrmRatio.GC("49",6)
 l049.6.red <- l049.6[which(l049.6[,3]>0.1),]
 l004.6 <- getChrmRatio.GC("4",6)
 l004.6.red <- l004.6[which(l004.6[,3]>0.1),]
-l059.6 <- getChrmRatio.GC("59",6)
+l059.6 <- getChrmRatio.GC.r1("59",6)
 l059.6.red <- l059.6[which(l059.6[,3]>0.1),]
 l061.6 <- getChrmRatio.GC("61",6)
 l061.6.red <- l061.6[which(l061.6[,3]>0.1),]
@@ -1392,13 +1553,13 @@ l008.7 <- getChrmRatio.GC("8",7)
 l008.7.red <- l008.7[which(l008.7[,3]>0.1),]
 l009.7 <- getChrmRatio.GC("9",7)
 l009.7.red <- l009.7[which(l009.7[,3]>0.1),]
-l011.7 <- getChrmRatio.GC("11",7)
+l011.7 <- getChrmRatio.GC.r("11",7)
 l011.7.red <- l011.7[which(l011.7[,3]>0.1),]
 l018.7 <- getChrmRatio.GC("18",7)
 l018.7.red <- l018.7[which(l018.7[,3]>0.1),]
 l001.7 <- getChrmRatio.GC("1",7)
 l001.7.red <- l001.7[which(l001.7[,3]>0.1),]
-l021.7 <- getChrmRatio.GC("21",7)
+l021.7 <- getChrmRatio.GC.r1("21",7)
 l021.7.red <- l021.7[which(l021.7[,3]>0.1),]
 l031.7 <- getChrmRatio.GC("31",7)
 l031.7.red <- l031.7[which(l031.7[,3]>0.1),]
@@ -1406,7 +1567,7 @@ l049.7 <- getChrmRatio.GC("49",7)
 l049.7.red <- l049.7[which(l049.7[,3]>0.1),]
 l004.7 <- getChrmRatio.GC("4",7)
 l004.7.red <- l004.7[which(l004.7[,3]>0.1),]
-l059.7 <- getChrmRatio.GC("59",7)
+l059.7 <- getChrmRatio.GC.r1("59",7)
 l059.7.red <- l059.7[which(l059.7[,3]>0.1),]
 l061.7 <- getChrmRatio.GC("61",7)
 l061.7.red <- l061.7[which(l061.7[,3]>0.1),]
@@ -1450,13 +1611,13 @@ l008.8 <- getChrmRatio.GC("8",8)
 l008.8.red <- l008.8[which(l008.8[,3]>0.1),]
 l009.8 <- getChrmRatio.GC("9",8)
 l009.8.red <- l009.8[which(l009.8[,3]>0.1),]
-l011.8 <- getChrmRatio.GC("11",8)
+l011.8 <- getChrmRatio.GC.r("11",8)
 l011.8.red <- l011.8[which(l011.8[,3]>0.1),]
 l018.8 <- getChrmRatio.GC("18",8)
 l018.8.red <- l018.8[which(l018.8[,3]>0.1),]
 l001.8 <- getChrmRatio.GC("1",8)
 l001.8.red <- l001.8[which(l001.8[,3]>0.1),]
-l021.8 <- getChrmRatio.GC("21",8)
+l021.8 <- getChrmRatio.GC.r1("21",8)
 l021.8.red <- l021.8[which(l021.8[,3]>0.1),]
 l031.8 <- getChrmRatio.GC("31",8)
 l031.8.red <- l031.8[which(l031.8[,3]>0.1),]
@@ -1464,7 +1625,7 @@ l049.8 <- getChrmRatio.GC("49",8)
 l049.8.red <- l049.8[which(l049.8[,3]>0.1),]
 l004.8 <- getChrmRatio.GC("4",8)
 l004.8.red <- l004.8[which(l004.8[,3]>0.1),]
-l059.8 <- getChrmRatio.GC("59",8)
+l059.8 <- getChrmRatio.GC.r1("59",8)
 l059.8.red <- l059.8[which(l059.8[,3]>0.1),]
 l061.8 <- getChrmRatio.GC("61",8)
 l061.8.red <- l061.8[which(l061.8[,3]>0.1),]
@@ -1508,13 +1669,13 @@ l008.9 <- getChrmRatio.GC("8",9)
 l008.9.red <- l008.9[which(l008.9[,3]>0.1),]
 l009.9 <- getChrmRatio.GC("9",9)
 l009.9.red <- l009.9[which(l009.9[,3]>0.1),]
-l011.9 <- getChrmRatio.GC("11",9)
+l011.9 <- getChrmRatio.GC.r("11",9)
 l011.9.red <- l011.9[which(l011.9[,3]>0.1),]
 l018.9 <- getChrmRatio.GC("18",9)
 l018.9.red <- l018.9[which(l018.9[,3]>0.1),]
 l001.9 <- getChrmRatio.GC("1",9)
 l001.9.red <- l001.9[which(l001.9[,3]>0.1),]
-l021.9 <- getChrmRatio.GC("21",9)
+l021.9 <- getChrmRatio.GC.r1("21",9)
 l021.9.red <- l021.9[which(l021.9[,3]>0.1),]
 l031.9 <- getChrmRatio.GC("31",9)
 l031.9.red <- l031.9[which(l031.9[,3]>0.1),]
@@ -1522,7 +1683,7 @@ l049.9 <- getChrmRatio.GC("49",9)
 l049.9.red <- l049.9[which(l049.9[,3]>0.1),]
 l004.9 <- getChrmRatio.GC("4",9)
 l004.9.red <- l004.9[which(l004.9[,3]>0.1),]
-l059.9 <- getChrmRatio.GC("59",9)
+l059.9 <- getChrmRatio.GC.r1("59",9)
 l059.9.red <- l059.9[which(l059.9[,3]>0.1),]
 l061.9 <- getChrmRatio.GC("61",9)
 l061.9.red <- l061.9[which(l061.9[,3]>0.1),]
@@ -1566,13 +1727,13 @@ l008.10 <- getChrmRatio.GC("8",10)
 l008.10.red <- l008.10[which(l008.10[,3]>0.1),]
 l009.10 <- getChrmRatio.GC("9",10)
 l009.10.red <- l009.10[which(l009.10[,3]>0.1),]
-l011.10 <- getChrmRatio.GC("11",10)
+l011.10 <- getChrmRatio.GC.r("11",10)
 l011.10.red <- l011.10[which(l011.10[,3]>0.1),]
 l018.10 <- getChrmRatio.GC("18",10)
 l018.10.red <- l018.10[which(l018.10[,3]>0.1),]
 l001.10 <- getChrmRatio.GC("1",10)
 l001.10.red <- l001.10[which(l001.10[,3]>0.1),]
-l021.10 <- getChrmRatio.GC("21",10)
+l021.10 <- getChrmRatio.GC.r1("21",10)
 l021.10.red <- l021.10[which(l021.10[,3]>0.1),]
 l031.10 <- getChrmRatio.GC("31",10)
 l031.10.red <- l031.10[which(l031.10[,3]>0.1),]
@@ -1580,7 +1741,7 @@ l049.10 <- getChrmRatio.GC("49",10)
 l049.10.red <- l049.10[which(l049.10[,3]>0.1),]
 l004.10 <- getChrmRatio.GC("4",10)
 l004.10.red <- l004.10[which(l004.10[,3]>0.1),]
-l059.10 <- getChrmRatio.GC("59",10)
+l059.10 <- getChrmRatio.GC.r1("59",10)
 l059.10.red <- l059.10[which(l059.10[,3]>0.1),]
 l061.10 <- getChrmRatio.GC("61",10)
 l061.10.red <- l061.10[which(l061.10[,3]>0.1),]
@@ -1624,13 +1785,13 @@ l008.11 <- getChrmRatio.GC("8",11)
 l008.11.red <- l008.11[which(l008.11[,3]>0.1),]
 l009.11 <- getChrmRatio.GC("9",11)
 l009.11.red <- l009.11[which(l009.11[,3]>0.1),]
-l011.11 <- getChrmRatio.GC("11",11)
+l011.11 <- getChrmRatio.GC.r("11",11)
 l011.11.red <- l011.11[which(l011.11[,3]>0.1),]
 l018.11 <- getChrmRatio.GC("18",11)
 l018.11.red <- l018.11[which(l018.11[,3]>0.1),]
 l001.11 <- getChrmRatio.GC("1",11)
 l001.11.red <- l001.11[which(l001.11[,3]>0.1),]
-l021.11 <- getChrmRatio.GC("21",11)
+l021.11 <- getChrmRatio.GC.r1("21",11)
 l021.11.red <- l021.11[which(l021.11[,3]>0.1),]
 l031.11 <- getChrmRatio.GC("31",11)
 l031.11.red <- l031.11[which(l031.11[,3]>0.1),]
@@ -1638,7 +1799,7 @@ l049.11 <- getChrmRatio.GC("49",11)
 l049.11.red <- l049.11[which(l049.11[,3]>0.1),]
 l004.11 <- getChrmRatio.GC("4",11)
 l004.11.red <- l004.11[which(l004.11[,3]>0.1),]
-l059.11 <- getChrmRatio.GC("59",11)
+l059.11 <- getChrmRatio.GC.r1("59",11)
 l059.11.red <- l059.11[which(l059.11[,3]>0.1),]
 l061.11 <- getChrmRatio.GC("61",11)
 l061.11.red <- l061.11[which(l061.11[,3]>0.1),]
@@ -1682,13 +1843,13 @@ l008.12 <- getChrmRatio.GC("8",12)
 l008.12.red <- l008.12[which(l008.12[,3]>0.1),]
 l009.12 <- getChrmRatio.GC("9",12)
 l009.12.red <- l009.12[which(l009.12[,3]>0.1),]
-l011.12 <- getChrmRatio.GC("11",12)
+l011.12 <- getChrmRatio.GC.r("11",12)
 l011.12.red <- l011.12[which(l011.12[,3]>0.1),]
 l018.12 <- getChrmRatio.GC("18",12)
 l018.12.red <- l018.12[which(l018.12[,3]>0.1),]
 l001.12 <- getChrmRatio.GC("1",12)
 l001.12.red <- l001.12[which(l001.12[,3]>0.1),]
-l021.12 <- getChrmRatio.GC("21",12)
+l021.12 <- getChrmRatio.GC.r1("21",12)
 l021.12.red <- l021.12[which(l021.12[,3]>0.1),]
 l031.12 <- getChrmRatio.GC("31",12)
 l031.12.red <- l031.12[which(l031.12[,3]>0.1),]
@@ -1696,7 +1857,7 @@ l049.12 <- getChrmRatio.GC("49",12)
 l049.12.red <- l049.12[which(l049.12[,3]>0.1),]
 l004.12 <- getChrmRatio.GC("4",12)
 l004.12.red <- l004.12[which(l004.12[,3]>0.1),]
-l059.12 <- getChrmRatio.GC("59",12)
+l059.12 <- getChrmRatio.GC.r1("59",12)
 l059.12.red <- l059.12[which(l059.12[,3]>0.1),]
 l061.12 <- getChrmRatio.GC("61",12)
 l061.12.red <- l061.12[which(l061.12[,3]>0.1),]
@@ -1740,13 +1901,13 @@ l008.13 <- getChrmRatio.GC("8",13)
 l008.13.red <- l008.13[which(l008.13[,3]>0.1),]
 l009.13 <- getChrmRatio.GC("9",13)
 l009.13.red <- l009.13[which(l009.13[,3]>0.1),]
-l011.13 <- getChrmRatio.GC("11",13)
+l011.13 <- getChrmRatio.GC.r("11",13)
 l011.13.red <- l011.13[which(l011.13[,3]>0.1),]
 l018.13 <- getChrmRatio.GC("18",13)
 l018.13.red <- l018.13[which(l018.13[,3]>0.1),]
 l001.13 <- getChrmRatio.GC("1",13)
 l001.13.red <- l001.13[which(l001.13[,3]>0.1),]
-l021.13 <- getChrmRatio.GC("21",13)
+l021.13 <- getChrmRatio.GC.r1("21",13)
 l021.13.red <- l021.13[which(l021.13[,3]>0.1),]
 l031.13 <- getChrmRatio.GC("31",13)
 l031.13.red <- l031.13[which(l031.13[,3]>0.1),]
@@ -1754,7 +1915,7 @@ l049.13 <- getChrmRatio.GC("49",13)
 l049.13.red <- l049.13[which(l049.13[,3]>0.1),]
 l004.13 <- getChrmRatio.GC("4",13)
 l004.13.red <- l004.13[which(l004.13[,3]>0.1),]
-l059.13 <- getChrmRatio.GC("59",13)
+l059.13 <- getChrmRatio.GC.r1("59",13)
 l059.13.red <- l059.13[which(l059.13[,3]>0.1),]
 l061.13 <- getChrmRatio.GC("61",13)
 l061.13.red <- l061.13[which(l061.13[,3]>0.1),]
@@ -1798,13 +1959,13 @@ l008.14 <- getChrmRatio.GC("8",14)
 l008.14.red <- l008.14[which(l008.14[,3]>0.1),]
 l009.14 <- getChrmRatio.GC("9",14)
 l009.14.red <- l009.14[which(l009.14[,3]>0.1),]
-l011.14 <- getChrmRatio.GC("11",14)
+l011.14 <- getChrmRatio.GC.r("11",14)
 l011.14.red <- l011.14[which(l011.14[,3]>0.1),]
 l018.14 <- getChrmRatio.GC("18",14)
 l018.14.red <- l018.14[which(l018.14[,3]>0.1),]
 l001.14 <- getChrmRatio.GC("1",14)
 l001.14.red <- l001.14[which(l001.14[,3]>0.1),]
-l021.14 <- getChrmRatio.GC("21",14)
+l021.14 <- getChrmRatio.GC.r1("21",14)
 l021.14.red <- l021.14[which(l021.14[,3]>0.1),]
 l031.14 <- getChrmRatio.GC("31",14)
 l031.14.red <- l031.14[which(l031.14[,3]>0.1),]
@@ -1812,7 +1973,7 @@ l049.14 <- getChrmRatio.GC("49",14)
 l049.14.red <- l049.14[which(l049.14[,3]>0.1),]
 l004.14 <- getChrmRatio.GC("4",14)
 l004.14.red <- l004.14[which(l004.14[,3]>0.1),]
-l059.14 <- getChrmRatio.GC("59",14)
+l059.14 <- getChrmRatio.GC.r1("59",14)
 l059.14.red <- l059.14[which(l059.14[,3]>0.1),]
 l061.14 <- getChrmRatio.GC("61",14)
 l061.14.red <- l061.14[which(l061.14[,3]>0.1),]
@@ -1856,13 +2017,13 @@ l008.15 <- getChrmRatio.GC("8",15)
 l008.15.red <- l008.15[which(l008.15[,3]>0.1),]
 l009.15 <- getChrmRatio.GC("9",15)
 l009.15.red <- l009.15[which(l009.15[,3]>0.1),]
-l011.15 <- getChrmRatio.GC("11",15)
+l011.15 <- getChrmRatio.GC.r("11",15)
 l011.15.red <- l011.15[which(l011.15[,3]>0.1),]
 l018.15 <- getChrmRatio.GC("18",15)
 l018.15.red <- l018.15[which(l018.15[,3]>0.1),]
 l001.15 <- getChrmRatio.GC("1",15)
 l001.15.red <- l001.15[which(l001.15[,3]>0.1),]
-l021.15 <- getChrmRatio.GC("21",15)
+l021.15 <- getChrmRatio.GC.r1("21",15)
 l021.15.red <- l021.15[which(l021.15[,3]>0.1),]
 l031.15 <- getChrmRatio.GC("31",15)
 l031.15.red <- l031.15[which(l031.15[,3]>0.1),]
@@ -1870,7 +2031,7 @@ l049.15 <- getChrmRatio.GC("49",15)
 l049.15.red <- l049.15[which(l049.15[,3]>0.1),]
 l004.15 <- getChrmRatio.GC("4",15)
 l004.15.red <- l004.15[which(l004.15[,3]>0.1),]
-l059.15 <- getChrmRatio.GC("59",15)
+l059.15 <- getChrmRatio.GC.r1("59",15)
 l059.15.red <- l059.15[which(l059.15[,3]>0.1),]
 l061.15 <- getChrmRatio.GC("61",15)
 l061.15.red <- l061.15[which(l061.15[,3]>0.1),]
@@ -1915,13 +2076,13 @@ l008.16.red <- l008.16[which(l008.16[,3]>0.1),]
 l008.16.red.red <- l008.16.red[which(l008.16[,3]<9),]
 l009.16 <- getChrmRatio.GC("9",16)
 l009.16.red <- l009.16[which(l009.16[,3]>0.1),]
-l011.16 <- getChrmRatio.GC("11",16)
+l011.16 <- getChrmRatio.GC.r("11",16)
 l011.16.red <- l011.16[which(l011.16[,3]>0.1),]
 l018.16 <- getChrmRatio.GC("18",16)
 l018.16.red <- l018.16[which(l018.16[,3]>0.1),]
 l001.16 <- getChrmRatio.GC("1",16)
 l001.16.red <- l001.16[which(l001.16[,3]>0.1),]
-l021.16 <- getChrmRatio.GC("21",16)
+l021.16 <- getChrmRatio.GC.r1("21",16)
 l021.16.red <- l021.16[which(l021.16[,3]>0.1),]
 l031.16 <- getChrmRatio.GC("31",16)
 l031.16.red <- l031.16[which(l031.16[,3]>0.1),]
@@ -1929,7 +2090,7 @@ l049.16 <- getChrmRatio.GC("49",16)
 l049.16.red <- l049.16[which(l049.16[,3]>0.1),]
 l004.16 <- getChrmRatio.GC("4",16)
 l004.16.red <- l004.16[which(l004.16[,3]>0.1),]
-l059.16 <- getChrmRatio.GC("59",16)
+l059.16 <- getChrmRatio.GC.r1("59",16)
 l059.16.red <- l059.16[which(l059.16[,3]>0.1),]
 l061.16 <- getChrmRatio.GC("61",16)
 l061.16.red <- l061.16[which(l061.16[,3]>0.1),]
@@ -1961,8 +2122,11 @@ l141.16.red <- l141.16[which(l141.16[,3]>0.1),]
 l152.16 <- getChrmRatio.MA("152",16)
 l152.16.red <- l152.16[which(l152.16[,3]>0.1),]
 
-#############################################################################################
+```
 
+```{r old boxplots codes, include=FALSE}
+
+#############################################################################################
 #CHROMOSOME 1 
 par(mar=c(5, 4, 4, 2) + 0.1)
 par(mfrow=c(1,1))
@@ -5624,6 +5788,1805 @@ t.test((log2(l029.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equ
 dev.off()}
 ```
 
+```{r new boxplots codes, include=TRUE}
+####################
+#CHROMOSOME 1 
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
+        (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
+        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
+        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.1$tracking_id))))
+
+#data frame with only euploids, so I can do a euploid by euploid test
+chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
+        (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
+        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l069.1[,3]))),
+Line=rep(c(1,2,3,5,6,7,9,11,18,21,31,69),each=(length(l001.1$tracking_id))))
+chr1DataofInterest$Line <-factor(chr1DataofInterest$Line)
+
+aov.chr1ofInt <- aov(y~Line,data=chr1DataofInterest)
+summary(aov.chr1ofInt)
+resids.chr1ofInt <- resid(aov.chr1ofInt)
+{pdf("Chrm1.resids.ofInt.pdf")
+hist(resids.chr1ofInt,col="turquoise",breaks=10,xlab="Residuals.Chr.1.ofInt")}
+#shapiro.test(resids.chr1ofInt)
+#fail shapiro test, so should probably use nonparametric
+#test pairwise comparisons
+TukeyHSD(aov.chr1ofInt)
+Tukey.chr1.ofInt <- TukeyHSD(aov.chr1ofInt)
+#Tukey.chr1.ofInt <- data.table(TukeyHSD(aov.chr1ofInt))
+#write.csv(Tukey.chr1.ofInt,file="Tukey.chr1.ofInt.csv")
+{pdf("Chrm1.Tukey.ofInt.GC.pdf")
+plot(TukeyHSD(aov.chr1ofInt))}
+
+
+#This code works beautifully to produce a boxplot 
+{pdf("Chrm_1.pdf")
+boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 1",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=11, y=1, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
+}
+#wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
+#ANOVA/NonParametric Equivalent
+#p-value < 2.2 e-16 (So at least one of the data points is very different from the others)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#TukeyHSD(aov.chr1)
+#plot(TukeyHSD(aov.chr1))
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr1Data)
+#multiCompsChr1 <- kruskalmc(y~Line,data=chr1Data)
+#OR can do many pairwise t-tests
+#pairwise.t.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
+#wilcox.chr1 <- data.table(pairwise.wilcox.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr"))
+#View(wilcox.chr1)
+#pairwise.wilcox.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
+
+
+##############################################################################################
+#CHROMOSOME 2
+
+#RATIOS FOR CHROMOSOME 2
+#euRatio.c2 <- c(l002.2[,3],l003.2[,3],l005.2[,3],l006.2[,3],l008.2[,3],l009.2[,3],l069.2[,3])
+#pdf("Chrm_2.pdf")
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr2Data <- data.frame(y=c((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3])),
+        (log2(l005.2[,3])),(log2(l006.2[,3])),(log2(l007.2[,3])),(log2(l008.2[,3])),
+        (log2(l009.2[,3])),(log2(l011.2[,3])),(log2(l018.2[,3])),(log2(l021.2[,3])),
+        (log2(l031.2[,3])),(log2(l049.2[,3])),(log2(l059.2[,3])),(log2(l061.2[,3])),
+        (log2(l066.2[,3])),(log2(l069.2[,3])),(log2(l076.2[,3])),(log2(l077.2[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.2$tracking_id))))
+chr2Data$Line <-factor(chr2Data$Line)
+#This code works beautifully to produce a boxplot 
+{pdf("Chrm_2.pdf")
+boxplot(y~Line,data=chr2Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 2",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+}
+
+aov.chr2 <- aov(y~Line,data=chr2Data)
+summary(aov.chr2)
+resids.chr2 <- resid(aov.chr2)
+length(resids.chr2)
+#View(resids.chr2)
+{pdf("Chrm2.resids.pdf")
+hist(resids.chr2,col="turquoise",breaks=10,xlab="Residuals.Chr.2")
+}
+#shapiro.test(resids.chr2)
+TukeyChr2 <- data.table(TukeyHSD(aov.chr2))
+#write.csv(TukeyChr2,file="Tukey.chr2.csv")
+TukeyHSD(aov.chr2)
+{pdf("Chr2.tukey.pdf")
+plot(TukeyHSD(aov.chr2))}
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr2 <- kruskal.test(y~Line,data=chr2Data)
+kruskal.test(y~Line,data=chr2Data)
+summary(kruskal.chr2)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr2Data)
+multiCompsChr2 <- kruskalmc(y~Line,data=chr2Data)
+#many pairwise t-tests
+pairwise.wilcox.test(chr2Data$y,chr2Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 3
+
+#RATIOS FOR CHROMOSOME 3
+#euRatio.c3 <- c(l002.3[,3],l003.3[,3],l005.3[,3],l006.3[,3],l008.3[,3],l009.3[,3],l069.3[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr3Data <- data.frame(y=c((log2(l001.3[,3])),(log2(l002.3[,3])),(log2(l003.3[,3])),(log2(l004.3[,3])),
+        (log2(l005.3[,3])),(log2(l006.3[,3])),(log2(l007.3[,3])),(log2(l008.3[,3])),
+        (log2(l009.3[,3])),(log2(l011.3[,3])),(log2(l018.3[,3])),(log2(l021.3[,3])),
+        (log2(l031.3[,3])),(log2(l049.3[,3])),(log2(l059.3[,3])),(log2(l061.3[,3])),
+        (log2(l066.3[,3])),(log2(l069.3[,3])),(log2(l076.3[,3])),(log2(l077.3[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.3$tracking_id))))
+chr3Data$Line <-factor(chr3Data$Line)
+#This code works beautifully to produce a boxplot 
+{pdf("Chrm_3.pdf")
+boxplot(y~Line,data=chr3Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 3",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+}
+
+
+aov.chr3 <- aov(y~Line,data=chr3Data)
+summary(aov.chr3)
+resids.chr3 <- resid(aov.chr3)
+{pdf("Chrm3.resids.pdf")
+hist(resids.chr3,col="turquoise",breaks=10,xlab="Residuals.Chr.3")
+}
+#shapiro.test(resids.chr3)
+Tukey.chr3 <- data.table(TukeyHSD(aov.chr3))
+TukeyHSD(aov.chr3)
+{pdf("Tukey.chr3.pdf")
+ plot(TukeyHSD(aov.chr3)) }
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr3 <- kruskal.test(y~Line,data=chr3Data)
+kruskal.test(y~Line,data=chr3Data)
+summary(kruskal.chr3)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr3Data)
+multiCompsChr3 <- kruskalmc(y~Line,data=chr3Data)
+#many pairwise t-tests
+pairwise.t.test(chr3Data$y,chr3Data$Line,p.adjust.method = "fdr")
+wilcox.chr3 <- pairwise.wilcox.test(chr3Data$y,chr3Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr3Data$y,chr3Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 4
+
+#RATIOS FOR CHROMOSOME 4
+#euRatio.c4 <- c(l002.4[,3],l003.4[,3],l005.4[,3],l006.4[,3],l008.4[,3],l009.4[,3],l069.4[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr4Data <- data.frame(y=c((log2(l001.4[,3])),(log2(l002.4[,3])),(log2(l003.4[,3])),(log2(l004.4[,3])),
+        (log2(l005.4[,3])),(log2(l006.4[,3])),(log2(l007.4[,3])),(log2(l008.4[,3])),
+        (log2(l009.4[,3])),(log2(l011.4[,3])),(log2(l018.4[,3])),(log2(l021.4[,3])),
+        (log2(l031.4[,3])),(log2(l049.4[,3])),(log2(l059.4[,3])),(log2(l061.4[,3])),
+        (log2(l066.4[,3])),(log2(l069.4[,3])),(log2(l076.4[,3])),(log2(l077.4[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.4$tracking_id))))
+chr4Data$Line <-factor(chr4Data$Line)
+#This code works beautifully to produce a boxplot 
+{pdf("Chrm_4.pdf")
+boxplot(y~Line,data=chr4Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 4",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+}
+
+aov.chr4 <- aov(y~Line,data=chr4Data)
+summary(aov.chr4)
+resids.chr4 <- resid(aov.chr4)
+{pdf("Chrm4.resids.pdf")
+hist(resids.chr4,col="turquoise",breaks=10,xlab="Residuals.Chr.4")}
+#shapiro.test(resids.chr4)
+TukeyHSD(aov.chr4)
+{pdf("tukey.chr4.pdf")
+ plot(TukeyHSD(aov.chr4)) }
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr4 <- kruskal.test(y~Line,data=chr4Data)
+kruskal.test(y~Line,data=chr4Data)
+summary(kruskal.chr4)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr4Data)
+multiCompsChr4 <- kruskalmc(y~Line,data=chr4Data)
+#many pairwise t-tests
+pairwise.t.test(chr4Data$y,chr4Data$Line,p.adjust.method = "fdr")
+wilcox.chr4 <- pairwise.wilcox.test(chr4Data$y,chr4Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr4Data$y,chr4Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 5
+
+#RATIOS FOR CHROMOSOME 5
+#euRatio.c5 <- c(l002.5[,3],l003.5[,3],l005.5[,3],l006.5[,3],l008.5[,3],l009.5[,3],l069.5[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr5Data <- data.frame(y=c((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003.5[,3])),(log2(l004.5[,3])),
+        (log2(l005.5[,3])),(log2(l006.5[,3])),(log2(l007.5[,3])),(log2(l008.5[,3])),
+        (log2(l009.5[,3])),(log2(l011.5[,3])),(log2(l018.5[,3])),(log2(l021.5[,3])),
+        (log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l059.5[,3])),(log2(l061.5[,3])),
+        (log2(l066.5[,3])),(log2(l069.5[,3])),(log2(l076.5[,3])),(log2(l077.5[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.5$tracking_id))))
+chr5Data$Line <-factor(chr5Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+chr5DataofInt <- data.frame(y=c((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003.5[,3])),(log2(l004.5[,3])),
+        (log2(l005.5[,3])),(log2(l006.5[,3])),(log2(l009.5[,3])),(log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l069.5[,3]))),Line=rep(c(1,2,3,4,5,6,9,31,49,69),each=(length(l001.5$tracking_id))))
+chr5DataofInt$Line <-factor(chr5DataofInt$Line)
+
+{pdf("Chrm_5.pdf")
+boxplot(y~Line,data=chr5Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","deeppink1","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","deeppink1","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 5",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=3.7, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=4, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=4.3, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=13.7, y=1.7, "*", pos=3, cex=2, col="red")
+text(x=14, y=1.7, "*", pos=3, cex=2, col="red")
+text(x=14.3, y=1.7, "*", pos=3, cex=2, col="red")
+}
+
+aov.chr5 <- aov(y~Line,data=chr5DataofInt)
+summary(aov.chr5)
+resids.chr5 <- resid(aov.chr5)
+{pdf("Chrm5.resids.pdf")
+hist(resids.chr5,col="turquoise",breaks=10,xlab="Residuals.Chr.5")}
+#shapiro.test(resids.chr5)
+TukeyHSD(aov.chr5)
+{pdf("chr5.tukey.pdf")
+  plot(TukeyHSD(aov.chr5))}
+
+
+
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr5 <- kruskal.test(y~Line,data=chr5Data)
+kruskal.test(y~Line,data=chr5Data)
+summary(kruskal.chr5)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr5Data)
+multiCompsChr5 <- kruskalmc(y~Line,data=chr5Data)
+#many pairwise t-tests
+pairwise.t.test(chr5Data$y,chr5Data$Line,p.adjust.method = "fdr")
+wilcox.chr5 <- pairwise.wilcox.test(chr5Data$y,chr5Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr5Data$y,chr5Data$Line,p.adjust.method = "fdr")
+
+
+##############################################################################################
+#CHROMOSOME 6
+
+#RATIOS FOR CHROMOSOME 6
+#euRatio.c6 <- c(l002.6[,3],l003.6[,3],l005.6[,3],l006.6[,3],l008.6[,3],l009.6[,3],l069.6[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr6Data <- data.frame(y=c((log2(l001.6[,3])),(log2(l002.6[,3])),(log2(l003.6[,3])),(log2(l004.6[,3])),
+        (log2(l005.6[,3])),(log2(l006.6[,3])),(log2(l007.6[,3])),(log2(l008.6[,3])),
+        (log2(l009.6[,3])),(log2(l011.6[,3])),(log2(l018.6[,3])),(log2(l021.6[,3])),
+        (log2(l031.6[,3])),(log2(l049.6[,3])),(log2(l059.6[,3])),(log2(l061.6[,3])),
+        (log2(l066.6[,3])),(log2(l069.6[,3])),(log2(l076.6[,3])),(log2(l077.6[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.6$tracking_id))))
+chr6Data$Line <-factor(chr6Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{pdf("Chrm_6.pdf")
+boxplot(y~Line,data=chr6Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 6",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")}
+
+aov.chr6 <- aov(y~Line,data=chr6Data)
+summary(aov.chr6)
+resids.chr6 <- resid(aov.chr6)
+{pdf("Chrm6.resids.pdf")
+hist(resids.chr6,col="turquoise",breaks=10,xlab="Residuals.Chr.6")}
+#shapiro.test(resids.chr6)
+TukeyHSD(aov.chr6)
+{pdf("tukey.chr6.pdf")
+ plot(TukeyHSD(aov.chr6)) }
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr6 <- kruskal.test(y~Line,data=chr6Data)
+kruskal.test(y~Line,data=chr6Data)
+summary(kruskal.chr6)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr6Data)
+multiCompsChr6 <- kruskalmc(y~Line,data=chr6Data)
+#many pairwise t-tests
+pairwise.t.test(chr6Data$y,chr6Data$Line,p.adjust.method = "fdr")
+wilcox.chr6 <- pairwise.wilcox.test(chr6Data$y,chr6Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr6Data$y,chr6Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 7
+
+#RATIOS FOR CHROMOSOME 7
+#euRatio.c7 <- c(l002.7[,3],l003.7[,3],l005.7[,3],l006.7[,3],l008.7[,3],l009.7[,3],l069.7[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr7Data <- data.frame(y=c((log2(l001.7[,3])),(log2(l002.7[,3])),(log2(l003.7[,3])),(log2(l004.7[,3])),
+        (log2(l005.7[,3])),(log2(l006.7[,3])),(log2(l007.7[,3])),(log2(l008.7[,3])),
+        (log2(l009.7[,3])),(log2(l011.7[,3])),(log2(l018.7[,3])),(log2(l021.7[,3])),
+        (log2(l031.7[,3])),(log2(l049.7[,3])),(log2(l059.7[,3])),(log2(l061.7[,3])),
+        (log2(l066.7[,3])),(log2(l069.7[,3])),(log2(l076.7[,3])),(log2(l077.7[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.7$tracking_id))))
+chr7Data$Line <-factor(chr7Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{pdf("Chrm_7.pdf")
+boxplot(y~Line,data=chr7Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","deeppink1","deeppink1","deeppink1","green","cyan","cyan"),main="GC Lines Chromsome 7",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#need stars for 59,61,66 and comparisons between them 
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=14.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=15, y=.8, "*", pos=3, cex=2, col="red")
+text(x=15.3, y=.8, "*", pos=3, cex=2, col="red")
+text(x=15.7, y=.9, "*", pos=3, cex=2, col="red")
+text(x=16, y=.9, "*", pos=3, cex=2, col="red")
+text(x=16.3, y=.9, "*", pos=3, cex=2, col="red")
+text(x=16.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=17, y=1, "*", pos=3, cex=2, col="red")
+text(x=17.3, y=1, "*", pos=3, cex=2, col="red")
+
+
+
+brackets(16, 1.9, 17, 1.9, h = .3,  ticks = 0.5, curvature = 0.5, type = 1,
+col = 1, lwd = 1, lty = 1, xpd = FALSE)
+
+text(x=16.2, y=2, "*", pos=3, cex=2, col="red")
+text(x=16.5, y=2, "*", pos=3, cex=2, col="red")
+text(x=16.8, y=2, "*", pos=3, cex=2, col="red")
+
+brackets(15, 2.1, 17, 2.1, h = .3,  ticks = 0.5, curvature = 0.5, type = 1,
+col = 1, lwd = 1, lty = 1, xpd = FALSE)
+
+text(x=15.7, y=2.2, "*", pos=3, cex=2, col="red")
+text(x=16, y=2.2, "*", pos=3, cex=2, col="red")
+text(x=16.3, y=2.2, "*", pos=3, cex=2, col="red")
+}
+
+chr7Data.red <- data.frame(y=c((log2(l001.7[,3])),(log2(l002.7[,3])),(log2(l003.7[,3])),
+        (log2(l005.7[,3])),(log2(l006.7[,3])),
+        (log2(l009.7[,3])),
+        (log2(l031.7[,3])),(log2(l059.7[,3])),(log2(l061.7[,3])),
+        (log2(l066.7[,3])),(log2(l069.7[,3]))),
+Line=rep(c(1,2,3,5,6,9,31,59,61,66,69),each=(length(l001.7$tracking_id))))
+chr7Data.red$Line <-factor(chr7Data.red$Line)
+
+aov.chr7 <- aov(y~Line,data=chr7Data.red)
+summary(aov.chr7)
+resids.chr7 <- resid(aov.chr7)
+{pdf("Chrm7.resids.pdf")
+hist(resids.chr7,col="turquoise",breaks=10,xlab="Residuals.Chr.7")}
+
+TukeyHSD(aov.chr7)
+{pdf("Tukey.chr7.pdf")
+plot(TukeyHSD(aov.chr7))}
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr7 <- kruskal.test(y~Line,data=chr7Data.red)
+kruskal.test(y~Line,data=chr7Data.red)
+summary(kruskal.chr7)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr7Data.red)
+multiCompsChr7 <- kruskalmc(y~Line,data=chr7Data.red)
+#many pairwise t-tests
+pairwise.t.test(chr7Data.red$y,chr7Data.red$Line,p.adjust.method = "fdr")
+wilcox.chr7 <- pairwise.wilcox.test(chr7Data.red$y,chr7Data.red$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr7Data.red$y,chr7Data.red$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 8
+
+#RATIOS FOR CHROMOSOME 8
+#euRatio.c8 <- c(l002.8[,3],l003.8[,3],l005.8[,3],l006.8[,3],l008.8[,3],l009.8[,3],l069.8[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr8Data <- data.frame(y=c((log2(l001.8[,3])),(log2(l002.8[,3])),(log2(l003.8[,3])),(log2(l004.8[,3])),
+        (log2(l005.8[,3])),(log2(l006.8[,3])),(log2(l007.8[,3])),(log2(l008.8[,3])),
+        (log2(l009.8[,3])),(log2(l011.8[,3])),(log2(l018.8[,3])),(log2(l021.8[,3])),
+        (log2(l031.8[,3])),(log2(l049.8[,3])),(log2(l059.8[,3])),(log2(l061.8[,3])),
+        (log2(l066.8[,3])),(log2(l069.8[,3])),(log2(l076.8[,3])),(log2(l077.8[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.8$tracking_id))))
+chr8Data$Line <-factor(chr8Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_8.pdf")
+boxplot(y~Line,data=chr8Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 8",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+}
+
+aov.chr8 <- aov(y~Line,data=chr8Data)
+summary(aov.chr8)
+resids.chr8 <- resid(aov.chr8)
+{
+  pdf("Chrm8.resids.pdf")
+hist(resids.chr8,col="turquoise",breaks=10,xlab="Residuals.Chr.8")
+}
+
+TukeyHSD(aov.chr8)
+{pdf("tukey.chr8.pdf")
+  plot(TukeyHSD(aov.chr8))}
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr8 <- kruskal.test(y~Line,data=chr8Data)
+kruskal.test(y~Line,data=chr8Data)
+summary(kruskal.chr8)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr8Data)
+multiCompsChr8 <- kruskalmc(y~Line,data=chr8Data)
+#many pairwise t-tests
+pairwise.t.test(chr8Data$y,chr8Data$Line,p.adjust.method = "fdr")
+wilcox.chr8 <- pairwise.wilcox.test(chr8Data$y,chr8Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr8Data$y,chr8Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 9
+
+#RATIOS FOR CHROMOSOME 9
+#euRatio.c9 <- c(l002.9[,3],l003.9[,3],l005.9[,3],l006.9[,3],l008.9[,3],l009.9[,3],l069.9[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr9Data <- data.frame(y=c((log2(l001.9[,3])),(log2(l002.9[,3])),(log2(l003.9[,3])),(log2(l004.9[,3])),
+        (log2(l005.9[,3])),(log2(l006.9[,3])),(log2(l007.9[,3])),(log2(l008.9[,3])),
+        (log2(l009.9[,3])),(log2(l011.9[,3])),(log2(l018.9[,3])),(log2(l021.9[,3])),
+        (log2(l031.9[,3])),(log2(l049.9[,3])),(log2(l059.9[,3])),(log2(l061.9[,3])),
+        (log2(l066.9[,3])),(log2(l069.9[,3])),(log2(l076.9[,3])),(log2(l077.9[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.9$tracking_id))))
+chr9Data$Line <-factor(chr9Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_9.pdf")
+boxplot(y~Line,data=chr9Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","deeppink1","cyan"),main="GC Lines Chromsome 9",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+text(x=18.7, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=19, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=19.3, y=1.9, "*", pos=3, cex=2, col="red")
+}
+chr9Data.r <- data.frame(y=c((log2(l001.9[,3])),(log2(l002.9[,3])),(log2(l003.9[,3])),
+        (log2(l005.9[,3])),(log2(l006.9[,3])),
+        (log2(l009.9[,3])),
+        (log2(l031.9[,3])),
+        (log2(l069.9[,3])),(log2(l076.9[,3]))),
+Line=rep(c(1,2,3,5,6,9,31,69,76),each=(length(l001.9$tracking_id))))
+chr9Data.r$Line <-factor(chr9Data.r$Line)
+
+
+aov.chr9 <- aov(y~Line,data=chr9Data.r)
+summary(aov.chr9)
+resids.chr9 <- resid(aov.chr9)
+{
+  pdf("Chrm9.resids.pdf")
+hist(resids.chr9,col="turquoise",breaks=10,xlab="Residuals.Chr.9")
+}
+
+TukeyHSD(aov.chr9)
+{pdf("tukey.chr9.pdf")
+  plot(TukeyHSD(aov.chr9))}
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr9 <- kruskal.test(y~Line,data=chr9Data)
+kruskal.test(y~Line,data=chr9Data)
+summary(kruskal.chr9)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr9Data)
+multiCompsChr9 <- kruskalmc(y~Line,data=chr9Data)
+#many pairwise t-tests
+pairwise.t.test(chr9Data$y,chr9Data$Line,p.adjust.method = "fdr")
+wilcox.chr9 <- pairwise.wilcox.test(chr9Data$y,chr9Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr9Data$y,chr9Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 10
+
+#RATIOS FOR CHROMOSOME 10
+#euRatio.c10 <- c(l002.10[,3],l003.10[,3],l005.10[,3],l006.10[,3],l008.10[,3],l009.10[,3],l069.10[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr10Data <- data.frame(y=c((log2(l001.10[,3])),(log2(l002.10[,3])),(log2(l003.10[,3])),(log2(l004.10[,3])),
+        (log2(l005.10[,3])),(log2(l006.10[,3])),(log2(l007.10[,3])),(log2(l008.10[,3])),
+        (log2(l009.10[,3])),(log2(l011.10[,3])),(log2(l018.10[,3])),(log2(l021.10[,3])),
+        (log2(l031.10[,3])),(log2(l049.10[,3])),(log2(l059.10[,3])),(log2(l061.10[,3])),
+        (log2(l066.10[,3])),(log2(l069.10[,3])),(log2(l076.10[,3])),(log2(l077.10[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.10$tracking_id))))
+chr10Data$Line <-factor(chr10Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_10.pdf")
+boxplot(y~Line,data=chr10Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","deeppink1","cyan"),main="GC Lines Chromsome 10",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=18.7, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=19, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=19.3, y=1.9, "*", pos=3, cex=2, col="red")
+}
+chr10Data.r <- data.frame(y=c((log2(l001.10[,3])),(log2(l002.10[,3])),(log2(l003.10[,3])),
+        (log2(l005.10[,3])),(log2(l006.10[,3])),
+        (log2(l009.10[,3])),
+        (log2(l031.10[,3])),
+        (log2(l069.10[,3])),(log2(l076.10[,3]))),
+Line=rep(c(1,2,3,5,6,9,31,69,76),each=(length(l001.10$tracking_id))))
+chr10Data.r$Line <-factor(chr10Data.r$Line)
+
+
+aov.chr10 <- aov(y~Line,data=chr10Data.r)
+summary(aov.chr10)
+resids.chr10 <- resid(aov.chr10)
+{
+  pdf("Chrm10.resids.pdf")
+hist(resids.chr10,col="turquoise",breaks=10,xlab="Residuals.Chr.10")
+}
+
+
+TukeyHSD(aov.chr10)
+{pdf("tukey.chr10.pdf")
+plot(TukeyHSD(aov.chr10))}
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr10 <- kruskal.test(y~Line,data=chr10Data)
+kruskal.test(y~Line,data=chr10Data)
+summary(kruskal.chr10)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr10Data)
+multiCompsChr10 <- kruskalmc(y~Line,data=chr10Data)
+#many pairwise t-tests
+pairwise.t.test(chr10Data$y,chr10Data$Line,p.adjust.method = "fdr")
+wilcox.chr10 <- pairwise.wilcox.test(chr10Data$y,chr10Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr10Data$y,chr10Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 11
+
+#RATIOS FOR CHROMOSOME 11
+#euRatio.c11 <- c(l002.11[,3],l003.11[,3],l005.11[,3],l006.11[,3],l008.11[,3],l009.11[,3],l069.11[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr11Data <- data.frame(y=c((log2(l001.11[,3])),(log2(l002.11[,3])),(log2(l003.11[,3])),(log2(l004.11[,3])),
+        (log2(l005.11[,3])),(log2(l006.11[,3])),(log2(l007.11[,3])),(log2(l008.11[,3])),
+        (log2(l009.11[,3])),(log2(l011.11[,3])),(log2(l018.11[,3])),(log2(l021.11[,3])),
+        (log2(l031.11[,3])),(log2(l049.11[,3])),(log2(l059.11[,3])),(log2(l061.11[,3])),
+        (log2(l066.11[,3])),(log2(l069.11[,3])),(log2(l076.11[,3])),(log2(l077.11[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.11$tracking_id))))
+chr11Data$Line <-factor(chr11Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_11.pdf")
+boxplot(y~Line,data=chr11Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 11",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+}
+
+
+aov.chr11 <- aov(y~Line,data=chr11Data)
+summary(aov.chr11)
+resids.chr11 <- resid(aov.chr11)
+{
+  pdf("Chrm11.resids.pdf")
+hist(resids.chr11,col="turquoise",breaks=10,xlab="Residuals.Chr.11")
+}
+
+
+TukeyHSD(aov.chr11)
+{pdf("tukey.chr11.pdf")
+  plot(TukeyHSD(aov.chr11))}
+
+#fail shapiro test, so should probably use nonparametric
+#kruskal.chr11 <- kruskal.test(y~Line,data=chr11Data)
+#kruskal.test(y~Line,data=chr11Data)
+#summary(kruskal.chr11)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr11Data)
+#multiCompsChr11 <- kruskalmc(y~Line,data=chr11Data)
+#many pairwise t-tests
+#pairwise.t.test(chr11Data$y,chr11Data$Line,p.adjust.method = "fdr")
+#wilcox.chr11 <- pairwise.wilcox.test(chr11Data$y,chr11Data$Line,p.adjust.method = "fdr")
+#pairwise.wilcox.test(chr11Data$y,chr11Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 12
+
+#RATIOS FOR CHROMOSOME 12
+#euRatio.c12 <- c(l002.12[,3],l003.12[,3],l005.12[,3],l006.12[,3],l008.12[,3],l009.12[,3],l069.12[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr12Data <- data.frame(y=c((log2(l001.12[,3])),(log2(l002.12[,3])),(log2(l003.12[,3])),(log2(l004.12[,3])),
+        (log2(l005.12[,3])),(log2(l006.12[,3])),(log2(l007.12[,3])),(log2(l008.12[,3])),
+        (log2(l009.12[,3])),(log2(l011.12[,3])),(log2(l018.12[,3])),(log2(l021.12[,3])),
+        (log2(l031.12[,3])),(log2(l049.12[,3])),(log2(l059.12[,3])),(log2(l061.12[,3])),
+        (log2(l066.12[,3])),(log2(l069.12[,3])),(log2(l076.12[,3])),(log2(l077.12[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.12$tracking_id))))
+chr12Data$Line <-factor(chr12Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_12.pdf")
+boxplot(y~Line,data=chr12Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","deeppink1","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","deeppink1"),main="GC Lines Chromsome 12",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=10.7, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=11, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1.8, "*", pos=3, cex=2, col="red")
+
+text(x=19.7, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=20, y=1.9, "*", pos=3, cex=2, col="red")
+text(x=20.3, y=1.9, "*", pos=3, cex=2, col="red")
+
+}
+
+chr12Data.r <- data.frame(y=c((log2(l001.12[,3])),(log2(l002.12[,3])),(log2(l003.12[,3])),
+        (log2(l005.12[,3])),(log2(l006.12[,3])),
+        (log2(l009.12[,3])),(log2(l018.12[,3])),
+        (log2(l031.12[,3])),
+        (log2(l069.12[,3])),(log2(l077.12[,3]))),
+Line=rep(c(1,2,3,5,6,9,18,31,69,77),each=(length(l001.12$tracking_id))))
+chr12Data.r$Line <-factor(chr12Data.r$Line)
+
+aov.chr12 <- aov(y~Line,data=chr12Data.r)
+summary(aov.chr12)
+resids.chr12 <- resid(aov.chr12)
+{
+  pdf("Chrm12.resids.pdf")
+hist(resids.chr12,col="turquoise",breaks=10,xlab="Residuals.Chr.12")
+}
+
+
+TukeyHSD(aov.chr12)
+{pdf("tukey.chr12.pdf")
+  plot(TukeyHSD(aov.chr12))}
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr12 <- kruskal.test(y~Line,data=chr12Data)
+kruskal.test(y~Line,data=chr12Data)
+summary(kruskal.chr12)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr12Data)
+multiCompsChr12 <- kruskalmc(y~Line,data=chr12Data)
+#many pairwise t-tests
+pairwise.t.test(chr12Data$y,chr12Data$Line,p.adjust.method = "fdr")
+wilcox.chr12 <- pairwise.wilcox.test(chr12Data$y,chr12Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr12Data$y,chr12Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 13
+
+#RATIOS FOR CHROMOSOME 13
+#euRatio.c13 <- c(l002.13[,3],l003.13[,3],l005.13[,3],l006.13[,3],l008.13[,3],l009.13[,3],l069.13[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr13Data <- data.frame(y=c((log2(l001.13[,3])),(log2(l002.13[,3])),(log2(l003.13[,3])),(log2(l004.13[,3])),
+        (log2(l005.13[,3])),(log2(l006.13[,3])),(log2(l007.13[,3])),(log2(l008.13[,3])),
+        (log2(l009.13[,3])),(log2(l011.13[,3])),(log2(l018.13[,3])),(log2(l021.13[,3])),
+        (log2(l031.13[,3])),(log2(l049.13[,3])),(log2(l059.13[,3])),(log2(l061.13[,3])),
+        (log2(l066.13[,3])),(log2(l069.13[,3])),(log2(l076.13[,3])),(log2(l077.13[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.13$tracking_id))))
+chr13Data$Line <-factor(chr13Data$Line)
+#This code works beautifully to produce a boxplot
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_13.pdf")
+boxplot(y~Line,data=chr13Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 13",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+}
+
+
+aov.chr13 <- aov(y~Line,data=chr13Data)
+summary(aov.chr13)
+resids.chr13 <- resid(aov.chr13)
+{
+  pdf("Chrm13.resids.pdf")
+hist(resids.chr13,col="turquoise",breaks=10,xlab="Residuals.Chr.13")
+}
+
+
+TukeyHSD(aov.chr13)
+{pdf("tukey.chr13.pdf")
+  plot(TukeyHSD(aov.chr13))}
+#
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr13 <- kruskal.test(y~Line,data=chr13Data)
+kruskal.test(y~Line,data=chr13Data)
+summary(kruskal.chr13)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr13Data)
+multiCompsChr13 <- kruskalmc(y~Line,data=chr13Data)
+#many pairwise t-tests
+pairwise.t.test(chr13Data$y,chr13Data$Line,p.adjust.method = "fdr")
+wilcox.chr13 <- pairwise.wilcox.test(chr13Data$y,chr13Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr13Data$y,chr13Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 14
+
+#RATIOS FOR CHROMOSOME 14
+#euRatio.c14 <- c(l002.14[,3],l003.14[,3],l005.14[,3],l006.14[,3],l008.14[,3],l009.14[,3],l069.14[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr14Data <- data.frame(y=c((log2(l001.14[,3])),(log2(l002.14[,3])),(log2(l003.14[,3])),(log2(l004.14[,3])),
+        (log2(l005.14[,3])),(log2(l006.14[,3])),(log2(l007.14[,3])),(log2(l008.14[,3])),
+        (log2(l009.14[,3])),(log2(l011.14[,3])),(log2(l018.14[,3])),(log2(l021.14[,3])),
+        (log2(l031.14[,3])),(log2(l049.14[,3])),(log2(l059.14[,3])),(log2(l061.14[,3])),
+        (log2(l066.14[,3])),(log2(l069.14[,3])),(log2(l076.14[,3])),(log2(l077.14[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.14$tracking_id))))
+chr14Data$Line <-factor(chr14Data$Line)
+#This code works beautifully to produce a boxplotl001.14
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_14.pdf")
+boxplot(y~Line,data=chr14Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","deeppink1","cyan"),main="GC Lines Chromsome 14",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+text(x=18.7, y=2.2, "*", pos=3, cex=2, col="red")
+text(x=19, y=2.2, "*", pos=3, cex=2, col="red")
+text(x=19.3, y=2.2, "*", pos=3, cex=2, col="red")
+}
+
+chr14Data.r <- data.frame(y=c((log2(l001.14[,3])),(log2(l002.14[,3])),(log2(l003.14[,3])),
+        (log2(l005.14[,3])),(log2(l006.14[,3])),
+        (log2(l009.14[,3])),
+        (log2(l031.14[,3])),
+     (log2(l069.14[,3])),(log2(l076.14[,3]))),
+Line=rep(c(1,2,3,5,6,9,31,69,76),each=(length(l001.14$tracking_id))))
+chr14Data.r$Line <-factor(chr14Data.r$Line)
+
+aov.chr14 <- aov(y~Line,data=chr14Data.r)
+summary(aov.chr14)
+resids.chr14 <- resid(aov.chr14)
+{
+  pdf("Chrm14.resids.pdf")
+hist(resids.chr14,col="turquoise",breaks=10,xlab="Residuals.Chr.14")
+}
+
+
+TukeyHSD(aov.chr14)
+{pdf("tukey.chr14.pdf")
+ plot(TukeyHSD(aov.chr14)) }
+
+#fail shapiro test, so should probably use nonparametric
+kruskal.chr14 <- kruskal.test(y~Line,data=chr14Data)
+kruskal.test(y~Line,data=chr14Data)
+summary(kruskal.chr14)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr14Data)
+multiCompsChr14 <- kruskalmc(y~Line,data=chr14Data)
+#many pairwise t-tests
+pairwise.t.test(chr14Data$y,chr14Data$Line,p.adjust.method = "fdr")
+wilcox.chr14 <- pairwise.wilcox.test(chr14Data$y,chr14Data$Line,p.adjust.method = "fdr")
+pairwise.wilcox.test(chr14Data$y,chr14Data$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 15
+
+#RATIOS FOR CHROMOSOME 15
+#euRatio.c15 <- c(l002.15[,3],l003.15[,3],l005.15[,3],l006.15[,3],l008.15[,3],l009.15[,3],l069.15[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr15Data <- data.frame(y=c((log2(l001.15[,3])),(log2(l002.15[,3])),(log2(l003.15[,3])),(log2(l004.15[,3])),
+        (log2(l005.15[,3])),(log2(l006.15[,3])),(log2(l007.15[,3])),(log2(l008.15[,3])),
+        (log2(l009.15[,3])),(log2(l011.15[,3])),(log2(l018.15[,3])),(log2(l021.15[,3])),
+        (log2(l031.15[,3])),(log2(l049.15[,3])),(log2(l059.15[,3])),(log2(l061.15[,3])),
+        (log2(l066.15[,3])),(log2(l069.15[,3])),(log2(l076.15[,3])),(log2(l077.15[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.15$tracking_id))))
+chr15Data$Line <-factor(chr15Data$Line)
+#This code works beautifully to produce a boxplotl001.14
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_15.pdf")
+boxplot(y~Line,data=chr15Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","deeppink1","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 15",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+text(x=9.7, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=10, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=10.3, y=1.5, "*", pos=3, cex=2, col="red")
+
+}
+
+chr15Data.r <- data.frame(y=c((log2(l001.15[,3])),(log2(l002.15[,3])),(log2(l003.15[,3])),
+        (log2(l005.15[,3])),(log2(l006.15[,3])),(log2(l009.15[,3])),(log2(l011.15[,3])),(log2(l031.15[,3])),(log2(l069.15[,3]))),
+Line=rep(c(1,2,3,5,6,9,11,31,69),each=(length(l001.15$tracking_id))))
+chr15Data.r$Line <-factor(chr15Data.r$Line)
+
+aov.chr15 <- aov(y~Line,data=chr15Data.r)
+summary(aov.chr15)
+resids.chr15 <- resid(aov.chr15)
+{
+  pdf("Chrm15.resids.pdf")
+hist(resids.chr15,col="turquoise",breaks=10,xlab="Residuals.Chr.15")
+}
+
+TukeyHSD(aov.chr15)
+{pdf("tukey.chr15.pdf")
+ plot(TukeyHSD(aov.chr15)) }
+
+#TukeyHSD(aov.chr9)
+#plot(TukeyHSD(aov.chr9))
+#fail shapiro test, so should probably use nonparametric
+
+
+##############################################################################################
+#CHROMOSOME 16
+
+#RATIOS FOR CHROMOSOME 16
+#euRatio.c16 <- c(l002.16[,3],l003.16[,3],l005.16[,3],l006.16[,3],l008.16[,3],l009.16[,3],l069.16[,3])
+
+#this code works beautifully to produce a table with all of the log2 values for chromosome 6 
+chr16Data <- data.frame(y=c((log2(l001.16[,3])),(log2(l002.16[,3])),(log2(l003.16[,3])),(log2(l004.16[,3])),
+        (log2(l005.16[,3])),(log2(l006.16[,3])),(log2(l007.16[,3])),(log2(l008.16[,3])),
+        (log2(l009.16[,3])),(log2(l011.16[,3])),(log2(l018.16[,3])),(log2(l021.16[,3])),
+        (log2(l031.16[,3])),(log2(l049.16[,3])),(log2(l059.16[,3])),(log2(l061.16[,3])),
+        (log2(l066.16[,3])),(log2(l069.16[,3])),(log2(l076.16[,3])),(log2(l077.16[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.16$tracking_id))))
+chr16Data$Line <-factor(chr16Data$Line)
+#This code works beautifully to produce a boxplotl001.14
+#want to make this chunk into a loop
+#but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
+{
+  pdf("Chrm_16.pdf")
+boxplot(y~Line,data=chr16Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","deeppink1","green","cyan","cyan","cyan",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 16",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+abline(h=1,lty=2,col="darkblue")
+text(x=7.7, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.5, "*", pos=3, cex=2, col="red")
+
+}
+
+#mean((log2(l008.16[,3])))
+#average of line 8 chromosome 16 is 0.91
+#awfully close to 1 
+
+chr16Data.r <- data.frame(y=c((log2(l001.16[,3])),(log2(l002.16[,3])),(log2(l003.16[,3])),
+        (log2(l005.16[,3])),(log2(l006.16[,3])),(log2(l008.16[,3])),
+        (log2(l009.16[,3])),
+        (log2(l031.16[,3])),
+       (log2(l069.16[,3]))),
+Line=rep(c(1,2,3,5,6,8,9,31,69),each=(length(l001.16$tracking_id))))
+chr16Data.r$Line <-factor(chr16Data.r$Line)
+
+
+aov.chr16 <- aov(y~Line,data=chr16Data.r)
+summary(aov.chr16)
+resids.chr16 <- resid(aov.chr16)
+{
+  pdf("Chrm16.resids.pdf")
+hist(resids.chr16,col="turquoise",breaks=10,xlab="Residuals.Chr.16")
+}
+
+
+TukeyHSD(aov.chr16)
+
+{pdf("tukey.chr16.pdf")
+  plot(TukeyHSD(aov.chr16))}
+#fail shapiro test, so should probably use nonparametric
+#kruskal.chr16 <- kruskal.test(y~Line,data=chr16Data)
+#kruskal.test(y~Line,data=chr16Data)
+#summary(kruskal.chr16)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr16Data)
+#multiCompsChr16 <- kruskalmc(y~Line,data=chr16Data)
+#many pairwise t-tests
+#pairwise.t.test(chr16Data$y,chr16Data$Line,p.adjust.method = "fdr")
+#wilcox.chr16 <- pairwise.wilcox.test(chr16Data$y,chr16Data$Line,p.adjust.method = "fdr")
+#pairwise.wilcox.test(chr16Data$y,chr16Data$Line,p.adjust.method = "fdr")
+```
+
+``` {r boxplots, MA lines, include=TRUE}
+####################
+#CHROMOSOME 1 
+
+
+chr1DataMA <- data.frame(y=c((log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
+        (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.1$tracking_id))))
+chr1DataMA$Line <-factor(chr1DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_1_MA.pdf")
+boxplot(y~Line,data=chr1DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="MA Lines Chromsome 1",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=7.7, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.5, "*", pos=3, cex=2, col="red")
+text(x=8.3, y=1.5, "*", pos=3, cex=2, col="red")
+}
+
+chr1DataMA.r <- data.frame(y=c((log2(l050.1[,3])),(log2(l115.1[,3])),
+        (log2(l152.1[,3]))), Line=rep(c(50,115,152),each=(length(l029.1$tracking_id))))
+chr1DataMA.r$Line <-factor(chr1DataMA.r$Line)
+
+aov.chr1MA <- aov(y~Line,data=chr1DataMA.r)
+summary(aov.chr1MA)
+resids.chr1MA <- resid(aov.chr1MA)
+{
+  pdf("Chrm1.residsMA.pdf")
+hist(resids.chr1MA,col="turquoise",breaks=10,xlab="Residuals.Chr.1MA")
+}
+
+TukeyHSD(aov.chr1MA)
+{pdf("Tukey.chr1.MA.pdf")
+plot(TukeyHSD(aov.chr1MA))}
+
+shapiro.test(resids.chr1MA)
+#fail shapiro test, so should probably use nonparametric
+#kruskal.chr1MA <- kruskal.test(y~Line,data=chr1DataMA)
+#kruskal.test(y~Line,data=chr1DataMA)
+#p-value < 2.2 e-16 (So at least one of the data points is very different from the others)
+#test pairwise comparisons
+#Tukeys doesnt work with kruskal
+#TukeyHSD(aov.chr1MA)
+#plot(TukeyHSD(aov.chr1MA))
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr1DataMA)
+#multiCompsChr1MA <- kruskalmc(y~Line,data=chr1DataMA)
+#OR can do many pairwise t-tests
+#pairwise.t.test(chr1DataMA$y,chr1DataMA$Line,p.adjust.method = "fdr")
+#wilcox.chr1MA <- pairwise.wilcox.test(chr1DataMA$y,chr1DataMA$Line,p.adjust.method = "fdr")
+
+#pairwise.wilcox.test(chr1DataMA$y,chr1DataMA$Line,p.adjust.method = "fdr")
+
+
+##############################################################################################
+#CHROMOSOME 2
+
+{
+
+chr2DataMA <- data.frame(y=c((log2(l029.2[,3])),(log2(l050.2[,3])),(log2(l112.2[,3])),(log2(l115.2[,3])),(log2(l117.2[,3])),
+        (log2(l123.2[,3])),(log2(l141.2[,3])),(log2(l152.2[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.2$tracking_id))))
+}
+chr2DataMA$Line <-factor(chr2DataMA$Line)
+
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_2_MA.pdf")
+boxplot(y~Line,data=chr2DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 2",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#ANOVA/NonParametric Equivalent
+
+aov.chr2MA <- aov(y~Line,data=chr2DataMA)
+summary(aov.chr2MA)
+resids.chr2MA <- resid(aov.chr2MA)
+{
+  pdf("Chrm2.residsMA.pdf")
+hist(resids.chr2MA,col="turquoise",breaks=10,xlab="Residuals.Chr.2MA")
+}
+
+TukeyHSD(aov.chr2MA)
+{pdf("Tukey.chr2.MA.pdf")
+plot(TukeyHSD(aov.chr2MA))}
+
+#shapiro.test(resids.chr2MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr2DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr2DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr2DataMA$y,chr2DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 3
+
+{
+
+chr3DataMA <- data.frame(y=c((log2(l029.3[,3])),(log2(l050.3[,3])),(log2(l112.3[,3])),(log2(l115.3[,3])),(log2(l117.3[,3])),
+        (log2(l123.3[,3])),(log2(l141.3[,3])),(log2(l152.3[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.3$tracking_id))))
+}
+chr3DataMA$Line <-factor(chr3DataMA$Line)
+
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_3_MA.pdf")
+boxplot(y~Line,data=chr3DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 3",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+#text(x=7.7, y=1.5, "*", pos=3, cex=2, col="red")
+#text(x=8, y=1.5, "*", pos=3, cex=2, col="red")
+#text(x=8.3, y=1.5, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr3MA <- aov(y~Line,data=chr3DataMA)
+summary(aov.chr3MA)
+resids.chr3MA <- resid(aov.chr3MA)
+{
+  pdf("Chrm3.residsMA.pdf")
+hist(resids.chr3MA,col="turquoise",breaks=10,xlab="Residuals.Chr.3MA")
+}
+
+TukeyHSD(aov.chr3MA)
+{pdf("Tukey.chr3.MA.pdf")
+plot(TukeyHSD(aov.chr3MA))}
+
+#shapiro.test(resids.chr3MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr3DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr3DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr3DataMA$y,chr3DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 4
+
+{
+
+chr4DataMA <- data.frame(y=c((log2(l029.4[,3])),(log2(l050.4[,3])),(log2(l112.4[,3])),(log2(l115.4[,3])),(log2(l117.4[,3])),
+        (log2(l123.4[,3])),(log2(l141.4[,3])),(log2(l152.4[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.4$tracking_id))))
+}
+chr4DataMA$Line <-factor(chr4DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_4_MA.pdf")
+boxplot(y~Line,data=chr4DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 4",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+#text(x=7.7, y=1.5, "*", pos=3, cex=2, col="red")
+#text(x=8, y=1.5, "*", pos=3, cex=2, col="red")
+#text(x=8.3, y=1.5, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr4MA <- aov(y~Line,data=chr4DataMA)
+summary(aov.chr4MA)
+resids.chr4MA <- resid(aov.chr4MA)
+{
+  pdf("Chrm4.residsMA.pdf")
+hist(resids.chr4MA,col="turquoise",breaks=10,xlab="Residuals.Chr.4MA")
+}
+TukeyHSD(aov.chr4MA)
+{pdf("Tukey.chr4.MA.pdf")
+plot(TukeyHSD(aov.chr4MA))}
+#shapiro.test(resids.chr4MA)
+#fail shapiro test, so should probably use nonparametric
+
+kruskal.test(y~Line,data=chr4DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+kruskalmc(y~Line,data=chr4DataMA)
+#OR can do many pairwise t-tests
+pairwise.wilcox.test(chr4DataMA$y,chr4DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 5
+
+{
+
+chr5DataMA <- data.frame(y=c((log2(l029.5[,3])),(log2(l050.5[,3])),(log2(l112.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),
+        (log2(l123.5[,3])),(log2(l141.5[,3])),(log2(l152.5[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.5$tracking_id))))
+}
+chr5DataMA$Line <-factor(chr5DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_5_MA.pdf")
+boxplot(y~Line,data=chr5DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","deeppink1","deeppink1","cyan","cyan"),main="MA Lines Chromsome 5",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=4.8, y=2.1, "*", pos=3, cex=2, col="red")
+text(x=5, y=2.1, "*", pos=3, cex=2, col="red")
+text(x=5.2, y=2.1, "*", pos=3, cex=2, col="red")
+
+text(x=5.8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=6, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=6.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+}
+
+{
+
+chr5DataMA.r <- data.frame(y=c((log2(l029.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),(log2(l123.5[,3]))), Line=rep(c(29,115,117,123),each=(length(l029.5$tracking_id))))
+}
+chr5DataMA.r$Line <-factor(chr5DataMA.r$Line)
+#ANOVA/NonParametric Equivalent
+
+aov.chr5MA <- aov(y~Line,data=chr5DataMA.r)
+summary(aov.chr5MA)
+resids.chr5MA <- resid(aov.chr5MA)
+{
+  pdf("Chrm5.residsMA.pdf")
+hist(resids.chr5MA,col="turquoise",breaks=10,xlab="Residuals.Chr.5MA")
+}
+TukeyHSD(aov.chr5MA)
+{pdf("Tukey.chr5.MA.pdf")
+plot(TukeyHSD(aov.chr5MA))}
+
+#shapiro.test(resids.chr5MA)
+#fail shapiro test, so should probably use nonparametric
+
+
+#kruskal.test(y~Line,data=chr5DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr5DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr5DataMA$y,chr5DataMA$Line,p.adjust.method = "fdr")
+
+
+##############################################################################################
+#CHROMOSOME 6
+
+{
+
+chr6DataMA <- data.frame(y=c((log2(l029.6[,3])),(log2(l050.6[,3])),(log2(l112.6[,3])),(log2(l115.6[,3])),(log2(l117.6[,3])),
+        (log2(l123.6[,3])),(log2(l141.6[,3])),(log2(l152.6[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.6$tracking_id))))
+}
+chr6DataMA$Line <-factor(chr6DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_6_MA.pdf")
+boxplot(y~Line,data=chr6DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 6",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+}
+
+
+#ANOVA/NonParametric Equivalent
+aov.chr6MA <- aov(y~Line,data=chr6DataMA)
+summary(aov.chr6MA)
+resids.chr6MA <- resid(aov.chr6MA)
+{
+  pdf("Chrm6.residsMA.pdf")
+hist(resids.chr6MA,col="turquoise",breaks=10,xlab="Residuals.Chr.6MA")
+}
+
+TukeyHSD(aov.chr6MA)
+{pdf("Tukey.chr6.MA.pdf")
+plot(TukeyHSD(aov.chr6MA))}
+
+shapiro.test(resids.chr6MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr6DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr6DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr6DataMA$y,chr6DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 7
+{
+
+chr7DataMA <- data.frame(y=c((log2(l029.7[,3])),(log2(l050.7[,3])),(log2(l112.7[,3])),(log2(l115.7[,3])),(log2(l117.7[,3])),
+        (log2(l123.7[,3])),(log2(l141.7[,3])),(log2(l152.7[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.7$tracking_id))))
+}
+chr7DataMA$Line <-factor(chr7DataMA$Line)
+
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_7_MA.pdf")
+boxplot(y~Line,data=chr7DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 7",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+}
+
+
+#ANOVA/NonParametric Equivalent
+aov.chr7MA <- aov(y~Line,data=chr7DataMA)
+summary(aov.chr7MA)
+resids.chr7MA <- resid(aov.chr7MA)
+{
+  pdf("Chrm7.residsMA.pdf")
+hist(resids.chr7MA,col="turquoise",breaks=10,xlab="Residuals.Chr.7MA")
+}
+
+TukeyHSD(aov.chr7MA)
+{pdf("Tukey.chr7.MA.pdf")
+plot(TukeyHSD(aov.chr7MA))}
+#shapiro.test(resids.chr7MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr7DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr7DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr7DataMA$y,chr7DataMA$Line,p.adjust.method = "fdr")
+
+
+##############################################################################################
+#CHROMOSOME 8
+
+{
+
+chr8DataMA <- data.frame(y=c((log2(l029.8[,3])),(log2(l050.8[,3])),(log2(l112.8[,3])),(log2(l115.8[,3])),(log2(l117.8[,3])),
+        (log2(l123.8[,3])),(log2(l141.8[,3])),(log2(l152.8[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.8$tracking_id))))
+}
+chr8DataMA$Line <-factor(chr8DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_8_MA.pdf")
+boxplot(y~Line,data=chr8DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="MA Lines Chromsome 8",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=7.8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=8.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+}
+
+
+{
+
+chr8DataMA.r <- data.frame(y=c((log2(l050.8[,3])),(log2(l115.8[,3])),
+        (log2(l152.8[,3]))), Line=rep(c(50,115,152),each=(length(l050.8$tracking_id))))
+}
+chr8DataMA.r$Line <-factor(chr8DataMA.r$Line)
+
+#ANOVA/NonParametric Equivalent
+aov.chr8MA <- aov(y~Line,data=chr8DataMA.r)
+summary(aov.chr8MA)
+resids.chr8MA <- resid(aov.chr8MA)
+{
+  pdf("Chrm8.residsMA.pdf")
+hist(resids.chr8MA,col="turquoise",breaks=10,xlab="Residuals.Chr.8MA")
+}
+
+TukeyHSD(aov.chr8MA)
+{pdf("Tukey.chr8.MA.pdf")
+plot(TukeyHSD(aov.chr8MA))}
+#shapiro.test(resids.chr8MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr8DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr8DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr8DataMA$y,chr8DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 9
+
+{
+
+chr9DataMA <- data.frame(y=c((log2(l029.9[,3])),(log2(l050.9[,3])),(log2(l112.9[,3])),(log2(l115.9[,3])),(log2(l117.9[,3])),
+        (log2(l123.9[,3])),(log2(l141.9[,3])),(log2(l152.9[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.9$tracking_id))))
+}
+chr9DataMA$Line <-factor(chr9DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_9_MA.pdf")
+boxplot(y~Line,data=chr9DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("deeppink1", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 9",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+}
+
+{
+
+chr9DataMA.r <- data.frame(y=c((log2(l029.9[,3])),(log2(l050.9[,3])),(log2(l115.9[,3]))), Line=rep(c(29,50,115),each=(length(l029.9$tracking_id))))
+}
+chr9DataMA.r$Line <-factor(chr9DataMA.r$Line)
+
+#ANOVA/NonParametric Equivalent
+aov.chr9MA <- aov(y~Line,data=chr9DataMA.r)
+summary(aov.chr9MA)
+resids.chr9MA <- resid(aov.chr9MA)
+{
+  pdf("Chrm9.residsMA.pdf")
+hist(resids.chr9MA,col="turquoise",breaks=10,xlab="Residuals.Chr.9MA")
+}
+
+TukeyHSD(aov.chr9MA)
+{pdf("Tukey.chr9.MA.pdf")
+plot(TukeyHSD(aov.chr9MA))}
+#shapiro.test(resids.chr9MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr9DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr9DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr9DataMA$y,chr9DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 10
+
+{
+
+chr10DataMA <- data.frame(y=c((log2(l029.10[,3])),(log2(l050.10[,3])),(log2(l112.10[,3])),(log2(l115.10[,3])),(log2(l117.10[,3])),
+        (log2(l123.10[,3])),(log2(l141.10[,3])),(log2(l152.10[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.10$tracking_id))))
+}
+chr10DataMA$Line <-factor(chr10DataMA$Line)
+
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_10_MA.pdf")
+boxplot(y~Line,data=chr10DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 10",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr10MA <- aov(y~Line,data=chr10DataMA)
+summary(aov.chr10MA)
+resids.chr10MA <- resid(aov.chr10MA)
+{
+  pdf("Chrm10.residsMA.pdf")
+hist(resids.chr10MA,col="turquoise",breaks=10,xlab="Residuals.Chr.10MA")
+}
+
+TukeyHSD(aov.chr10MA)
+{pdf("Tukey.chr10.MA.pdf")
+plot(TukeyHSD(aov.chr10MA))}
+#shapiro.test(resids.chr10MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr10DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr10DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr10DataMA$y,chr10DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 11
+
+{
+
+chr11DataMA <- data.frame(y=c((log2(l029.11[,3])),(log2(l050.11[,3])),(log2(l112.11[,3])),(log2(l115.11[,3])),(log2(l117.11[,3])),
+        (log2(l123.11[,3])),(log2(l141.11[,3])),(log2(l152.11[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.11$tracking_id))))
+}
+chr11DataMA$Line <-factor(chr11DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_11_MA.pdf")
+boxplot(y~Line,data=chr11DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 11",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr11MA <- aov(y~Line,data=chr11DataMA)
+summary(aov.chr11MA)
+resids.chr11MA <- resid(aov.chr11MA)
+{
+  pdf("Chrm11.residsMA.pdf")
+hist(resids.chr11MA,col="turquoise",breaks=10,xlab="Residuals.Chr.11MA")
+}
+TukeyHSD(aov.chr11MA)
+{pdf("Tukey.chr11.MA.pdf")
+plot(TukeyHSD(aov.chr11MA))}
+#shapiro.test(resids.chr11MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr11DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr11DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr11DataMA$y,chr11DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 12
+
+{
+
+chr12DataMA <- data.frame(y=c((log2(l029.12[,3])),(log2(l050.12[,3])),(log2(l112.12[,3])),(log2(l115.12[,3])),(log2(l117.12[,3])),
+        (log2(l123.12[,3])),(log2(l141.12[,3])),(log2(l152.12[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.12$tracking_id))))
+}
+chr12DataMA$Line <-factor(chr12DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_12_MA.pdf")
+boxplot(y~Line,data=chr12DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 12",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+
+#ANOVA/NonParametric Equivalent
+aov.chr12MA <- aov(y~Line,data=chr12DataMA)
+summary(aov.chr12MA)
+resids.chr12MA <- resid(aov.chr12MA)
+{
+  pdf("Chrm12.residsMA.pdf")
+hist(resids.chr12MA,col="turquoise",breaks=10,xlab="Residuals.Chr.12MA")
+}
+TukeyHSD(aov.chr12MA)
+{pdf("Tukey.chr12.MA.pdf")
+plot(TukeyHSD(aov.chr12MA))}
+#shapiro.test(resids.chr12MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr12DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr12DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr12DataMA$y,chr12DataMA$Line,p.adjust.method = "fdr")
+##############################################################################################
+#CHROMOSOME 13
+
+{
+
+chr13DataMA <- data.frame(y=c((log2(l029.13[,3])),(log2(l050.13[,3])),(log2(l112.13[,3])),(log2(l115.13[,3])),(log2(l117.13[,3])),
+        (log2(l123.13[,3])),(log2(l141.13[,3])),(log2(l152.13[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.13$tracking_id))))
+}
+chr13DataMA$Line <-factor(chr13DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_13_MA.pdf")
+boxplot(y~Line,data=chr13DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 13",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr13MA <- aov(y~Line,data=chr13DataMA)
+summary(aov.chr13MA)
+resids.chr13MA <- resid(aov.chr13MA)
+{
+  pdf("Chrm13.residsMA.pdf")
+hist(resids.chr13MA,col="turquoise",breaks=10,xlab="Residuals.Chr.13MA")
+}
+
+
+TukeyHSD(aov.chr13MA)
+{pdf("Tukey.chr13.MA.pdf")
+plot(TukeyHSD(aov.chr13MA))}
+#shapiro.test(resids.chr13MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr13DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr13DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr13DataMA$y,chr13DataMA$Line,p.adjust.method = "fdr")
+##############################################################################################
+#CHROMOSOME 14
+
+
+{
+
+chr14DataMA <- data.frame(y=c((log2(l029.14[,3])),(log2(l050.14[,3])),(log2(l112.14[,3])),(log2(l115.14[,3])),(log2(l117.14[,3])),
+        (log2(l123.14[,3])),(log2(l141.14[,3])),(log2(l152.14[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.14$tracking_id))))
+}
+chr14DataMA$Line <-factor(chr14DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_14_MA.pdf")
+boxplot(y~Line,data=chr14DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 14",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr14MA <- aov(y~Line,data=chr14DataMA)
+summary(aov.chr14MA)
+resids.chr14MA <- resid(aov.chr14MA)
+{
+  pdf("Chrm14.residsMA.pdf")
+hist(resids.chr14MA,col="turquoise",breaks=10,xlab="Residuals.Chr.14MA")
+}
+TukeyHSD(aov.chr14MA)
+{pdf("Tukey.chr14.MA.pdf")
+plot(TukeyHSD(aov.chr14MA))}
+#shapiro.test(resids.chr14MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr14DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr14DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr14DataMA$y,chr14DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 15
+
+{
+
+chr15DataMA <- data.frame(y=c((log2(l029.15[,3])),(log2(l050.15[,3])),(log2(l112.15[,3])),(log2(l115.15[,3])),(log2(l117.15[,3])),
+        (log2(l123.15[,3])),(log2(l141.15[,3])),(log2(l152.15[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.15$tracking_id))))
+}
+chr15DataMA$Line <-factor(chr15DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_15_MA.pdf")
+boxplot(y~Line,data=chr15DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","cyan","green","cyan","cyan","cyan","cyan"),main="MA Lines Chromsome 15",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+}
+
+#text(x=0.8, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1, y=1.8, "*", pos=3, cex=2, col="red")
+#text(x=1.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+#ANOVA/NonParametric Equivalent
+aov.chr15MA <- aov(y~Line,data=chr15DataMA)
+summary(aov.chr15MA)
+resids.chr15MA <- resid(aov.chr15MA)
+{
+  pdf("Chrm15.residsMA.pdf")
+hist(resids.chr15MA,col="turquoise",breaks=10,xlab="Residuals.Chr.15MA")
+}
+
+TukeyHSD(aov.chr15MA)
+{pdf("Tukey.chr15.MA.pdf")
+plot(TukeyHSD(aov.chr15MA))}
+#shapiro.test(resids.chr15MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr15DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr15DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr15DataMA$y,chr15DataMA$Line,p.adjust.method = "fdr")
+
+##############################################################################################
+#CHROMOSOME 16
+
+{
+
+chr16DataMA <- data.frame(y=c((log2(l029.16[,3])),(log2(l050.16[,3])),(log2(l112.16[,3])),(log2(l115.16[,3])),(log2(l117.16[,3])),
+        (log2(l123.16[,3])),(log2(l141.16[,3])),(log2(l152.16[,3]))), Line=rep(c(29,50,112,115,117,123,141,152),each=(length(l029.16$tracking_id))))
+}
+chr16DataMA$Line <-factor(chr16DataMA$Line)
+#This code works beautifully to produce a boxplot 
+{
+pdf("Chrm_16_MA.pdf")
+boxplot(y~Line,data=chr16DataMA,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("cyan", "green","deeppink1","green","cyan","cyan","deeppink1","cyan"),main="MA Lines Chromsome 16",las=3,ylim=c(-2,2.5))
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+
+
+text(x=2.8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=3, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=3.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+text(x=6.8, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=7, y=1.8, "*", pos=3, cex=2, col="red")
+text(x=7.2, y=1.8, "*", pos=3, cex=2, col="red")
+
+brackets(3, 2, 7, 2, h = NULL,  ticks = 0.5, curvature = 0.5, type = 1,
+col = 1, lwd = 1, lty = 1, xpd = FALSE)
+
+text(x=4.8, y=2.1, "*", pos=3, cex=2, col="red")
+text(x=5, y=2.1, "*", pos=3, cex=2, col="red")
+text(x=5.2, y=2.1, "*", pos=3, cex=2, col="red")
+
+}
+
+{
+
+chr16DataMA.r <- data.frame(y=c((log2(l050.16[,3])),(log2(l112.16[,3])),(log2(l115.16[,3])),(log2(l141.16[,3]))), Line=rep(c(50,112,115,141),each=(length(l050.16$tracking_id))))
+}
+chr16DataMA.r$Line <-factor(chr16DataMA.r$Line)
+
+#ANOVA/NonParametric Equivalent
+aov.chr16MA <- aov(y~Line,data=chr16DataMA.r)
+summary(aov.chr16MA)
+resids.chr16MA <- resid(aov.chr16MA)
+{
+  pdf("Chrm16.residsMA.pdf")
+hist(resids.chr16MA,col="turquoise",breaks=10,xlab="Residuals.Chr.16MA")
+}
+
+TukeyHSD(aov.chr16MA)
+{pdf("Tukey.chr16.MA.pdf")
+plot(TukeyHSD(aov.chr16MA))}
+#shapiro.test(resids.chr16MA)
+#fail shapiro test, so should probably use nonparametric
+
+#kruskal.test(y~Line,data=chr16DataMA)
+#test pairwise comparisons
+#but there is an equivalent for Tukeys with kruskal
+#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
+#kruskalmc(y~Line,data=chr16DataMA)
+#OR can do many pairwise t-tests
+#pairwise.wilcox.test(chr16DataMA$y,chr16DataMA$Line,p.adjust.method = "fdr")
+```
+
 ``` {r lowly-expr genes, echo=FALSE}
 #Need to export the lowly-expressed genes from each ratio file produced from code chunk above 
 #Want to do this in a loop
@@ -5643,6 +7606,7 @@ setwd="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/ra
 #setNames(list(l001.2,l002.2), c("l001.2","l002.2"))
 ratioFiles <- list(l001.1,  l001.10,  l001.11,  l001.12,  l001.13,  l001.14,  l001.15,  l001.16,  l001.2,  l001.3,  l001.4,  l001.5,  l001.6,  l001.7,  l001.8,  l001.9,  l002.1,  l002.10,  l002.11,  l002.12,  l002.13,  l002.14,  l002.15,  l002.16,  l002.2,  l002.3,  l002.4,  l002.5,  l002.6,  l002.7,  l002.8,  l002.9,  l003.1,  l003.10,  l003.11,  l003.12,  l003.13,  l003.14,  l003.15,  l003.16,  l003.2,  l003.3, l003.4, l003.5,  l003.6,  l003.7, l003.8,  l003.9,  l004.1,  l004.10,  l004.11,  l004.12,  l004.13, l004.14, l004.15, l004.16, l004.2,  l004.3,  l004.4,  l004.5,  l004.6,  l004.7,  l004.8,  l004.9, l005.1, l005.10, l005.11, l005.12, l005.13, l005.14, l005.15, l005.16, l005.2, l005.3, l005.4, l005.6, l005.7, l005.8, l005.9, l006.1, l006.10, l006.11, l006.12, l006.13, l006.14, l006.15, l006.16, l006.2, l006.3, l006.4, l006.5, l006.6, l006.7, l006.8, l006.9, l007.1, l007.10, l007.11, l007.12, l007.13, l007.14, l007.15, l007.16, l007.2, l007.3, l007.4, l007.5, l007.6, l007.8, l007.9, l008.1, l008.10, l008.11, l001.12, l008.13, l008.14, l008.15, l008.16, l008.2, l008.3, l008.4, l008.5, l008.6, l008.7, l008.8, l008.9, l009.1, l009.10, l009.11, l009.12, l009.13, l009.14, l009.15, l009.16, l009.2, l009.3, l009.4, l009.5, l009.6, l009.7, l009.8, l009.9, l011.1, l011.10, l011.11, l011.12, l011.13, l011.14, l011.15, l011.16, l011.2, l011.3, l011.4, l011.5, l011.6, l011.7, l011.8, l011.9, l018.1, l018.10, l018.11, l018.12, l018.13, l018.14, l018.15, l018.16, l018.2, l018.3, l018.4, l018.5, l018.7, l018.6, l018.8, l018.9, l021.1, l021.10, l021.11, l021.12, l021.13, l021.14, l021.15, l021.16, l021.2, l021.3, l021.4, l021.5, l021.6, l021.7, l021.8, l021.9, l031.1, l031.10, l031.11, l031.12, l031.13, l031.14, l031.15, l031.16, l031.2, l031.3, l031.4, l031.5, l031.6, l031.7, l031.8, l031.9, l049.1, l049.10, l049.11, l049.12, l049.13, l049.15, l049.16, l049.2, l049.3, l049.4, l049.5, l049.6, l049.7, l049.8, l049.9, l059.1, l059.10, l059.11, l059.12, l059.13, l059.14, l059.15, l059.16, l059.2, l059.3, l059.4, l059.5, l059.6, l059.7, l059.8, l059.9, l061.1, l061.10, l061.11, l061.12, l061.13, l061.14, l061.15, l061.16, l061.2, l061.3, l061.4, l061.5, l061.6, l061.7, l061.8, l061.9, l066.1, l066.10, l066.11, l066.12, l066.13, l066.14, l066.15, l066.16, l066.2, l066.3, l066.4, l066.5, l066.6, l066.7, l066.8, l066.9, l069.1, l069.10, l069.11, l069.12, l069.13, l069.14, l069.15, l069.16, l069.2, l069.3, l069.4, l069.5, l069.6, l069.7, l069.8, l069.9, l076.1, l076.10, l076.11, l076.12, l076.13, l076.14, l076.15, l076.16, l076.2, l076.3, l076.4, l076.5, l076.6, l076.7, l076.8, l076.9, l077.1, l077.10, l077.11, l077.12, l077.13, l077.14, l077.15, l077.16, l077.2, l077.3, l077.4, l077.5, l077.6, l077.7, l077.8, l077.9)
 names(ratioFiles) <-  c("l001.1","l001.10","l001.11","l001.12","l001.13","l001.14","l001.15","l001.16","l001.2","l001.3","l001.4","l001.5","l001.6","l001.7","l001.8","l001.9","l002.1","l002.10","l002.11","l002.12","l002.13","l002.14","l002.15","l002.16","l002.2","l002.3","l002.4","l002.5","l002.6","l002.7","l002.8","l002.9","l003.1","l003.10","l003.11","l003.12","l003.13","l003.14","l003.15","l003.16","l003.2","l003.3","l003.4","l003.5","l003.6","l003.7","l003.8","l003.9","l004.1","l004.10","l004.11","l004.12","l004.13","l004.14","l004.15","l004.16","l004.2","l004.3","l004.4","l004.5","l004.6","l004.7","l004.8","l004.9","l005.1","l005.10","l005.11","l005.12","l005.13","l005.14","l005.15","l005.16","l005.2","l005.3","l005.4","l005.6","l005.7","l005.8","l005.9","l006.1","l006.10","l006.11","l006.12","l006.13","l006.14","l006.15","l006.16","l006.2","l006.3","l006.4","l006.5","l006.6","l006.7","l006.8","l006.9","l007.1","l007.10","l007.11","l007.12","l007.13","l007.14","l007.15","l007.16","l007.2","l007.3","l007.4","l007.5","l007.6","l007.8","l007.9","l008.1","l008.10","l008.11","l001.12","l008.13","l008.14","l008.15","l008.16","l008.2","l008.3","l008.4","l008.5","l008.6","l008.7","l008.8","l008.9","l009.1","l009.10","l009.11","l009.12","l009.13","l009.14","l009.15","l009.16","l009.2","l009.3","l009.4","l009.5","l009.6","l009.7","l009.8","l009.9","l011.1","l011.10","l011.11","l011.12","l011.13","l011.14","l011.15","l011.16","l011.2","l011.3","l011.4","l011.5","l011.6","l011.7","l011.8","l011.9","l018.1","l018.10","l018.11","l018.12","l018.13","l018.14","l018.15","l018.16","l018.2","l018.3","l018.4","l018.5","l018.7","l018.6","l018.8","l018.9","l021.1","l021.10","l021.11","l021.12","l021.13","l021.14","l021.15","l021.16","l021.2","l021.3","l021.4","l021.5","l021.6","l021.7","l021.8","l021.9","l031.1","l031.10","l031.11","l031.12","l031.13","l031.14","l031.15","l031.16","l031.2","l031.3","l031.4","l031.5","l031.6","l031.7","l031.8","l031.9","l049.1","l049.10","l049.11","l049.12","l049.13","l049.15","l049.16","l049.2","l049.3","l049.4","l049.5","l049.6","l049.7","l049.8","l049.9","l059.1","l059.10","l059.11","l059.12","l059.13","l059.14","l059.15","l059.16","l059.2","l059.3","l059.4","l059.5","l059.6","l059.7","l059.8","l059.9","l061.1","l061.10","l061.11","l061.12","l061.13","l061.14","l061.15","l061.16","l061.2","l061.3","l061.4","l061.5","l061.6","l061.7","l061.8","l061.9","l066.1","l066.10","l066.11","l066.12","l066.13","l066.14","l066.15","l066.16","l066.2","l066.3","l066.4","l066.5","l066.6","l066.7","l066.8","l066.9","l069.1","l069.10","l069.11","l069.12","l069.13","l069.14","l069.15","l069.16","l069.2","l069.3","l069.4","l069.5","l069.6","l069.7","l069.8","l069.9","l076.1","l076.10","l076.11","l076.12","l076.13","l076.14","l076.15","l076.16","l076.2","l076.3","l076.4","l076.5","l076.6","l076.7","l076.8","l076.9","l077.1","l077.10","l077.11","l077.12","l077.13","l077.14","l077.15","l077.16","l077.2","l077.3","l077.4","l077.5","l077.6","l077.7","l077.8","l077.9")
+
 ratioFiles
 for (i in seq_along(ratioFiles)){
   file <- data.table(ratioFiles[[i]])
@@ -5651,7 +7615,12 @@ for (i in seq_along(ratioFiles)){
 }
 
 
-
+ratioFiles
+for (i in seq_along(ratioFiles)){
+  file <- data.table(ratioFiles[[i]])
+ clean.file <- ratioFiles[[i]][(ratioFiles[[i]][3] > 2), ]
+  write.csv(clean.file, file=paste(names(ratioFiles)[i], "high_exp_genes.csv", sep="_"), row.names = F)
+}
 
 #low_expr_genes <- function(filename) {
 #    file <- data.table(filename)
@@ -5790,10 +7759,22 @@ sample <- data.frame(sample)
 write.csv(sample,file=(paste("Depth_of_coverage_",list_of_titles[i],".csv",sep="")))
 }
 
-#sample <- bamcoverage("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/bam_files/Holly_66C_S21_R1_001_tophat_out.sorted.bam")
-#sample <- data.frame(sample)
+{sample <- bamcoverage("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/bam_files/Sample76.sorted.fixed.marked.realigned.bam")
+sample <- data.frame(sample)
+write.csv(sample,file="Depth_of_coverage_Line76_DNA.csv")}
 
-#write.csv(sample,file="Depth_of_coverage_66C.csv")
+{sample <- bamcoverage("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/bam_files/Sample66.sorted.fixed.marked.realigned.bam")
+sample <- data.frame(sample)
+write.csv(sample,file="Depth_of_coverage_Line66_DNA.csv")}
+
+{sample <- bamcoverage("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/bam_files/Sample8.sorted.fixed.marked.realigned.bam")
+sample <- data.frame(sample)
+write.csv(sample,file="Depth_of_coverage_Line8_DNA.csv")}
+
+{sample <- bamcoverage("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/bam_files/11A_accepted_hits.bam")
+sample <- data.frame(sample)
+write.csv(sample,file="Depth_of_coverage_Line11_RNA.csv")}
+
 ```
 
 ``` {r DE vs total genes, echo=FALSE}

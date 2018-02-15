@@ -17,8 +17,7 @@ mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq/
 htseq-count \
   -f bam \
   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
-  -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq/${SampleName}.sam \
- /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/_tophat_out \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq/${SampleName}.sam \
  /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${BASE}_trimmed_tophat_out/accepted_hits.bam
 
 

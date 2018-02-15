@@ -18,7 +18,7 @@ htseq-count \
   -f bam \
   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq/.sam \
- /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}_trimmed_tophat_out/accepted_hits.bam
+ /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}/accepted_hits.bam
 
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt

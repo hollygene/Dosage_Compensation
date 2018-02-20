@@ -1,7 +1,7 @@
 #PBS -S /bin/bash
 #PBS -q batch
 #PBS -N htseq
-#PBS -l nodes=1:ppn=1:HIGHMEM
+#PBS -l nodes=1:ppn=4:HIGHMEM
 #PBS -l walltime=480:00:00
 #PBS -l mem=200gb
 

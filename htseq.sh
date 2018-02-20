@@ -7,7 +7,7 @@
 
 basedir="/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly"
 cd $basedir
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq/
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq_2/
 
 module load python/2.7.8
 module load htseq/0.6.1p1

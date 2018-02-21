@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #PBS -N sort_all
-#PBS -q batch
-#PBS -l nodes=1:ppn=1:AMD
-#PBS -l mem=100gb
+#PBS -q HIGHMEM
+#PBS -l nodes=1:ppn=4:AMD
+#PBS -l mem=200gb
 #PBS -l walltime=480:00:00
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae

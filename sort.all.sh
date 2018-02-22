@@ -15,7 +15,7 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat
 
 while read SampleName
 do
-time samtools sort -m 100G -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/SORT${SampleName}/${SampleName}.sorted.bam \
+time samtools sort -m 100G -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/newSort/SORT${SampleName}/${SampleName}.sorted.bam \
 -T /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/${SampleName}/accepted_hits \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/${SampleName}/accepted_hits.bam
 

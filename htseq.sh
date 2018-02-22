@@ -5,9 +5,8 @@
 #PBS -l walltime=480:00:00
 #PBS -l mem=200gb
 
-basedir="/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly"
+basedir="/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort"
 cd $basedir
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq_2/
 
 module load python/2.7.8
 module load htseq/0.6.1p1
@@ -18,8 +17,8 @@ do
 htseq-count \
   -f bam \
   -s no \
-  /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}/accepted_hits.bam \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/HTseq_2/${SampleName}.sam \
+  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/${SampleName}/${SampleName}.sorted.bam \
+-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName}.sam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/output.txt
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/sort.txt

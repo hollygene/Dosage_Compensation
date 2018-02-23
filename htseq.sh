@@ -17,12 +17,12 @@ mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/
 while read SampleName
 do
   mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName} \
-  
+
 htseq-count \
   -f bam \
   -s no \
-  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/${SampleName}/${SampleName}.sorted.bam \
+  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/SORT${SampleName}/${SampleName}.sorted.bam \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName}.sam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/sort.txt
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/samples.txt

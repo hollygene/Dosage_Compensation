@@ -16,9 +16,9 @@ mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/
 
 while read SampleName
 do
-
-htseq-count \
   mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName} \
+  
+htseq-count \
   -f bam \
   -s no \
   /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/${SampleName}/${SampleName}.sorted.bam \

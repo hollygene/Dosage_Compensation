@@ -11,10 +11,14 @@ cd $basedir
 module load python/2.7.8
 module load htseq/0.6.1p1
 
+
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/
+
 while read SampleName
 do
 
 htseq-count \
+  mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName} \
   -f bam \
   -s no \
   /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/${SampleName}/${SampleName}.sorted.bam \

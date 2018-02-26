@@ -33,7 +33,7 @@ library(rcompanion)
 ```
 
 ``` {r load in data,make matrices}
-sc_counts.old <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/Cuffnorm/genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv",header=T)
+sc_counts.old <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Final_Chrom_wide_Analyses/Cuffnorm/genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt_old.csv",header=T)
 class(sc_counts.old)
 str(sc_counts.old)
 colnames(sc_counts.old)[1] <- "chr"; colnames(sc_counts.old)[2] <- "tracking_id"
@@ -1124,6 +1124,7 @@ abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 }
 
+
 #fail shapiro test, so should probably use nonparametric
 #kruskal.chr1 <- kruskal.test(y~Line,data=chr1Data)
 #kruskal.test(y~Line,data=chr1Data)
@@ -1275,6 +1276,8 @@ abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
 }
 
+
+
 ####################
 #CHROMOSOME 6
 
@@ -1383,6 +1386,8 @@ text(x=13.7, y=1.5, "*", pos=3, cex=2, col="red")
 text(x=14, y=1.5, "*", pos=3, cex=2, col="red")
 text(x=14.3, y=1.5, "*", pos=3, cex=2, col="red")
 }
+
+t.test((log2(l108.8[,3])),mu=exp3x)
 
 
 ###############################################################################################

@@ -883,3 +883,7 @@ do
   if (NR>1) {
   if ($14=="yes") print $0 } else print $0}' ${BASE}.txt > ${BASE}.txt
 done
+
+
+###merge HTseq data into one file
+FILES=$(ls -t -v *.sam | tr '\n' ' ');awk 'NF > 1{ a[$1] = a[$1]"\t"$2} END {for( i in a ) print i a[i]}' $FILES > merged.sam

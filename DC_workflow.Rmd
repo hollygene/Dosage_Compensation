@@ -5796,8 +5796,9 @@ dev.off()}
 chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
         (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
         (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
-        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3]))),
-Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.1$tracking_id))))
+        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
+        (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77,29,50,112,115,117,123,141,152),each=(length(l001.1$tracking_id))))
 
 #data frame with only euploids, so I can do a euploid by euploid test
 chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
@@ -5834,9 +5835,9 @@ plot(TukeyHSD(aov.chr1ofInt))}
 
 
 #This code works beautifully to produce a boxplot 
-{pdf("Chrm_1.pdf")
+{pdf("Chrm_1_MA.GC.pdf")
 boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
-              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 1",las=3,ylim=c(-2,2.5))
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan","cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
@@ -5856,6 +5857,10 @@ text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
 text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
 text(x=12, y=.8, "*", pos=3, cex=2, col="red")
 text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
+
+text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
 }
 #wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 #ANOVA/NonParametric Equivalent
@@ -6034,9 +6039,13 @@ chr5Data <- data.frame(y=c((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003.5[,3
         (log2(l005.5[,3])),(log2(l006.5[,3])),(log2(l007.5[,3])),(log2(l008.5[,3])),
         (log2(l009.5[,3])),(log2(l011.5[,3])),(log2(l018.5[,3])),(log2(l021.5[,3])),
         (log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l059.5[,3])),(log2(l061.5[,3])),
-        (log2(l066.5[,3])),(log2(l069.5[,3])),(log2(l076.5[,3])),(log2(l077.5[,3]))),
-Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.5$tracking_id))))
+        (log2(l066.5[,3])),(log2(l069.5[,3])),(log2(l076.5[,3])),(log2(l077.5[,3])),(log2(l029.5[,3])),(log2(l050.5[,3])),(log2(l112.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),
+        (log2(l123.5[,3])),(log2(l141.5[,3])),(log2(l152.5[,3]))),
+Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77,29,50,112,115,117,123,141,152),each=(length(l001.5$tracking_id))))
 chr5Data$Line <-factor(chr5Data$Line)
+
+
+
 #This code works beautifully to produce a boxplot
 #want to make this chunk into a loop
 #but I can't because I want to add significance stars, which I would have to go back and do anyway, so that is pointless
@@ -6044,19 +6053,11 @@ chr5DataofInt <- data.frame(y=c((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003
         (log2(l005.5[,3])),(log2(l006.5[,3])),(log2(l009.5[,3])),(log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l069.5[,3]))),Line=rep(c(1,2,3,4,5,6,9,31,49,69),each=(length(l001.5$tracking_id))))
 chr5DataofInt$Line <-factor(chr5DataofInt$Line)
 
-{pdf("Chrm_5.pdf")
-boxplot(y~Line,data=chr5Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","deeppink1","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
-              "green","deeppink1","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 5",las=3,ylim=c(-2,2.5))
+{pdf("Chrm_5.GC.MA.pdf")
+boxplot(y~Line,data=chr5Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("darkturquoise"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
 abline(h=-1,lty=2,col="darkviolet")
-
-text(x=3.7, y=1.5, "*", pos=3, cex=2, col="red")
-text(x=4, y=1.5, "*", pos=3, cex=2, col="red")
-text(x=4.3, y=1.5, "*", pos=3, cex=2, col="red")
-text(x=13.7, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=14, y=1.7, "*", pos=3, cex=2, col="red")
-text(x=14.3, y=1.7, "*", pos=3, cex=2, col="red")
 }
 
 aov.chr5 <- aov(y~Line,data=chr5DataofInt)
@@ -6211,6 +6212,11 @@ TukeyHSD(aov.chr7)
 {pdf("Tukey.chr7.pdf")
 plot(TukeyHSD(aov.chr7))}
 
+t.test((log2(l059.7[,3])),mu=exp3x)
+t.test((log2(l061.7[,3])),mu=exp3x)
+t.test((log2(l066.7[,3])),mu=exp2.5x)
+exp2.5x <- log2(1.25)
+exp2.5x
 #fail shapiro test, so should probably use nonparametric
 kruskal.chr7 <- kruskal.test(y~Line,data=chr7Data.red)
 kruskal.test(y~Line,data=chr7Data.red)
@@ -6328,6 +6334,10 @@ TukeyHSD(aov.chr9)
 {pdf("tukey.chr9.pdf")
   plot(TukeyHSD(aov.chr9))}
 
+
+t.test((log2(l076.9[,3])),mu=exp3x)
+
+
 #fail shapiro test, so should probably use nonparametric
 kruskal.chr9 <- kruskal.test(y~Line,data=chr9Data)
 kruskal.test(y~Line,data=chr9Data)
@@ -6389,6 +6399,8 @@ resids.chr10 <- resid(aov.chr10)
 hist(resids.chr10,col="turquoise",breaks=10,xlab="Residuals.Chr.10")
 }
 
+t.test((log2(l076.10[,3])),mu=exp2.5x)
+
 
 TukeyHSD(aov.chr10)
 {pdf("tukey.chr10.pdf")
@@ -6443,6 +6455,7 @@ resids.chr11 <- resid(aov.chr11)
   pdf("Chrm11.resids.pdf")
 hist(resids.chr11,col="turquoise",breaks=10,xlab="Residuals.Chr.11")
 }
+
 
 
 TukeyHSD(aov.chr11)
@@ -6515,6 +6528,8 @@ resids.chr12 <- resid(aov.chr12)
 hist(resids.chr12,col="turquoise",breaks=10,xlab="Residuals.Chr.12")
 }
 
+t.test((log2(l018.12[,3])),mu=exp3x)
+t.test((log2(l077.12[,3])),mu=exp3x)
 
 TukeyHSD(aov.chr12)
 {pdf("tukey.chr12.pdf")
@@ -6634,6 +6649,7 @@ resids.chr14 <- resid(aov.chr14)
 hist(resids.chr14,col="turquoise",breaks=10,xlab="Residuals.Chr.14")
 }
 
+t.test((log2(l076.14[,3])),mu=exp3x)
 
 TukeyHSD(aov.chr14)
 {pdf("tukey.chr14.pdf")
@@ -6703,6 +6719,8 @@ TukeyHSD(aov.chr15)
 {pdf("tukey.chr15.pdf")
  plot(TukeyHSD(aov.chr15)) }
 
+t.test((log2(l011.15[,3])),mu=exp3x)
+
 #TukeyHSD(aov.chr9)
 #plot(TukeyHSD(aov.chr9))
 #fail shapiro test, so should probably use nonparametric
@@ -6738,6 +6756,10 @@ text(x=8, y=1.5, "*", pos=3, cex=2, col="red")
 text(x=8.3, y=1.5, "*", pos=3, cex=2, col="red")
 
 }
+
+exp4x <- log2(2)
+t.test((log2(l008.16[,3])),mu=exp4x)
+
 
 #mean((log2(l008.16[,3])))
 #average of line 8 chromosome 16 is 0.91
@@ -7188,6 +7210,10 @@ hist(resids.chr8MA,col="turquoise",breaks=10,xlab="Residuals.Chr.8MA")
 TukeyHSD(aov.chr8MA)
 {pdf("Tukey.chr8.MA.pdf")
 plot(TukeyHSD(aov.chr8MA))}
+
+t.test((log2(l152.8[,3])),mu=exp3x)
+
+
 #shapiro.test(resids.chr8MA)
 #fail shapiro test, so should probably use nonparametric
 
@@ -7242,6 +7268,9 @@ hist(resids.chr9MA,col="turquoise",breaks=10,xlab="Residuals.Chr.9MA")
 TukeyHSD(aov.chr9MA)
 {pdf("Tukey.chr9.MA.pdf")
 plot(TukeyHSD(aov.chr9MA))}
+
+t.test((log2(l029.9[,3])),mu=exp1x)
+
 #shapiro.test(resids.chr9MA)
 #fail shapiro test, so should probably use nonparametric
 
@@ -7594,6 +7623,10 @@ hist(resids.chr16MA,col="turquoise",breaks=10,xlab="Residuals.Chr.16MA")
 TukeyHSD(aov.chr16MA)
 {pdf("Tukey.chr16.MA.pdf")
 plot(TukeyHSD(aov.chr16MA))}
+
+t.test((log2(l112.16[,3])),mu=exp3x)
+
+t.test((log2(l141.16[,3])),mu=exp3x)
 #shapiro.test(resids.chr16MA)
 #fail shapiro test, so should probably use nonparametric
 
@@ -7888,6 +7921,32 @@ coeff=data.frame(coefficients(fit))
 #dev.list()
 
 ```
+
+``` {r fitness, include=TRUE}
+#read in fitness data in .txt format
+fitness <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Fitness/fitness_data_HM.csv", header=TRUE, sep=",")
+
+{ 
+  pdf("fitness.by.aneuploidy.pdf")
+  plot(data=fitness, fitness$Aneuploidy.Event, fitness$Slope.Avg.anc.on.given.plate,cex.axis=0.5,las=2,pch=19)
+  
+}
+```
+
+``` {r aneuploidy rate, include=FALSE}
+MArate.tot <- 1.04E-04
+GCrate.tot <- 1.99E-04
+
+
+GCrate.tris <- 1.95E-04
+MArate.tris <- 0.969E-04
+
+GCrate.mon <- 5.12E-06
+MArate.mon <- 6.70E-06
+
+```
+
+
 ## Including Plots
 
 You can also embed plots, for example:

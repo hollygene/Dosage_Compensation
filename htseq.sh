@@ -20,10 +20,10 @@ do
 
 htseq-count \
   -f bam \
-  /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/SORT${SampleName}/${SampleName}.sorted.bam \
+  -r pos \
 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/${SampleName}.sam \
 -i gene_id -t exon \
---additional-attr gene_name \ 
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/SORT${SampleName}/${SampleName}.sorted.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/old/Sort/HTseq/HTseq_${SampleName}.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/tophat/samples.txt

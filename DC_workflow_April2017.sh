@@ -1,4 +1,4 @@
-#Dosage Compensation Transcriptome Assembly Protocol, April 2017
+#Dosage Compensation Transcriptome Assembly Protocol,rm, April 2017
 #to log into the zcluster
 #ssh hcm14449@zcluster.rcc.uga.edu
 #password
@@ -885,5 +885,19 @@ do
 done
 
 
-###merge HTseq data into one file
-FILES=$(ls -t -v *.sam | tr '\n' ' ');awk 'NF > 1{ a[$1] = a[$1]"\t"$2} END {for( i in a ) print i a[i]}' $FILES > merged.sam
+############################################################################
+#paste all the HTseq files together
+paste -d"," HTseq_* > HTseq_All.txt
+#make it a csv file
+tr '\t' ',' <HTseq_All.txt > HTseq_All.csv
+
+#add the header
+echo -e "Gene,112A,rm,112B,rm,112C,rm,115A,rm,115B,rm,115C,rm,117A,rm,117B,rm,117C,rm,11A,rm,11B,rm,11C,rm,123A,rm,123B,rm,123C,rm,141A,rm,141B,rm,141C,rm,152A,rm,152B,rm,152C,rm,18A,rm,18B,rm,18C,rm,1A,rm,1B,rm,1C,rm,21A,rm,21B,rm,21C,rm,29A,rm,29B,rm,29C,rm,2A,rm,2B,rm,2C,rm,31A,rm,31B,rm,31C,rm,3A,rm,3B,rm,3C,rm,49A,rm,49B,rm,49C,rm,4A,rm,4B,rm,4C,rm,50A,rm,50B,rm,50C,rm,59A,rm,59B,rm,59C,rm,5A,rm,5B,rm,5C,rm,61A,rm,61B,rm,61C,rm,66A,rm,66B,rm,66C,rm,69A,rm,69B,rm,69C,rm,6A,rm,6B,rm,6C,rm,76A,rm,76B,rm,76C,rm,77A,rm,77B,rm,77C,rm,7A,rm,7B,rm,7C,rm,8A,rm,8B,rm,8C,rm,9A,rm,9B,rm,9C,rm,GC_Anc_A,rm,GC_Anc_B,rm,GC_Anc_C,rm,MA_Anc_A,rm,MA_Anc_B,rm,MA_Anc_C" | cat - HTseq_All.csv > HTseq_All_Header.csv
+
+#remove lines that are factors (i.e. at the end)
+head -7127 HTseq_All_Header.csv > HTseq_All_Header_short.csv
+
+#remove lines with "rm" because I don't need those (after the first one)
+awk -F',' '{print $1',' $2',' $4','	$6','	$8','	$10','	$12','	$14','	$16','	$18','	$20','	$22','	$24','	$26','	$28','	$30','	$32','	$34','	$36','	$38','	$40','	$42','	$44','	$46','	$48','	$50','	$52','	$54','	$56','	$58','	$60','	$62','	$64','	$66','	$68','	$70','	$72','	$74','	$76','	$78','	$80','	$82','	$84','	$86','	$88','	$90','	$92','	$94','	$96','	$98','	$100','	$102','	$104',' $106','	$108','	$110','	$112','	$114','	$116','	$118','	$120','	$122','	$124','	$126','	$128','	$130','	$132','	$134','	$136','	$138','	$140','	$142','	$144','	$146','	$148','	$150','	$152','	$154','	$156','	$158','	$160','	$162','	$164','	$166','	$168','	$170','	$172','	$174','	$176','	$178','	$180}' HTseq_All_Header_short.csv > HTseq_All_Header_short2.csv
+
+tr ' ' ',' <HTseq_All_Header_short2.csv > HTseq_All_Header_short3.csv

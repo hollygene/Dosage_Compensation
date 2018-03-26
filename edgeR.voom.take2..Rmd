@@ -1,0 +1,514 @@
+---
+title: "edgeR.voom.take2"
+author: "Holly"
+date: "3/21/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data_packaging, include=FALSE}
+files <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/Holly_Seq/",pattern = "*.txt", full.names = TRUE)
+files
+
+#load in edgeR and limma
+library(limma)
+library(edgeR)
+library(dplyr)
+
+#load in data from files using readDGE from edgeR
+#getting out just the EntrezID and read count, neglecting genelength
+x <- readDGE(files,columns=c(1,2))
+
+##After looking at MDS plots, I decided to remove one replicate of line 112 since it is an extreme outlier compared to everything else. 
+
+#check the parameters
+class(x)
+#and dimensions
+dim(x)
+
+files
+#organize sample information
+#change sample names so they are simpler
+
+samplenames1 <- c("112B","112C","115A","115B","115C","117A","117B","117C","11B","11C","123A","123B","123C","141A","141B","141C","152A","152B","152C","18","18B","18C","1A","1B","1C","21A","21C","29A","29B","29C","2A","2B","2C","31A","31B","31C","3A","3B","3C","49A","49B","49C","4A","4B","4C","50A","50B","50C","59B","59C","5A","5B","5C","61A","61B","61C","66A","66B","66C","69A","69B","69C","6A","6B","6C","76A","76B","76C","77A","77B","77C","7A","7B","7C","8A","8B","8C","9A","9B","9C","GC_Anc_A","GC_Anc_B","GC_Anc_C","MA_Anc_A","MA_Anc_B_","MA_Anc_C")
+colnames(x) <-samplenames1
+#group samples together according to experiment
+x
+line <- c("X112","X112","X115","X115","X115","X117","X117","X117","X11","X11","X123","X123","X123","X141","X141","X141","X152","X152","X152","X18","X18","X18","X1","X1","X1","X21","X21","X29","X29","X29","X2","X2","X2","X31","X31","X31","X3","X3","X3","X49","X49","X49","X4","X4","X4","X50","X50","X50","X59","X59","X5","X5","X5","X61","X61","X61","X66","X66","X66","X69","X69","X69","X6","X6","X6","X76","X76","X76","X77","X77","X77","X7","X7","X7","X8","X8","X8","X9","X9","X9","GCA","GCA","GCA","MAA","MAA","MAA")
+x$samples$line <- line
+group <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(8,2,9,8,3,15,3,35,3)))
+x$samples$group <- group
+#come back to this later
+
+ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
+x$samples$ploidy <- ploidy
+x$samples
+
+#organize the gene annotations
+#install mus.musuclus package
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("BSgenome.Scerevisiae.UCSC.sacCer3")
+#library(BSgenome.Scerevisiae.UCSC.sacCer3)
+#geneid <- rownames(x)
+#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
+#dim(genes)
+#head(genes)
+#biocLite("BSgenome.Scerevisiae.UCSC.sacCer1")
+#library(BSgenome.Scerevisiae.UCSC.sacCer1)
+#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("OrganismDbi")
+#library(OrganismDbi)
+
+source("https://bioconductor.org/biocLite.R")
+biocLite("org.Sc.sgd.db")
+library(org.Sc.sgd.db)
+org.Sc.sgd.db
+yeast <- org.Sc.sgd.db
+keytypes(yeast)
+columns(yeast)
+#genes <- select(org.Sc.sgd.db, keys=geneid, columns="TXCHR","CHRLENGTHS","ENSEMBL",keytype="GENENAME")
+
+
+biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+txdb
+txs <- transcripts(txdb)
+txs
+txby <- transcriptsBy(txdb,by="gene")
+txby
+si <- seqinfo(txdb)
+si
+txby <- transcriptsBy(txdb, by="gene")
+si <- seqinfo(txby)
+si
+
+head(seqlevels(txdb))
+seqlevelsStyle(txdb)
+seqlevelsStyle(txdb) <- "ensembl"
+head(seqlevels(txdb))
+seqlevelsStyle(txdb) <- "UCSC"
+head(seqlevels(txdb))
+#want to ignore the mitochondria
+isActiveSeq(txdb)["chrM"] <- FALSE
+head(isActiveSeq(txdb), n=18)
+#and 2 micron 
+isActiveSeq(txdb)["2micron"] <- FALSE
+head(isActiveSeq(txdb), n=18)
+
+columns(txdb)
+#want TXCHROM
+#want GENEID
+geneid <- rownames(x)
+genes <- select(txdb, keys=geneid, columns="TXCHROM","GENEID",keytype="GENEID")
+genes
+genes <- genes[!duplicated(genes$GENEID),]
+
+#data frame of gene annotations is added back to the DGEList
+x$genes <- genes
+x
+
+#need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
+#myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
+#newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#updated_myData <- subset(x, id %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#updated_myData <- subset(x, id %in% c(4064, 4065, 4066))
+#id <- rownames(x$counts)
+#myData = x[!id > 4,] # equal to myData[myData$A <= 4,]
+#x <- cbind(x$counts, id) 
+#genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#columns(genome)
+#biocLite("AnnotationHub")
+#library(AnnotationHub)
+#ah <- AnnotationHub()
+##genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#genome$chrI
+#qh <- query(ah, c("sacCer2","genes"))
+#qh
+#genes2 <- qh[[which(qh$title == "SGD Genes")]]
+#genes2
+#genes <- select(genes, keys=geneid, columns="seqnames","name",keytype="name")
+#unique(ah$dataprovider)
+#ens <- query(ah, "Ensembl")
+#ens
+#ens <- subset(ah, ah$dataprovider=="Ensembl")
+#ens
+#ens$species
+#yeast <-  query(ens, "Saccharoymces cerevisiae")
+#yeast
+#orgs <- subset(ah, ah$rdataclass == "OrgDb")
+#orgs
+#yeast <- query(orgs, "Saccharomyces cerevisiae")[[1]]
+#columns(yeast)
+#keytypes(yeast)
+#head(keys(yeast, keytype="GENENAME"))
+#head(keys(yeast, keytype="ENSEMBL"))
+#head(keys(yeast, keytype="ENSEMBLTRANS"))
+#head(keys(yeast, keytype="ALIAS"))
+#head(keys(yeast, keytype="UNIPROT"))
+#geneid <- rownames(x)
+#genes <- select(yeast, keys=geneid, columns="SGD","ENSEMBL","GENENAME",keytype="GENENAME")
+#dim(genes)
+#head(genes)
+#get rid of any duplicate genes (mapping to different chromosomes)
+#data frame of gene annotations is added back to the DGEList
+x$genes <- genes
+x
+
+#data pre-processing
+cpm <- cpm(x)
+lcpm <- cpm(x,log=TRUE)
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+table(rowSums(x$counts==0)==87)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+table(rowSums(cpm>1)>=3)
+keep.exprs <- rowSums(cpm>1)>=3
+x <- x[keep.exprs,,keep.lib.sizes=FALSE]
+dim(x)
+
+#make graphs to compare raw versus filtered data
+library(RColorBrewer)
+nsamples <- ncol(x)
+col <- brewer.pal(nsamples,"Paired")
+
+{par(mfrow=c(1,2))
+plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamples) {
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames1, text.col=col, bty="n")
+}
+{lcpm <- cpm(x, log=TRUE)
+plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
+title(main="B. Filtered Data", xlab="log-cpm")
+abline(v=0, lty=3)
+for (i in 2:nsamples) {
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames1,text.col=col,bty="n")
+}
+#normalization
+x <- calcNormFactors(x, method="TMM")
+x$samples$norm.factors
+
+#visually see the data normalized by screwing with the data artificially to make it look a lot different
+x2 <- x
+x2$samples$norm.factors <- 1
+x2$counts[,1] <- ceiling(x2$counts[,1]*0.05)
+x2$counts[,2] <- x$counts[,2]*5
+par(mfrow=c(1,2))
+{lcpm <- cpm(x2,log=TRUE)
+boxplot(lcpm,las=2,col=col,main="")
+title(main="A. Example: unnormalized data",ylab="Log-cpm")}
+x2 <- calcNormFactors(x2)
+x2$samples$norm.factors
+
+{lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm,las=2, col=col, main="")
+title(main="B. Example: normalized data", ylab="Log-cpm")}
+```
+
+```{r unsupervised_clustering_of_samples, include=FALSE}
+#make MDS plots
+lcpm <- cpm(x,log=TRUE)
+par(mfrow=c(1,2))
+col.group <- group
+levels(col.group) <- brewer.pal(nlevels(col.group), "Set1")
+col.group <- as.character(col.group)
+col.ploidy <- x$samples$ploidy
+ploidy
+length(ploidy)
+levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
+col.ploidy <- as.character(col.ploidy)
+plotMDS(lcpm, labels=group, col=col.group)
+title(main="A. Sample groups")
+
+plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
+title(main="B. Ploidy")
+
+#can also look at an interactive MDS plot using glimma
+library(Glimma)
+glMDSPlot(lcpm, labels=paste(group,ploidy,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
+```
+
+```{r differential expression analysis, include=TRUE}
+#make a design matrix
+#this is under the assumption that the data is normally distributed
+View(x$counts)
+design <- model.matrix(~0+line+ploidy+group)
+colnames(design) <- gsub("group","",colnames(design))
+design
+
+
+#make contrasts matrix
+contr.matrix <- makeContrasts(
+  X1vsGCA = lineX1-lineGCA,
+  X11vsGCA = lineX11-lineGCA,
+  X112vsMAnc = lineX112-lineMAA,
+  X115vsMAnc = lineX115-lineMAA,
+  X117vsMAnc = lineX117-lineMAA,
+  X123vsMAnc = lineX123-lineMAA,
+  X141vsMAnc= lineX141-lineMAA,
+  X152vsMAnc = lineX152-lineMAA,
+  X18vsGCA = lineX18-lineGCA,
+  X2vsGCA = lineX2-lineGCA,
+  X21vsGCA = lineX21-lineGCA,
+  X29vsMAnc = lineX29-lineMAA,
+  X3vsGCA = lineX3-lineGCA,
+  X31vsGCA = lineX31-lineGCA,
+  X4vsGCA = lineX4-lineGCA,
+  X49vsGCA = lineX49-lineGCA,
+  X5vsGCA = lineX5-lineGCA,
+  X50vsMAnc = lineX50-lineMAA,
+  X59vsGCA = lineX59-lineGCA,
+  X6vsGCA = lineX6-lineGCA,
+  X61vsGCA = lineX61-lineGCA,
+  X66vsGCA = lineX66-lineGCA,
+  X69vsGCA = lineX69-lineGCA,
+  X7vsGCA = lineX7-lineGCA,
+  X76vsGCA = lineX76-lineGCA,
+  X77vsGCA = lineX77-lineGCA,
+  X8vsGCA = lineX8-lineGCA,
+  X9vsGCA = lineX9-lineGCA,
+  GCAvsMAA = lineGCA-lineMAA,
+  levels=colnames(design)
+)
+contr.matrix
+
+#voom mean-variance trend
+v <- voom(x, design,plot=TRUE)
+v
+
+#linear models for comparisons
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit,contrasts=contr.matrix)
+#in my analysis, get rid of the eBayes part and see if it helps increase the number of DE genes
+efit <- eBayes(vfit)
+plotSA(efit)
+
+#looking at the number of DE genes
+summary(decideTests(efit))
+et <- decideTests(efit)
+
+#can use log-FC above or below certain value to make the cutoff stricter 
+#use treat for this
+#do not use
+#tfit <- treat(vfit,lfc=1)
+#dt <- decideTests(tfit)
+#summary(dt)
+
+#can find commonly DE genes (this is between line 11 and line 112)
+de.common <- which(et[,2]!=0 & et[,3]!=0)
+length(de.common)
+#7 common DE genes 
+
+
+head(efit$genes$GENENAME[de.common],n=20)
+vennDiagram(et[,2:3], circle.col=c("turquoise","salmon"))
+write.fit(efit, et, file="results11.112.txt")
+
+#looking at individual DE genes from top to bottom
+X1vsGCA <- topTable(efit, coef=1, n=Inf)
+X11vsGCA <- topTable(efit, coef=2, n=Inf)
+X112vsMAA <- topTable(efit, coef=3, n=Inf)
+X115vsMAnc  <- topTable(efit, coef=4, n=Inf)
+X117vsMAnc <- topTable(efit, coef=5, n=Inf)
+X123vsMAnc <- topTable(efit, coef=6, n=Inf)
+X141vsMAnc <- topTable(efit, coef=7, n=Inf)
+X152vsMAnc <- topTable(efit, coef=8, n=Inf)
+X18vsGCA <- topTable(efit, coef=9, n=Inf)
+X2vsGCA <- topTable(efit, coef=10, n=Inf)
+X21vsGCA <- topTable(efit, coef=11, n=Inf)
+X29vsMAnc <- topTable(efit, coef=12, n=Inf)
+X3vsGCA <- topTable(efit, coef=13, n=Inf)
+X31vsGCA <- topTable(efit, coef=14, n=Inf)
+X4vsGCA <- topTable(efit, coef=15, n=Inf)
+X49vsGCA <- topTable(efit, coef=16, n=Inf)
+X5vsGCA <- topTable(efit, coef=17, n=Inf)
+X50vsMAnc <- topTable(efit, coef=18, n=Inf)
+X59vsGCA <- topTable(efit, coef=19, n=Inf)
+X6vsGCA <- topTable(efit, coef=20, n=Inf)
+X61vsGCA <- topTable(efit, coef=21, n=Inf)
+X66vsGCA <- topTable(efit, coef=22, n=Inf)
+X69vsGCA <- topTable(efit, coef=23, n=Inf)
+X7vsGCA <- topTable(efit, coef=24, n=Inf)
+X76vsGCA <- topTable(efit, coef=25, n=Inf)
+X77vsGCA <- topTable(efit, coef=26, n=Inf)
+X8vsGCA <- topTable(efit, coef=27, n=Inf)
+X9vsGCA <- topTable(efit, coef=28, n=Inf)
+GCAvsMAA <- topTable(efit, coef=29, n=Inf)
+
+#can use TopTable for eBayes stuff
+#not sure what to use for non eBayes or Treat stuff
+head(X11vsGCA)
+head(X112vsMAA)
+
+
+##graphical representations of DE results
+#plodMD function - highlights the DE genes in a mean-variance plot
+#line 1
+{pdf("MD_line1.pdf")
+plotMD(efit, column=1, status=et[,1],main=colnames(efit)[1],xlim=c(-8,13))}
+#line 11
+{pdf ("MD_line11.pdf")
+plotMD(efit, column=2, status=et[,2],main=colnames(efit)[2],xlim=c(-8,13))}
+#line 112
+{pdf("MD_line112.pdf")
+plotMD(efit, column=3, status=et[,3],main=colnames(efit)[3],xlim=c(-8,13))}
+#line 115
+{
+pdf("MD_line115.pdf")
+plotMD(efit, column=4, status=et[,4],main=colnames(efit)[4],xlim=c(-8,13))}
+#line 117
+{pdf("MD_line117.pdf")
+plotMD(efit, column=5, status=et[,5],main=colnames(efit)[5],xlim=c(-8,13))}
+#line123
+{pdf("MD_line123.pdf")
+plotMD(efit, column=6, status=et[,6],main=colnames(efit)[6],xlim=c(-8,13))}
+#line 141
+{pdf("MD_line141.pdf")
+plotMD(efit, column=7, status=et[,7],main=colnames(efit)[7],xlim=c(-8,13))}
+#line152
+{pdf("MD_line152.pdf")
+plotMD(efit, column=8, status=et[,8],main=colnames(efit)[8],xlim=c(-8,13))}
+#line18 
+{pdf("MD_line18.pdf")
+plotMD(efit, column=9, status=et[,9],main=colnames(efit)[9],xlim=c(-8,13))}
+#line 2
+{pdf("MD_line2.pdf")
+plotMD(efit, column=10, status=et[,10],main=colnames(efit)[10],xlim=c(-8,13))}
+#line 21
+{pdf("MD_line21.pdf")
+plotMD(efit, column=11, status=et[,11],main=colnames(efit)[11],xlim=c(-8,13))}
+# line 29
+{pdf("MD_line29.pdf")
+plotMD(efit, column=12, status=et[,12],main=colnames(efit)[12],xlim=c(-8,13))}
+# line 3
+{pdf("MD_line3.pdf")
+plotMD(efit, column=13, status=et[,13],main=colnames(efit)[13],xlim=c(-8,13))}
+# line 31
+{pdf("MD_line31.pdf")
+plotMD(efit, column=14, status=et[,14],main=colnames(efit)[14],xlim=c(-8,13))}
+#line 4 
+{pdf("MD_line4.pdf")
+plotMD(efit, column=15, status=et[,15],main=colnames(efit)[15],xlim=c(-8,13))}
+#line 49
+{pdf("MD_line49.pdf")
+plotMD(efit, column=16, status=et[,16],main=colnames(efit)[16],xlim=c(-8,13))}
+#line 5 
+{pdf("MD_line5.pdf")
+plotMD(efit, column=17, status=et[,17],main=colnames(efit)[17],xlim=c(-8,13))}
+#line 50
+{pdf("MD_line50.pdf")
+plotMD(efit, column=18, status=et[,18],main=colnames(efit)[18],xlim=c(-8,13))}
+#line 59
+{pdf("MD_line59.pdf")
+plotMD(efit, column=19, status=et[,19],main=colnames(efit)[19],xlim=c(-8,13))}
+#line 6
+{pdf("MD_line6.pdf")
+plotMD(efit, column=20, status=et[,20],main=colnames(efit)[20],xlim=c(-8,13))}
+#line 61
+{pdf("MD_line61.pdf")
+plotMD(efit, column=21, status=et[,21],main=colnames(efit)[21],xlim=c(-8,13))}
+#line 66
+{pdf("MD_line66.pdf")
+plotMD(efit, column=22, status=et[,22],main=colnames(efit)[22],xlim=c(-8,13))}
+#line 69
+{pdf("MD_line69.pdf")
+plotMD(efit, column=23, status=et[,23],main=colnames(efit)[23],xlim=c(-8,13))}
+#line 7
+{pdf("MD_line7.pdf")
+plotMD(efit, column=24, status=et[,24],main=colnames(efit)[24],xlim=c(-8,13))}
+#line 76
+{pdf("MD_line76.pdf")
+plotMD(efit, column=25, status=et[,25],main=colnames(efit)[25],xlim=c(-8,13))}
+#line 77 
+{pdf("MD_line77.pdf")
+plotMD(efit, column=26, status=et[,26],main=colnames(efit)[26],xlim=c(-8,13))}
+#line 8
+{pdf("MD_line8.pdf")
+plotMD(efit, column=27, status=et[,27],main=colnames(efit)[27],xlim=c(-8,13))}
+#line 9 
+{pdf("MD_line9.pdf")
+plotMD(efit, column=28, status=et[,28],main=colnames(efit)[28],xlim=c(-8,13))}
+#GC vs MA ancestors 
+{pdf("MD_ancestors.pdf")
+plotMD(efit, column=29, status=et[,29],main=colnames(efit)[29],xlim=c(-8,13))}
+
+
+
+
+#glimma has one too
+#its interactive
+glMDPlot(efit,coef=1, status=et[,1], main=colnames(efit)[1], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=2, status=et[,2], main=colnames(efit)[2], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=3, status=et[,3], main=colnames(efit)[3], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=4, status=et[,4], main=colnames(efit)[4], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=5, status=et[,5], main=colnames(efit)[5], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=6, status=et[,6], main=colnames(efit)[6], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=7, status=et[,7], main=colnames(efit)[7], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=8, status=et[,8], main=colnames(efit)[8], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=9, status=et[,9], main=colnames(efit)[9], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=10, status=et[,10], main=colnames(efit)[10], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=11, status=et[,11], main=colnames(efit)[11], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=12, status=et[,12], main=colnames(efit)[12], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=13, status=et[,13], main=colnames(efit)[13], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=14, status=et[,14], main=colnames(efit)[14], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=15, status=et[,15], main=colnames(efit)[15], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=16, status=et[,16], main=colnames(efit)[16], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=17, status=et[,17], main=colnames(efit)[17], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=18, status=et[,18], main=colnames(efit)[18], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=19, status=et[,19], main=colnames(efit)[19], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=20, status=et[,20], main=colnames(efit)[20], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=21, status=et[,21], main=colnames(efit)[21], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=22, status=et[,22], main=colnames(efit)[22], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=23, status=et[,23], main=colnames(efit)[23], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=24, status=et[,24], main=colnames(efit)[24], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=25, status=et[,25], main=colnames(efit)[25], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=26, status=et[,26], main=colnames(efit)[26], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=27, status=et[,27], main=colnames(efit)[27], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=28, status=et[,28], main=colnames(efit)[28], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=29, status=et[,29], main=colnames(efit)[29], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+
+#can also create heatmaps
+#for certain contrasts
+library(gplots)
+X11.vs.anc.topgenes <- X11vsGCA$GENEID[1:100]
+
+i <- which(v$genes$GENEID %in% X11.vs.anc.topgenes)
+mycol <- colorpanel(1000,"blue","white","red")
+v$E[i,]
+heatmap.2(v$E[i,],scale="row",col=mycol, labRow=v$genes$GENENAME[i],density.info="none",dendrogram="column")
+par("mar")
+par(mar=c(1,1,1,1))
+
+
+
+```
+
+```{r camera and mroast to find DE genes, include=TRUE}
+ubp6 <- c("YFR010W")
+idx <- ids2indices(ubp6, X11vsGCA$GENEID,remove.empty=TRUE)
+camera(X11vsGCA, ubp6, design)
+
+
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

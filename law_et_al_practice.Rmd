@@ -1,0 +1,225 @@
+---
+title: "edgeR_practice_Law_etal_2016"
+author: "Holly"
+date: "3/21/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r data_packaging, include=FALSE}
+files <- c("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545535_10_6_5_11.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545536_9_6_5_11.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545538_purep53.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545539_JMS8-2.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545540_JMS8-3.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545541_JMS8-4.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545542_JMS8-5.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545544_JMS9-P7c.txt","/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/practice_edgeR/GSE63310_RAW/GSM1545545_JMS9-P8c.txt")
+read.delim(files[1],nrow=5)
+#load in edgeR and limma
+library(limma)
+library(edgeR)
+
+#load in data from files using readDGE from edgeR
+#getting out just the EntrezID and read count, neglecting genelength
+x <- readDGE(files,columns=c(1,3))
+#check the parameters
+class(x)
+#and dimensions
+dim(x)
+
+#organize sample information
+#change sample names so they are simpler
+samplenames <- substring(colnames(x), 12, nchar(colnames(x)))
+samplenames
+samplenames1 <- c("10_6_5_11","9_6_5_11","purep53","JMS8-2","JMS8-3","JMS8-4","JMS8-5","JMS9-P7c","JMS9-P8c")
+colnames(x) <-samplenames1
+#group samples together according to experiment
+group <- as.factor(c("LP","ML","Basal","Basal","ML","LP","Basal","ML","LP"))
+x$samples$group <- group
+lane <- as.factor(rep(c("L004","L006","L008"),c(3,4,2)))
+x$samples$lane <- lane
+x$samples
+
+#organize the gene annotations
+#install mus.musuclus package
+source("https://bioconductor.org/biocLite.R")
+biocLite("Mus.musculus")
+
+library(Mus.musculus)
+#load in AnnotationHub
+biocLite("AnnotationHub")
+geneid <- rownames(x)
+genes <- select(Mus.musculus, keys=geneid, columns="SYMBOL","TXCHROM",keytype="ENTREZID")
+dim(genes)
+head(genes)
+#get rid of any duplicate genes (mapping to different chromosomes)
+genes <- genes[!duplicated(genes$ENTREZID),]
+
+#data frame of gene annotations is added back to the DGEList
+x$genes <- genes
+x
+
+#data pre-processing
+cpm <- cpm(x)
+lcpm <- cpm(x,log=TRUE)
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+table(rowSums(x$counts==0)==9)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+keep.exprs <- rowSums(cpm>1)>=3
+x <- x[keep.exprs,,keep.lib.sizes=FALSE]
+dim(x)
+
+#make graphs to compare raw versus filtered data
+library(RColorBrewer)
+nsamples <- ncol(x)
+col <- brewer.pal(nsamples,"Paired")
+par(mfrow=c(1,2))
+plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamples) {
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames, text.col=col, bty="n")
+lcpm <- cpm(x, log=TRUE)
+plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
+title(main="B. Filtered Data", xlab="log-cpm")
+abline(v=0, lty=3)
+for (i in 2:nsamples) {
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames,text.col=col,bty="n")
+
+#normalization
+x <- calcNormFactors(x, method="TMM")
+x$samples$norm.factors
+
+#visually see the data normalized by screwing with the data artificially to make it look a lot different
+x2 <- x
+x2$samples$norm.factors <- 1
+x2$counts[,1] <- ceiling(x2$counts[,1]*0.05)
+x2$counts[,2] <- x$counts[,2]*5
+par(mfrow=c(1,2))
+lcpm <- cpm(x2,log=TRUE)
+boxplot(lcpm,las=2,col=col,main="")
+title(main="A. Example: unnormalized data",ylab="Log-cpm")
+x2 <- calcNormFactors(x2)
+x2$samples$norm.factors
+
+lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm,las=2, col=col, main="")
+title(main="B. Example: normalized data", ylab="Log-cpm")
+```
+
+```{r unsupervised_clustering_of_samples, include=FALSE}
+#make MDS plots
+lcpm <- cpm(x,log=TRUE)
+par(mfrow=c(1,2))
+col.group <- group
+levels(col.group) <- brewer.pal(nlevels(col.group), "Set1")
+col.group <- as.character(col.group)
+col.lane <- lane
+levels(col.lane) <- brewer.pal(nlevels(col.lane),"Set2")
+col.lane <- as.character(col.lane)
+plotMDS(lcpm, labels=group, col=col.group)
+title(main="A. Sample groups")
+
+plotMDS(lcpm, labels=lane, col=col.lane, dim=c(3,4))
+title(main="B. Sequencing lanes")
+
+
+#can also look at an interactive MDS plot using glimma
+library(Glimma)
+glMDSPlot(lcpm, labels=paste(group,lane,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
+```
+
+```{r differential expression analysis, include=TRUE}
+#make a design matrix
+#this is under the assumption that the data is normally distributed
+design <- model.matrix(~0+group+lane)
+colnames(design) <- gsub("group","",colnames(design))
+design
+
+#make contrasts matrix
+contr.matrix <- makeContrasts(
+  BasalvsLP = Basal-LP,
+  BasalvsML = Basal-ML,
+  LPvsML = LP - ML,
+  levels=colnames(design)
+)
+contr.matrix
+
+#voom mean-variance trend
+v <- voom(x, design,plot=TRUE)
+v
+
+#linear models for comparisons
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit,contrasts=contr.matrix)
+#in my analysis, get rid of the eBayes part and see if it helps increase the number of DE genes
+efit <- eBayes(vfit)
+plotSA(efit)
+
+#looking at the number of DE genes
+summary(decideTests(efit))
+
+#can use log-FC above or below certain value to make the cutoff stricter 
+#use treat for this
+tfit <- treat(vfit,lfc=1)
+dt <- decideTests(tfit)
+summary(dt)
+
+#can find commonly DE genes
+de.common <- which(dt[,1]!=0 & dt[,2]!=0)
+length(de.common)
+
+head(tfit$genes$SYMBOL[de.common],n=20)
+vennDiagram(dt[,1:2], circle.col=c("turquoise","salmon"))
+write.fit(tfit, dt, file="results.txt")
+
+#looking at individual DE genes from top to bottom
+basal.vs.lp <- topTreat(tfit, coef=1, n=Inf)
+#can use TopTable for eBayes stuff
+#not sure what to use for non eBayes or Treat stuff
+basal.vs.ml <- topTreat(tfit, coef=2, n=Inf)
+head(basal.vs.lp)
+head(basal.vs.ml)
+
+
+##graphical representations of DE results
+#plodMD function - highlights the DE genes in a mean-variance plot
+plotMD(tfit, column=1, status=dt[,1],main=colnames(tfit)[1],xlim=c(-8,13))
+
+#glimma has one too
+#its interactive
+glMDPlot(tfit,coef=1, status=dt, main=colnames(tfit)[1], id.column="ENTREZID", counts=x$counts, groups=group, launch=TRUE)
+
+#can also create heatmaps
+#for certain contrasts
+library(gplots)
+basal.vs.lp.topgenes <- basal.vs.lp$ENTREZID[1:100]
+i <- which(v$genes$ENTREZID %in% basal.vs.lp.topgenes)
+mycol <- colorpanel(1000,"blue","white","red")
+heatmap.2(v$E[i,],scale="row",col=mycol, labRow=v$genes$SYMBOL[i],density.info="none",dendrogram="column")
+par("mar")
+par(mar=c(1,1,1,1))
+
+
+
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

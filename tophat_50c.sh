@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N 50C
+#PBS -N tophat_allMA
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=96:00:00
@@ -10,8 +10,16 @@
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_new/fastq
 module load tophat/2.1.1
 
-time  tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat/Holly_50C_S18_R1_001_trimmed_tophat_out \
+for file in ./*.fq
+
+do
+
+FBASE=$(basename $file .fq)
+BASE=${FBASE%.fq}
+tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/${BASE}_tophat_out \
 -i 10 -I 1000 \
 --transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./Holly_50C_S18_R1_001_trimmed.fq
+./${BASE}.fq
+
+done

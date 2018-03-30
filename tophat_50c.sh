@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N tophat_allMA
+#PBS -N tophat_allMAand66AGC
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=96:00:00
@@ -23,3 +23,9 @@ tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly
 ./${BASE}.fq
 
 done
+
+tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/Holly_GC_66_S12_R1_001_trimmed_tophat_out \
+-i 10 -I 1000 \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/Holly_GC_66_S12_R1_001_trimmed.fq

@@ -1,31 +1,36 @@
 #!/bin/bash
-#PBS -N tophat_allMAand66AGC
+#PBS -N tophat_missing
 #PBS -q batch
 #PBS -l nodes=1:ppn=1:HIGHMEM
 #PBS -l walltime=96:00:00
-#PBS -l pmem=100gb
+#PBS -l pmem=200gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/MA_new/fastq
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/
 module load tophat/2.1.1
 
-for file in ./*.fq
-
-do
-
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/${BASE}_tophat_out \
+tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/Holly_MA_Anc_S5_R1_001_trimmed \
 -i 10 -I 1000 \
 --transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-./${BASE}.fq
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/Holly_MA_Anc_S5_R1_001_trimmed.fq
 
-done
 
-tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/Holly_GC_66_S12_R1_001_trimmed_tophat_out \
+tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/Holly_MA_Anc_B_S1_R1_001_trimmed \
 -i 10 -I 1000 \
 --transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/Holly_GC_66_S12_R1_001_trimmed.fq
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/Holly_MA_Anc_B_S1_R1_001_trimmed.fq
+
+tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/Holly_50C_S18_R1_001_trimmed \
+-i 10 -I 1000 \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/Holly_50C_S18_R1_001_trimmed.fq
+
+tophat -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat/SC006_raw_trimmed \
+-i 10 -I 1000 \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/SC006_raw_trimmed.fq

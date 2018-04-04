@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r data_packaging, include=FALSE}
-files <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/Holly_Seq/",pattern = "*.txt", full.names = TRUE)
+files <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18",pattern = "*.txt", full.names = TRUE)
 files
 
 #load in edgeR and limma
@@ -33,21 +33,25 @@ files
 #organize sample information
 #change sample names so they are simpler
 
-samplenames1 <- c("112B","112C","115B","115C","117B","117C","11B","11C","123B","123C","141B","141C","152B","152C","18B","18C","1B","1C","21B","21C","29B","29C","G2A","G2B","G2C","31B","31C","G3A","G3B","G3C","49B","49C","G4B","G4C","50B","59B","59C","G5A","G5B","G5C","61B","61C","66C","69B","69C","G6A","G6B","G6C","76B","76C","77B","77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","G1A","59A","66A","69A","76A","77A","GCAncA","GCAncB","GCAncC","66B","11A","18A","21A","31A","GC4A","49A","61A","GC7A","GC8A","11R","18R","21R","31R","GC4R","49R","61R","GC7R","GC8R","MA_Anc_CR","MA1A","MA1B","MA1C","MA2A","MA2B","MA2C","MA3A","MA3B","MA3C","MA4A","MA4B","MA4C","MA5A","MA5B","MA5C","MA6A","MA6B","MA6C","MA7A","MA7B","MA7C","MA8A","MA8B","MA8C","MA9A","MA9B","MA9C","MA11A","MA11B","MA11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAAncA","OMAAncB","OMAAncC")
+samplenames1 <- c("M112B","M112C","M115B","M115C","M117B","M117C","G11B","G11C","M123B","M123C","M141B","M141C","M152B","M152C","G18B","G18C","G1B","G1C","G11A","G21C","M29B","M29C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","M50B","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","66B","18A","21A","31A","G4A","49A","61A","G7A","G8A","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
 length(samplenames1)
 colnames(x) <-samplenames1
 #group samples together according to experiment
 x
-line <- c("M112","M112","M115","M115","M117","M117","G11","G11","M123","M123","M141","M141","M152","M152","G18","G18","G1","G1","G21","G21","M29","M29","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","M50","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G8","G9","G9","G9","G1","G59","G66","G69","G76","G77","GA","GA","GA","G66","G11","G18","G21","G31","G4","G49","G61","G7","G8","G11","G18","G21","G31","G4","G49","G61","G7","G8","MAA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAO","MAO","MAO")
-length(line)
-x$samples$line <- line
-group <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(8,2,9,8,3,15,3,35,3)))
+group <- factor(c("M112","M112","M115","M115","M117","M117","G11","G11","M123","M123","M141","M141","M152","M152","G18","G18","G1","G1","G11","G21","M29","M29","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","M50","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G9","G9","G9","GA","GA","G66","G11","G18","G21","G31","G4","G49","G61","G7","G8","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","OMA","OMA","OMA"))
+length(group)
 x$samples$group <- group
+exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(6,2,6,6,2,12,1,36,49)))
+x$samples$exp <- exp
 #come back to this later
 
-ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
-x$samples$ploidy <- ploidy
-x$samples
+run <- as.factor(rep(c(1,2), c(71,49)))
+x$samples$run <- run
+
+#ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
+#x$samples$ploidy <- ploidy
+#x$samples
+
 
 #organize the gene annotations
 #install mus.musuclus package
@@ -65,8 +69,8 @@ x$samples
 #biocLite("OrganismDbi")
 #library(OrganismDbi)
 
-source("https://bioconductor.org/biocLite.R")
-biocLite("org.Sc.sgd.db")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("org.Sc.sgd.db")
 library(org.Sc.sgd.db)
 org.Sc.sgd.db
 yeast <- org.Sc.sgd.db
@@ -75,7 +79,7 @@ columns(yeast)
 #genes <- select(org.Sc.sgd.db, keys=geneid, columns="TXCHR","CHRLENGTHS","ENSEMBL",keytype="GENENAME")
 
 
-biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
+#biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
 library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
 txdb
@@ -185,8 +189,10 @@ for(i in 2:nsamples) {
   den <- density(lcpm[,i])
   lines(den$x,den$y,col=col[i],lwd=2)
 }
+
 legend("topright",samplenames1, text.col=col, bty="n")
 }
+
 {lcpm <- cpm(x, log=TRUE)
 plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
@@ -225,62 +231,183 @@ par(mfrow=c(1,2))
 col.group <- group
 levels(col.group) <- brewer.pal(nlevels(col.group), "Set1")
 col.group <- as.character(col.group)
-col.ploidy <- x$samples$ploidy
-ploidy
-length(ploidy)
-levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
-col.ploidy <- as.character(col.ploidy)
+col.run <- run
+levels(col.run) <- brewer.pal(nlevels(col.run), "Set2")
+col.run <- as.character(col.run)
+#col.ploidy <- x$samples$ploidy
+#ploidy
+#length(ploidy)
+#levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
+#col.ploidy <- as.character(col.ploidy)
 plotMDS(lcpm, labels=group, col=col.group)
 title(main="A. Sample groups")
 
-plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
-title(main="B. Ploidy")
+plotMDS(lcpm, labels=run, col=col.run)
+title(main="B. Sequencing Run")
+
+#plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
+#title(main="B. Ploidy")
 
 #can also look at an interactive MDS plot using glimma
 library(Glimma)
-glMDSPlot(lcpm, labels=paste(group,ploidy,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
+glMDSPlot(lcpm, labels=paste(group,run,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
+```
+
+```{r edgeR exact tests, include = TRUE}
+# all of these are the line compared to its respective ancestor
+levels(x$samples$group)
+#estimate dispersion
+design <- model.matrix(~group)
+design
+x <- estimateDisp(x, design)
+
+etG1 <- exactTest(x, pair= c("G1","GA"),dispersion="trended")
+topTags(etG1, adjust.method="BH")
+etG11 <- exactTest(x, pair= c("G11","GA"),dispersion="trended")
+topTags(etG11, adjust.method="BH")
+etM112 <- exactTest(x, pair= c("M112","MA"),dispersion="trended")
+topTags(etM112, adjust.method="BH")
+etM115 <- exactTest(x, pair= c("M115","MA"),dispersion="trended")
+topTags(etM115, adjust.method="BH")
+etM117 <- exactTest(x, pair= c("M117","MA"),dispersion="trended")
+topTags(etM117, adjust.method="BH")
+etM123 <- exactTest(x, pair= c("M123","MA"),dispersion="trended")
+topTags(etM123, adjust.method="BH")
+etM141 <- exactTest(x, pair= c("M141","MA"),dispersion="trended")
+topTags(etM141, adjust.method="BH")
+etM152 <- exactTest(x, pair= c("M152","MA"),dispersion="trended")
+topTags(etM152, adjust.method="BH")
+etG18 <- exactTest(x, pair= c("G18","GA"),dispersion="trended")
+topTags(etG18, adjust.method="BH")
+etG2 <- exactTest(x, pair= c("G2","GA"),dispersion="trended")
+topTags(etG2, adjust.method="BH")
+etG21 <- exactTest(x, pair= c("G21","GA"),dispersion="trended")
+topTags(etG21, adjust.method="BH")
+etM29 <- exactTest(x, pair= c("M29","MA"),dispersion="trended")
+topTags(etM29, adjust.method="BH")
+etG3 <- exactTest(x, pair= c("G3","GA"),dispersion="trended")
+topTags(etG3, adjust.method="BH")
+etG31 <- exactTest(x, pair= c("G31","GA"),dispersion="trended")
+topTags(etG31, adjust.method="BH")
+etG4 <- exactTest(x, pair= c("G4","GA"),dispersion="trended")
+topTags(etG4, adjust.method="BH")
+etG49 <- exactTest(x, pair= c("G49","GA"),dispersion="trended")
+topTags(etG49, adjust.method="BH")
+etG5 <- exactTest(x, pair= c("G5","GA"),dispersion="trended")
+topTags(etG5, adjust.method="BH")
+etM50 <- exactTest(x, pair= c("M50","MA"),dispersion="trended")
+topTags(etM50, adjust.method="BH")
+etG59 <- exactTest(x, pair= c("G59","GA"),dispersion="trended")
+topTags(etG59, adjust.method="BH")
+etG6 <- exactTest(x, pair= c("G6","GA"),dispersion="trended")
+topTags(etG6, adjust.method="BH")
+etG61 <- exactTest(x, pair= c("G61","GA"),dispersion="trended")
+topTags(etG61, adjust.method="BH")
+etG66 <- exactTest(x, pair= c("G66","GA"),dispersion="trended")
+topTags(etG66, adjust.method="BH")
+etG69 <- exactTest(x, pair= c("G69","GA"),dispersion="trended")
+topTags(etG69, adjust.method="BH")
+etG7 <- exactTest(x, pair= c("G7","GA"),dispersion="trended")
+topTags(etG7, adjust.method="BH")
+etG76 <- exactTest(x, pair= c("G76","GA"),dispersion="trended")
+topTags(etG76, adjust.method="BH")
+etG77 <- exactTest(x, pair= c("G77","GA"),dispersion="trended")
+topTags(etG77, adjust.method="BH")
+etG8 <- exactTest(x, pair= c("G8","GA"),dispersion="trended")
+topTags(etG8, adjust.method="BH")
+etG9 <- exactTest(x, pair= c("G9","GA"),dispersion="trended")
+topTags(etG9, adjust.method="BH")
+etGMA <- exactTest(x, pair= c("GA","MA"),dispersion="trended")
+topTags(etGMA, adjust.method="BH")
+etM1 <- exactTest(x, pair= c("M1","OMA"),dispersion="trended")
+topTags(etM1, adjust.method="BH")
+etM2 <- exactTest(x, pair= c("M2","OMA"),dispersion="trended")
+topTags(etM2, adjust.method="BH")
+etM3 <- exactTest(x, pair= c("M3","OMA"),dispersion="trended")
+topTags(etM3, adjust.method="BH")
+etM4 <- exactTest(x, pair= c("M4","OMA"),dispersion="trended")
+topTags(etM4, adjust.method="BH")
+etM5 <- exactTest(x, pair= c("M5","OMA"),dispersion="trended")
+topTags(etM5, adjust.method="BH")
+etM6 <- exactTest(x, pair= c("M6","OMA"),dispersion="trended")
+topTags(etM6, adjust.method="BH")
+etM7 <- exactTest(x, pair= c("M7","OMA"),dispersion="trended")
+topTags(etM7, adjust.method="BH")
+etM8 <- exactTest(x, pair= c("M8","OMA"),dispersion="trended")
+topTags(etM8, adjust.method="BH")
+etM9 <- exactTest(x, pair= c("M9","OMA"),dispersion="trended")
+topTags(etM9, adjust.method="BH")
+etM11 <- exactTest(x, pair= c("M11","OMA"),dispersion="trended")
+topTags(etM11, adjust.method="BH")
+etM15 <- exactTest(x, pair= c("M15","OMA"),dispersion="trended")
+topTags(etM15, adjust.method="BH")
+etM28 <- exactTest(x, pair= c("M28","OMA"),dispersion="trended")
+topTags(etM28, adjust.method="BH")
+etM88 <- exactTest(x, pair= c("M88","OMA"),dispersion="trended")
+topTags(etM88, adjust.method="BH")
+etM108 <- exactTest(x, pair= c("M108","OMA"),dispersion="trended")
+topTags(etM108, adjust.method="BH")
+etM119 <- exactTest(x, pair= c("M119","OMA"),dispersion="trended")
+topTags(etM119, adjust.method="BH")
+
 ```
 
 ```{r differential expression analysis, include=TRUE}
 #make a design matrix
 #this is under the assumption that the data is normally distributed
+#maybe just use the modeling for when I want to compare lines with same aneuploidies from different batches (to eliminate batch effects?) 
+#although maybe I do want "batch effects" because they're really not batch effects they're biological because they have different heterozygosity levels? 
 View(x$counts)
-design <- model.matrix(~0+line+ploidy+group)
-colnames(design) <- gsub("group","",colnames(design))
+design <- model.matrix(~0+line)
 design
 
-
+x
 #make contrasts matrix
 contr.matrix <- makeContrasts(
-  X1vsGCA = lineX1-lineGCA,
-  X11vsGCA = lineX11-lineGCA,
-  X112vsMAnc = lineX112-lineMAA,
-  X115vsMAnc = lineX115-lineMAA,
-  X117vsMAnc = lineX117-lineMAA,
-  X123vsMAnc = lineX123-lineMAA,
-  X141vsMAnc= lineX141-lineMAA,
-  X152vsMAnc = lineX152-lineMAA,
-  X18vsGCA = lineX18-lineGCA,
-  X2vsGCA = lineX2-lineGCA,
-  X21vsGCA = lineX21-lineGCA,
-  X29vsMAnc = lineX29-lineMAA,
-  X3vsGCA = lineX3-lineGCA,
-  X31vsGCA = lineX31-lineGCA,
-  X4vsGCA = lineX4-lineGCA,
-  X49vsGCA = lineX49-lineGCA,
-  X5vsGCA = lineX5-lineGCA,
-  X50vsMAnc = lineX50-lineMAA,
-  X59vsGCA = lineX59-lineGCA,
-  X6vsGCA = lineX6-lineGCA,
-  X61vsGCA = lineX61-lineGCA,
-  X66vsGCA = lineX66-lineGCA,
-  X69vsGCA = lineX69-lineGCA,
-  X7vsGCA = lineX7-lineGCA,
-  X76vsGCA = lineX76-lineGCA,
-  X77vsGCA = lineX77-lineGCA,
-  X8vsGCA = lineX8-lineGCA,
-  X9vsGCA = lineX9-lineGCA,
-  GCAvsMAA = lineGCA-lineMAA,
+  X1vsGCA = lineG1-lineGA,
+  X11vsGCA = lineG11-lineGA,
+  X112vsMAnc = lineM112-lineMA,
+  X115vsMAnc = lineM115-lineMA,
+  X117vsMAnc = lineM117-lineMA,
+  X123vsMAnc = lineM123-lineMA,
+  X141vsMAnc= lineM141-lineMA,
+  X152vsMAnc = lineM152-lineMA,
+  X18vsGCA = lineG18-lineGA,
+  X2vsGCA = lineG2-lineGA,
+  X21vsGCA = lineG21-lineGA,
+  X29vsMAnc = lineM29-lineMA,
+  X3vsGCA = lineG3-lineGA,
+  X31vsGCA = lineG31-lineGA,
+  X4vsGCA = lineG4-lineGA,
+  X49vsGCA = lineG49-lineGA,
+  X5vsGCA = lineG5-lineGA,
+  X50vsMAnc = lineM50-lineMA,
+  X59vsGCA = lineG59-lineGA,
+  X6vsGCA = lineG6-lineGA,
+  X61vsGCA = lineG61-lineGA,
+  X66vsGCA = lineG66-lineGA,
+  X69vsGCA = lineG69-lineGA,
+  X7vsGCA = lineG7-lineGA,
+  X76vsGCA = lineG76-lineGA,
+  X77vsGCA = lineG77-lineGA,
+  X8vsGCA = lineG8-lineGA,
+  X9vsGCA = lineG9-lineGA,
+  GCAvsMAA = lineGA-lineMA,
+  M1vsMA = lineM1-lineOMA,
+  M2vsMA = lineM2-lineOMA,
+  M3vsMA = lineM3-lineOMA,
+  M4vsMA = lineM4-lineOMA,
+  M5vsMA = lineM5-lineOMA,
+  M6vsMA = lineM6-lineOMA,
+  M7vsMA = lineM7-lineOMA,
+  M8vsMA = lineM8-lineOMA,
+  M9vsMA = lineM9-lineOMA,
+  M11vsMA = lineM11-lineOMA,
+  M15vsMA = lineM15-lineOMA,
+  M28vsMA = lineM28-lineOMA,
+  M88vsMA = lineM88-lineOMA,
+  M108vsMA = lineM108-lineOMA,
+  M119vsMA = lineM119-lineOMA,
   levels=colnames(design)
 )
 contr.matrix

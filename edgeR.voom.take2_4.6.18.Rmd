@@ -44,15 +44,10 @@ length(group)
 x$samples$group <- group
 exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(6,2,6,6,2,12,1,35,49)))
 x$samples$exp <- exp
-
 #come back to this later
-
-#run <- as.factor(rep(c(1,2), c(70,49)))
-#x$samples$run <- run
 
 run <- as.factor(rep(c(1,2), c(70,49)))
 x$samples$run <- run
-
 
 #ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
 #x$samples$ploidy <- ploidy
@@ -203,6 +198,7 @@ lcpm <- cpm(x, log=TRUE)
 plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
 abline(v=0, lty=3)
+
 for (i in 2:nsamples) {
   den <- density(lcpm[,i])
   lines(den$x,den$y,col=col[i],lwd=2)
@@ -239,14 +235,15 @@ title(main="B. Example: normalized data", ylab="Log-cpm")
 lcpm <- cpm(x,log=TRUE)
 par(mfrow=c(1,2))
 col.group <- group
-col.group <- as.character(col.group)
-colorRampPalette(brewer.pal(nlevels(col.group))(14)
-levels(col.group) <- brewer.pal(nlevels(col.group), "Reds")
+levels(col.group) <- brewer.pal(nlevels(col.group), "Set2")
 col.group <- as.character(col.group)
 
 col.run <- run
 levels(col.run) <- brewer.pal(nlevels(col.run), "Blues")
 col.run <- as.character(col.run)
+
+
+
 #col.ploidy <- x$samples$ploidy
 #ploidy
 #length(ploidy)
@@ -264,7 +261,6 @@ title(main="B. Sequencing Run")
 #can also look at an interactive MDS plot using glimma
 library(Glimma)
 glMDSPlot(lcpm, labels=paste(group,run,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
-glMDSPlot(lcpm, labels=paste(run,exp,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
 ```
 
 ```{r edgeR exact tests, include = TRUE}

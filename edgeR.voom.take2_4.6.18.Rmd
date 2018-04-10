@@ -41,6 +41,8 @@ x
 View(x$samples)
 group <- as.factor(c("M112","M112","M115","M115","M117","M117","G11","G11","M123","M123","M141","M141","M152","M152","G18","G18","G1","G1","G11","G21","M29","M29","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","M50","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G9","G9","G9","GA","GA","G66","G18","G21","G31","G4","G49","G61","G7","G8","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","OMA","OMA","OMA"))
 length(group)
+levels(group)
+nlevels(group)
 x$samples$group <- group
 exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(6,2,6,6,2,12,1,35,49)))
 x$samples$exp <- exp
@@ -235,8 +237,13 @@ title(main="B. Example: normalized data", ylab="Log-cpm")
 lcpm <- cpm(x,log=TRUE)
 par(mfrow=c(1,2))
 col.group <- group
-levels(col.group) <- brewer.pal(nlevels(col.group), "Set2")
+levels(col.group)
+nlevels(col.group)
+colors = colorRampPalette(brewer.pal(8,"Set2"))(46)
+levels(col.group) <- colors
+col.group
 col.group <- as.character(col.group)
+
 
 col.run <- run
 levels(col.run) <- brewer.pal(nlevels(col.run), "Blues")
@@ -249,8 +256,10 @@ col.run <- as.character(col.run)
 #length(ploidy)
 #levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
 #col.ploidy <- as.character(col.ploidy)
-plotMDS(lcpm, labels=group, col=col.group)
-title(main="A. Sample groups")
+{
+  pdf(file="sample_groups.pdf")
+  plotMDS(lcpm, labels=group, col=col.group)
+title(main="A. Sample groups")}
 
 plotMDS(lcpm, labels=run, col=col.run)
 title(main="B. Sequencing Run")

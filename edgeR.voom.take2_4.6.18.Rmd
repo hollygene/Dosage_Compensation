@@ -409,66 +409,51 @@ glMDSPlot(lcpmMA, labels=paste(group.MA,run,sep="_"),groups=x.MA$samples[,c(2,5)
 
 ```{r edgeR exact tests, include = TRUE}
 # all of these are the line compared to its respective ancestor
-levels(x2$samples$group)
+#GC lines
+levels(x.GC$samples$group)
 #estimate dispersion
-design <- model.matrix(~group)
-design
+designGC <- model.matrix(~0+group.GC)
+designGC
 #default
-x2 <- estimateDisp(x,verbose=TRUE)
+x.GC <- estimateDisp(x.GC,verbose=TRUE,design = designGC)
 #setting prior manually 
-x <- estimateDisp(x,prior.df=20)
-
+#x <- estimateDisp(x,prior.df=20)
 #x <- estimateCommonDisp(x2, prior.df=20)
 #x <- estimateTagwiseDisp(x2, prior.df=20)
-
 #calculate SD of each gene among replicates
+levels(x.MA$samples$group)
+#estimate dispersion
+designMA <- model.matrix(~0+group.MA)
+designMA
+#default
+x.MA <- estimateDisp(x.MA,verbose=TRUE,design = designMA)
 
+lines.GC <- as.factor(c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6",
+                        "G76","G77","G7","G8","G9","GA"))
 
+lines.MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","MA","M1","M2","M3","M4","M5",
+                        "M6","M7","M8","M9","M11","M15","M28","M88","M108","M119","MAA"))
 
-etG1 <- exactTest(x, pair= c("G1","GA"),dispersion="tagwise")
-View(topTags(etG1,adjust.method="fdr",n=4000,p.value=0.01))
-G1 <- (etG1$table)
-write.csv(G1, file = "G1_table_trended.csv")
-etG11 <- exactTest(x, pair= c("G11","GA"),dispersion="tagwise")
-topTags(etG11, adjust.method="BH")
-etG18 <- exactTest(x, pair= c("G18","GA"),dispersion="tagwise")
-topTags(etG18, adjust.method="BH")
-etG2 <- exactTest(x, pair= c("G2","GA"),dispersion="tagwise")
-topTags(etG2, adjust.method="BH")
-etG21 <- exactTest(x, pair= c("G21","GA"),dispersion="tagwise")
-topTags(etG21, adjust.method="BH")
-etG3 <- exactTest(x, pair= c("G3","GA"),dispersion="tagwise")
-topTags(etG3, adjust.method="BH")
-etG31 <- exactTest(x, pair= c("G31","GA"),dispersion="tagwise")
-topTags(etG31, adjust.method="fdr")
-etG4 <- exactTest(x, pair= c("G4","GA"),dispersion="tagwise")
-topTags(etG4, adjust.method="BH")
-etG49 <- exactTest(x, pair= c("G49","GA"),dispersion="tagwise")
-topTags(etG49, adjust.method="BH")
-etG5 <- exactTest(x, pair= c("G5","GA"),dispersion="tagwise")
-topTags(etG5, adjust.method="BH")
-etG59 <- exactTest(x, pair= c("G59","GA"),dispersion="tagwise")
-topTags(etG59, adjust.method="BH")
-etG6 <- exactTest(x, pair= c("G6","GA"),dispersion="tagwise")
-topTags(etG6, adjust.method="BH")
-etG61 <- exactTest(x, pair= c("G61","GA"),dispersion="tagwise")
-topTags(etG61, adjust.method="BH")
-etG66 <- exactTest(x, pair= c("G66","GA"),dispersion="tagwise")
-topTags(etG66, adjust.method="BH")
-etG69 <- exactTest(x, pair= c("G69","GA"),dispersion="tagwise")
-topTags(etG69, adjust.method="BH")
-etG7 <- exactTest(x, pair= c("G7","GA"),dispersion="tagwise")
-topTags(etG7, adjust.method="BH")
-etG76 <- exactTest(x, pair= c("G76","GA"),dispersion="tagwise")
-topTags(etG76, adjust.method="BH")
-etG77 <- exactTest(x, pair= c("G77","GA"),dispersion="tagwise")
-topTags(etG77, adjust.method="BH")
-etG8 <- exactTest(x, pair= c("G8","GA"),dispersion="tagwise")
-topTags(etG8, adjust.method="BH")
-etG9 <- exactTest(x, pair= c("G9","GA"),dispersion="tagwise")
-topTags(etG9, adjust.method="BH")
+for(i in 1:length(hybrid)){
+    eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
+}
+i=1
+x.GC$samples$group 
+groups.GC <- x.GC$samples$group
+groups.GC
+lines.GC <- levels(groups.GC)
+lines.GC
+
+for (i in 1:length(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+
+#as.character(group.GC[i]:group.GC[]))
 #G1,2,3,5,6,9, are euploid
 #also 31, 69 
+
 #commonly DE genes in aneuploid lines (for whatever chromosome), not including genes that are DE in euploid lines 
 common.de.aneu <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
 length(common.de.aneu)

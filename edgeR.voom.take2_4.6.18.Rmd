@@ -9,14 +9,21 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r load in packages, include=FALSE}
+#load in edgeR and limma
+library(limma)
+library(Glimma)
+library(edgeR)
+library(dplyr)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+library(RColorBrewer)
+library(gplots)
+```
+
+
 ```{r data_packaging, include=FALSE}
 files <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18",pattern = "*.txt", full.names = TRUE)
 files
-
-#load in edgeR and limma
-library(limma)
-library(edgeR)
-library(dplyr)
 
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
@@ -47,15 +54,11 @@ x$samples$group <- group
 exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(6,2,6,6,2,12,1,35,49)))
 x$samples$exp <- exp
 #come back to this later
-
 run <- as.factor(rep(c(1,2), c(70,49)))
 x$samples$run <- run
-
 #ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
 #x$samples$ploidy <- ploidy
-#x$samples
-
-
+x$samples
 #organize the gene annotations
 #install mus.musuclus package
 #source("https://bioconductor.org/biocLite.R")
@@ -71,37 +74,34 @@ x$samples$run <- run
 #source("https://bioconductor.org/biocLite.R")
 #biocLite("OrganismDbi")
 #library(OrganismDbi)
-
 #source("https://bioconductor.org/biocLite.R")
 #biocLite("org.Sc.sgd.db")
-library(org.Sc.sgd.db)
-org.Sc.sgd.db
-yeast <- org.Sc.sgd.db
-keytypes(yeast)
-columns(yeast)
+#library(org.Sc.sgd.db)
+#org.Sc.sgd.db
+#yeast <- org.Sc.sgd.db
+#keytypes(yeast)
+#columns(yeast)
 #genes <- select(org.Sc.sgd.db, keys=geneid, columns="TXCHR","CHRLENGTHS","ENSEMBL",keytype="GENENAME")
-
-
 #biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
-library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
 txdb
-txs <- transcripts(txdb)
-txs
-txby <- transcriptsBy(txdb,by="gene")
-txby
-si <- seqinfo(txdb)
-si
-txby <- transcriptsBy(txdb, by="gene")
-si <- seqinfo(txby)
-si
+#txs <- transcripts(txdb)
+#txs
+#txby <- transcriptsBy(txdb,by="gene")
+#txby
+#si <- seqinfo(txdb)
+#si
+#txby <- transcriptsBy(txdb, by="gene")
+#si <- seqinfo(txby)
+#si
 
 head(seqlevels(txdb))
 seqlevelsStyle(txdb)
-seqlevelsStyle(txdb) <- "ensembl"
-head(seqlevels(txdb))
-seqlevelsStyle(txdb) <- "UCSC"
-head(seqlevels(txdb))
+#seqlevelsStyle(txdb) <- "ensembl"
+#head(seqlevels(txdb))
+#seqlevelsStyle(txdb) <- "UCSC"
+#head(seqlevels(txdb))
 #want to ignore the mitochondria
 isActiveSeq(txdb)["chrM"] <- FALSE
 head(isActiveSeq(txdb), n=18)
@@ -165,11 +165,13 @@ x
 #head(genes)
 #get rid of any duplicate genes (mapping to different chromosomes)
 #data frame of gene annotations is added back to the DGEList
-x$genes <- genes
-x
+#x$genes <- genes
+#x
 
 #data pre-processing
+#get counts per million
 cpm <- cpm(x)
+#get log counts per million
 lcpm <- cpm(x,log=TRUE)
 lcpm
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
@@ -181,11 +183,11 @@ x <- x[keep.exprs,,keep.lib.sizes=FALSE]
 dim(x)
 
 #make graphs to compare raw versus filtered data
-library(RColorBrewer)
 nsamples <- ncol(x)
 col <- brewer.pal(nsamples,"Paired")
-
-{par(mfrow=c(1,2))
+{
+  par(mfrow=c(1,2))
+  pdf("Raw_data.pdf")
 plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
 title(main="A. Raw Data", xlab="Log-cpm")
 abline(v=0,lty=3)
@@ -193,9 +195,10 @@ for(i in 2:nsamples) {
   den <- density(lcpm[,i])
   lines(den$x,den$y,col=col[i],lwd=2)
 }
+legend("topright",samplenames1, text.col=col, bty="n",cex=0.4,ncol=4)}
 
-legend("topright",samplenames1, text.col=col, bty="n",cex=0.4,ncol=4)
-
+{
+pdf("Filtered_data.pdf")
 lcpm <- cpm(x, log=TRUE)
 plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
@@ -209,26 +212,44 @@ legend("topright",samplenames1,text.col=col,bty="n",cex=0.4,ncol=4)
 }
 
 #normalization
-x <- calcNormFactors(x, method="TMM")
-x$samples
-x
+x.norm <- calcNormFactors(x, method="TMM")
+x.norm$samples
+x.norm
 
 #visually see the data normalized by screwing with the data artificially to make it look a lot different
-x3 <- x
+x3 <- x.norm
 x3$samples$norm.factors <- 1
 x3$counts[,1] <- ceiling(x3$counts[,1]*0.05)
 x3$counts[,2] <- x$counts[,2]*5
 par(mfrow=c(1,2))
 {
+  pdf("norm.vs.unnorm.pdf")
   par(mfrow=c(1,2))
-  lcpm <- cpm(x3,log=TRUE)
+  lcpm1 <- cpm(x3,log=TRUE)
 boxplot(lcpm,las=2,col=col,main="")
 title(main="A. Example: unnormalized data",ylab="Log-cpm")
-x4 <- calcNormFactors(x3)
 
+x4 <- calcNormFactors(x3)
 lcpm.4 <- cpm(x4, log=TRUE)
 boxplot(lcpm.4,las=2, col=col, main="")
 title(main="B. Example: normalized data", ylab="Log-cpm")
+
+}
+
+
+#without messing with the data 
+{
+  pdf("norm.vs.unnorm.pdf")
+  par(mfrow=c(1,2))
+  lcpm1 <- cpm(x,log=TRUE)
+boxplot(lcpm1,las=2,col=col,main="")
+title(main="A. Example: unnormalized data",ylab="Log-cpm")
+
+
+lcpm.4 <- cpm(x.norm, log=TRUE)
+boxplot(lcpm.4,las=2, col=col, main="")
+title(main="B. Example: normalized data", ylab="Log-cpm")
+
 }
 ```
 
@@ -268,7 +289,7 @@ title(main="B. Sequencing Run")
 #title(main="B. Ploidy")
 
 #can also look at an interactive MDS plot using glimma
-library(Glimma)
+
 glMDSPlot(lcpm, labels=paste(group,run,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
 ```
 
@@ -278,7 +299,10 @@ levels(x2$samples$group)
 #estimate dispersion
 design <- model.matrix(~group)
 design
-x <- estimateDisp(x2,prior.df=20)
+#default
+x2 <- estimateDisp(x,verbose=TRUE)
+#setting prior manually 
+x <- estimateDisp(x,prior.df=20)
 
 #x <- estimateCommonDisp(x2, prior.df=20)
 #x <- estimateTagwiseDisp(x2, prior.df=20)
@@ -620,7 +644,7 @@ p.vals
 head(X11vsGCA)
 head(X112vsMAA)
 
-library(Glimma)
+#library(Glimma)
 ##graphical representations of DE results
 #plodMD function - highlights the DE genes in a mean-variance plot
 #line 1
@@ -715,7 +739,7 @@ plotMD(efit, column=29, status=et[,29],main=colnames(efit)[29],xlim=c(-8,13))}
 
 
 
-library(Glimma)
+#library(Glimma)
 #glimma has one too
 #its interactive
 glMDPlot(efit,coef=1, status=et[,1], main=colnames(efit)[1], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
@@ -750,7 +774,7 @@ glMDPlot(efit,coef=29, status=et[,29], main=colnames(efit)[29], id.column="GENEN
 
 #can also create heatmaps
 #for certain contrasts
-library(gplots)
+
 X11.vs.anc.topgenes <- X11vsGCA$GENEID[1:20]
 
 i <- which(v$genes$GENEID %in% X11.vs.anc.topgenes)
@@ -788,12 +812,21 @@ for (i in 1:length(groupNamesNoAncestors)) {
 groups
 groupNames
 
-for (i in 1:43){
-  eval( parse(text = paste(" <- "DE_",toString(i)",sep="")))
-  ifelse( %in% )
-}
-plot(M108vsMA$adj.P.Val,ifelse(stdevs %in% groupNames[M108]))
- which((ifelse(groups %in% groupNames[i], 1, 0))!=0)
+#for (i in 1:43){
+#  eval( parse(text = paste(" <- "DE_",toString(i)",sep="")))
+#  ifelse( %in% )
+#}
+#plot(M108vsMA$adj.P.Val,ifelse(stdevs %in% groupNames[M108]))
+# which((ifelse(groups %in% groupNames[i], 1, 0))!=0)
+
+#plot BCV
+#normal
+plotBCV(x2,xlab="Average log CPM", ylab="Biological coefficient of variation",
+     pch=16, cex=0.2, col.common="red", col.trend="blue", col.tagwise="black")
+#prior set to 20 
+plotBCV(x,xlab="Average log CPM", ylab="Biological coefficient of variation",
+     pch=16, cex=0.2, col.common="red", col.trend="blue", col.tagwise="black")
+
 
  
 ```

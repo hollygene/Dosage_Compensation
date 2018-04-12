@@ -289,45 +289,60 @@ legend("topright",samplenames.MA,text.col=colMA,bty="n",cex=0.4,ncol=4)
 
 
 #normalization
-x.norm <- calcNormFactors(x, method="TMM")
-x.norm$samples
-x.norm
 
+x.normGC <- calcNormFactors(x.GC, method="TMM")
+x.normGC$samples
+x.normGC
+
+x.normMA <- calcNormFactors(x.MA, method="TMM")
+x.normMA$samples
+x.normMA
+
+#this part is not necessary 
 #visually see the data normalized by screwing with the data artificially to make it look a lot different
-x3 <- x.norm
-x3$samples$norm.factors <- 1
-x3$counts[,1] <- ceiling(x3$counts[,1]*0.05)
-x3$counts[,2] <- x$counts[,2]*5
-par(mfrow=c(1,2))
-{
-  pdf("norm.vs.unnorm.pdf")
-  par(mfrow=c(1,2))
-  lcpm1 <- cpm(x3,log=TRUE)
-boxplot(lcpm,las=2,col=col,main="")
-title(main="A. Example: unnormalized data",ylab="Log-cpm")
-
-x4 <- calcNormFactors(x3)
-lcpm.4 <- cpm(x4, log=TRUE)
-boxplot(lcpm.4,las=2, col=col, main="")
-title(main="B. Example: normalized data", ylab="Log-cpm")
-
-}
-
-
+#x3 <- x.norm
+#x3$samples$norm.factors <- 1
+#x3$counts[,1] <- ceiling(x3$counts[,1]*0.05)
+#x3$counts[,2] <- x$counts[,2]*5
+#par(mfrow=c(1,2))
+#{
+#  pdf("norm.vs.unnorm.pdf")
+#  par(mfrow=c(1,2))
+#  lcpm1 <- cpm(x3,log=TRUE)
+#boxplot(lcpm,las=2,col=col,main="")
+#title(main="A. Example: unnormalized data",ylab="Log-cpm")
+#x4 <- calcNormFactors(x3)
+#lcpm.4 <- cpm(x4, log=TRUE)
+#boxplot(lcpm.4,las=2, col=col, main="")
+#title(main="B. Example: normalized data", ylab="Log-cpm")
+#}
 #without messing with the data 
 {
-  pdf("norm.vs.unnorm.pdf")
+  pdf("norm.vs.unnormGC.pdf")
   par(mfrow=c(1,2))
-  lcpm1 <- cpm(x,log=TRUE)
-boxplot(lcpm1,las=2,col=col,main="")
+  lcpmGC <- cpm(x.GC,log=TRUE)
+boxplot(lcpmGC,las=2,col=colGC,main="")
 title(main="A. Example: unnormalized data",ylab="Log-cpm")
 
-
-lcpm.4 <- cpm(x.norm, log=TRUE)
-boxplot(lcpm.4,las=2, col=col, main="")
+lcpmGC1 <- cpm(x.normGC, log=TRUE)
+boxplot(lcpmGC1,las=2, col=colGC, main="")
 title(main="B. Example: normalized data", ylab="Log-cpm")
 
 }
+
+{
+  pdf("norm.vs.unnormMA.pdf")
+  par(mfrow=c(1,2))
+  lcpmMA <- cpm(x.MA,log=TRUE)
+boxplot(lcpmMA,las=2,col=colMA,main="")
+title(main="A. Example: unnormalized data",ylab="Log-cpm")
+
+lcpmMA1 <- cpm(x.normMA, log=TRUE)
+boxplot(lcpmMA1,las=2, col=colMA, main="")
+title(main="B. Example: normalized data", ylab="Log-cpm")
+
+}
+
 ```
 
 ```{r unsupervised_clustering_of_samples, include=FALSE}

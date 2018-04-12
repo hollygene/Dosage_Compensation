@@ -22,43 +22,59 @@ library(gplots)
 
 
 ```{r data_packaging, include=FALSE}
-files <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18",pattern = "*.txt", full.names = TRUE)
-files
+files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/GC",pattern = "*.txt", full.names = TRUE)
+files.GC
+
+files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
+files.MA
+
 
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
-x <- readDGE(files,columns=c(1,2))
+x.GC <- readDGE(files.GC,columns=c(1,2))
+x.MA <- readDGE(files.MA,columns=c(1,2))
 
 ##After looking at MDS plots, I decided to remove one replicate of line 112 since it is an extreme outlier compared to everything else. 
 
 #check the parameters
-class(x)
+class(x.GC)
+class(x.MA)
 #and dimensions
-dim(x)
-
-files
+dim(x.GC)
+dim(x.MA)
 #organize sample information
 #change sample names so they are simpler
+files.GC
+samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
+length(samplenames.GC)
+colnames(x.GC) <-samplenames.GC
 
-samplenames1 <- c("M112B","M112C","M115B","M115C","M117B","M117C","G11B","G11C","M123B","M123C","M141B","M141C","M152B","M152C","G18B","G18C","G1B","G1C","G11A","G21C","M29B","M29C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","M50B","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","66B","18A","21A","31A","G4A","49A","61A","G7A","G8A","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
-length(samplenames1)
-colnames(x) <-samplenames1
 #group samples together according to experiment
-x
-View(x$samples)
-group <- as.factor(c("M112","M112","M115","M115","M117","M117","G11","G11","M123","M123","M141","M141","M152","M152","G18","G18","G1","G1","G11","G21","M29","M29","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","M50","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G9","G9","G9","GA","GA","G66","G18","G21","G31","G4","G49","G61","G7","G8","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","OMA","OMA","OMA"))
-length(group)
-levels(group)
-nlevels(group)
-x$samples$group <- group
-exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA","GC","MA"), c(6,2,6,6,2,12,1,35,49)))
-x$samples$exp <- exp
+x.GC
+View(x.GC$samples)
+files.MA
+samplenames.MA <- c("M112B","M112C","M115B","M115C","M117B","M117C","M123B","M123C","M141B","M141C","M152B","M152C","M29B","M29C","M50B","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
+length(samplenames.MA)
+colnames(x.MA) <- samplenames.MA
+
+group.GC <- as.factor(c("G11","G11","G18","G18","G1","G1","G11","G21","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G9","G9","G9","GA","GA","G66","G18","G21","G31","G4","G49","G61","G7","G8"))
+length(group.GC)
+levels(group.GC)
+nlevels(group.GC)
+x.GC$samples$group <- group.GC
+
+group.MA <- as.factor(c("M112","M112","M115","M115","M117","M117","M123","M123","M141","M141","M152","M152","M29","M29","M50","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAA","MAA","MAA"))
+length(group.MA)
+levels(group.MA)
+nlevels(group.MA)
+x.MA$samples$group <- group.MA
+
 #come back to this later
-run <- as.factor(rep(c(1,2), c(70,49)))
-x$samples$run <- run
+run <- as.factor(rep(c(1,2), c(16,48)))
+x.MA$samples$run <- run
 #ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
 #x$samples$ploidy <- ploidy
-x$samples
+x.MA$samples
 #organize the gene annotations
 #install mus.musuclus package
 #source("https://bioconductor.org/biocLite.R")
@@ -96,8 +112,8 @@ txdb
 #si <- seqinfo(txby)
 #si
 
-head(seqlevels(txdb))
-seqlevelsStyle(txdb)
+#head(seqlevels(txdb))
+#seqlevelsStyle(txdb)
 #seqlevelsStyle(txdb) <- "ensembl"
 #head(seqlevels(txdb))
 #seqlevelsStyle(txdb) <- "UCSC"
@@ -112,14 +128,21 @@ head(isActiveSeq(txdb), n=18)
 columns(txdb)
 #want TXCHROM
 #want GENEID
-geneid <- rownames(x)
-genes <- select(txdb, keys=geneid, columns="TXCHROM","GENEID",keytype="GENEID")
-genes
-genes <- genes[!duplicated(genes$GENEID),]
+geneidGC <- rownames(x.GC)
+geneidMA <- rownames(x.MA)
+genesGC <- select(txdb, keys=geneidGC, columns="TXCHROM","GENEID",keytype="GENEID")
+genesGC
+genesGC <- genesGC[!duplicated(genesGC$GENEID),]
 
+genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
+genesMA
+genesMA <- genesMA[!duplicated(genesMA$GENEID),]
 #data frame of gene annotations is added back to the DGEList
-x$genes <- genes
-x
+x.GC$genes <- genesGC
+x.GC
+
+x.MA$genes <- genesMA
+x.MA
 
 #need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
 #myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
@@ -170,46 +193,100 @@ x
 
 #data pre-processing
 #get counts per million
-cpm <- cpm(x)
+cpmGC <- cpm(x.GC)
+cpmMA <- cpm(x.MA)
 #get log counts per million
-lcpm <- cpm(x,log=TRUE)
-lcpm
+lcpmGC <- cpm(x.GC,log=TRUE)
+lcpmGC
+
+lcpmMA <- cpm(x.MA,log=TRUE)
+lcpmMA
+
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
-table(rowSums(x$counts==0)==87)
+dim(x.GC)
+table(rowSums(x.GC$counts==0)==55)
+table(rowSums(x.GC$counts==0)==55)
 #only keep genes that are expressed in at least one group (group size=3 in this case)
-table(rowSums(cpm>1)>=3)
-keep.exprs <- rowSums(cpm>1)>=3
-x <- x[keep.exprs,,keep.lib.sizes=FALSE]
-dim(x)
+table(rowSums(cpmGC>1)>=3)
+#keep.exprsGC <- rowSums(cpmGC>1)>=3
+#x.GC <- x.GC[keep.exprsGC,,keep.lib.sizes=FALSE]
+dontkeep.exprGC <- rowSums(x.GC$counts==0)==55
+x.GC <- x.GC[!dontkeep.exprGC,,keep.lib.sizes=FALSE]
+dim(x.GC)
+
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+dim(x.MA)
+table(rowSums(x.MA$counts==0)==64)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+table(rowSums(cpmMA>1)>=3)
+#keep.exprsMA <- rowSums(cpmMA>1)>=3
+#x.MA <- x.MA[keep.exprsMA,,keep.lib.sizes=FALSE]
+dontkeep.exprMA <- rowSums(x.MA$counts==0)==64
+x.MA <- x.MA[!dontkeep.exprMA,,keep.lib.sizes=FALSE]
+dim(x.MA)
+
 
 #make graphs to compare raw versus filtered data
-nsamples <- ncol(x)
-col <- brewer.pal(nsamples,"Paired")
-{
-  par(mfrow=c(1,2))
-  pdf("Raw_data.pdf")
-plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
-title(main="A. Raw Data", xlab="Log-cpm")
-abline(v=0,lty=3)
-for(i in 2:nsamples) {
-  den <- density(lcpm[,i])
-  lines(den$x,den$y,col=col[i],lwd=2)
-}
-legend("topright",samplenames1, text.col=col, bty="n",cex=0.4,ncol=4)}
+nsamplesGC <- ncol(x.GC)
+colGC <- brewer.pal(nsamplesGC,"Paired")
 
 {
-pdf("Filtered_data.pdf")
-lcpm <- cpm(x, log=TRUE)
-plot(density(lcpm[,1]),col=col[1],lwd=2,ylim=c(0,0.21),las=2,main="",xlab="")
+  pdf("Raw_dataGC.pdf")
+plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamplesGC) {
+  den <- density(lcpmGC[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
+}
+legend("topright",samplenames.GC, text.col=colGC, bty="n",cex=0.4,ncol=4)
+}
+
+{
+pdf("Filtered_dataGC.pdf")
+lcpmGCfil <- cpm(x.GC, log=TRUE)
+plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
 abline(v=0, lty=3)
 
-for (i in 2:nsamples) {
-  den <- density(lcpm[,i])
-  lines(den$x,den$y,col=col[i],lwd=2)
+for (i in 2:nsamplesGC) {
+  den <- density(lcpmGCfil[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
 }
-legend("topright",samplenames1,text.col=col,bty="n",cex=0.4,ncol=4)
+legend("topright",samplenames.GC,text.col=colGC,bty="n",cex=0.4,ncol=4)
 }
+
+##MA 
+
+nsamplesMA <- ncol(x.MA)
+colMA <- brewer.pal(nsamplesMA,"Paired")
+{
+  pdf("Raw_dataMA.pdf")
+plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamplesMA) {
+  den <- density(lcpmMA[,i])
+  lines(den$x,den$y,col=colMA[i],lwd=2)
+}
+legend("topright",samplenames.MA, text.col=colMA, bty="n",cex=0.4,ncol=4)
+}
+
+{
+pdf("Filtered_dataMA.pdf")
+lcpmMAfil <- cpm(x.MA, log=TRUE)
+plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="B. Filtered Data", xlab="log-cpm")
+abline(v=0, lty=3)
+
+for (i in 2:nsamplesMA) {
+  den <- density(lcpmMAfil[,i])
+  lines(den$x,den$y,col=colMA[i],lwd=2)
+}
+legend("topright",samplenames.MA,text.col=colMA,bty="n",cex=0.4,ncol=4)
+}
+
+
 
 #normalization
 x.norm <- calcNormFactors(x, method="TMM")

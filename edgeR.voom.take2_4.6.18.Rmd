@@ -347,42 +347,64 @@ title(main="B. Example: normalized data", ylab="Log-cpm")
 
 ```{r unsupervised_clustering_of_samples, include=FALSE}
 #make MDS plots
-lcpm <- cpm(x,log=TRUE)
+#GC
+lcpmGC <- cpm(x.normGC,log=TRUE)
 par(mfrow=c(1,2))
-col.group <- group
-levels(col.group)
-nlevels(col.group)
-colors = colorRampPalette(brewer.pal(8,"Set2"))(46)
-levels(col.group) <- colors
-col.group
-col.group <- as.character(col.group)
 
+col.groupGC <- group.GC
+levels(col.groupGC)
+nlevels(col.groupGC)
+colorsGC = colorRampPalette(brewer.pal(8,"Set1"))(21)
+levels(col.groupGC) <- colorsGC
+col.groupGC
+col.groupGC <- as.character(col.groupGC)
 
-col.run <- run
-levels(col.run) <- brewer.pal(nlevels(col.run), "Blues")
-col.run <- as.character(col.run)
+#MA
+lcpmMA <- cpm(x.normMA,log=TRUE)
+par(mfrow=c(1,2))
 
+col.groupMA <- group.MA
+levels(col.groupMA)
+nlevels(col.groupMA)
+colorsMA = colorRampPalette(brewer.pal(8,"Set1"))(25)
+levels(col.groupMA) <- colorsMA
+col.groupMA
+col.groupMA <- as.character(col.groupMA)
 
-
+col.runMA <- run
+levels(col.runMA) <- brewer.pal(nlevels(col.runMA), "Set3")
+col.runMA <- as.character(col.runMA)
 #col.ploidy <- x$samples$ploidy
 #ploidy
 #length(ploidy)
 #levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
 #col.ploidy <- as.character(col.ploidy)
+#GC
 {
-  pdf(file="sample_groups.pdf")
-  plotMDS(lcpm, labels=group, col=col.group)
-title(main="A. Sample groups")}
+  pdf(file="sample_groupsGC.pdf")
+  plotMDS(lcpmGC, labels=group.GC, col=col.groupGC)
+title(main="Sample groups")
+}
 
-plotMDS(lcpm, labels=run, col=col.run)
-title(main="B. Sequencing Run")
+{
+  pdf(file="sample_groupsMA.pdf")
+  plotMDS(lcpmMA, labels=group.MA, col=col.groupMA)
+title(main="Sample groups")
+}
 
+{
+  pdf(file="seq_runMA.pdf")
+plotMDS(lcpmMA, labels=run, col=col.runMA)
+title(main="Sequencing Run")
+}
 #plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
 #title(main="B. Ploidy")
 
 #can also look at an interactive MDS plot using glimma
-
-glMDSPlot(lcpm, labels=paste(group,run,sep="_"),groups=x$samples[,c(2,5)], launch=TRUE)
+#not really useful for GC lines 
+#glMDSPlot(lcpmGC, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TRUE)
+#more useful for MA lines because I can see how much of an effect the sequencing run had 
+glMDSPlot(lcpmMA, labels=paste(group.MA,run,sep="_"),groups=x.MA$samples[,c(2,5)], launch=TRUE)
 ```
 
 ```{r edgeR exact tests, include = TRUE}

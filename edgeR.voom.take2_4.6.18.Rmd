@@ -19,6 +19,7 @@ library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 library(RColorBrewer)
 library(gplots)
 library(magicfor)
+library(tidyr)
 ```
 
 
@@ -445,7 +446,6 @@ groups.GC
 lines.GC <- levels(groups.GC)
 lines.GC
 
-
 for (i in 1:length(lines.GC)) {
   et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
   table <- (et$table)
@@ -467,8 +467,18 @@ for (i in 1:length(lines.MA)) {
 #also 31, 69 
 
 #read in files that I just made since I can't figure out how to actually make my results into an R object...
-#exactTests <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/GC",pattern = "*.csv", full.names = TRUE)
+tempGC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/GC",pattern = "*.csv", full.names = TRUE)
+#put into R objects
+testsGC <- do.call(cbind, lapply(tempGC, function(x) cbind(name = tools::file_path_sans_ext(basename(x)),read.csv(x))))
+View(testsGC)
 #exactTests
+tempMA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/MA",pattern = "*.csv", full.names = TRUE)
+testsMA <- do.call(cbind, lapply(tempMA, function(x) cbind(name = tools::file_path_sans_ext(basename(x)),read.csv(x))))
+View(testsMA)
+
+
+
+
 
 #commonly DE genes in aneuploid lines (for whatever chromosome), not including genes that are DE in euploid lines 
 common.de.aneu <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)

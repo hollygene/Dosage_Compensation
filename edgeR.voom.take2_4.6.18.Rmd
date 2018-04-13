@@ -18,6 +18,7 @@ library(dplyr)
 library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 library(RColorBrewer)
 library(gplots)
+library(magicfor)
 ```
 
 
@@ -434,15 +435,16 @@ lines.GC <- as.factor(c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59",
 lines.MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","MA","M1","M2","M3","M4","M5",
                         "M6","M7","M8","M9","M11","M15","M28","M88","M108","M119","MAA"))
 
-for(i in 1:length(hybrid)){
-    eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
-}
-i=1
+#for(i in 1:length(hybrid)){
+ #   eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
+#}
+#i=1
 x.GC$samples$group 
 groups.GC <- x.GC$samples$group
 groups.GC
 lines.GC <- levels(groups.GC)
 lines.GC
+
 
 for (i in 1:length(lines.GC)) {
   et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
@@ -450,9 +452,23 @@ for (i in 1:length(lines.GC)) {
   write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
 }
 
+str(table)
+table <- data.frame()
+#MA lines 
+
+for (i in 1:length(lines.MA)) {
+  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+}
+
 #as.character(group.GC[i]:group.GC[]))
 #G1,2,3,5,6,9, are euploid
 #also 31, 69 
+
+#read in files that I just made since I can't figure out how to actually make my results into an R object...
+#exactTests <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/GC",pattern = "*.csv", full.names = TRUE)
+#exactTests
 
 #commonly DE genes in aneuploid lines (for whatever chromosome), not including genes that are DE in euploid lines 
 common.de.aneu <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
@@ -472,55 +488,7 @@ length(common.de.aneu)
 
 
 #what about common genes in aneuploid lines and forget about euploid lines 
-#what about common genes in all the lines 
-
-
-etM29 <- exactTest(x, pair= c("M29","MA"),dispersion="tagwise")
-topTags(etM29, adjust.method="BH")
-etM50 <- exactTest(x, pair= c("M50","MA"),dispersion="tagwise")
-topTags(etM50, adjust.method="BH")
-etM112 <- exactTest(x, pair= c("M112","MA"),dispersion="tagwise")
-topTags(etM112, adjust.method="BH")
-etM115 <- exactTest(x, pair= c("M115","MA"),dispersion="tagwise")
-topTags(etM115, adjust.method="BH")
-etM117 <- exactTest(x, pair= c("M117","MA"),dispersion="trended")
-topTags(etM117, adjust.method="BH")
-etM123 <- exactTest(x, pair= c("M123","MA"),dispersion="tagwise")
-topTags(etM123, adjust.method="BH")
-etM141 <- exactTest(x, pair= c("M141","MA"),dispersion="tagwise")
-topTags(etM141, adjust.method="fdr",n=100,p.value=0.01)
-etM152 <- exactTest(x, pair= c("M152","MA"),dispersion="tagwise")
-topTags(etM152, adjust.method="BH")
-etM1 <- exactTest(x, pair= c("M1","OMA"),dispersion="tagwise")
-topTags(etM1, adjust.method="BH")
-etM2 <- exactTest(x, pair= c("M2","OMA"),dispersion="tagwise")
-topTags(etM2, adjust.method="BH")
-etM3 <- exactTest(x, pair= c("M3","OMA"),dispersion="tagwise")
-topTags(etM3, adjust.method="BH")
-etM4 <- exactTest(x, pair= c("M4","OMA"),dispersion="tagwise")
-topTags(etM4, adjust.method="BH")
-etM5 <- exactTest(x, pair= c("M5","OMA"),dispersion="tagwise")
-topTags(etM5, adjust.method="BH")
-etM6 <- exactTest(x, pair= c("M6","OMA"),dispersion="tagwise")
-topTags(etM6, adjust.method="BH")
-etM7 <- exactTest(x, pair= c("M7","OMA"),dispersion="tagwise")
-topTags(etM7, adjust.method="BH")
-etM8 <- exactTest(x, pair= c("M8","OMA"),dispersion="tagwise")
-topTags(etM8, adjust.method="BH")
-etM9 <- exactTest(x, pair= c("M9","OMA"),dispersion="tagwise")
-topTags(etM9, adjust.method="BH")
-etM11 <- exactTest(x, pair= c("M11","OMA"),dispersion="tagwise")
-topTags(etM11, adjust.method="BH")
-etM15 <- exactTest(x, pair= c("M15","OMA"),dispersion="tagwise")
-topTags(etM15, adjust.method="BH")
-etM28 <- exactTest(x, pair= c("M28","OMA"),dispersion="tagwise")
-topTags(etM28, adjust.method="BH")
-etM88 <- exactTest(x, pair= c("M88","OMA"),dispersion="tagwise")
-topTags(etM88, adjust.method="BH")
-etM108 <- exactTest(x, pair= c("M108","OMA"),dispersion="tagwise")
-topTags(etM108, adjust.method="BH")
-etM119 <- exactTest(x, pair= c("M119","OMA"),dispersion="tagwise")
-topTags(etM119, adjust.method="BH")
+#what about common genes in all the lines
 
 de.common <- which(etM119$table$PValue<0.05 & etM108$table$PValue<0.05 & etM88$table$PValue<0.05 & etM8$table$PValue>0.05)
 length(de.common)

@@ -452,31 +452,67 @@ for (i in 1:length(lines.GC)) {
   write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
 }
 
+for (i in 1:length(lines.MA)) {
+  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+}
+
+
 str(table)
 table <- data.frame()
-#MA lines 
 
-magic_for(put)
+dim(testsMA)
+#6792 by 125
+str(testsMA)
+dim(testsGC)
+#6690 by 105 
+str(testsGC)
+list(testsGC)
+#trying something else 
+
+#write this in a generic function
+resGC <- list(length=length(lines.GC))
+
+xacTests <- function(file) {
+  #runs exactTest on each line against the ancestor
+  #puts the output into a table 
+ for (i in seq_along(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+  #writes the output in a file 
+  #write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+
+
+for (i in seq_along(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+
 for (i in 1:length(lines.MA)) {
-  et[i] <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
-  table <- put(et[i]$table)
-  #write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
 }
 
-output <- vector("list", 21)
-
-for (i in 1:length(lines.GC)){
-   output[i] <- niceFunction(x[i],i)
-}
 
 niceFunction (x,i) {
-    et[i] <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
-    table[i] <- (et[i]$table)
-    
-    result1 = someOperations() #zoo object
-    result2 = someOperations() #data.frame
- 
-    result <- list(result1,result2)
+    et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+    table <- list(et$table)
+}
+
+#magic_for()
+#MA.list <- magic_result()
+#output <- vector("list", 21)
+#for (i in 1:length(lines.GC)){
+#   output[i] <- niceFunction(x[i],i)
+#}
+
+
 #as.character(group.GC[i]:group.GC[]))
 #G1,2,3,5,6,9, are euploid
 #also 31, 69 

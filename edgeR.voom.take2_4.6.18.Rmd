@@ -24,20 +24,16 @@ library(tidyr)
 
 
 ```{r data_packaging, include=FALSE}
+#########################################
+#load files into R as vector
 files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = TRUE)
 files.GC
-
 #files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
 #files.MA
-
-
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
 x.GC <- readDGE(files.GC,columns=c(1,2))
 #x.MA <- readDGE(files.MA,columns=c(1,2))
-
-##After looking at MDS plots, I decided to remove one replicate of line 112 since it is an extreme outlier compared to everything else. 
-
 #check the parameters
 class(x.GC)
 #class(x.MA)
@@ -47,36 +43,37 @@ dim(x.GC)
 #organize sample information
 #change sample names so they are simpler
 files.GC
-samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
-length(samplenames.GC)
+samplenames.GC <- tools::file_path_sans_ext(list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = FALSE))
+samplenames.GC
+#samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
+#length(samplenames.GC)
+#put filenames into DGEList as column names 
 colnames(x.GC) <-samplenames.GC
-
+###################################################
 #group samples together according to experiment
 x.GC
 View(x.GC$samples)
-files.MA
-samplenames.MA <- c("M112B","M112C","M115B","M115C","M117B","M117C","M123B","M123C","M141B","M141C","M152B","M152C","M29B","M29C","M50B","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
-length(samplenames.MA)
-colnames(x.MA) <- samplenames.MA
-
-group.GC <- as.factor(c("G11","G11","G18","G18","G1","G1","G11","G21","G2","G2","G2","G31","G31","G3","G3","G3","G49","G49","G4","G4","G59","G59","G5","G5","G5","G61","G61","G66","G69","G69","G6","G6","G6","G76","G76","G77","G77","G7","G7","G8","G8","G9","G9","G9","GA","GA","G66","G18","G21","G31","G4","G49","G61","G7","G8"))
+#files.MA
+#samplenames.MA <- c("M112B","M112C","M115B","M115C","M117B","M117C","M123B","M123C","M141B","M141C","M152B","M152C","M29B","M29C","M50B","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
+#length(samplenames.MA)
+#colnames(x.MA) <- samplenames.MA
+group.GC <- as.factor(c("11","11","11","18","18","18","1","1","1","21","21","2","2","2","31","31","31","3","3","3","49","49","49","4","4","4","59","59","5","5","5","61","61","61","66","66","66","68","68","68","6","6","6","76","76","76","77","77","77","7","7","7","8","8","8","9","9","9","Anc","Anc","Anc"))
 length(group.GC)
 levels(group.GC)
 nlevels(group.GC)
 x.GC$samples$group <- group.GC
 
-group.MA <- as.factor(c("M112","M112","M115","M115","M117","M117","M123","M123","M141","M141","M152","M152","M29","M29","M50","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAA","MAA","MAA"))
-length(group.MA)
-levels(group.MA)
-nlevels(group.MA)
-x.MA$samples$group <- group.MA
-
+#group.MA <- as.factor(c("M112","M112","M115","M115","M117","M117","M123","M123","M141","M141","M152","M152","M29","M29","M50","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAA","MAA","MAA"))
+#length(group.MA)
+#levels(group.MA)
+#nlevels(group.MA)
+#x.MA$samples$group <- group.MA
 #come back to this later
-run <- as.factor(rep(c(1,2), c(16,48)))
-x.MA$samples$run <- run
+#run <- as.factor(rep(c(1,2), c(16,48)))
+#x.MA$samples$run <- run
 #ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
 #x$samples$ploidy <- ploidy
-x.MA$samples
+#x.MA$samples
 #organize the gene annotations
 #install mus.musuclus package
 #source("https://bioconductor.org/biocLite.R")
@@ -113,7 +110,6 @@ txdb
 #txby <- transcriptsBy(txdb, by="gene")
 #si <- seqinfo(txby)
 #si
-
 #head(seqlevels(txdb))
 #seqlevelsStyle(txdb)
 #seqlevelsStyle(txdb) <- "ensembl"
@@ -126,26 +122,22 @@ head(isActiveSeq(txdb), n=18)
 #and 2 micron 
 isActiveSeq(txdb)["2micron"] <- FALSE
 head(isActiveSeq(txdb), n=18)
-
 columns(txdb)
 #want TXCHROM
 #want GENEID
 geneidGC <- rownames(x.GC)
-geneidMA <- rownames(x.MA)
+#geneidMA <- rownames(x.MA)
 genesGC <- select(txdb, keys=geneidGC, columns="TXCHROM","GENEID",keytype="GENEID")
 genesGC
 genesGC <- genesGC[!duplicated(genesGC$GENEID),]
-
-genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
-genesMA
-genesMA <- genesMA[!duplicated(genesMA$GENEID),]
+#genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
+#genesMA
+#genesMA <- genesMA[!duplicated(genesMA$GENEID),]
 #data frame of gene annotations is added back to the DGEList
 x.GC$genes <- genesGC
 x.GC
-
-x.MA$genes <- genesMA
-x.MA
-
+#x.MA$genes <- genesMA
+#x.MA
 #need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
 #myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
 #newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
@@ -192,46 +184,42 @@ x.MA
 #data frame of gene annotations is added back to the DGEList
 #x$genes <- genes
 #x
-
+#########################################################
 #data pre-processing
 #get counts per million
 cpmGC <- cpm(x.GC)
-cpmMA <- cpm(x.MA)
+#cpmMA <- cpm(x.MA)
 #get log counts per million
 lcpmGC <- cpm(x.GC,log=TRUE)
 lcpmGC
-
-lcpmMA <- cpm(x.MA,log=TRUE)
-lcpmMA
-
+#lcpmMA <- cpm(x.MA,log=TRUE)
+#lcpmMA
+######################################################
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
 dim(x.GC)
-table(rowSums(x.GC$counts==0)==55)
-table(rowSums(x.GC$counts==0)==55)
+table(rowSums(x.GC$counts==0)==61)
 #only keep genes that are expressed in at least one group (group size=3 in this case)
 table(rowSums(cpmGC>1)>=3)
 #keep.exprsGC <- rowSums(cpmGC>1)>=3
 #x.GC <- x.GC[keep.exprsGC,,keep.lib.sizes=FALSE]
-dontkeep.exprGC <- rowSums(x.GC$counts==0)==55
-x.GC <- x.GC[!dontkeep.exprGC,,keep.lib.sizes=FALSE]
-dim(x.GC)
-
+dontkeep.exprGC <- rowSums(x.GC$counts==0)==61
+x.GCFil <- x.GC[!dontkeep.exprGC,,keep.lib.sizes=FALSE]
+dim(x.GCFil)
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
-dim(x.MA)
-table(rowSums(x.MA$counts==0)==64)
+#dim(x.MA)
+#table(rowSums(x.MA$counts==0)==64)
 #only keep genes that are expressed in at least one group (group size=3 in this case)
-table(rowSums(cpmMA>1)>=3)
+#table(rowSums(cpmMA>1)>=3)
 #keep.exprsMA <- rowSums(cpmMA>1)>=3
 #x.MA <- x.MA[keep.exprsMA,,keep.lib.sizes=FALSE]
-dontkeep.exprMA <- rowSums(x.MA$counts==0)==64
-x.MA <- x.MA[!dontkeep.exprMA,,keep.lib.sizes=FALSE]
-dim(x.MA)
-
-
+#dontkeep.exprMA <- rowSums(x.MA$counts==0)==64
+#x.MA <- x.MA[!dontkeep.exprMA,,keep.lib.sizes=FALSE]
+#dim(x.MA)
+###################################################
 #make graphs to compare raw versus filtered data
 nsamplesGC <- ncol(x.GC)
-colGC <- brewer.pal(nsamplesGC,"Paired")
-
+#colGC <- brewer.pal(nsamplesGC,"Set2")
+colGC <- colorRampPalette(brewer.pal(8,"Set1"))(21)
 {
   pdf("Raw_dataGC.pdf")
 plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
@@ -246,8 +234,8 @@ legend("topright",samplenames.GC, text.col=colGC, bty="n",cex=0.4,ncol=4)
 
 {
 pdf("Filtered_dataGC.pdf")
-lcpmGCfil <- cpm(x.GC, log=TRUE)
-plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+lcpmGCfil <- cpm(x.GCFil, log=TRUE)
+plot(density(lcpmGCfil[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
 abline(v=0, lty=3)
 
@@ -258,48 +246,95 @@ for (i in 2:nsamplesGC) {
 legend("topright",samplenames.GC,text.col=colGC,bty="n",cex=0.4,ncol=4)
 }
 
-##MA 
+############################################################################
+#do the same thing but be more stringent
+###USE THIS ONE!! 
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+dim(x.GC)
+table(rowSums(x.GC$counts==0)==61)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+table(rowSums(cpmGC>1)>=3)
+keep.exprsGC <- rowSums(cpmGC>1)>=3
+str(keep.exprsGC)
+str(x.GC)
+x.GC.str <- x.GC[keep.exprsGC,keep.lib.sizes=FALSE]
+dim(x.GC.str)
+#make x.GC the filtered one 
+x.GC <- x.GC.str
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+#dim(x.MA)
+#table(rowSums(x.MA$counts==0)==64)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+#table(rowSums(cpmMA>1)>=3)
+#keep.exprsMA <- rowSums(cpmMA>1)>=3
+#x.MA <- x.MA[keep.exprsMA,,keep.lib.sizes=FALSE]
+#dontkeep.exprMA <- rowSums(x.MA$counts==0)==64
+#x.MA <- x.MA[!dontkeep.exprMA,,keep.lib.sizes=FALSE]
+#dim(x.MA)
+###################################################
+#make graphs to compare raw versus filtered data
+nsamplesGC <- ncol(x.GC)
+colGC <- colorRampPalette(brewer.pal(21,"Set1"))(ncol(x.GC))
 
-nsamplesMA <- ncol(x.MA)
-colMA <- brewer.pal(nsamplesMA,"Paired")
 {
-  pdf("Raw_dataMA.pdf")
-plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+  pdf("Raw_dataGC.pdf")
+plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
 title(main="A. Raw Data", xlab="Log-cpm")
 abline(v=0,lty=3)
-for(i in 2:nsamplesMA) {
-  den <- density(lcpmMA[,i])
-  lines(den$x,den$y,col=colMA[i],lwd=2)
+for(i in 2:nsamplesGC) {
+  den <- density(lcpmGC[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
 }
-legend("topright",samplenames.MA, text.col=colMA, bty="n",cex=0.4,ncol=4)
+legend("topright",samplenames.GC, text.col=colGC, bty="n",cex=0.4,ncol=4)
 }
 
 {
-pdf("Filtered_dataMA.pdf")
-lcpmMAfil <- cpm(x.MA, log=TRUE)
-plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+pdf("Filtered_dataGC2.pdf")
+lcpmGCfil2 <- cpm(x.GC.str, log=TRUE)
+plot(density(lcpmGCfil2[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
 title(main="B. Filtered Data", xlab="log-cpm")
 abline(v=0, lty=3)
-
-for (i in 2:nsamplesMA) {
-  den <- density(lcpmMAfil[,i])
-  lines(den$x,den$y,col=colMA[i],lwd=2)
+for (i in 2:nsamplesGC) {
+  den <- density(lcpmGCfil2[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
 }
-legend("topright",samplenames.MA,text.col=colMA,bty="n",cex=0.4,ncol=4)
+legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 }
-
-
-
+#plot(density(lcpmGCfil2[,2]),col=colGC[2],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+##MA 
+#nsamplesMA <- ncol(x.MA)
+#colMA <- brewer.pal(nsamplesMA,"Paired")
+#{
+#  pdf("Raw_dataMA.pdf")
+#plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+#title(main="A. Raw Data", xlab="Log-cpm")
+#abline(v=0,lty=3)
+#for(i in 2:nsamplesMA) {
+#  den <- density(lcpmMA[,i])
+#  lines(den$x,den$y,col=colMA[i],lwd=2)
+#}
+#legend("topright",samplenames.MA, text.col=colMA, bty="n",cex=0.4,ncol=4)
+#}
+#{
+#pdf("Filtered_dataMA.pdf")
+#lcpmMAfil <- cpm(x.MA, log=TRUE)
+#plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+#title(main="B. Filtered Data", xlab="log-cpm")
+#abline(v=0, lty=3)
+#for (i in 2:nsamplesMA) {
+#  den <- density(lcpmMAfil[,i])
+#  lines(den$x,den$y,col=colMA[i],lwd=2)
+#}
+#legend("topright",samplenames.MA,text.col=colMA,bty="n",cex=0.4,ncol=4)
+#}
+############################################################################################
 #normalization
-
 x.normGC <- calcNormFactors(x.GC, method="TMM")
 x.normGC$samples
 x.normGC
-
-x.normMA <- calcNormFactors(x.MA, method="TMM")
-x.normMA$samples
-x.normMA
-
+#x.normMA <- calcNormFactors(x.MA, method="TMM")
+#x.normMA$samples
+#x.normMA
 #this part is not necessary 
 #visually see the data normalized by screwing with the data artificially to make it look a lot different
 #x3 <- x.norm
@@ -331,19 +366,16 @@ boxplot(lcpmGC1,las=2, col=colGC, main="")
 title(main="B. Example: normalized data", ylab="Log-cpm")
 
 }
-
-{
-  pdf("norm.vs.unnormMA.pdf")
-  par(mfrow=c(1,2))
-  lcpmMA <- cpm(x.MA,log=TRUE)
-boxplot(lcpmMA,las=2,col=colMA,main="")
-title(main="A. Example: unnormalized data",ylab="Log-cpm")
-
-lcpmMA1 <- cpm(x.normMA, log=TRUE)
-boxplot(lcpmMA1,las=2, col=colMA, main="")
-title(main="B. Example: normalized data", ylab="Log-cpm")
-
-}
+#{
+ # pdf("norm.vs.unnormMA.pdf")
+#  par(mfrow=c(1,2))
+#  lcpmMA <- cpm(x.MA,log=TRUE)
+#boxplot(lcpmMA,las=2,col=colMA,main="")
+#title(main="A. Example: unnormalized data",ylab="Log-cpm")
+#lcpmMA1 <- cpm(x.normMA, log=TRUE)
+#boxplot(lcpmMA1,las=2, col=colMA, main="")
+#title(main="B. Example: normalized data", ylab="Log-cpm")
+#}
 
 ```
 
@@ -362,20 +394,18 @@ col.groupGC
 col.groupGC <- as.character(col.groupGC)
 
 #MA
-lcpmMA <- cpm(x.normMA,log=TRUE)
-par(mfrow=c(1,2))
-
-col.groupMA <- group.MA
-levels(col.groupMA)
-nlevels(col.groupMA)
-colorsMA = colorRampPalette(brewer.pal(8,"Set1"))(25)
-levels(col.groupMA) <- colorsMA
-col.groupMA
-col.groupMA <- as.character(col.groupMA)
-
-col.runMA <- run
-levels(col.runMA) <- brewer.pal(nlevels(col.runMA), "Set3")
-col.runMA <- as.character(col.runMA)
+#lcpmMA <- cpm(x.normMA,log=TRUE)
+#par(mfrow=c(1,2))
+#col.groupMA <- group.MA
+#levels(col.groupMA)
+#nlevels(col.groupMA)
+#colorsMA = colorRampPalette(brewer.pal(8,"Set1"))(25)
+#levels(col.groupMA) <- colorsMA
+#col.groupMA
+#col.groupMA <- as.character(col.groupMA)
+#col.runMA <- run
+#levels(col.runMA) <- brewer.pal(nlevels(col.runMA), "Set3")
+#col.runMA <- as.character(col.runMA)
 #col.ploidy <- x$samples$ploidy
 #ploidy
 #length(ploidy)
@@ -387,26 +417,25 @@ col.runMA <- as.character(col.runMA)
   plotMDS(lcpmGC, labels=group.GC, col=col.groupGC)
 title(main="Sample groups")
 }
+#{
+#  pdf(file="sample_groupsMA.pdf")
+#  plotMDS(lcpmMA, labels=group.MA, col=col.groupMA)
+#title(main="Sample groups")
+#}
 
-{
-  pdf(file="sample_groupsMA.pdf")
-  plotMDS(lcpmMA, labels=group.MA, col=col.groupMA)
-title(main="Sample groups")
-}
-
-{
-  pdf(file="seq_runMA.pdf")
-plotMDS(lcpmMA, labels=run, col=col.runMA)
-title(main="Sequencing Run")
-}
+#{
+#  pdf(file="seq_runMA.pdf")
+#plotMDS(lcpmMA, labels=run, col=col.runMA)
+#title(main="Sequencing Run")
+#}
 #plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
 #title(main="B. Ploidy")
 
 #can also look at an interactive MDS plot using glimma
 #not really useful for GC lines 
-#glMDSPlot(lcpmGC, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TRUE)
+glMDSPlot(lcpmGC, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TRUE)
 #more useful for MA lines because I can see how much of an effect the sequencing run had 
-glMDSPlot(lcpmMA, labels=paste(group.MA,run,sep="_"),groups=x.MA$samples[,c(2,5)], launch=TRUE)
+#glMDSPlot(lcpmMA, labels=paste(group.MA,run,sep="_"),groups=x.MA$samples[,c(2,5)], launch=TRUE)
 ```
 
 ```{r edgeR exact tests, include = TRUE}

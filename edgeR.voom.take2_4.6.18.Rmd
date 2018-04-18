@@ -24,26 +24,26 @@ library(tidyr)
 
 
 ```{r data_packaging, include=FALSE}
-files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/GC",pattern = "*.txt", full.names = TRUE)
+files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = TRUE)
 files.GC
 
-files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
-files.MA
+#files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
+#files.MA
 
 
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
 x.GC <- readDGE(files.GC,columns=c(1,2))
-x.MA <- readDGE(files.MA,columns=c(1,2))
+#x.MA <- readDGE(files.MA,columns=c(1,2))
 
 ##After looking at MDS plots, I decided to remove one replicate of line 112 since it is an extreme outlier compared to everything else. 
 
 #check the parameters
 class(x.GC)
-class(x.MA)
+#class(x.MA)
 #and dimensions
 dim(x.GC)
-dim(x.MA)
+#dim(x.MA)
 #organize sample information
 #change sample names so they are simpler
 files.GC
@@ -418,6 +418,7 @@ designGC <- model.matrix(~0+group.GC)
 designGC
 #default
 x.GC <- estimateDisp(x.GC,verbose=TRUE,design = designGC)
+
 #setting prior manually 
 #x <- estimateDisp(x,prior.df=20)
 #x <- estimateCommonDisp(x2, prior.df=20)

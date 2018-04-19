@@ -381,7 +381,7 @@ title(main="B. Example: normalized data", ylab="Log-cpm")
 ```
 
 ```{r look at variance, include=FALSE}
-cpmGC
+View(cpmGC)
 lcpmGC
 lcpmGCfil2
 cpmGC <- cpm(x.GC)
@@ -433,11 +433,20 @@ str(lines.GC)
 #  }
 #}
 #ratMatMed.MA <- matrix(y.MA,nrow=16,ncol=8)
-for (i in 1:length(lines.GC)) {
-  var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
-  var[i] <- (apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
-  varAll <- rbind(var,var[i])
+var2 <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
+
+for (i in 2:length(lines.GC)) {
+  var2[,i] <- v
+  v <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+  varAll <- cbind(var2,var2[i])
 }
+
+
+dim(v)
+dim(var2)
+
+rm(var2)
+rm(varAll)
 varAll <- matrix(varAll,nrow=3292,ncol=61)
 
 calcVar <- function (i) {

@@ -442,23 +442,27 @@ lines.GC <- as.factor(c("11","18","1","21","2","31","3","49","4","59","5","61","
 #}
 #i=2
 lcpmGC
-var2 <- as.matrix(apply(lcpmGC[,grep((1),colnames(lcpmGC))],1,var),byrow=FALSE)
+var2 <- as.matrix(apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var),byrow=FALSE)
 rm(i)
 i=2
 
 {
   pdf("Dist_Variance.pdf")
-  hist(var2)
   plot(density(var2[,1]),col=colGC[1],lwd=2,las=2,main="",xlab="")
   title(main="Dist_Variance",xlab="var of lcpm")
   abline(v=0,lty=3)
-  v <- var2
-for (i in seq_along(lines.GC)) {
-  v[i] <- (apply(lcpmGC[,grep((i),colnames(lcpmGC))],1,var))
-  den[i] <- density(v[i][,1])
-  lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+for (i in 2:length(lines.GC)) {
+  v[i] <- as.matrix(apply(lcpmGC[,grep((i),colnames(lcpmGC))],1,var))
+  den[i] <- density(v[,1])
+  lines(den[i],col=colGC[i],lwd=2)
 }
 }
+
+var2 <- as.matrix(apply(lcpmGC[,grep((1),colnames(lcpmGC))],1,var),byrow=FALSE)
+  plot(density(var2[,1]),col=colGC[2],lwd=2,las=2,main="",xlab="")
+v <- as.matrix(apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var))
+  den <- density(v[,1])
+  lines(den$x,den$y,col=colGC[2],lwd=2)
 
 lines.GC
 rm(v[i])
@@ -540,8 +544,6 @@ class(cpmGC)
 #plot(density(mock_mean))
 #plot(density(dht_mean))
 ```
-
-
 
 ```{r unsupervised_clustering_of_samples, include=FALSE}
 #make MDS plots
@@ -787,7 +789,6 @@ abline(0,padj[4]/length(p))
 View(x$counts)
 design <- model.matrix(~0+group+exp)
 design
-
 x
 #make contrasts matrix
 contr.matrix <- makeContrasts(

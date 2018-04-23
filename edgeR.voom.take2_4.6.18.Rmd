@@ -447,7 +447,7 @@ lcpmGC
 var2 <- as.matrix(apply(lcpmGC[,grep((lines.GC[1]),colnames(lcpmGC))],1,var),byrow=FALSE)
 rm(i)
 i=2
- names <- colnames(lcpmGC)
+names <- colnames(lcpmGC)
 v <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
 den <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
 
@@ -474,39 +474,34 @@ for (i in 1:21) {
 #  den <- density(lcpmGCfil2[,i])
 #  lines(den$x,den$y,col=colGC[i],lwd=2)
 #}
-
-rm(den)
-View(cols)
-
-lcpmGC[,grep(("[21]"),colnames(lcpmGC))]
-
+#rm(den)
+#View(cols)
+#lcpmGC[,grep(("[21]"),colnames(lcpmGC))]
 #fix 
-pdf("example.pdf")
-var2 <- as.matrix(apply(lcpmGC[,grep((lines.GC[1]),colnames(lcpmGC))],1,var),byrow=FALSE)
-  plot(density(var2[,1]),col=colGC[1],lwd=2,las=2,main="",xlab="")
-v <- as.matrix(apply(lcpmGC[,grep((lines.GC[2]),colnames(lcpmGC))],1,var))
-  den <- density(v[,1])
-  lines(den$x,den$y,col=colGC[2],lwd=2)
-
-lines.GC
-rm(v[i])
-length(v)
-length(var2)
-length((apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var)))
+#pdf("example.pdf")
+#var2 <- as.matrix(apply(lcpmGC[,grep((lines.GC[1]),colnames(lcpmGC))],1,var),byrow=FALSE)
+#  plot(density(var2[,1]),col=colGC[1],lwd=2,las=2,main="",xlab="")
+#v <- as.matrix(apply(lcpmGC[,grep((lines.GC[2]),colnames(lcpmGC))],1,var))
+#  den <- density(v[,1])
+#  lines(den$x,den$y,col=colGC[2],lwd=2)
+#lines.GC
+#rm(v[i])
+#length(v)
+#length(var2)
+#length((apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var)))
 #histogram of distribution of variance
-hist(var2)
-for (i in 2:(lines.GC)) {
-  var2 <- cbind(var2,(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
-  return(var2)
-}
-
+#hist(var2)
+#for (i in 2:(lines.GC)) {
+#  var2 <- cbind(var2,(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
+#  return(var2)
+#}
 #var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
 #  test.out <- cbind(L11=var, "l"(i)=(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
 #  return(test.out)
 #remove unwanted rows from cpmGC data frame
 #attempt at aggregate
 #by = list()
-class(cpmGC)
+#class(cpmGC)
 #cpmGC <- data.frame(cpmGC)
 #test1 <- aggregate(cpmGC,by = list(cpmGC$HTseq11A,cpmGC$HTseq11B,cpmGC$HTseq11C),var)
 #names <- colnames(cpmGC)
@@ -553,6 +548,7 @@ class(cpmGC)
 #plot(density(dht_mean))
 ```
 
+Next I want to plot the variance agains the p-value of each gene (does a high variance correlate with a higher p-value??)
 ```{r unsupervised_clustering_of_samples, include=FALSE}
 #make MDS plots
 #GC

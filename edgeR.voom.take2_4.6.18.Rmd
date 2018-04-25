@@ -449,7 +449,7 @@ rm(i)
 i=2
 names <- colnames(lcpmGC)
 v <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
-den <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
+#den <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
 
 for (i in 1:length(lines.GC)) {
   lcpm2 <- lcpmGC[,1:61]
@@ -549,6 +549,7 @@ for (i in 1:21) {
 ```
 
 Next I want to plot the variance agains the p-value of each gene (does a high variance correlate with a higher p-value??)
+
 ```{r unsupervised_clustering_of_samples, include=FALSE}
 #make MDS plots
 #GC
@@ -623,19 +624,17 @@ x.GC <- estimateDisp(x.GC,verbose=TRUE,design = designGC)
 #x <- estimateCommonDisp(x2, prior.df=20)
 #x <- estimateTagwiseDisp(x2, prior.df=20)
 #calculate SD of each gene among replicates
-levels(x.MA$samples$group)
+#levels(x.MA$samples$group)
 #estimate dispersion
-designMA <- model.matrix(~0+group.MA)
-designMA
+#designMA <- model.matrix(~0+group.MA)
+#designMA
 #default
-x.MA <- estimateDisp(x.MA,verbose=TRUE,design = designMA)
+#x.MA <- estimateDisp(x.MA,verbose=TRUE,design = designMA)
 
-lines.GC <- as.factor(c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6",
-                        "G76","G77","G7","G8","G9","GA"))
+lines.GC <- as.factor(c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6","G76","G77","G7","G8","G9","GA"))
 
-lines.MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","MA","M1","M2","M3","M4","M5",
-                        "M6","M7","M8","M9","M11","M15","M28","M88","M108","M119","MAA"))
-
+#lines.MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","MA","M1","M2","M3","M4","M5",
+ #                       "M6","M7","M8","M9","M11","M15","M28","M88","M108","M119","MAA"))
 #for(i in 1:length(hybrid)){
  #   eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
 #}
@@ -646,25 +645,53 @@ groups.GC
 lines.GC <- levels(groups.GC)
 lines.GC
 
+#pval <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
+pval <- matrix(data=NA, nrow=length(lcpmGC),ncol=length(group.GC))
+lines.GC
+i=11
+for (i in 1:length(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  ind2 <- (et$table)
+  rownames(ind2) <- c()
+  colnames(ind2) <- c()
+  #View(cols)
+  pval[,i] <- ind2
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+
+for (i in 1:length(lines.GC)) {
+  lcpm2 <- lcpmGC[,1:61]
+  ind <- grep(as.character(lines.GC[i]),names)
+  cols <- lcpmGC[,ind]
+  cols <- matrix(apply(cols,1,var))
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  #View(cols)
+  v[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+
 for (i in 1:length(lines.GC)) {
   et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
   table <- (et$table)
   write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
 }
 
-for (i in 1:length(lines.MA)) {
-  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
-  table <- (et$table)
-  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
-}
+#for (i in 1:length(lines.MA)) {
+#  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+#}
 
 
 str(table)
 table <- data.frame()
 
-dim(testsMA)
+#dim(testsMA)
 #6792 by 125
-str(testsMA)
+#str(testsMA)
 dim(testsGC)
 #6690 by 105 
 str(testsGC)
@@ -672,47 +699,38 @@ list(testsGC)
 #trying something else 
 
 #write this in a generic function
-resGC <- list(length=length(lines.GC))
-
-xacTests <- function(file) {
+#resGC <- list(length=length(lines.GC))
+#xacTests <- function(file) {
   #runs exactTest on each line against the ancestor
   #puts the output into a table 
- for (i in seq_along(lines.GC)) {
-  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
-  table <- (et$table)
-  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
-}
+# for (i in seq_along(lines.GC)) {
+#  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+#}
   #writes the output in a file 
   #write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
-}
-
-
+#}
 for (i in seq_along(lines.GC)) {
   et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
   table <- (et$table)
   write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
 }
-
-for (i in 1:length(lines.MA)) {
-  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
-  table <- (et$table)
-  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
-}
-
-
-niceFunction (x,i) {
-    et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
-    table <- list(et$table)
-}
-
+#for (i in 1:length(lines.MA)) {
+#  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+#}
+#niceFunction (x,i) {
+#    et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#    table <- list(et$table)
+#}
 #magic_for()
 #MA.list <- magic_result()
 #output <- vector("list", 21)
 #for (i in 1:length(lines.GC)){
 #   output[i] <- niceFunction(x[i],i)
 #}
-
-
 #as.character(group.GC[i]:group.GC[]))
 #G1,2,3,5,6,9, are euploid
 #also 31, 69 
@@ -749,7 +767,6 @@ common.euGC <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$tabl
 tempMA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/MA",pattern = "*.csv", full.names = TRUE)
 testsMA <- do.call(cbind, lapply(tempMA, function(x) cbind(name = tools::file_path_sans_ext(basename(x)),read.csv(x))))
 View(testsMA)
-
 
 
 

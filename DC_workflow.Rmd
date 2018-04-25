@@ -30,6 +30,9 @@ library(pgirmess)
 library(FSA)
 library(dunn.test)
 library(rcompanion)
+library(grid)
+library(dplyr)
+library(tidyr)
 ```
 
 ``` {r load in data,make matrices}
@@ -279,7 +282,7 @@ ratMatMed.GC.r1 <- matrix(y.GC.r1,nrow=16,ncol=2)
 colnames(ratMatMed.GC.r1) <- rep.GC.r1
 ratMatMed.GC.r1 <- cbind(c(1:16),ratMatMed.GC.r1)
 colnames(ratMatMed.GC.r1)[1] <- "chr"
-
+View(ratMatMed.GC)
 #make a matrix that is the LOG2 RATIO
 yl.MA=NULL
 for(line in rep.MA){
@@ -308,6 +311,10 @@ colnames(logMat.GC) <- rep.GC
 logMat.GC <- data.frame(logMat.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.GC <-cbind(chrms,logMat.GC)
+View(logMat2.GC)
+
+
+
 
 yl.GC.r=NULL
 for(line in rep.GC.r){
@@ -5791,14 +5798,170 @@ dev.off()}
 ```{r new boxplots codes, include=TRUE}
 ####################
 #CHROMOSOME 1 
+#yM.GC=NULL
+#for(line in rep.GC){
+#  for(chrm in 1:16){
+#    yM.GC <- c(yM.GC,(log2(getChrmRatio.GC(line,chrm)[,3])))
+#  }
+#}
+#warnings()
+#logAll.GC <- matrix(NA,nrow=nrow(sc_counts.final),ncol=ncol(sc_counts.final))
+#logAll.GC$chr <- sc_counts.final$chr
+#logAll.GC <- matrix(yM.GC,nrow=nrow(sc_counts.final),ncol=length(rep.GC))
+#colnames(logAll.GC) <- rep.GC
+#rownames(logAll.GC) <- sc_counts.final$tracking_id
+#logAll.GC$chr <- sc_counts.final$chr
+#View(sc_counts.final)
+#logAll.GC <- data.frame(logAll.GC)
+#chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+#logMat2.GC <-cbind(chrms,logMat.GC)
+#View(logAll.GC)
+#for i in linesGC {
+#      getChrmRatio.GC(i,1)
+#}
 
-#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
+chr1GC <- data.frame(l001.1[,2],log2(l001.1[,3]),log2(l002.1[,3]) ,log2(l003.1[,3]),log2(l004.1[,3]),log2(l005.1[,3]) ,log2(l006.1[,3]),log2(l007.1[,3]),log2(l008.1[,3]),log2(l009.1[,3]),log2(l011.1[,3]),log2(l021.1[,3]),log2(l031.1[,3]),log2(l049.1[,3]),log2(l059.1[,3]),log2(l061.1[,3]),log2(l066.1[,3]),log2(l069.1[,3]),log2(l076.1[,3]),log2(l077.1[,3]))
+row.names(chr1GC) <- chr1GC$l001.1...2.
+chr1GC[1] <- NULL
+rownames(chr1GC) <- c()
+View(chr1GC)
+
+
+pdf("ggplot.test.pdf")
+
+test <- ggplot(chr1GC)
+test + geom_boxplot(x=colnames(chr1GC))
+#outlier.alpha=0.05,outlier.color="red"
+
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=11, y=1, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
+
+text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28.3, y=.8, "*", pos=3, cex=2, col="red") 
+
+grid.newpage()
+grid.draw(rbind(ggplotGrob(plot1.N),ggplotGrob(plot1.O),size="last"))
+
+#chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
+ #       (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
+  #      (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l069.1[,3]))),
+#Line=rep(c(1,2,3,5,6,7,9,11,18,21,31,69),each=(length(l001.1$tracking_id))))
+#chr1DataofInterest$Line <-factor(chr1DataofInterest$Line)
+
+{pdf("Chrm_1_MA.GC.pdf")
+  
+boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
+              "green","cyan","cyan","cyan","cyan","green","cyan","cyan","cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet")
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=11, y=1, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
+
+text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
+}
+
+#i=l002.1
+#rm(i)
+#i=2
+#for (i in 1:length(chr1GC)) {
+ # i[,3] <- log2((i[,3]+1))
+#  chr <- cbind(as.character(chr1GC$l001.1...2.),i[,3])
+#}
+#for (i in 1:length(lines.GC)) {
+#  lcpm2 <- lcpmGC[,1:61]
+#  ind <- grep(as.character(lines.GC[i]),names)
+#  cols <- lcpmGC[,ind]
+#  cols <- matrix(apply(cols,1,var))
+#  rownames(cols) <- c()
+#  colnames(cols) <- c()
+  #View(cols)
+#  v[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+#}
+#l001.1$ratio <- log2(l001.1$ratio)
+#l002.1$ratio <- log2(l002.1$ratio)
+#test1 <- cbind(l002.1$chr,l002.1$tracking_id,l002.1$ratio,l001.1$ratio)
+#View(test1)
 chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
         (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
-        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
-        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
+       (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
+       (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
         (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))),
 Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77,29,50,112,115,117,123,141,152),each=(length(l001.1$tracking_id))))
+
+chr1DataCombo <- rbind(chr1Data,chr1Data.old)
+
+chr1Data.old <- data.frame(y=c((log2(l001.1.old[,3])),(log2(l002.1.old[,3])),(log2(l003.1.old[,3])),(log2(l004.1.old[,3])),(log2(l005.1.old[,3])),
+        (log2(l006.1.old[,3])),(log2(l007.1.old[,3])),(log2(l008.1.old[,3])),(log2(l009.1.old[,3])),(log2(l011.1.old[,3])),
+        (log2(l015.1[,3])),(log2(l028.1.old[,3])),(log2(l088.1[,3])),(log2(l108.1[,3])),(log2(l119.1[,3]))),
+Line=rep(c("1MA","2MA","3MA","4MA","5MA","6MA","7MA","8MA","9MA","11MA",15,28,88,108,119),each=(length(l001.1.old$tracking_id))))
+
+{pdf("Chrm_1_All.pdf")
+  
+{boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3),col=c("green","cyan","orange","cyan","green","cyan","cyan","green","cyan","cyan","cyan","deeppink1","deeppink1","green","green","deeppink1","green","cyan","green","green","green","green","cyan","cyan","green","green","cyan","cyan","green","green","cyan","cyan","cyan","green","deeppink1","cyan","green","green","cyan","cyan","green","green"))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet") }
+#p3 <- 0.0006221
+#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
+#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
+text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7, y=1, "*", pos=3, cex=2, col="red")
+text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
+text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
+text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
+text(x=11, y=1, "*", pos=3, cex=2, col="red")
+text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
+
+text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12, y=.8, "*", pos=3, cex=2, col="red")
+text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
+
+text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28, y=.8, "*", pos=3, cex=2, col="red")
+text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
+}
+
+#use tidyr to spread my columns into multiple columns (useful for later plotting)
+#chr1Data.1 <- spread(chr1Data,key="Line",value="y",mutate(id=1:n()))
 
 #data frame with only euploids, so I can do a euploid by euploid test
 chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
@@ -5836,7 +5999,8 @@ plot(TukeyHSD(aov.chr1ofInt))}
 
 #This code works beautifully to produce a boxplot 
 {pdf("Chrm_1_MA.GC.pdf")
-boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
+  
+plot1.N <- boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
               "green","cyan","cyan","cyan","cyan","green","cyan","cyan","cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")
@@ -5862,6 +6026,13 @@ text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
 text(x=28, y=.8, "*", pos=3, cex=2, col="red")
 text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
 }
+
+pdf("ggplot.test.pdf")
+plot1.N <- ggplot(chr1Data, aes(Line,y))
+plot1.N + geom_boxplot(outlier.alpha=0.05 , outlier.color="red")
+#fill="green", outlier.color="red") #+geom_jitter(width=0.2)
+
+
 #wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
 #ANOVA/NonParametric Equivalent
 #p-value < 2.2 e-16 (So at least one of the data points is very different from the others)

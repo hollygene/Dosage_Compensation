@@ -1099,7 +1099,7 @@ exp3x
 chr1Data.old <- data.frame(y=c((log2(l001.1.old[,3])),(log2(l002.1.old[,3])),(log2(l003.1.old[,3])),(log2(l004.1.old[,3])),(log2(l005.1.old[,3])),
         (log2(l006.1.old[,3])),(log2(l007.1.old[,3])),(log2(l008.1.old[,3])),(log2(l009.1.old[,3])),(log2(l011.1.old[,3])),
         (log2(l015.1[,3])),(log2(l028.1.old[,3])),(log2(l088.1[,3])),(log2(l108.1[,3])),(log2(l119.1[,3]))),
-Line=rep(c(1,2,3,4,5,6,7,8,9,11,15,28,88,108,119),each=(length(l001.1.old$tracking_id))))
+Line=rep(c(1.1,"2M","3M","4M","5M","6M","7M","8","9M","11M",15,28,88,108,119),each=(length(l001.1.old$tracking_id))))
 chr1Data.old$Line <-factor(chr1Data.old$Line)
 #data frame with only euploids, so I can do a euploid by euploid test
 
@@ -1118,7 +1118,7 @@ plot(TukeyHSD(aov.chr1.old))}
 
 #This code works beautifully to produce a boxplot 
 {pdf("Chrm_1.old.pdf")
-boxplot(y~Line,data=chr1Data.old,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","green","green","green","green","green","cyan","cyan","cyan","cyan",
+plot1.O <-boxplot(y~Line,data=chr1Data.old,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","green","green","green","green","green","cyan","cyan","cyan","cyan",
               "cyan","cyan"),main="MA Lines Chromsome 1",las=3,ylim=c(-2,2.5))
 abline(h=0,lty=2)
 abline(h=0.585,lty=2,col="forestgreen")

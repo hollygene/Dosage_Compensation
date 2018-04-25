@@ -46,8 +46,8 @@ sc_counts.z[,3:140] <- sc_counts.z[,3:140]+.5 #add .5 to dataset so the zeroes d
 gene.means <- rowMeans(sc_counts.z[,3:140]) #average across the sample
 anc.means.MA <- rowMeans(sc_counts.z[,90:92]) #average in the ancestor
 anc.means.GC <- rowMeans(sc_counts.z[87:89]) #average in the GC ancestor
-
-
+View(sc_counts)
+sc_counts$X59_0 <- c()
 #if the average fpkm is less than 5 in the ancestor or less than 5 in the overall, remove the gene
 sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.GC<5),]
 View(sc_counts.final)
@@ -120,17 +120,17 @@ getAvgFPKM.MA <- function(line) { #for line as "###" string
 }
 
 
-getAvgFPKM.GC <- function(line) { #for line as "###" string
-  r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
-  r2 <- paste(c("X",line,"_1"),collapse="")
-  r3 <- paste(c("X",line,"_2"),collapse="")
-  reps <- sc_des.GC[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
-  reps[reps==0] <- NA #replace 0 values with NA as before
-  desAvg.GC <- rowMeans(reps[,c(-1,-2)],na.rm=T)
-  desAvg.GC <- cbind(sc_des.GC[,c(1,2)],desAvg.GC)
+#getAvgFPKM.GC <- function(line) { #for line as "###" string
+#  r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
+#  r2 <- paste(c("X",line,"_1"),collapse="")
+#  r3 <- paste(c("X",line,"_2"),collapse="")
+#  reps <- sc_des.GC[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
+#  reps[reps==0] <- NA #replace 0 values with NA as before
+#  desAvg.GC <- rowMeans(reps[,c(-1,-2)],na.rm=T)
+#  desAvg.GC <- cbind(sc_des.GC[,c(1,2)],desAvg.GC)
   #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
-  return(desAvg.GC) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
-}
+#  return(desAvg.GC) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
+#}
 
 
 getAvgFPKM.GC.r <- function(line) { #for line as "###" string
@@ -141,7 +141,7 @@ getAvgFPKM.GC.r <- function(line) { #for line as "###" string
   reps[reps==0] <- NA #replace 0 values with NA as before
   desAvg.GC.r <- rowMeans(reps[,c(-1,-2)],na.rm=T)
   desAvg.GC.r <- cbind(sc_des.GC.r[,c(1,2)],desAvg.GC.r)
-  #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
+  colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
   return(desAvg.GC.r) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
 }
 
@@ -165,13 +165,13 @@ getFPKMRatio.MA <- function(line) { #line must be a 3 digit character
   return(rat.MA)
 }
 
-getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
-  desAvg.GC <- getAvgFPKM.GC(line) #first call avg fpkm script, which returns a 3 column matrix
-  ratioByGene.GC <- desAvg.GC[,3]/ancAvg.GC[,3]
-  rat.GC <- cbind(sc_des.GC[,1:2],ratioByGene.GC) #add gene and chrm values
-  colnames(rat.GC) <- c("chr","tracking_id","ratio")
-  return(rat.GC)
-}
+#getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
+#  desAvg.GC <- getAvgFPKM.GC(line) #first call avg fpkm script, which returns a 3 column matrix
+#  ratioByGene.GC <- desAvg.GC[,3]/ancAvg.GC[,3]
+#  rat.GC <- cbind(sc_des.GC[,1:2],ratioByGene.GC) #add gene and chrm values
+#  colnames(rat.GC) <- c("chr","tracking_id","ratio")
+#  return(rat.GC)
+#}
 
 getFPKMRatio.GC.r <- function(line) { #line must be a 3 digit character
   desAvg.GC.r <- getAvgFPKM.GC.r(line) #first call avg fpkm script, which returns a 3 column matrix
@@ -197,12 +197,12 @@ getChrmRatio.MA <- function(line, chr){ #input line as "XXX", chr as a number
   return(rat.cs.MA)
 }
 
-getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
-  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
-  rat.c.GC <- rat.GC[(rat.GC[,1]==chr),] #get just the rows for the appropriate chrom
-  rat.cs.GC <- rat.c.GC[order(rat.c.GC[,3]),]#order by column 3
-  return(rat.cs.GC)
-}
+#getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
+#  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
+#  rat.c.GC <- rat.GC[(rat.GC[,1]==chr),] #get just the rows for the appropriate chrom
+#  rat.cs.GC <- rat.c.GC[order(rat.c.GC[,3]),]#order by column 3
+#  return(rat.cs.GC)
+#}
 
 
 getChrmRatio.GC.r <- function(line, chr){ #input line as "XXX", chr as a number
@@ -239,18 +239,18 @@ ratMatMedRed.MA <- ratMatMed.MA
 ratMatMedRed.MA[ratMatMedRed.MA<1.35] <- NA
 #ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
 
-y.GC=NULL
-rep.GC <- c("11","18","1","21","2","31","3","49","4","59","5","61","66","69","6","76","77","7","8","9")
-for(line in rep.GC){
-  for(chrm in 1:16){
-    y.GC <- c(y.GC,median(getChrmRatio.GC(line,chrm)[,3],na.rm=T))
-  }
-}
+#y.GC=NULL
+#rep.GC <- c("11","18","1","21","2","31","3","49","4","59","5","61","66","69","6","76","77","7","8","9")
+#for(line in rep.GC){
+#  for(chrm in 1:16){
+#    y.GC <- c(y.GC,median(getChrmRatio.GC(line,chrm)[,3],na.rm=T))
+#  }
+#}
 
-ratMatMed.GC <- matrix(y.GC,nrow=16,ncol=20)
-colnames(ratMatMed.GC) <- rep.GC
-ratMatMed.GC <- cbind(c(1:16),ratMatMed.GC)
-colnames(ratMatMed.GC)[1] <- "chr"
+#ratMatMed.GC <- matrix(y.GC,nrow=16,ncol=20)
+#colnames(ratMatMed.GC) <- rep.GC
+#ratMatMed.GC <- cbind(c(1:16),ratMatMed.GC)
+#colnames(ratMatMed.GC)[1] <- "chr"
 
 
 y.GC.r=NULL
@@ -266,9 +266,9 @@ colnames(ratMatMed.GC.r) <- rep.GC.r
 ratMatMed.GC.r <- cbind(c(1:16),ratMatMed.GC.r)
 colnames(ratMatMed.GC.r)[1] <- "chr"
 #remove the ratios that are about 1
-#ratMatMedRed.GC <- ratMatMed.GC
-#ratMatMedRed.GC[ratMatMedRed.GC<1.35] <- NA
-#ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
+ratMatMedRed.GC <- ratMatMed.GC
+ratMatMedRed.GC[ratMatMedRed.GC<1.35] <- NA
+ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
 
 y.GC.r1=NULL
 rep.GC.r1 <- c("21","59")
@@ -283,6 +283,7 @@ colnames(ratMatMed.GC.r1) <- rep.GC.r1
 ratMatMed.GC.r1 <- cbind(c(1:16),ratMatMed.GC.r1)
 colnames(ratMatMed.GC.r1)[1] <- "chr"
 View(ratMatMed.GC)
+
 #make a matrix that is the LOG2 RATIO
 yl.MA=NULL
 for(line in rep.MA){
@@ -298,31 +299,26 @@ logMat.MA <- data.frame(logMat.MA)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.MA <-cbind(chrms,logMat.MA)
 
-yl.GC=NULL
-for(line in rep.GC){
-  for(chrm in 1:16){
-    yl.GC <- c(yl.GC,median(log2(getChrmRatio.GC(line,chrm)[,3])))
-  }
-}
+#yl.GC=NULL
+#for(line in rep.GC){
+#  for(chrm in 1:16){
+#    yl.GC <- c(yl.GC,median(log2(getChrmRatio.GC(line,chrm)[,3])))
+#  }
+#}
 
-warnings()
-logMat.GC <- matrix(yl.GC,nrow=16,ncol=20)
-colnames(logMat.GC) <- rep.GC
-logMat.GC <- data.frame(logMat.GC)
-chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-logMat2.GC <-cbind(chrms,logMat.GC)
-View(logMat2.GC)
-
-
-
-
+#warnings()
+#logMat.GC <- matrix(yl.GC,nrow=16,ncol=20)
+#colnames(logMat.GC) <- rep.GC
+#logMat.GC <- data.frame(logMat.GC)
+#chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+#logMat2.GC <-cbind(chrms,logMat.GC)
+#View(logMat2.GC)
 yl.GC.r=NULL
 for(line in rep.GC.r){
   for(chrm in 1:16){
     yl.GC.r <- c(yl.GC.r,median(log2(getChrmRatio.GC.r(line,chrm)[,3])))
   }
 }
-
 warnings()
 logMat.GC.r <- matrix(yl.GC.r,nrow=16,ncol=19)
 colnames(logMat.GC.r) <- rep.GC.r
@@ -345,26 +341,20 @@ chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMat2.GC.r1 <-cbind(chrms,logMat.GC.r1)
 
 #this makes a matrix with the log2 ratio between ancestor and sample of each gene 
-
-getChrmRatio.GC.test <- function(line, chr){ #input line as "XXX", chr as a number
-  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
-  rat.cs.GC <- rat.GC[order(rat.GC[,3]),]#order by column 3
-  return(rat.cs.GC)
-}
-
-
-yl.GC=NULL
-for(line in rep.GC){
-    y.GC <- c(yl.GC,log2(getChrmRatio.GC.test(line,chrm)[,3]))
-}
-
-warnings()
-logMat.GC.test<- matrix(y.GC,nrow=5431,ncol=20)
-colnames(logMat.GC.test) <- rep.GC
-logMat.GC.test <- data.frame(logMat.GC.test)
-genes <- ancAvg.GC[,2]
-
-
+#getChrmRatio.GC.test <- function(line, chr){ #input line as "XXX", chr as a number
+#  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
+#  rat.cs.GC <- rat.GC[order(rat.GC[,3]),]#order by column 3
+#  return(rat.cs.GC)
+#}
+#yl.GC=NULL
+#for(line in rep.GC){
+#    y.GC <- c(yl.GC,log2(getChrmRatio.GC.test(line,chrm)[,3]))
+#}
+#warnings()
+#logMat.GC.test<- matrix(y.GC,nrow=5431,ncol=20)
+#colnames(logMat.GC.test) <- rep.GC
+#logMat.GC.test <- data.frame(logMat.GC.test)
+#genes <- ancAvg.GC[,2]
 
 ##make a matrix of the standard deviations for each line and each chromosome
 ysd.MA=NULL
@@ -381,29 +371,23 @@ chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.MA <-cbind(chrms,logMatsd.MA)
 
 #for GC lines
-ysd.GC=NULL
-for(line in rep.GC){
-  for(chrm in 1:16){
-    ysd.GC <- c(ysd.GC,sd(log2(getChrmRatio.GC(line,chrm)[,3])))
-  }
-}
-
-
+#ysd.GC=NULL
+#for(line in rep.GC){
+#  for(chrm in 1:16){
+#    ysd.GC <- c(ysd.GC,sd(log2(getChrmRatio.GC(line,chrm)[,3])))
+#  }
+#}
 logMatsd.GC <- matrix(ysd.GC,nrow=16,ncol=20)
 colnames(logMatsd.GC) <- rep.GC
 logMatsd.GC <- data.frame(logMatsd.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.GC <-cbind(chrms,logMatsd.GC)
-
-
 ysd.GC.r=NULL
 for(line in rep.GC.r){
   for(chrm in 1:16){
     ysd.GC.r <- c(ysd.GC.r,sd(log2(getChrmRatio.GC.r(line,chrm)[,3])))
   }
 }
-
-
 logMatsd.GC.r <- matrix(ysd.GC.r,nrow=16,ncol=19)
 colnames(logMatsd.GC.r) <- rep.GC.r
 logMatsd.GC.r <- data.frame(logMatsd.GC.r)
@@ -444,7 +428,7 @@ X112.all <- cbind(chrms,X112,X112.sd)
 colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
 
 #plots the chromosomes with error bars for each one 
-pdf("X112_chroms.pdf")
+{pdf("X112_chroms.pdf")
 with (
   data = X112.all
   , expr = errbar(main="MA Line 112",chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -460,6 +444,7 @@ abline(h=-1,lty=3)
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
+}
 #myLines.MA <- c("X112","X115","X117","X123","X141","X152","X29","X50")
 #list_of_titles.MA <- c("Sample112","Sample115","Sample117","Sample123","Sample141","Sample152")
 
@@ -500,7 +485,7 @@ X115.all <- cbind(chrms,X115,X115.sd)
 #change the column names appropriately
 colnames(X115.all)[1] <- "chr"; colnames(X115.all)[2] <- "mean";colnames(X115.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X115_chroms.pdf")
+{pdf("X115_chroms.pdf")
 with (
   data = X115.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -516,7 +501,7 @@ title(main="MA Line 115")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 #line 117
 #get the standard deviations for each chromosome for line 112 only
 X117 <- subset(logMat.MA, select=c("X117"))
@@ -526,7 +511,7 @@ X117.all <- cbind(chrms,X117,X117.sd)
 #change the column names appropriately
 colnames(X117.all)[1] <- "chr"; colnames(X117.all)[2] <- "mean";colnames(X117.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X117_chroms.pdf")
+{pdf("X117_chroms.pdf")
 with (
   data = X117.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -542,17 +527,18 @@ title(main="MA Line 117")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 11 
+View(logMat.GC.r)
 X11 <- subset(logMat.GC.r, select=c("X11"))
-X11.sd <- subset(logMatsd2.GC.r, select=c("X11"))
+X11.sd <- subset(logMatsd2.GC.r1, select=c("X11"))
 #merge the stdev with the mean and the chromosome number
 X11.all <- cbind(chrms,X11,X11.sd)
 #change the column names appropriately
 colnames(X11.all)[1] <- "chr"; colnames(X11.all)[2] <- "mean";colnames(X11.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X11_chroms.pdf")
+{pdf("X11_chroms.pdf")
 with (
   data = X11.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -568,7 +554,7 @@ title(main="GC Line 11")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 123
 X123 <- subset(logMat.MA, select=c("X123"))
@@ -578,7 +564,7 @@ X123.all <- cbind(chrms,X123,X123.sd)
 #change the column names appropriately
 colnames(X123.all)[1] <- "chr"; colnames(X123.all)[2] <- "mean";colnames(X123.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X123_chroms.pdf")
+{pdf("X123_chroms.pdf")
 with (
   data = X123.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -594,7 +580,7 @@ title(main="MA Line 123")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 #line 141
 X141 <- subset(logMat.MA, select=c("X141"))
 X141.sd <- subset(logMatsd2.MA, select=c("X141"))
@@ -603,7 +589,7 @@ X141.all <- cbind(chrms,X141,X141.sd)
 #change the column names appropriately
 colnames(X141.all)[1] <- "chr"; colnames(X141.all)[2] <- "mean";colnames(X141.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X141_chroms.pdf")
+{pdf("X141_chroms.pdf")
 with (
   data = X141.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -619,7 +605,8 @@ title(main="MA Line 141")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 152
 X152 <- subset(logMat.MA, select=c("X152"))
 X152.sd <- subset(logMatsd2.MA, select=c("X152"))
@@ -628,7 +615,7 @@ X152.all <- cbind(chrms,X152,X152.sd)
 #change the column names appropriately
 colnames(X152.all)[1] <- "chr"; colnames(X152.all)[2] <- "mean";colnames(X152.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X152_chroms.pdf")
+{pdf("X152_chroms.pdf")
 with (
   data = X152.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -644,7 +631,8 @@ title(main="MA Line 152")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 18
 X18 <- subset(logMat.GC, select=c("X18"))
 X18.sd <- subset(logMatsd2.GC, select=c("X18"))
@@ -653,7 +641,7 @@ X18.all <- cbind(chrms,X18,X18.sd)
 #change the column names appropriately
 colnames(X18.all)[1] <- "chr"; colnames(X18.all)[2] <- "mean";colnames(X18.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X18_chroms.pdf")
+{pdf("X18_chroms.pdf")
 with (
   data = X18.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -669,7 +657,8 @@ title(main="GC Line 18")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 1
 X1 <- subset(logMat.GC, select=c("X1"))
 X1.sd <- subset(logMatsd2.GC, select=c("X1"))
@@ -678,7 +667,7 @@ X1.all <- cbind(chrms,X1,X1.sd)
 #change the column names appropriately
 colnames(X1.all)[1] <- "chr"; colnames(X1.all)[2] <- "mean";colnames(X1.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X1_chroms.pdf")
+{pdf("X1_chroms.pdf")
 with (
   data = X1.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -694,7 +683,7 @@ title(main="GC Line 1")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 21
 X21 <- subset(logMat.GC.r1, select=c("X21"))
@@ -704,7 +693,7 @@ X21.all <- cbind(chrms,X21,X21.sd)
 #change the column names appropriately
 colnames(X21.all)[1] <- "chr"; colnames(X21.all)[2] <- "mean";colnames(X21.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X21_chroms.pdf")
+{pdf("X21_chroms.pdf")
 with (
   data = X21.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -720,7 +709,7 @@ title(main="GC Line 21")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 29
 X29 <- subset(logMat.MA, select=c("X29"))
@@ -730,7 +719,7 @@ X29.all <- cbind(chrms,X29,X29.sd)
 #change the column names appropriately
 colnames(X29.all)[1] <- "chr"; colnames(X29.all)[2] <- "mean";colnames(X29.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X29_chroms.pdf")
+{pdf("X29_chroms.pdf")
 with (
   data = X29.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -746,7 +735,8 @@ title(main="MA Line 29")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 2
 X2 <- subset(logMat.GC, select=c("X2"))
 X2.sd <- subset(logMatsd2.GC, select=c("X2"))
@@ -755,7 +745,7 @@ X2.all <- cbind(chrms,X2,X2.sd)
 #change the column names appropriately
 colnames(X2.all)[1] <- "chr"; colnames(X2.all)[2] <- "mean";colnames(X2.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X2_chroms.pdf")
+{pdf("X2_chroms.pdf")
 with (
   data = X2.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -771,7 +761,8 @@ title(main="GC Line 2")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 31
 X31 <- subset(logMat.GC, select=c("X31"))
 X31.sd <- subset(logMatsd2.GC, select=c("X31"))
@@ -780,7 +771,7 @@ X31.all <- cbind(chrms,X31,X31.sd)
 #change the column names appropriately
 colnames(X31.all)[1] <- "chr"; colnames(X31.all)[2] <- "mean";colnames(X31.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X31_chroms.pdf")
+{pdf("X31_chroms.pdf")
 with (
   data = X31.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -796,7 +787,8 @@ title(main="GC Line 31")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 3
 X3 <- subset(logMat.GC, select=c("X3"))
 X3.sd <- subset(logMatsd2.GC, select=c("X3"))
@@ -805,7 +797,7 @@ X3.all <- cbind(chrms,X3,X3.sd)
 #change the column names appropriately
 colnames(X3.all)[1] <- "chr"; colnames(X3.all)[2] <- "mean";colnames(X3.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X3_chroms.pdf")
+{pdf("X3_chroms.pdf")
 with (
   data = X3.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -821,7 +813,8 @@ title(main="GC Line 3")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 49
 X49 <- subset(logMat.GC, select=c("X49"))
 X49.sd <- subset(logMatsd2.GC, select=c("X49"))
@@ -830,7 +823,7 @@ X49.all <- cbind(chrms,X49,X49.sd)
 #change the column names appropriately
 colnames(X49.all)[1] <- "chr"; colnames(X49.all)[2] <- "mean";colnames(X49.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X49_chroms.pdf")
+{pdf("X49_chroms.pdf")
 with (
   data = X49.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -846,7 +839,8 @@ title(main="GC Line 49")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 4
 X4 <- subset(logMat.GC, select=c("X4"))
 X4.sd <- subset(logMatsd2.GC, select=c("X4"))
@@ -855,7 +849,7 @@ X4.all <- cbind(chrms,X4,X4.sd)
 #change the column names appropriately
 colnames(X4.all)[1] <- "chr"; colnames(X4.all)[2] <- "mean";colnames(X4.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X4_chroms.pdf")
+{pdf("X4_chroms.pdf")
 with (
   data = X4.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -871,7 +865,8 @@ title(main="GC Line 4")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 50
 X50 <- subset(logMat.MA, select=c("X50"))
 X50.sd <- subset(logMatsd2.MA, select=c("X50"))
@@ -880,7 +875,7 @@ X50.all <- cbind(chrms,X50,X50.sd)
 #change the column names appropriately
 colnames(X50.all)[1] <- "chr"; colnames(X50.all)[2] <- "mean";colnames(X50.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X50_chroms.pdf")
+{pdf("X50_chroms.pdf")
 with (
   data = X50.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -896,7 +891,7 @@ title(main="MA Line 50")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 59
 X59 <- subset(logMat.GC.r1, select=c("X59"))
@@ -906,7 +901,7 @@ X59.all <- cbind(chrms,X59,X59.sd)
 #change the column names appropriately
 colnames(X59.all)[1] <- "chr"; colnames(X59.all)[2] <- "mean";colnames(X59.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X59_chroms.pdf")
+{pdf("X59_chroms.pdf")
 with (
   data = X59.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -922,7 +917,7 @@ title(main="GC Line 59")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
 
 #line 5
 X5 <- subset(logMat.GC, select=c("X5"))
@@ -932,7 +927,7 @@ X5.all <- cbind(chrms,X5,X5.sd)
 #change the column names appropriately
 colnames(X5.all)[1] <- "chr"; colnames(X5.all)[2] <- "mean";colnames(X5.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X5_chroms.pdf")
+{pdf("X5_chroms.pdf")
 with (
   data = X5.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -948,7 +943,8 @@ title(main="GC Line 5")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 61
 X61 <- subset(logMat.GC, select=c("X61"))
 X61.sd <- subset(logMatsd2.GC, select=c("X61"))
@@ -957,7 +953,7 @@ X61.all <- cbind(chrms,X61,X61.sd)
 #change the column names appropriately
 colnames(X61.all)[1] <- "chr"; colnames(X61.all)[2] <- "mean";colnames(X61.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X61_chroms.pdf")
+{pdf("X61_chroms.pdf")
 with (
   data = X61.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -973,7 +969,8 @@ title(main="GC Line 61")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 66
 X66 <- subset(logMat.GC, select=c("X66"))
 X66.sd <- subset(logMatsd2.GC, select=c("X66"))
@@ -982,7 +979,7 @@ X66.all <- cbind(chrms,X66,X66.sd)
 #change the column names appropriately
 colnames(X66.all)[1] <- "chr"; colnames(X66.all)[2] <- "mean";colnames(X66.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X66_chroms.pdf")
+{pdf("X66_chroms.pdf")
 with (
   data = X66.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -997,7 +994,8 @@ title(main="GC Line 66")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 69
 X69 <- subset(logMat.GC, select=c("X69"))
 X69.sd <- subset(logMatsd2.GC, select=c("X69"))
@@ -1006,7 +1004,7 @@ X69.all <- cbind(chrms,X69,X69.sd)
 #change the column names appropriately
 colnames(X69.all)[1] <- "chr"; colnames(X69.all)[2] <- "mean";colnames(X69.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X69_chroms.pdf")
+{pdf("X69_chroms.pdf")
 with (
   data = X69.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1021,7 +1019,8 @@ title(main="GC Line 69")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 6
 X6 <- subset(logMat.GC, select=c("X6"))
 X6.sd <- subset(logMatsd2.GC, select=c("X6"))
@@ -1030,7 +1029,7 @@ X6.all <- cbind(chrms,X6,X6.sd)
 #change the column names appropriately
 colnames(X6.all)[1] <- "chr"; colnames(X6.all)[2] <- "mean";colnames(X6.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X6_chroms.pdf")
+{pdf("X6_chroms.pdf")
 with (
   data = X6.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1045,7 +1044,8 @@ title(main="GC Line 6")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 76
 X76 <- subset(logMat.GC, select=c("X76"))
 X76.sd <- subset(logMatsd2.GC, select=c("X76"))
@@ -1054,7 +1054,7 @@ X76.all <- cbind(chrms,X76,X76.sd)
 #change the column names appropriately
 colnames(X76.all)[1] <- "chr"; colnames(X76.all)[2] <- "mean";colnames(X76.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X76_chroms.pdf")
+{pdf("X76_chroms.pdf")
 with (
   data = X76.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1069,7 +1069,8 @@ title(main="GC Line 76")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 77
 X77 <- subset(logMat.GC, select=c("X77"))
 X77.sd <- subset(logMatsd2.GC, select=c("X77"))
@@ -1078,7 +1079,7 @@ X77.all <- cbind(chrms,X77,X77.sd)
 #change the column names appropriately
 colnames(X77.all)[1] <- "chr"; colnames(X77.all)[2] <- "mean";colnames(X77.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X77_chroms.pdf")
+{pdf("X77_chroms.pdf")
 with (
   data = X77.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1093,7 +1094,8 @@ title(main="GC Line 77")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 7
 X7 <- subset(logMat.GC, select=c("X7"))
 X7.sd <- subset(logMatsd2.GC, select=c("X7"))
@@ -1102,7 +1104,7 @@ X7.all <- cbind(chrms,X7,X7.sd)
 #change the column names appropriately
 colnames(X7.all)[1] <- "chr"; colnames(X7.all)[2] <- "mean";colnames(X7.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X7_chroms.pdf")
+{pdf("X7_chroms.pdf")
 with (
   data = X7.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1117,7 +1119,8 @@ title(main="GC Line 7")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 8
 X8 <- subset(logMat.GC, select=c("X8"))
 X8.sd <- subset(logMatsd2.GC, select=c("X8"))
@@ -1126,7 +1129,7 @@ X8.all <- cbind(chrms,X8,X8.sd)
 #change the column names appropriately
 colnames(X8.all)[1] <- "chr"; colnames(X8.all)[2] <- "mean";colnames(X8.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X8_chroms.pdf")
+{pdf("X8_chroms.pdf")
 with (
   data = X8.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1141,7 +1144,8 @@ title(main="GC Line 8")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 #line 9
 X9 <- subset(logMat.GC, select=c("X9"))
 X9.sd <- subset(logMatsd2.GC, select=c("X9"))
@@ -1150,7 +1154,7 @@ X9.all <- cbind(chrms,X9,X9.sd)
 #change the column names appropriately
 colnames(X9.all)[1] <- "chr"; colnames(X9.all)[2] <- "mean";colnames(X9.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-pdf("X9_chroms.pdf")
+{pdf("X9_chroms.pdf")
 with (
   data = X9.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1165,7 +1169,8 @@ title(main="GC Line 9")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-dev.off()
+dev.off()}
+
 ```
 
 ``` {r getRatioFiles, echo=FALSE}
@@ -5795,182 +5800,220 @@ t.test((log2(l029.16.red[,3])), log2(euRatio.c16.red.old), paired=FALSE, var.equ
 dev.off()}
 ```
 
-```{r new boxplots codes, include=TRUE}
-####################
-#CHROMOSOME 1 
-#yM.GC=NULL
-#for(line in rep.GC){
-#  for(chrm in 1:16){
-#    yM.GC <- c(yM.GC,(log2(getChrmRatio.GC(line,chrm)[,3])))
-#  }
-#}
-#warnings()
-#logAll.GC <- matrix(NA,nrow=nrow(sc_counts.final),ncol=ncol(sc_counts.final))
-#logAll.GC$chr <- sc_counts.final$chr
-#logAll.GC <- matrix(yM.GC,nrow=nrow(sc_counts.final),ncol=length(rep.GC))
-#colnames(logAll.GC) <- rep.GC
-#rownames(logAll.GC) <- sc_counts.final$tracking_id
-#logAll.GC$chr <- sc_counts.final$chr
-#View(sc_counts.final)
-#logAll.GC <- data.frame(logAll.GC)
-#chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-#logMat2.GC <-cbind(chrms,logMat.GC)
-#View(logAll.GC)
-#for i in linesGC {
-#      getChrmRatio.GC(i,1)
-#}
+``` {r boxplots, include=FALSE} 
 
-chr1GC <- data.frame(l001.1[,2],log2(l001.1[,3]),log2(l002.1[,3]) ,log2(l003.1[,3]),log2(l004.1[,3]),log2(l005.1[,3]) ,log2(l006.1[,3]),log2(l007.1[,3]),log2(l008.1[,3]),log2(l009.1[,3]),log2(l011.1[,3]),log2(l021.1[,3]),log2(l031.1[,3]),log2(l049.1[,3]),log2(l059.1[,3]),log2(l061.1[,3]),log2(l066.1[,3]),log2(l069.1[,3]),log2(l076.1[,3]),log2(l077.1[,3]))
-row.names(chr1GC) <- chr1GC$l001.1...2.
-chr1GC[1] <- NULL
-rownames(chr1GC) <- c()
-View(chr1GC)
-
-
-pdf("ggplot.test.pdf")
-
-test <- ggplot(chr1GC)
-test + geom_boxplot(x=colnames(chr1GC))
-#outlier.alpha=0.05,outlier.color="red"
-
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet")
-#p3 <- 0.0006221
-#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
-text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=11, y=1, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
-
-text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
-
-text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28.3, y=.8, "*", pos=3, cex=2, col="red") 
-
-grid.newpage()
-grid.draw(rbind(ggplotGrob(plot1.N),ggplotGrob(plot1.O),size="last"))
-
-#chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
- #       (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
-  #      (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l069.1[,3]))),
-#Line=rep(c(1,2,3,5,6,7,9,11,18,21,31,69),each=(length(l001.1$tracking_id))))
-#chr1DataofInterest$Line <-factor(chr1DataofInterest$Line)
-
-{pdf("Chrm_1_MA.GC.pdf")
-  
-boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
-              "green","cyan","cyan","cyan","cyan","green","cyan","cyan","cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet")
-#p3 <- 0.0006221
-#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
-text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=11, y=1, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
-
-text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
-
-text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
-}
-
-#i=l002.1
-#rm(i)
-#i=2
-#for (i in 1:length(chr1GC)) {
- # i[,3] <- log2((i[,3]+1))
-#  chr <- cbind(as.character(chr1GC$l001.1...2.),i[,3])
-#}
-#for (i in 1:length(lines.GC)) {
-#  lcpm2 <- lcpmGC[,1:61]
-#  ind <- grep(as.character(lines.GC[i]),names)
-#  cols <- lcpmGC[,ind]
-#  cols <- matrix(apply(cols,1,var))
-#  rownames(cols) <- c()
-#  colnames(cols) <- c()
-  #View(cols)
-#  v[,i] <- cols
-  # den[,i] <- density(v[,i])
-  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
-#}
-#l001.1$ratio <- log2(l001.1$ratio)
-#l002.1$ratio <- log2(l002.1$ratio)
-#test1 <- cbind(l002.1$chr,l002.1$tracking_id,l002.1$ratio,l001.1$ratio)
-#View(test1)
 chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
         (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
         (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))),
-Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77,29,50,112,115,117,123,141,152),each=(length(l001.1$tracking_id))))
-
-chr1DataCombo <- rbind(chr1Data,chr1Data.old)
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.1$tracking_id))))
 
 chr1Data.old <- data.frame(y=c((log2(l001.1.old[,3])),(log2(l002.1.old[,3])),(log2(l003.1.old[,3])),(log2(l004.1.old[,3])),(log2(l005.1.old[,3])),
         (log2(l006.1.old[,3])),(log2(l007.1.old[,3])),(log2(l008.1.old[,3])),(log2(l009.1.old[,3])),(log2(l011.1.old[,3])),
         (log2(l015.1[,3])),(log2(l028.1.old[,3])),(log2(l088.1[,3])),(log2(l108.1[,3])),(log2(l119.1[,3]))),
-Line=rep(c("1MA","2MA","3MA","4MA","5MA","6MA","7MA","8MA","9MA","11MA",15,28,88,108,119),each=(length(l001.1.old$tracking_id))))
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.1.old$tracking_id))))
+
+chr1DataCombo <- rbind(chr1Data,chr1Data.old)
+chr1DataCombo$Line <- as.factor(chr1DataCombo$Line)
+
+#View(chr1DataCombo)
+chr1DataCombo$Line=factor(chr1DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
 
 {pdf("Chrm_1_All.pdf")
   
-{boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3),col=c("green","cyan","orange","cyan","green","cyan","cyan","green","cyan","cyan","cyan","deeppink1","deeppink1","green","green","deeppink1","green","cyan","green","green","green","green","cyan","cyan","green","green","cyan","cyan","green","green","cyan","cyan","cyan","green","deeppink1","cyan","green","green","cyan","cyan","green","green"))
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet") }
-#p3 <- 0.0006221
-#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
-text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=11, y=1, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
+boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "deeppink1"))
 
-text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
-
-text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
 }
 
-#use tidyr to spread my columns into multiple columns (useful for later plotting)
-#chr1Data.1 <- spread(chr1Data,key="Line",value="y",mutate(id=1:n()))
+###############
+#Chromosome 2 
+chr2Data <- data.frame(y=c((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3])),(log2(l005.2[,3])),
+        (log2(l006.2[,3])),(log2(l007.2[,3])),(log2(l008.2[,3])),(log2(l009.2[,3])),(log2(l011.2[,3])),
+       (log2(l018.2[,3])),(log2(l021.2[,3])),(log2(l031.2[,3])),(log2(l049.2[,3])),(log2(l059.2[,3])),
+       (log2(l061.2[,3])),(log2(l066.2[,3])),(log2(l069.2[,3])),(log2(l076.2[,3])),(log2(l077.2[,3])),(log2(l029.2[,3])),(log2(l050.2[,3])),(log2(l112.2[,3])),(log2(l115.2[,3])),(log2(l117.2[,3])),
+        (log2(l123.2[,3])),(log2(l141.2[,3])),(log2(l152.2[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.2$tracking_id))))
 
+chr2Data.old <- data.frame(y=c((log2(l001.2.old[,3])),(log2(l002.2.old[,3])),(log2(l003.2.old[,3])),(log2(l004.2.old[,3])),(log2(l005.2.old[,3])),
+        (log2(l006.2.old[,3])),(log2(l007.2.old[,3])),(log2(l008.2.old[,3])),(log2(l009.2.old[,3])),(log2(l011.2.old[,3])),
+        (log2(l015.2[,3])),(log2(l028.2.old[,3])),(log2(l088.2[,3])),(log2(l108.2[,3])),(log2(l119.2[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.2.old$tracking_id))))
+
+chr2DataCombo <- rbind(chr2Data,chr2Data.old)
+
+chr2DataCombo$Line=factor(chr2DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_2_All.pdf")
+  
+boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+
+{pdf("Chrm_2_All.pdf")
+  
+boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3),col=c("green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan","green","green","cyan","green","cyan","green","green","green","green","cyan","cyan","green","green","cyan","cyan","green","green","cyan","cyan","cyan","green","cyan","cyan","green","green","cyan","cyan","green","green"))
+abline(h=0,lty=2)
+abline(h=0.585,lty=2,col="forestgreen")
+abline(h=-1,lty=2,col="darkviolet") 
+}
+
+############
+#Chrom 3 
+chr3Data <- data.frame(y=c((log2(l001.3[,3])),(log2(l002.3[,3])),(log2(l003.3[,3])),(log2(l004.3[,3])),(log2(l005.3[,3])),
+        (log2(l006.3[,3])),(log2(l007.3[,3])),(log2(l008.3[,3])),(log2(l009.3[,3])),(log2(l011.3[,3])),
+       (log2(l018.3[,3])),(log2(l021.3[,3])),(log2(l031.3[,3])),(log2(l049.3[,3])),(log2(l059.3[,3])),
+       (log2(l061.3[,3])),(log2(l066.3[,3])),(log2(l069.3[,3])),(log2(l076.3[,3])),(log2(l077.3[,3])),(log2(l029.3[,3])),(log2(l050.3[,3])),(log2(l112.3[,3])),(log2(l115.3[,3])),(log2(l117.3[,3])),
+        (log2(l123.3[,3])),(log2(l141.3[,3])),(log2(l152.3[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.3$tracking_id))))
+
+chr3Data.old <- data.frame(y=c((log2(l001.3.old[,3])),(log2(l002.3.old[,3])),(log2(l003.3.old[,3])),(log2(l004.3.old[,3])),(log2(l005.3.old[,3])),
+        (log2(l006.3.old[,3])),(log2(l007.3.old[,3])),(log2(l008.3.old[,3])),(log2(l009.3.old[,3])),(log2(l011.3.old[,3])),
+        (log2(l015.3[,3])),(log2(l028.3.old[,3])),(log2(l088.3[,3])),(log2(l108.3[,3])),(log2(l119.3[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.3.old$tracking_id))))
+
+chr3DataCombo <- rbind(chr3Data,chr3Data.old)
+
+chr3DataCombo$Line=factor(chr3DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_3_All.pdf")
+  
+boxplot(y~Line,data=chr3DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 3",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+###########
+#Chrm 4 
+chr4Data <- data.frame(y=c((log2(l001.4[,3])),(log2(l002.4[,3])),(log2(l003.4[,3])),(log2(l004.4[,3])),(log2(l005.4[,3])),
+        (log2(l006.4[,3])),(log2(l007.4[,3])),(log2(l008.4[,3])),(log2(l009.4[,3])),(log2(l011.4[,3])),
+       (log2(l018.4[,3])),(log2(l021.4[,3])),(log2(l031.4[,3])),(log2(l049.4[,3])),(log2(l059.4[,3])),
+       (log2(l061.4[,3])),(log2(l066.4[,3])),(log2(l069.4[,3])),(log2(l076.4[,3])),(log2(l077.4[,3])),(log2(l029.4[,3])),(log2(l050.4[,3])),(log2(l112.4[,3])),(log2(l115.4[,3])),(log2(l117.4[,3])),
+        (log2(l123.4[,3])),(log2(l141.4[,3])),(log2(l152.4[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.4$tracking_id))))
+
+chr4Data.old <- data.frame(y=c((log2(l001.4.old[,3])),(log2(l002.4.old[,3])),(log2(l003.4.old[,3])),(log2(l004.4.old[,3])),(log2(l005.4.old[,3])),
+        (log2(l006.4.old[,3])),(log2(l007.4.old[,3])),(log2(l008.4.old[,3])),(log2(l009.4.old[,3])),(log2(l011.4.old[,3])),
+        (log2(l015.4[,3])),(log2(l028.4.old[,3])),(log2(l088.4[,3])),(log2(l108.4[,3])),(log2(l119.4[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.4.old$tracking_id))))
+
+chr4DataCombo <- rbind(chr4Data,chr4Data.old)
+
+chr4DataCombo$Line=factor(chr4DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_4_All.pdf")
+  
+boxplot(y~Line,data=chr4DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 4",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+#######
+# chrom 5 
+chr5Data <- data.frame(y=c((log2(l001.5[,3])),(log2(l002.5[,3])),(log2(l003.5[,3])),(log2(l004.5[,3])),(log2(l005.5[,3])),
+        (log2(l006.5[,3])),(log2(l007.5[,3])),(log2(l008.5[,3])),(log2(l009.5[,3])),(log2(l011.5[,3])),
+       (log2(l018.5[,3])),(log2(l021.5[,3])),(log2(l031.5[,3])),(log2(l049.5[,3])),(log2(l059.5[,3])),
+       (log2(l061.5[,3])),(log2(l066.5[,3])),(log2(l069.5[,3])),(log2(l076.5[,3])),(log2(l077.5[,3])),(log2(l029.5[,3])),(log2(l050.5[,3])),(log2(l112.5[,3])),(log2(l115.5[,3])),(log2(l117.5[,3])),
+        (log2(l123.5[,3])),(log2(l141.5[,3])),(log2(l152.5[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.5$tracking_id))))
+
+chr5Data.old <- data.frame(y=c((log2(l001.5.old[,3])),(log2(l002.5.old[,3])),(log2(l003.5.old[,3])),(log2(l004.5.old[,3])),(log2(l005.5.old[,3])),
+        (log2(l006.5.old[,3])),(log2(l007.5.old[,3])),(log2(l008.5.old[,3])),(log2(l009.5.old[,3])),(log2(l011.5.old[,3])),
+        (log2(l015.5[,3])),(log2(l028.5.old[,3])),(log2(l088.5[,3])),(log2(l108.5[,3])),(log2(l119.5[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.5.old$tracking_id))))
+
+chr5DataCombo <- rbind(chr5Data,chr5Data.old)
+
+chr5DataCombo$Line=factor(chr5DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_5_All.pdf")
+  
+boxplot(y~Line,data=chr5DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 5",las=3,ylim=c(-3,3),col=c("green","green","green","deeppink1","green","green","cyan","cyan","green","cyan","cyan","cyan","green","deeppink1","cyan","cyan","cyan","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+#######
+#chrm 6 
+chr6Data <- data.frame(y=c((log2(l001.6[,3])),(log2(l002.6[,3])),(log2(l003.6[,3])),(log2(l004.6[,3])),(log2(l005.6[,3])),
+        (log2(l006.6[,3])),(log2(l007.6[,3])),(log2(l008.6[,3])),(log2(l009.6[,3])),(log2(l011.6[,3])),
+       (log2(l018.6[,3])),(log2(l021.6[,3])),(log2(l031.6[,3])),(log2(l049.6[,3])),(log2(l059.6[,3])),
+       (log2(l061.6[,3])),(log2(l066.6[,3])),(log2(l069.6[,3])),(log2(l076.6[,3])),(log2(l077.6[,3])),(log2(l029.6[,3])),(log2(l050.6[,3])),(log2(l112.6[,3])),(log2(l115.6[,3])),(log2(l117.6[,3])),
+        (log2(l123.6[,3])),(log2(l141.6[,3])),(log2(l152.6[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.6$tracking_id))))
+
+chr6Data.old <- data.frame(y=c((log2(l001.6.old[,3])),(log2(l002.6.old[,3])),(log2(l003.6.old[,3])),(log2(l004.6.old[,3])),(log2(l005.6.old[,3])),
+        (log2(l006.6.old[,3])),(log2(l007.6.old[,3])),(log2(l008.6.old[,3])),(log2(l009.6.old[,3])),(log2(l011.6.old[,3])),
+        (log2(l015.6[,3])),(log2(l028.6.old[,3])),(log2(l088.6[,3])),(log2(l108.6[,3])),(log2(l119.6[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.6.old$tracking_id))))
+
+chr6DataCombo <- rbind(chr6Data,chr6Data.old)
+
+chr6DataCombo$Line=factor(chr6DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_6_All.pdf")
+  
+boxplot(y~Line,data=chr6DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 6",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+#######
+# chrm 7 
+chr7Data <- data.frame(y=c((log2(l001.7[,3])),(log2(l002.7[,3])),(log2(l003.7[,3])),(log2(l004.7[,3])),(log2(l005.7[,3])),
+        (log2(l006.7[,3])),(log2(l007.7[,3])),(log2(l008.7[,3])),(log2(l009.7[,3])),(log2(l011.7[,3])),
+       (log2(l018.7[,3])),(log2(l021.7[,3])),(log2(l031.7[,3])),(log2(l049.7[,3])),(log2(l059.7[,3])),
+       (log2(l061.7[,3])),(log2(l066.7[,3])),(log2(l069.7[,3])),(log2(l076.7[,3])),(log2(l077.7[,3])),(log2(l029.7[,3])),(log2(l050.7[,3])),(log2(l112.7[,3])),(log2(l115.7[,3])),(log2(l117.7[,3])),
+        (log2(l123.7[,3])),(log2(l141.7[,3])),(log2(l152.7[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.7$tracking_id))))
+
+chr7Data.old <- data.frame(y=c((log2(l001.7.old[,3])),(log2(l002.7.old[,3])),(log2(l003.7.old[,3])),(log2(l004.7.old[,3])),(log2(l005.7.old[,3])),
+        (log2(l006.7.old[,3])),(log2(l007.7.old[,3])),(log2(l008.7.old[,3])),(log2(l009.7.old[,3])),(log2(l011.7.old[,3])),
+        (log2(l015.7[,3])),(log2(l028.7.old[,3])),(log2(l088.7[,3])),(log2(l108.7[,3])),(log2(l119.7[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.7.old$tracking_id))))
+
+chr7DataCombo <- rbind(chr7Data,chr7Data.old)
+
+chr7DataCombo$Line=factor(chr7DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_7_All.pdf")
+  
+boxplot(y~Line,data=chr7DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 7",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","deeppink1","deeppink1","deeppink1","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+}
+
+
+
+```
+
+
+```{r ANOVAs, Tukey's, include=TRUE}
+####################
+#CHROMOSOME 1 
 #data frame with only euploids, so I can do a euploid by euploid test
 chr1DataofInterest <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l005.1[,3])),
         (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
         (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l069.1[,3]))),
 Line=rep(c(1,2,3,5,6,7,9,11,18,21,31,69),each=(length(l001.1$tracking_id))))
 chr1DataofInterest$Line <-factor(chr1DataofInterest$Line)
-
-
 
 exp3x <- log2(1.5)
 exp3x
@@ -5993,87 +6036,13 @@ TukeyHSD(aov.chr1ofInt)
 Tukey.chr1.ofInt <- TukeyHSD(aov.chr1ofInt)
 #Tukey.chr1.ofInt <- data.table(TukeyHSD(aov.chr1ofInt))
 #write.csv(Tukey.chr1.ofInt,file="Tukey.chr1.ofInt.csv")
-{pdf("Chrm1.Tukey.ofInt.GC.pdf")
-plot(TukeyHSD(aov.chr1ofInt))}
+#{pdf("Chrm1.Tukey.ofInt.GC.pdf")
+#plot(TukeyHSD(aov.chr1ofInt))}
 
-
-#This code works beautifully to produce a boxplot 
-{pdf("Chrm_1_MA.GC.pdf")
-  
-plot1.N <- boxplot(y~Line,data=chr1Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1",
-              "green","cyan","cyan","cyan","cyan","green","cyan","cyan","cyan", "green","cyan","green","cyan","cyan","cyan","deeppink1"),main="Chromosome 1",las=3,ylim=c(-2,2.5))
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet")
-#p3 <- 0.0006221
-#mylabel = bquote(italic(p) == .(format(p3, digits = 9)))
-#text(x=2.3,y = 2.5, labels = mylabel,cex=.8)
-text(x=6.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7, y=1, "*", pos=3, cex=2, col="red")
-text(x=7.3, y=1, "*", pos=3, cex=2, col="red")
-text(x=9.7, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.3, y=.5, "*", pos=3, cex=2, col="red")
-text(x=10.7, y=1, "*", pos=3, cex=2, col="red")
-text(x=11, y=1, "*", pos=3, cex=2, col="red")
-text(x=11.3, y=1, "*", pos=3, cex=2, col="red")
-
-text(x=11.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12, y=.8, "*", pos=3, cex=2, col="red")
-text(x=12.3, y=.8, "*", pos=3, cex=2, col="red")
-
-text(x=27.7, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28, y=.8, "*", pos=3, cex=2, col="red")
-text(x=28.3, y=.8, "*", pos=3, cex=2, col="red")
-}
-
-pdf("ggplot.test.pdf")
-plot1.N <- ggplot(chr1Data, aes(Line,y))
-plot1.N + geom_boxplot(outlier.alpha=0.05 , outlier.color="red")
-#fill="green", outlier.color="red") #+geom_jitter(width=0.2)
-
-
-#wilcox.test((log2(l021.1[,3])), (log2(euRatio.c1.GC)), paired=FALSE, var.equal=TRUE)
-#ANOVA/NonParametric Equivalent
-#p-value < 2.2 e-16 (So at least one of the data points is very different from the others)
-#test pairwise comparisons
-#Tukeys doesnt work with kruskal
-#TukeyHSD(aov.chr1)
-#plot(TukeyHSD(aov.chr1))
-#but there is an equivalent for Tukeys with kruskal
-#Citation Siegel and Castellan (1988) Non parametric statistics for the behavioural sciences. MacGraw Hill Int., New York. pp 213-214
-#kruskalmc(y~Line,data=chr1Data)
-#multiCompsChr1 <- kruskalmc(y~Line,data=chr1Data)
-#OR can do many pairwise t-tests
-#pairwise.t.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
-#wilcox.chr1 <- data.table(pairwise.wilcox.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr"))
-#View(wilcox.chr1)
-#pairwise.wilcox.test(chr1Data$y,chr1Data$Line,p.adjust.method = "fdr")
 
 
 ##############################################################################################
 #CHROMOSOME 2
-
-#RATIOS FOR CHROMOSOME 2
-#euRatio.c2 <- c(l002.2[,3],l003.2[,3],l005.2[,3],l006.2[,3],l008.2[,3],l009.2[,3],l069.2[,3])
-#pdf("Chrm_2.pdf")
-#this code works beautifully to produce a table with all of the log2 values for chromosome 1 
-chr2Data <- data.frame(y=c((log2(l001.2[,3])),(log2(l002.2[,3])),(log2(l003.2[,3])),(log2(l004.2[,3])),
-        (log2(l005.2[,3])),(log2(l006.2[,3])),(log2(l007.2[,3])),(log2(l008.2[,3])),
-        (log2(l009.2[,3])),(log2(l011.2[,3])),(log2(l018.2[,3])),(log2(l021.2[,3])),
-        (log2(l031.2[,3])),(log2(l049.2[,3])),(log2(l059.2[,3])),(log2(l061.2[,3])),
-        (log2(l066.2[,3])),(log2(l069.2[,3])),(log2(l076.2[,3])),(log2(l077.2[,3]))),
-Line=rep(c(1,2,3,4,5,6,7,8,9,11,18,21,31,49,59,61,66,69,76,77),each=(length(l001.2$tracking_id))))
-chr2Data$Line <-factor(chr2Data$Line)
-#This code works beautifully to produce a boxplot 
-{pdf("Chrm_2.pdf")
-boxplot(y~Line,data=chr2Data,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,col=c("green", "green","green","cyan","green","green","cyan","cyan","green","darkcyan","cyan","cyan",
-              "green","cyan","cyan","cyan","cyan","green","cyan","cyan"),main="GC Lines Chromsome 2",las=3,ylim=c(-2,2.5))
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet")
-}
-
 aov.chr2 <- aov(y~Line,data=chr2Data)
 summary(aov.chr2)
 resids.chr2 <- resid(aov.chr2)
@@ -6153,7 +6122,6 @@ pairwise.wilcox.test(chr3Data$y,chr3Data$Line,p.adjust.method = "fdr")
 
 ##############################################################################################
 #CHROMOSOME 4
-
 #RATIOS FOR CHROMOSOME 4
 #euRatio.c4 <- c(l002.4[,3],l003.4[,3],l005.4[,3],l006.4[,3],l008.4[,3],l009.4[,3],l069.4[,3])
 
@@ -6201,7 +6169,6 @@ pairwise.wilcox.test(chr4Data$y,chr4Data$Line,p.adjust.method = "fdr")
 
 ##############################################################################################
 #CHROMOSOME 5
-
 #RATIOS FOR CHROMOSOME 5
 #euRatio.c5 <- c(l002.5[,3],l003.5[,3],l005.5[,3],l006.5[,3],l008.5[,3],l009.5[,3],l069.5[,3])
 
@@ -6264,7 +6231,6 @@ pairwise.wilcox.test(chr5Data$y,chr5Data$Line,p.adjust.method = "fdr")
 
 ##############################################################################################
 #CHROMOSOME 6
-
 #RATIOS FOR CHROMOSOME 6
 #euRatio.c6 <- c(l002.6[,3],l003.6[,3],l005.6[,3],l006.6[,3],l008.6[,3],l009.6[,3],l069.6[,3])
 

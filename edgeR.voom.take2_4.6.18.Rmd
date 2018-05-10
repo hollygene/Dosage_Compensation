@@ -23,6 +23,7 @@ library(tidyr)
 library(data.table)
 library(stringr)
 library(ggplot2)
+library(plotly)
 ```
 
 ```{r data_packaging, include=FALSE}
@@ -50,8 +51,8 @@ samplenames.GC
 #samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
 #length(samplenames.GC)
 #put filenames into DGEList as column names 
-colnames(x.GC) <-samplenames.GC
-colnames(x.GC) <- lines.G
+colnames(x.GC) <-c(".11.A",".11.B",".11.C",".18.A",".18.B",".18.C",".1.A", ".1.B", ".1.C", ".21.B",".21.C",".2.A", ".2.B", ".2.C", ".31.A",".31.B",".31.C",".3.A", ".3.B", ".3.C",".49.A",".49.B",".49.C",".4.A", ".4.B",".4.C", ".59.A",".59.B",".59.C",".5.A",".5.B", ".5.C", ".61.A",".61.B",".61.C",".66.B",".66.C",".68.A",".68.B",".68.C",".6.A", ".6.B", ".6.C", ".76.A",".76.B",".76.C",".77.A",".77.B",".77.C",".7.A",".7.B", ".7.C", ".8.A", ".8.B", ".8.C",".9.A", ".9.B", ".9.C", ".GCAnc.A" ,".GCAnc.B",".GCAnc.C")
+
 x.GC$counts
  ###################################################
 #group samples together according to experiment
@@ -457,7 +458,7 @@ lines.G <- c(".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.","
 
 i=1
 rm(i)
-v <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
+v <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
 is.list(v)
 for (i in 1:length(lines.G)) {
   ind <- grep(as.character(lines.G[i]),names)
@@ -470,9 +471,12 @@ for (i in 1:length(lines.G)) {
   # den[,i] <- density(v[,i])
   #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
 }
+
 colnames(v) <- lines.G
-v <- cbind(genes$x.GC.genes.TXCHROM,v)
+v <- cbind(as.factor(genes$x.GC.genes.TXCHROM),v)
+v <- cbind(as.factor(genes$x.GC.genes.GENEID),v)
 v <- data.frame(v)
+
 
 #(paste("^",lines.GC[i],"$",sep="")
 #v <- cbind(genes$x.GC.genes.TXCHROM,v)
@@ -495,6 +499,7 @@ for (i in 1:length(lines.G)) {
 }
 colnames(mean) <- lines.G
 mean <- cbind(as.factor(genes$x.GC.genes.TXCHROM),mean)
+mean <- cbind(as.factor(genes$x.GC.genes.GENEID),mean)
 mean <- data.frame(mean)
 #mean <- data.frame(mean)
 #mean <- unlist(mean)
@@ -514,7 +519,8 @@ for (i in 1:length(lines.G)) {
   #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
 }
 colnames(std) <- lines.G
-std <- cbind(genes$x.GC.genes.TXCHROM,std)
+std <- cbind(as.factor(genes$x.GC.genes.TXCHROM),std)
+std <- cbind(genes$x.GC.genes.GENEID,std)
 std <- data.frame(std)
 #std <- unlist(std)
 
@@ -525,21 +531,21 @@ dim(std)
 cv <- matrix(data=NA,nrow=nrow(mean),ncol=length(ncol(mean)))
 #log transform the coefficient of variance 
 #cv <- log(cv)
-cv <- std[,2:22]/mean[,2:22]
+cv <- std[,3:23]/mean[,3:23]
 dim(cv)
 #cv <- transform_to_log_scale(cv)
-#cv <- cbind(genes$x.GC.genes.GENEID,cv)
 colnames(cv) <- lines.G
 cv <- cbind(genes$x.GC.genes.TXCHROM,cv)
+cv <- cbind(genes$x.GC.genes.GENEID,cv)
 #cv <- data.frame(cv)
 #cv <- unlist(cv)
 #max(subset(cv,select="X3"))
 
 par(mar=c(1,1,1,1))
 #pdf("test.pdf")
-cl <- colors(distinct = TRUE)
-set.seed(15887) # to set random generator seed
-mycols2 <- sample(cl, 16)
+#cl <- colors(distinct = TRUE)
+#set.seed(15887) # to set random generator seed
+#mycols2 <- sample(cl, 16)
 #colChrm <- palette(rainbow(16))
 #mean[,1] <- as.character(mean[,1])
 #nlevels(mean[,1])
@@ -554,24 +560,28 @@ mycols2 <- sample(cl, 16)
 #v <- unlist(v)
 #mean <- unlist(mean)
 #v <- unlist(v)
-
-plot(mean,v,col=mycols2,log="y")
-legend <- col
-{plot(mean,cv,log="y",col=factor(mean[,1]))
-  
-legend("topright", legend = legend,col=factor(mean[,1]))}
-dim(cv)
-plot(mean,v,col=factor(mean[,1]))
-
-#,legend("topright",chrm,text.col=colChrm,bty="n",cex=0.4,ncol=4)
-
-par(mfrow=c(1,1))
-
-nlevels(colChrm)
-{pdf("test1.pdf")
-plot(mean,cv,col=factor(mean[,1]))
+#loop to plot mean-variance relationship for all lines
+lines.G
+line.G <- c("NA",".GCAnc.",".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.")
+i=3
+length(line.G)
+length(mean)
+rm(i)
+for (i in 3:23) {
+  pdf(paste("Mean-Variance Relationship",line.G[i],".pdf",sep=""))
+  print(ggplot () + geom_point(aes(x=mean[,i],y=v[,i],col=factor(mean$V1))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
+  dev.off()
 }
 
+#use plotly to view the graph interactively and see what points correspond to what genes/chromosomes 
+get.points <- function(line) {
+   ggplot () + geom_point(aes(x=mean[,line],y=v[,line],col=factor(mean$V1))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[line]), y="variance",x="mean")
+ggplotly()
+}
+
+get.points(18)
+
+par(mfrow=c(1,1))
 
 ### same thing but not log transformed
 #v.c <- matrix(data=NA,nrow=nrow(cpmGC),ncol=length(lines.GC))
@@ -850,9 +860,10 @@ for (i in 1:length(lines.G)) {
 pval <- data.frame(pval)
 colnames(pval) <- lines.G
 pval <- cbind(genes$x.GC.genes.TXCHROM,pval)
+pval <- cbind(genes$x.GC.genes.GENEID,pval)
 #pval versus coefficient of variation per line 
 #loop
-lines.GC
+
 line.GC <- c("na","1",   "11" , "18" , "2"  , "21",  "3"  , "31" , "4",  "49" , "5"  , "59" , "6",   "61" ,"66",  "68",  "7" ,  "76"  ,"77",  "8" ,  "9")
 length(line.GC)
 i=20
@@ -866,8 +877,7 @@ str(cv)
 str(pval)
 
 rm(i)
-length(val)
-length(v)
+
 lines.G[1]
 rm(i)
 for (i in 1:20) {
@@ -882,7 +892,19 @@ for (i in 1:20) {
   dev.off()
 }
 
-  
+pvscv <- function(line) {
+    p <- grep(paste("^",(line.G[line]),"$",sep=""),names.p)
+  val <- pval[,p]
+  c <- grep(paste("^",(line.G[line]),"$",sep=""),names.cv)
+  v <- cv[,c]
+  corTest.cv <- cor.test(val,v)
+#  corTest.cv <- c(corTest.cv$p.value)
+  print(ggplot () + geom_point(aes(x=val,y=v,col=pval[,2])) + scale_y_log10()  + labs(title=(paste("Pval vs CV Line",line.G[line])), y="CV",x="pval") + annotate("text",x=0.9,y=100,label=paste("pval=",corTest.cv$p.value,sep="")) + geom_vline(xintercept=0.05))
+  ggplotly()
+}
+
+pvscv(3)
+
 #ggplot () + geom_point(aes(x=pval$X1,y=cv$X1)) + scale_y_log10() 
 #ggplot(pval,cv,col=colGC,log="y")
 #plot(pval,cv,col=colGC,log="y",xlim=c(0,0.09))

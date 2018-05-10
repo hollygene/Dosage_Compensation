@@ -47,31 +47,43 @@ gene.means <- rowMeans(sc_counts.z[,3:140]) #average across the sample
 anc.means.MA <- rowMeans(sc_counts.z[,90:92]) #average in the ancestor
 anc.means.GC <- rowMeans(sc_counts.z[87:89]) #average in the GC ancestor
 View(sc_counts)
-sc_counts$X59_0 <- c()
+
 #if the average fpkm is less than 5 in the ancestor or less than 5 in the overall, remove the gene
 sc_counts.final <- sc_counts.z[-which(gene.means<5 | anc.means.MA<5 | anc.means.GC<5),]
 View(sc_counts.final)
 #final matrix for ancestor and descendans
 sc_anc <- sc_counts.final[,c(1,2,87,88,89,90,91,92,138,139,140)]
-sc_des.GC <- sc_counts.final[,c(1:2,12:14,24:32,36:50,54:86)] #average for each GC line
+#average for each GC line
 #going to analyze 21 and 59 separately since I need to remove the replicates that don't match to them and I don't know what they are yet. 
 #this one is for line 11 to have the replicate that originally belonged to line 21 
-sc_des.GC.r <- sc_counts.final[,c(1:2,12,14,24:32,36:50,54:86)] #average for each GC line
-View(sc_des.GC.r)
-colnames(sc_des.GC.r)[11] <- "X11_0"
-sc_des.GC.r <- sc_des.GC.r[,c(1:11,14:61)] #average for each GC line
-View(sc_des.GC.r)
+sc_des.GC <- sc_counts.final[,c(1:2,12,14,24:32,36:50,54:86)] #average for each GC line
+#View(sc_des.GC)
+colnames(sc_des.GC)[11] <- "X11_0"
+#View(sc_des.GC.r)
 #for lines 21 and 59 
 #need 12:14, 30:32
-sc_des.GC.r1 <- sc_des.GC[,c(1:2,12:14,30:32)] 
-View(sc_des.GC.r1)
-sc_des.GC.r1 <- sc_des.GC.r1[,c(1:2,4:5,7:8)] 
+colnames(sc_des.GC)
+sc_des.GC.r1 <- sc_des.GC[,c(1:2,12,13,30:31,39:40)]
 colnames(sc_des.GC.r1)[3] <- "X21_1"
-View(sc_des.GC.r1)
-str(sc_des.GC.r1)
+sc_counts$X66_0 <- c()
+sc_counts$X66_1 <- c()
+sc_counts$X66_2 <- c()
+sc_des.GC$X21_0 <- c()
+sc_des.GC$X21_2 <- c()
+sc_des.GC$X59_0 <- c()
+sc_des.GC$X59_1 <- c()
+sc_des.GC$X59_2 <- c()
+#21, 59, and 66 by themselves
+
+
+#View(sc_des.GC)
+#View(sc_des.GC.r1)
+
+#View(sc_des.GC.r1)
+#str(sc_des.GC.r1)
 
 sc_des.MA <- sc_counts.final[,c(1:11,15:23,33:35,51:53)] #average for each MA line
-write.csv(sc_des.MA,file="sc_des.MA.csv")
+#write.csv(sc_des.MA,file="sc_des.MA.csv")
 
 
 index1 <- which(sc_anc[,1]==1)
@@ -118,8 +130,6 @@ getAvgFPKM.MA <- function(line) { #for line as "###" string
   #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
   return(desAvg.MA) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
 }
-
-
 #getAvgFPKM.GC <- function(line) { #for line as "###" string
 #  r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
 #  r2 <- paste(c("X",line,"_1"),collapse="")
@@ -131,18 +141,16 @@ getAvgFPKM.MA <- function(line) { #for line as "###" string
   #colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
 #  return(desAvg.GC) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
 #}
-
-
-getAvgFPKM.GC.r <- function(line) { #for line as "###" string
+getAvgFPKM.GC <- function(line) { #for line as "###" string
   r1 <- paste(c("X",line,"_0"),collapse="") #triplicates are named X[LINE]_[rep]
   r2 <- paste(c("X",line,"_1"),collapse="")
   r3 <- paste(c("X",line,"_2"),collapse="")
-  reps <- sc_des.GC.r[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
+  reps <- sc_des.GC[,c("chr","tracking_id",r1,r2,r3)] #get those 4 columns out of the descendant dataset
   reps[reps==0] <- NA #replace 0 values with NA as before
-  desAvg.GC.r <- rowMeans(reps[,c(-1,-2)],na.rm=T)
-  desAvg.GC.r <- cbind(sc_des.GC.r[,c(1,2)],desAvg.GC.r)
-  colnames(desAvg) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
-  return(desAvg.GC.r) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
+  desAvg.GC <- rowMeans(reps[,c(-1,-2)],na.rm=T)
+  desAvg.GC <- cbind(sc_des.GC[,c(1,2)],desAvg.GC)
+  colnames(desAvg.GC) <- c("chr","gene",paste(c(line,"_Avg"),collapse=""))
+  return(desAvg.GC) #returned is a matrix equivalent to ancAvg: chrm, gene, and line average FPKM 
 }
 
 getAvgFPKM.GC.r1 <- function(line) { #for line as "###" string
@@ -173,12 +181,12 @@ getFPKMRatio.MA <- function(line) { #line must be a 3 digit character
 #  return(rat.GC)
 #}
 
-getFPKMRatio.GC.r <- function(line) { #line must be a 3 digit character
-  desAvg.GC.r <- getAvgFPKM.GC.r(line) #first call avg fpkm script, which returns a 3 column matrix
-  ratioByGene.GC.r <- desAvg.GC.r[,3]/ancAvg.GC[,3]
-  rat.GC.r <- cbind(sc_des.GC.r[,1:2],ratioByGene.GC.r) #add gene and chrm values
-  colnames(rat.GC.r) <- c("chr","tracking_id","ratio")
-  return(rat.GC.r)
+getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
+  desAvg.GC <- getAvgFPKM.GC(line) #first call avg fpkm script, which returns a 3 column matrix
+  ratioByGene.GC <- desAvg.GC[,3]/ancAvg.GC[,3]
+  rat.GC <- cbind(sc_des.GC[,1:2],ratioByGene.GC) #add gene and chrm values
+  colnames(rat.GC) <- c("chr","tracking_id","ratio")
+  return(rat.GC)
 }
 
 getFPKMRatio.GC.r1 <- function(line) { #line must be a 3 digit character
@@ -205,11 +213,11 @@ getChrmRatio.MA <- function(line, chr){ #input line as "XXX", chr as a number
 #}
 
 
-getChrmRatio.GC.r <- function(line, chr){ #input line as "XXX", chr as a number
-  rat.GC.r <- getFPKMRatio.GC.r(line) #get list of ratios which includes chrm and gene
-  rat.c.GC.r <- rat.GC.r[(rat.GC.r[,1]==chr),] #get just the rows for the appropriate chrom
-  rat.cs.GC.r <- rat.c.GC.r[order(rat.c.GC.r[,3]),]#order by column 3
-  return(rat.cs.GC.r)
+getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
+  rat.GC <- getFPKMRatio.GC(line) #get list of ratios which includes chrm and gene
+  rat.c.GC <- rat.GC[(rat.GC[,1]==chr),] #get just the rows for the appropriate chrom
+  rat.cs.GC <- rat.c.GC[order(rat.c.GC[,3]),]#order by column 3
+  return(rat.cs.GC)
 }
 
 
@@ -253,36 +261,36 @@ ratMatMedRed.MA[ratMatMedRed.MA<1.35] <- NA
 #colnames(ratMatMed.GC)[1] <- "chr"
 
 
-y.GC.r=NULL
-rep.GC.r <- c("11","18","1","2","31","3","49","4","59","5","61","66","69","6","76","77","7","8","9")
-for(line in rep.GC.r){
+y.GC=NULL
+rep.GC <- c("11","18","1","2","31","3","49","4","5","61","69","6","76","77","7","8","9")
+for(line in rep.GC){
   for(chrm in 1:16){
-    y.GC.r <- c(y.GC.r,median(getChrmRatio.GC.r(line,chrm)[,3],na.rm=T))
+    y.GC<- c(y.GC,median(getChrmRatio.GC(line,chrm)[,3],na.rm=T))
   }
 }
 
-ratMatMed.GC.r <- matrix(y.GC.r,nrow=16,ncol=19)
-colnames(ratMatMed.GC.r) <- rep.GC.r
-ratMatMed.GC.r <- cbind(c(1:16),ratMatMed.GC.r)
-colnames(ratMatMed.GC.r)[1] <- "chr"
+ratMatMed.GC <- matrix(y.GC,nrow=16,ncol=17)
+colnames(ratMatMed.GC) <- rep.GC
+ratMatMed.GC <- cbind(c(1:16),ratMatMed.GC)
+colnames(ratMatMed.GC)[1] <- "chr"
 #remove the ratios that are about 1
 ratMatMedRed.GC <- ratMatMed.GC
 ratMatMedRed.GC[ratMatMedRed.GC<1.35] <- NA
-ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
+#ratMatMedRed.MA[9,15] <- ratMatMedRed.MA[9,15]
 
 y.GC.r1=NULL
-rep.GC.r1 <- c("21","59")
+rep.GC.r1 <- c("21","59","66")
 for(line in rep.GC.r1){
   for(chrm in 1:16){
     y.GC.r1 <- c(y.GC.r1,median(getChrmRatio.GC.r1(line,chrm)[,3],na.rm=T))
   }
 }
 
-ratMatMed.GC.r1 <- matrix(y.GC.r1,nrow=16,ncol=2)
+ratMatMed.GC.r1 <- matrix(y.GC.r1,nrow=16,ncol=3)
 colnames(ratMatMed.GC.r1) <- rep.GC.r1
 ratMatMed.GC.r1 <- cbind(c(1:16),ratMatMed.GC.r1)
 colnames(ratMatMed.GC.r1)[1] <- "chr"
-View(ratMatMed.GC)
+View(ratMatMed.GC.r1)
 
 #make a matrix that is the LOG2 RATIO
 yl.MA=NULL
@@ -313,18 +321,18 @@ logMat2.MA <-cbind(chrms,logMat.MA)
 #chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 #logMat2.GC <-cbind(chrms,logMat.GC)
 #View(logMat2.GC)
-yl.GC.r=NULL
-for(line in rep.GC.r){
+yl.GC=NULL
+for(line in rep.GC){
   for(chrm in 1:16){
-    yl.GC.r <- c(yl.GC.r,median(log2(getChrmRatio.GC.r(line,chrm)[,3])))
+    yl.GC <- c(yl.GC,median(log2(getChrmRatio.GC(line,chrm)[,3])))
   }
 }
 warnings()
-logMat.GC.r <- matrix(yl.GC.r,nrow=16,ncol=19)
-colnames(logMat.GC.r) <- rep.GC.r
-logMat.GC.r <- data.frame(logMat.GC.r)
+logMat.GC <- matrix(yl.GC,nrow=16,ncol=17)
+colnames(logMat.GC) <- rep.GC
+logMat.GC <- data.frame(logMat.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-logMat2.GC.r <-cbind(chrms,logMat.GC.r)
+logMat2.GC <-cbind(chrms,logMat.GC)
 
 yl.GC.r1=NULL
 for(line in rep.GC.r1){
@@ -334,7 +342,7 @@ for(line in rep.GC.r1){
 }
 
 warnings()
-logMat.GC.r1 <- matrix(yl.GC.r1,nrow=16,ncol=2)
+logMat.GC.r1 <- matrix(yl.GC.r1,nrow=16,ncol=3)
 colnames(logMat.GC.r1) <- rep.GC.r1
 logMat.GC.r1 <- data.frame(logMat.GC.r1)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
@@ -377,22 +385,18 @@ logMatsd2.MA <-cbind(chrms,logMatsd.MA)
 #    ysd.GC <- c(ysd.GC,sd(log2(getChrmRatio.GC(line,chrm)[,3])))
 #  }
 #}
-logMatsd.GC <- matrix(ysd.GC,nrow=16,ncol=20)
+
+ysd.GC=NULL
+for(line in rep.GC){
+  for(chrm in 1:16){
+    ysd.GC <- c(ysd.GC,sd(log2(getChrmRatio.GC(line,chrm)[,3])))
+  }
+}
+logMatsd.GC <- matrix(ysd.GC,nrow=16,ncol=17)
 colnames(logMatsd.GC) <- rep.GC
 logMatsd.GC <- data.frame(logMatsd.GC)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 logMatsd2.GC <-cbind(chrms,logMatsd.GC)
-ysd.GC.r=NULL
-for(line in rep.GC.r){
-  for(chrm in 1:16){
-    ysd.GC.r <- c(ysd.GC.r,sd(log2(getChrmRatio.GC.r(line,chrm)[,3])))
-  }
-}
-logMatsd.GC.r <- matrix(ysd.GC.r,nrow=16,ncol=19)
-colnames(logMatsd.GC.r) <- rep.GC.r
-logMatsd.GC.r <- data.frame(logMatsd.GC.r)
-chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
-logMatsd2.GC.r <-cbind(chrms,logMatsd.GC.r)
 
 ysd.GC.r1=NULL
 for(line in rep.GC.r1){
@@ -403,7 +407,7 @@ for(line in rep.GC.r1){
 
 
 
-logMatsd.GC.r1 <- matrix(ysd.GC.r1,nrow=16,ncol=2)
+logMatsd.GC.r1 <- matrix(ysd.GC.r1,nrow=16,ncol=3)
 colnames(logMatsd.GC.r1) <- rep.GC.r1
 logMatsd.GC.r1 <- data.frame(logMatsd.GC.r1)
 chrms <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
@@ -436,7 +440,7 @@ with (
 )
 
 #adds a title to the graph
-title(main="MA Line 112")
+title(main="Lab Line 112")
 abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
@@ -497,7 +501,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 115")
+title(main="Lab Line 115")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -523,7 +527,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 117")
+title(main="Lab Line 117")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -532,7 +536,7 @@ dev.off()}
 #line 11 
 View(logMat.GC.r)
 X11 <- subset(logMat.GC.r, select=c("X11"))
-X11.sd <- subset(logMatsd2.GC.r1, select=c("X11"))
+X11.sd <- subset(logMatsd2.GC.r, select=c("X11"))
 #merge the stdev with the mean and the chromosome number
 X11.all <- cbind(chrms,X11,X11.sd)
 #change the column names appropriately
@@ -550,7 +554,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 11")
+title(main="Hybrid Line 11")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -576,7 +580,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 123")
+title(main="Lab Line 123")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -601,7 +605,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 141")
+title(main="Lab Line 141")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -627,7 +631,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 152")
+title(main="Lab Line 152")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -653,7 +657,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 18")
+title(main="Hybrid Line 18")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -679,7 +683,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 1")
+title(main="Hybrid Line 1")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -705,7 +709,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 21")
+title(main="Hybrid Line 21")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -731,7 +735,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 29")
+title(main="Lab Line 29")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -757,7 +761,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 2")
+title(main="Hybrid Line 2")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -783,7 +787,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 31")
+title(main="Hybrid Line 31")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -809,7 +813,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 3")
+title(main="Hybrid Line 3")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -835,7 +839,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 49")
+title(main="Hybrid Line 49")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -861,7 +865,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 4")
+title(main="Hybrid Line 4")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -887,7 +891,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="MA Line 50")
+title(main="Hybrid Line 50")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -913,7 +917,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 59")
+title(main="Hybrid Line 59")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -939,7 +943,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 5")
+title(main="Hybrid Line 5")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -965,15 +969,15 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 61")
+title(main="Hybrid Line 61")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
 
 #line 66
-X66 <- subset(logMat.GC, select=c("X66"))
-X66.sd <- subset(logMatsd2.GC, select=c("X66"))
+X66 <- subset(logMat.GC.r1, select=c("X66"))
+X66.sd <- subset(logMatsd2.GC.r1, select=c("X66"))
 #merge the stdev with the mean and the chromosome number
 X66.all <- cbind(chrms,X66,X66.sd)
 #change the column names appropriately
@@ -990,7 +994,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 66")
+title(main="Hybrid Line 66")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1004,7 +1008,7 @@ X69.all <- cbind(chrms,X69,X69.sd)
 #change the column names appropriately
 colnames(X69.all)[1] <- "chr"; colnames(X69.all)[2] <- "mean";colnames(X69.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
-{pdf("X69_chroms.pdf")
+{pdf("X68_chroms.pdf")
 with (
   data = X69.all
   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
@@ -1015,7 +1019,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 69")
+title(main="Hybrid Line 68")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1040,7 +1044,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 6")
+title(main="Hybrid Line 6")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1065,7 +1069,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 76")
+title(main="Hybrid Line 76")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1090,7 +1094,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 77")
+title(main="Hybrid Line 77")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1115,7 +1119,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 7")
+title(main="Hybrid Line 7")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1140,7 +1144,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 8")
+title(main="Hybrid Line 8")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1165,7 +1169,7 @@ abline(h=0,lty=2)
 abline(h=0.585,lty=3)
 abline(h=-1,lty=3)
 #adds a title to the graph
-title(main="GC Line 9")
+title(main="Hybrid Line 9")
 ##makes it so that the x-axis is all of the chromosomes and none are missing 
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
@@ -1175,13 +1179,15 @@ dev.off()}
 
 ``` {r getRatioFiles, echo=FALSE}
 setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
+
+
 l002.1 <- getChrmRatio.GC("2",1)
 l003.1 <- getChrmRatio.GC("3",1)
 l005.1 <- getChrmRatio.GC("5",1)
 l006.1 <- getChrmRatio.GC("6",1)
 l008.1 <- getChrmRatio.GC("8",1)
 l009.1 <- getChrmRatio.GC("9",1)
-l011.1 <- getChrmRatio.GC.r("11",1)
+l011.1 <- getChrmRatio.GC("11",1)
 l018.1 <- getChrmRatio.GC("18",1)
 l001.1 <- getChrmRatio.GC("1",1)
 l021.1 <- getChrmRatio.GC.r1("21",1)
@@ -1190,7 +1196,7 @@ l049.1 <- getChrmRatio.GC("49",1)
 l004.1 <- getChrmRatio.GC("4",1)
 l059.1 <- getChrmRatio.GC.r1("59",1)
 l061.1 <- getChrmRatio.GC("61",1)
-l066.1 <- getChrmRatio.GC("66",1)
+l066.1 <- getChrmRatio.GC.r1("66",1)
 l069.1 <- getChrmRatio.GC("69",1)
 l076.1 <- getChrmRatio.GC("76",1)
 l077.1 <- getChrmRatio.GC("77",1)
@@ -1216,7 +1222,7 @@ l008.1 <- getChrmRatio.GC("8",1)
 l008.1.red <- l008.1[which(l008.1[,3]>0.1),]
 l009.1 <- getChrmRatio.GC("9",1)
 l009.1.red <- l009.1[which(l009.1[,3]>0.1),]
-l011.1 <- getChrmRatio.GC.r("11",1)
+l011.1 <- getChrmRatio.GC("11",1)
 l011.1.red <- l011.1[which(l011.1[,3]>0.1),]
 l018.1 <- getChrmRatio.GC("18",1)
 l018.1.red <- l018.1[which(l018.1[,3]>0.1),]
@@ -1234,7 +1240,7 @@ l059.1 <- getChrmRatio.GC.r1("59",1)
 l059.1.red <- l059.1[which(l059.1[,3]>0.1),]
 l061.1 <- getChrmRatio.GC("61",1)
 l061.1.red <- l061.1[which(l061.1[,3]>0.1),]
-l066.1 <- getChrmRatio.GC("66",1)
+l066.1 <- getChrmRatio.GC.r1("66",1)
 l066.1.red <- l066.1[which(l066.1[,3]>0.1),]
 l069.1 <- getChrmRatio.GC("69",1)
 l069.1.red <- l069.1[which(l069.1[,3]>0.1),]
@@ -1275,7 +1281,7 @@ l008.2 <- getChrmRatio.GC("8",2)
 l008.2.red <- l008.2[which(l008.2[,3]>0.1),]
 l009.2 <- getChrmRatio.GC("9",2)
 l009.2.red <- l009.2[which(l009.2[,3]>0.1),]
-l011.2 <- getChrmRatio.GC.r("11",2)
+l011.2 <- getChrmRatio.GC("11",2)
 l011.2.red <- l011.2[which(l011.2[,3]>0.1),]
 l018.2 <- getChrmRatio.GC("18",2)
 l018.2.red <- l018.2[which(l018.2[,3]>0.1),]
@@ -1293,7 +1299,7 @@ l059.2 <- getChrmRatio.GC.r1("59",2)
 l059.2.red <- l059.2[which(l059.2[,3]>0.1),]
 l061.2 <- getChrmRatio.GC("61",2)
 l061.2.red <- l061.2[which(l061.2[,3]>0.1),]
-l066.2 <- getChrmRatio.GC("66",2)
+l066.2 <- getChrmRatio.GC.r1("66",2)
 l066.2.red <- l066.2[which(l066.2[,3]>0.1),]
 l069.2 <- getChrmRatio.GC("69",2)
 l069.2.red <- l069.2[which(l069.2[,3]>0.1),]
@@ -1333,7 +1339,7 @@ l006.3 <- getChrmRatio.GC("6",3)
 l006.3.red <- l006.3[which(l006.3[,3]>0.1),]
 l009.3 <- getChrmRatio.GC("9",3)
 l009.3.red <- l009.3[which(l009.3[,3]>0.1),]
-l011.3 <- getChrmRatio.GC.r("11",3)
+l011.3 <- getChrmRatio.GC("11",3)
 l011.3.red <- l011.3[which(l011.3[,3]>0.1),]
 l018.3 <- getChrmRatio.GC("18",3)
 l018.3.red <- l018.3[which(l018.3[,3]>0.1),]
@@ -1351,7 +1357,7 @@ l059.3 <- getChrmRatio.GC.r1("59",3)
 l059.3.red <- l059.3[which(l059.3[,3]>0.1),]
 l061.3 <- getChrmRatio.GC("61",3)
 l061.3.red <- l061.3[which(l061.3[,3]>0.1),]
-l066.3 <- getChrmRatio.GC("66",3)
+l066.3 <- getChrmRatio.GC.r1("66",3)
 l066.3.red <- l066.3[which(l066.3[,3]>0.1),]
 l069.3 <- getChrmRatio.GC("69",3)
 l069.3.red <- l069.3[which(l069.3[,3]>0.1),]
@@ -1391,7 +1397,7 @@ l008.4 <- getChrmRatio.GC("8",4)
 l008.4.red <- l008.4[which(l008.4[,3]>0.1),]
 l009.4 <- getChrmRatio.GC("9",4)
 l009.4.red <- l009.4[which(l009.4[,3]>0.1),]
-l011.4 <- getChrmRatio.GC.r("11",4)
+l011.4 <- getChrmRatio.GC("11",4)
 l011.4.red <- l011.4[which(l011.4[,3]>0.1),]
 l018.4 <- getChrmRatio.GC("18",4)
 l018.4.red <- l018.4[which(l018.4[,3]>0.1),]
@@ -1409,7 +1415,7 @@ l059.4 <- getChrmRatio.GC.r1("59",4)
 l059.4.red <- l059.4[which(l059.4[,3]>0.1),]
 l061.4 <- getChrmRatio.GC("61",4)
 l061.4.red <- l061.4[which(l061.4[,3]>0.1),]
-l066.4 <- getChrmRatio.GC("66",4)
+l066.4 <- getChrmRatio.GC.r1("66",4)
 l066.4.red <- l066.4[which(l066.4[,3]>0.1),]
 l069.4 <- getChrmRatio.GC("69",4)
 l069.4.red <- l069.4[which(l069.4[,3]>0.1),]
@@ -1449,7 +1455,7 @@ l008.5 <- getChrmRatio.GC("8",5)
 l008.5.red <- l008.5[which(l008.5[,3]>0.1),]
 l009.5 <- getChrmRatio.GC("9",5)
 l009.5.red <- l009.5[which(l009.5[,3]>0.1),]
-l011.5 <- getChrmRatio.GC.r("11",5)
+l011.5 <- getChrmRatio.GC("11",5)
 l011.5.red <- l011.5[which(l011.5[,3]>0.1),]
 l018.5 <- getChrmRatio.GC("18",5)
 l018.5.red <- l018.5[which(l018.5[,3]>0.1),]
@@ -1467,7 +1473,7 @@ l059.5 <- getChrmRatio.GC.r1("59",5)
 l059.5.red <- l059.5[which(l059.5[,3]>0.1),]
 l061.5 <- getChrmRatio.GC("61",5)
 l061.5.red <- l061.5[which(l061.5[,3]>0.1),]
-l066.5 <- getChrmRatio.GC("66",5)
+l066.5 <- getChrmRatio.GC.r1("66",5)
 l066.5.red <- l066.5[which(l066.5[,3]>0.1),]
 l069.5 <- getChrmRatio.GC("69",5)
 l069.5.red <- l069.5[which(l069.5[,3]>0.1),]
@@ -1507,7 +1513,7 @@ l008.6 <- getChrmRatio.GC("8",6)
 l008.6.red <- l008.6[which(l008.6[,3]>0.1),]
 l009.6 <- getChrmRatio.GC("9",6)
 l009.6.red <- l009.6[which(l009.6[,3]>0.1),]
-l011.6 <- getChrmRatio.GC.r("11",6)
+l011.6 <- getChrmRatio.GC("11",6)
 l011.6.red <- l011.6[which(l011.6[,3]>0.1),]
 l018.6 <- getChrmRatio.GC("18",6)
 l018.6.red <- l018.6[which(l018.6[,3]>0.1),]
@@ -1525,7 +1531,7 @@ l059.6 <- getChrmRatio.GC.r1("59",6)
 l059.6.red <- l059.6[which(l059.6[,3]>0.1),]
 l061.6 <- getChrmRatio.GC("61",6)
 l061.6.red <- l061.6[which(l061.6[,3]>0.1),]
-l066.6 <- getChrmRatio.GC("66",6)
+l066.6 <- getChrmRatio.GC.r1("66",6)
 l066.6.red <- l066.6[which(l066.6[,3]>0.1),]
 l069.6 <- getChrmRatio.GC("69",6)
 l069.6.red <- l069.6[which(l069.6[,3]>0.1),]
@@ -1565,7 +1571,7 @@ l008.7 <- getChrmRatio.GC("8",7)
 l008.7.red <- l008.7[which(l008.7[,3]>0.1),]
 l009.7 <- getChrmRatio.GC("9",7)
 l009.7.red <- l009.7[which(l009.7[,3]>0.1),]
-l011.7 <- getChrmRatio.GC.r("11",7)
+l011.7 <- getChrmRatio.GC("11",7)
 l011.7.red <- l011.7[which(l011.7[,3]>0.1),]
 l018.7 <- getChrmRatio.GC("18",7)
 l018.7.red <- l018.7[which(l018.7[,3]>0.1),]
@@ -1583,7 +1589,7 @@ l059.7 <- getChrmRatio.GC.r1("59",7)
 l059.7.red <- l059.7[which(l059.7[,3]>0.1),]
 l061.7 <- getChrmRatio.GC("61",7)
 l061.7.red <- l061.7[which(l061.7[,3]>0.1),]
-l066.7 <- getChrmRatio.GC("66",7)
+l066.7 <- getChrmRatio.GC.r1("66",7)
 l066.7.red <- l066.7[which(l066.7[,3]>0.1),]
 l069.7 <- getChrmRatio.GC("69",7)
 l069.7.red <- l069.7[which(l069.7[,3]>0.1),]
@@ -1623,7 +1629,7 @@ l008.8 <- getChrmRatio.GC("8",8)
 l008.8.red <- l008.8[which(l008.8[,3]>0.1),]
 l009.8 <- getChrmRatio.GC("9",8)
 l009.8.red <- l009.8[which(l009.8[,3]>0.1),]
-l011.8 <- getChrmRatio.GC.r("11",8)
+l011.8 <- getChrmRatio.GC("11",8)
 l011.8.red <- l011.8[which(l011.8[,3]>0.1),]
 l018.8 <- getChrmRatio.GC("18",8)
 l018.8.red <- l018.8[which(l018.8[,3]>0.1),]
@@ -1641,7 +1647,7 @@ l059.8 <- getChrmRatio.GC.r1("59",8)
 l059.8.red <- l059.8[which(l059.8[,3]>0.1),]
 l061.8 <- getChrmRatio.GC("61",8)
 l061.8.red <- l061.8[which(l061.8[,3]>0.1),]
-l066.8 <- getChrmRatio.GC("66",8)
+l066.8 <- getChrmRatio.GC.r1("66",8)
 l066.8.red <- l066.8[which(l066.8[,3]>0.1),]
 l069.8 <- getChrmRatio.GC("69",8)
 l069.8.red <- l069.8[which(l069.8[,3]>0.1),]
@@ -1681,7 +1687,7 @@ l008.9 <- getChrmRatio.GC("8",9)
 l008.9.red <- l008.9[which(l008.9[,3]>0.1),]
 l009.9 <- getChrmRatio.GC("9",9)
 l009.9.red <- l009.9[which(l009.9[,3]>0.1),]
-l011.9 <- getChrmRatio.GC.r("11",9)
+l011.9 <- getChrmRatio.GC("11",9)
 l011.9.red <- l011.9[which(l011.9[,3]>0.1),]
 l018.9 <- getChrmRatio.GC("18",9)
 l018.9.red <- l018.9[which(l018.9[,3]>0.1),]
@@ -1699,7 +1705,7 @@ l059.9 <- getChrmRatio.GC.r1("59",9)
 l059.9.red <- l059.9[which(l059.9[,3]>0.1),]
 l061.9 <- getChrmRatio.GC("61",9)
 l061.9.red <- l061.9[which(l061.9[,3]>0.1),]
-l066.9 <- getChrmRatio.GC("66",9)
+l066.9 <- getChrmRatio.GC.r1("66",9)
 l066.9.red <- l066.9[which(l066.9[,3]>0.1),]
 l069.9 <- getChrmRatio.GC("69",9)
 l069.9.red <- l069.9[which(l069.9[,3]>0.1),]
@@ -1739,7 +1745,7 @@ l008.10 <- getChrmRatio.GC("8",10)
 l008.10.red <- l008.10[which(l008.10[,3]>0.1),]
 l009.10 <- getChrmRatio.GC("9",10)
 l009.10.red <- l009.10[which(l009.10[,3]>0.1),]
-l011.10 <- getChrmRatio.GC.r("11",10)
+l011.10 <- getChrmRatio.GC("11",10)
 l011.10.red <- l011.10[which(l011.10[,3]>0.1),]
 l018.10 <- getChrmRatio.GC("18",10)
 l018.10.red <- l018.10[which(l018.10[,3]>0.1),]
@@ -1757,7 +1763,7 @@ l059.10 <- getChrmRatio.GC.r1("59",10)
 l059.10.red <- l059.10[which(l059.10[,3]>0.1),]
 l061.10 <- getChrmRatio.GC("61",10)
 l061.10.red <- l061.10[which(l061.10[,3]>0.1),]
-l066.10 <- getChrmRatio.GC("66",10)
+l066.10 <- getChrmRatio.GC.r1("66",10)
 l066.10.red <- l066.10[which(l066.10[,3]>0.1),]
 l069.10 <- getChrmRatio.GC("69",10)
 l069.10.red <- l069.10[which(l069.10[,3]>0.1),]
@@ -1797,7 +1803,7 @@ l008.11 <- getChrmRatio.GC("8",11)
 l008.11.red <- l008.11[which(l008.11[,3]>0.1),]
 l009.11 <- getChrmRatio.GC("9",11)
 l009.11.red <- l009.11[which(l009.11[,3]>0.1),]
-l011.11 <- getChrmRatio.GC.r("11",11)
+l011.11 <- getChrmRatio.GC("11",11)
 l011.11.red <- l011.11[which(l011.11[,3]>0.1),]
 l018.11 <- getChrmRatio.GC("18",11)
 l018.11.red <- l018.11[which(l018.11[,3]>0.1),]
@@ -1815,7 +1821,7 @@ l059.11 <- getChrmRatio.GC.r1("59",11)
 l059.11.red <- l059.11[which(l059.11[,3]>0.1),]
 l061.11 <- getChrmRatio.GC("61",11)
 l061.11.red <- l061.11[which(l061.11[,3]>0.1),]
-l066.11 <- getChrmRatio.GC("66",11)
+l066.11 <- getChrmRatio.GC.r1("66",11)
 l066.11.red <- l066.11[which(l066.11[,3]>0.1),]
 l069.11 <- getChrmRatio.GC("69",11)
 l069.11.red <- l069.11[which(l069.11[,3]>0.1),]
@@ -1855,7 +1861,7 @@ l008.12 <- getChrmRatio.GC("8",12)
 l008.12.red <- l008.12[which(l008.12[,3]>0.1),]
 l009.12 <- getChrmRatio.GC("9",12)
 l009.12.red <- l009.12[which(l009.12[,3]>0.1),]
-l011.12 <- getChrmRatio.GC.r("11",12)
+l011.12 <- getChrmRatio.GC("11",12)
 l011.12.red <- l011.12[which(l011.12[,3]>0.1),]
 l018.12 <- getChrmRatio.GC("18",12)
 l018.12.red <- l018.12[which(l018.12[,3]>0.1),]
@@ -1873,7 +1879,7 @@ l059.12 <- getChrmRatio.GC.r1("59",12)
 l059.12.red <- l059.12[which(l059.12[,3]>0.1),]
 l061.12 <- getChrmRatio.GC("61",12)
 l061.12.red <- l061.12[which(l061.12[,3]>0.1),]
-l066.12 <- getChrmRatio.GC("66",12)
+l066.12 <- getChrmRatio.GC.r1("66",12)
 l066.12.red <- l066.12[which(l066.12[,3]>0.1),]
 l069.12 <- getChrmRatio.GC("69",12)
 l069.12.red <- l069.12[which(l069.12[,3]>0.1),]
@@ -1913,7 +1919,7 @@ l008.13 <- getChrmRatio.GC("8",13)
 l008.13.red <- l008.13[which(l008.13[,3]>0.1),]
 l009.13 <- getChrmRatio.GC("9",13)
 l009.13.red <- l009.13[which(l009.13[,3]>0.1),]
-l011.13 <- getChrmRatio.GC.r("11",13)
+l011.13 <- getChrmRatio.GC("11",13)
 l011.13.red <- l011.13[which(l011.13[,3]>0.1),]
 l018.13 <- getChrmRatio.GC("18",13)
 l018.13.red <- l018.13[which(l018.13[,3]>0.1),]
@@ -1931,7 +1937,7 @@ l059.13 <- getChrmRatio.GC.r1("59",13)
 l059.13.red <- l059.13[which(l059.13[,3]>0.1),]
 l061.13 <- getChrmRatio.GC("61",13)
 l061.13.red <- l061.13[which(l061.13[,3]>0.1),]
-l066.13 <- getChrmRatio.GC("66",13)
+l066.13 <- getChrmRatio.GC.r1("66",13)
 l066.13.red <- l066.13[which(l066.13[,3]>0.1),]
 l069.13 <- getChrmRatio.GC("69",13)
 l069.13.red <- l069.13[which(l069.13[,3]>0.1),]
@@ -1971,7 +1977,7 @@ l008.14 <- getChrmRatio.GC("8",14)
 l008.14.red <- l008.14[which(l008.14[,3]>0.1),]
 l009.14 <- getChrmRatio.GC("9",14)
 l009.14.red <- l009.14[which(l009.14[,3]>0.1),]
-l011.14 <- getChrmRatio.GC.r("11",14)
+l011.14 <- getChrmRatio.GC("11",14)
 l011.14.red <- l011.14[which(l011.14[,3]>0.1),]
 l018.14 <- getChrmRatio.GC("18",14)
 l018.14.red <- l018.14[which(l018.14[,3]>0.1),]
@@ -1989,7 +1995,7 @@ l059.14 <- getChrmRatio.GC.r1("59",14)
 l059.14.red <- l059.14[which(l059.14[,3]>0.1),]
 l061.14 <- getChrmRatio.GC("61",14)
 l061.14.red <- l061.14[which(l061.14[,3]>0.1),]
-l066.14 <- getChrmRatio.GC("66",14)
+l066.14 <- getChrmRatio.GC.r1("66",14)
 l066.14.red <- l066.14[which(l066.14[,3]>0.1),]
 l069.14 <- getChrmRatio.GC("69",14)
 l069.14.red <- l069.14[which(l069.14[,3]>0.1),]
@@ -2029,7 +2035,7 @@ l008.15 <- getChrmRatio.GC("8",15)
 l008.15.red <- l008.15[which(l008.15[,3]>0.1),]
 l009.15 <- getChrmRatio.GC("9",15)
 l009.15.red <- l009.15[which(l009.15[,3]>0.1),]
-l011.15 <- getChrmRatio.GC.r("11",15)
+l011.15 <- getChrmRatio.GC("11",15)
 l011.15.red <- l011.15[which(l011.15[,3]>0.1),]
 l018.15 <- getChrmRatio.GC("18",15)
 l018.15.red <- l018.15[which(l018.15[,3]>0.1),]
@@ -2047,7 +2053,7 @@ l059.15 <- getChrmRatio.GC.r1("59",15)
 l059.15.red <- l059.15[which(l059.15[,3]>0.1),]
 l061.15 <- getChrmRatio.GC("61",15)
 l061.15.red <- l061.15[which(l061.15[,3]>0.1),]
-l066.15 <- getChrmRatio.GC("66",15)
+l066.15 <- getChrmRatio.GC.r1("66",15)
 l066.15.red <- l066.15[which(l066.15[,3]>0.1),]
 l069.15 <- getChrmRatio.GC("69",15)
 l069.15.red <- l069.15[which(l069.15[,3]>0.1),]
@@ -2088,7 +2094,7 @@ l008.16.red <- l008.16[which(l008.16[,3]>0.1),]
 l008.16.red.red <- l008.16.red[which(l008.16[,3]<9),]
 l009.16 <- getChrmRatio.GC("9",16)
 l009.16.red <- l009.16[which(l009.16[,3]>0.1),]
-l011.16 <- getChrmRatio.GC.r("11",16)
+l011.16 <- getChrmRatio.GC("11",16)
 l011.16.red <- l011.16[which(l011.16[,3]>0.1),]
 l018.16 <- getChrmRatio.GC("18",16)
 l018.16.red <- l018.16[which(l018.16[,3]>0.1),]
@@ -2106,7 +2112,7 @@ l059.16 <- getChrmRatio.GC.r1("59",16)
 l059.16.red <- l059.16[which(l059.16[,3]>0.1),]
 l061.16 <- getChrmRatio.GC("61",16)
 l061.16.red <- l061.16[which(l061.16[,3]>0.1),]
-l066.16 <- getChrmRatio.GC("66",16)
+l066.16 <- getChrmRatio.GC.r1("66",16)
 l066.16.red <- l066.16[which(l066.16[,3]>0.1),]
 l069.16 <- getChrmRatio.GC("69",16)
 l069.16.red <- l069.16[which(l069.16[,3]>0.1),]
@@ -5801,14 +5807,6 @@ dev.off()}
 ```
 
 ``` {r boxplots, include=FALSE} 
-
-chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
-        (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
-       (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
-       (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
-        (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))),
-Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.1$tracking_id))))
-
 chr1Data.old <- data.frame(y=c((log2(l001.1.old[,3])),(log2(l002.1.old[,3])),(log2(l003.1.old[,3])),(log2(l004.1.old[,3])),(log2(l005.1.old[,3])),
         (log2(l006.1.old[,3])),(log2(l007.1.old[,3])),(log2(l008.1.old[,3])),(log2(l009.1.old[,3])),(log2(l011.1.old[,3])),
         (log2(l015.1[,3])),(log2(l028.1.old[,3])),(log2(l088.1[,3])),(log2(l108.1[,3])),(log2(l119.1[,3]))),
@@ -5822,11 +5820,12 @@ chr1DataCombo$Line=factor(chr1DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_1_All.pdf")
   
-boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","deeppink1","cyan","green","orange","deeppink1","deeppink1","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "deeppink1"))
+boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 ###############
@@ -5849,20 +5848,12 @@ chr2DataCombo$Line=factor(chr2DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_2_All.pdf")
   
-boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
-}
-
-
-{pdf("Chrm_2_All.pdf")
-  
-boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3),col=c("green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan","green","green","cyan","green","cyan","green","green","green","green","cyan","cyan","green","green","cyan","cyan","green","green","cyan","cyan","cyan","green","cyan","cyan","green","green","cyan","cyan","green","green"))
-abline(h=0,lty=2)
-abline(h=0.585,lty=2,col="forestgreen")
-abline(h=-1,lty=2,col="darkviolet") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 ############
@@ -5885,11 +5876,12 @@ chr3DataCombo$Line=factor(chr3DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_3_All.pdf")
   
-boxplot(y~Line,data=chr3DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 3",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr3DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 3",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 ###########
@@ -5912,11 +5904,12 @@ chr4DataCombo$Line=factor(chr4DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_4_All.pdf")
   
-boxplot(y~Line,data=chr4DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 4",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","green","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr4DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 4",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 #######
@@ -5939,11 +5932,12 @@ chr5DataCombo$Line=factor(chr5DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_5_All.pdf")
   
-boxplot(y~Line,data=chr5DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 5",las=3,ylim=c(-3,3),col=c("green","green","green","deeppink1","green","green","cyan","cyan","green","cyan","cyan","cyan","green","deeppink1","cyan","cyan","cyan","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr5DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 5",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 #######
@@ -5966,15 +5960,16 @@ chr6DataCombo$Line=factor(chr6DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_6_All.pdf")
   
-boxplot(y~Line,data=chr6DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 6",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr6DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 6",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 #######
-# chrm 7 
+# chrm 7
 chr7Data <- data.frame(y=c((log2(l001.7[,3])),(log2(l002.7[,3])),(log2(l003.7[,3])),(log2(l004.7[,3])),(log2(l005.7[,3])),
         (log2(l006.7[,3])),(log2(l007.7[,3])),(log2(l008.7[,3])),(log2(l009.7[,3])),(log2(l011.7[,3])),
        (log2(l018.7[,3])),(log2(l021.7[,3])),(log2(l031.7[,3])),(log2(l049.7[,3])),(log2(l059.7[,3])),
@@ -5993,17 +5988,268 @@ chr7DataCombo$Line=factor(chr7DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_7_All.pdf")
   
-boxplot(y~Line,data=chr7DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 7",las=3,ylim=c(-3,3),col=c("green","green","green","cyan","green","green","cyan","cyan","green","cyan","cyan","cyan","green","cyan","deeppink1","deeppink1","deeppink1","cyan","cyan","cyan","green","green","green","green","green","green","green","green","cyan","green","cyan","cyan","cyan","green","cyan","cyan","green","cyan","cyan","cyan","cyan","cyan", "cyan"))
+boxplot(y~Line,data=chr7DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 7",las=3,ylim=c(-3,3))
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
 abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 8
+chr8Data <- data.frame(y=c((log2(l001.8[,3])),(log2(l002.8[,3])),(log2(l003.8[,3])),(log2(l004.8[,3])),(log2(l005.8[,3])),
+        (log2(l006.8[,3])),(log2(l007.8[,3])),(log2(l008.8[,3])),(log2(l009.8[,3])),(log2(l011.8[,3])),
+       (log2(l018.8[,3])),(log2(l021.8[,3])),(log2(l031.8[,3])),(log2(l049.8[,3])),(log2(l059.8[,3])),
+       (log2(l061.8[,3])),(log2(l066.8[,3])),(log2(l069.8[,3])),(log2(l076.8[,3])),(log2(l077.8[,3])),(log2(l029.8[,3])),(log2(l050.8[,3])),(log2(l112.8[,3])),(log2(l115.8[,3])),(log2(l117.8[,3])),
+        (log2(l123.8[,3])),(log2(l141.8[,3])),(log2(l152.8[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.8$tracking_id))))
+
+chr8Data.old <- data.frame(y=c((log2(l001.8.old[,3])),(log2(l002.8.old[,3])),(log2(l003.8.old[,3])),(log2(l004.8.old[,3])),(log2(l005.8.old[,3])),
+        (log2(l006.8.old[,3])),(log2(l007.8.old[,3])),(log2(l008.8.old[,3])),(log2(l009.8.old[,3])),(log2(l011.8.old[,3])),
+        (log2(l015.8[,3])),(log2(l028.8.old[,3])),(log2(l088.8[,3])),(log2(l108.8[,3])),(log2(l119.8[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.8.old$tracking_id))))
+
+chr8DataCombo <- rbind(chr8Data,chr8Data.old)
+
+chr8DataCombo$Line=factor(chr8DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_8_All.pdf")
+  
+boxplot(y~Line,data=chr8DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 8",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 9 
+chr9Data <- data.frame(y=c((log2(l001.9[,3])),(log2(l002.9[,3])),(log2(l003.9[,3])),(log2(l004.9[,3])),(log2(l005.9[,3])),
+        (log2(l006.9[,3])),(log2(l007.9[,3])),(log2(l008.9[,3])),(log2(l009.9[,3])),(log2(l011.9[,3])),
+       (log2(l018.9[,3])),(log2(l021.9[,3])),(log2(l031.9[,3])),(log2(l049.9[,3])),(log2(l059.9[,3])),
+       (log2(l061.9[,3])),(log2(l066.9[,3])),(log2(l069.9[,3])),(log2(l076.9[,3])),(log2(l077.9[,3])),(log2(l029.9[,3])),(log2(l050.9[,3])),(log2(l112.9[,3])),(log2(l115.9[,3])),(log2(l117.9[,3])),
+        (log2(l123.9[,3])),(log2(l141.9[,3])),(log2(l152.9[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.9$tracking_id))))
+
+chr9Data.old <- data.frame(y=c((log2(l001.9.old[,3])),(log2(l002.9.old[,3])),(log2(l003.9.old[,3])),(log2(l004.9.old[,3])),(log2(l005.9.old[,3])),
+        (log2(l006.9.old[,3])),(log2(l007.9.old[,3])),(log2(l008.9.old[,3])),(log2(l009.9.old[,3])),(log2(l011.9.old[,3])),
+        (log2(l015.9[,3])),(log2(l028.9.old[,3])),(log2(l088.9[,3])),(log2(l108.9[,3])),(log2(l119.9[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.9.old$tracking_id))))
+
+chr9DataCombo <- rbind(chr9Data,chr9Data.old)
+
+chr9DataCombo$Line=factor(chr9DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_9_All.pdf")
+  
+boxplot(y~Line,data=chr9DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 9",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 10 
+chr10Data <- data.frame(y=c((log2(l001.10[,3])),(log2(l002.10[,3])),(log2(l003.10[,3])),(log2(l004.10[,3])),(log2(l005.10[,3])),
+        (log2(l006.10[,3])),(log2(l007.10[,3])),(log2(l008.10[,3])),(log2(l009.10[,3])),(log2(l011.10[,3])),
+       (log2(l018.10[,3])),(log2(l021.10[,3])),(log2(l031.10[,3])),(log2(l049.10[,3])),(log2(l059.10[,3])),
+       (log2(l061.10[,3])),(log2(l066.10[,3])),(log2(l069.10[,3])),(log2(l076.10[,3])),(log2(l077.10[,3])),(log2(l029.10[,3])),(log2(l050.10[,3])),(log2(l112.10[,3])),(log2(l115.10[,3])),(log2(l117.10[,3])),
+        (log2(l123.10[,3])),(log2(l141.10[,3])),(log2(l152.10[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.10$tracking_id))))
+
+chr10Data.old <- data.frame(y=c((log2(l001.10.old[,3])),(log2(l002.10.old[,3])),(log2(l003.10.old[,3])),(log2(l004.10.old[,3])),(log2(l005.10.old[,3])),
+        (log2(l006.10.old[,3])),(log2(l007.10.old[,3])),(log2(l008.10.old[,3])),(log2(l009.10.old[,3])),(log2(l011.10.old[,3])),
+        (log2(l015.10[,3])),(log2(l028.10.old[,3])),(log2(l088.10[,3])),(log2(l108.10[,3])),(log2(l119.10[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.10.old$tracking_id))))
+
+chr10DataCombo <- rbind(chr10Data,chr10Data.old)
+
+chr10DataCombo$Line=factor(chr10DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_10_All.pdf")
+  
+boxplot(y~Line,data=chr10DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 10",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 11 
+chr11Data <- data.frame(y=c((log2(l001.11[,3])),(log2(l002.11[,3])),(log2(l003.11[,3])),(log2(l004.11[,3])),(log2(l005.11[,3])),
+        (log2(l006.11[,3])),(log2(l007.11[,3])),(log2(l008.11[,3])),(log2(l009.11[,3])),(log2(l011.11[,3])),
+       (log2(l018.11[,3])),(log2(l021.11[,3])),(log2(l031.11[,3])),(log2(l049.11[,3])),(log2(l059.11[,3])),
+       (log2(l061.11[,3])),(log2(l066.11[,3])),(log2(l069.11[,3])),(log2(l076.11[,3])),(log2(l077.11[,3])),(log2(l029.11[,3])),(log2(l050.11[,3])),(log2(l112.11[,3])),(log2(l115.11[,3])),(log2(l117.11[,3])),
+        (log2(l123.11[,3])),(log2(l141.11[,3])),(log2(l152.11[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.11$tracking_id))))
+
+chr11Data.old <- data.frame(y=c((log2(l001.11.old[,3])),(log2(l002.11.old[,3])),(log2(l003.11.old[,3])),(log2(l004.11.old[,3])),(log2(l005.11.old[,3])),
+        (log2(l006.11.old[,3])),(log2(l007.11.old[,3])),(log2(l008.11.old[,3])),(log2(l009.11.old[,3])),(log2(l011.11.old[,3])),
+        (log2(l015.11[,3])),(log2(l028.11.old[,3])),(log2(l088.11[,3])),(log2(l108.11[,3])),(log2(l119.11[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.11.old$tracking_id))))
+
+chr11DataCombo <- rbind(chr11Data,chr11Data.old)
+
+chr11DataCombo$Line=factor(chr11DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_11_All.pdf")
+  
+boxplot(y~Line,data=chr11DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 11",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 12 
+chr12Data <- data.frame(y=c((log2(l001.12[,3])),(log2(l002.12[,3])),(log2(l003.12[,3])),(log2(l004.12[,3])),(log2(l005.12[,3])),
+        (log2(l006.12[,3])),(log2(l007.12[,3])),(log2(l008.12[,3])),(log2(l009.12[,3])),(log2(l011.12[,3])),
+       (log2(l018.12[,3])),(log2(l021.12[,3])),(log2(l031.12[,3])),(log2(l049.12[,3])),(log2(l059.12[,3])),
+       (log2(l061.12[,3])),(log2(l066.12[,3])),(log2(l069.12[,3])),(log2(l076.12[,3])),(log2(l077.12[,3])),(log2(l029.12[,3])),(log2(l050.12[,3])),(log2(l112.12[,3])),(log2(l115.12[,3])),(log2(l117.12[,3])),
+        (log2(l123.12[,3])),(log2(l141.12[,3])),(log2(l152.12[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.12$tracking_id))))
+
+chr12Data.old <- data.frame(y=c((log2(l001.12.old[,3])),(log2(l002.12.old[,3])),(log2(l003.12.old[,3])),(log2(l004.12.old[,3])),(log2(l005.12.old[,3])),
+        (log2(l006.12.old[,3])),(log2(l007.12.old[,3])),(log2(l008.12.old[,3])),(log2(l009.12.old[,3])),(log2(l011.12.old[,3])),
+        (log2(l015.12[,3])),(log2(l028.12.old[,3])),(log2(l088.12[,3])),(log2(l108.12[,3])),(log2(l119.12[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.12.old$tracking_id))))
+
+chr12DataCombo <- rbind(chr12Data,chr12Data.old)
+
+chr12DataCombo$Line=factor(chr12DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_12_All.pdf")
+  
+boxplot(y~Line,data=chr12DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 12",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+#######
+# chrm 13 
+chr13Data <- data.frame(y=c((log2(l001.13[,3])),(log2(l002.13[,3])),(log2(l003.13[,3])),(log2(l004.13[,3])),(log2(l005.13[,3])),
+        (log2(l006.13[,3])),(log2(l007.13[,3])),(log2(l008.13[,3])),(log2(l009.13[,3])),(log2(l011.13[,3])),
+       (log2(l018.13[,3])),(log2(l021.13[,3])),(log2(l031.13[,3])),(log2(l049.13[,3])),(log2(l059.13[,3])),
+       (log2(l061.13[,3])),(log2(l066.13[,3])),(log2(l069.13[,3])),(log2(l076.13[,3])),(log2(l077.13[,3])),(log2(l029.13[,3])),(log2(l050.13[,3])),(log2(l112.13[,3])),(log2(l115.13[,3])),(log2(l117.13[,3])),
+        (log2(l123.13[,3])),(log2(l141.13[,3])),(log2(l152.13[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.13$tracking_id))))
+
+chr13Data.old <- data.frame(y=c((log2(l001.13.old[,3])),(log2(l002.13.old[,3])),(log2(l003.13.old[,3])),(log2(l004.13.old[,3])),(log2(l005.13.old[,3])),
+        (log2(l006.13.old[,3])),(log2(l007.13.old[,3])),(log2(l008.13.old[,3])),(log2(l009.13.old[,3])),(log2(l011.13.old[,3])),
+        (log2(l015.13[,3])),(log2(l028.13.old[,3])),(log2(l088.13[,3])),(log2(l108.13[,3])),(log2(l119.13[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.13.old$tracking_id))))
+
+chr13DataCombo <- rbind(chr13Data,chr13Data.old)
+
+chr13DataCombo$Line=factor(chr13DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_13_All.pdf")
+  
+boxplot(y~Line,data=chr13DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 13",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+##########
+# chrm 14 
+chr14Data <- data.frame(y=c((log2(l001.14[,3])),(log2(l002.14[,3])),(log2(l003.14[,3])),(log2(l004.14[,3])),(log2(l005.14[,3])),
+        (log2(l006.14[,3])),(log2(l007.14[,3])),(log2(l008.14[,3])),(log2(l009.14[,3])),(log2(l011.14[,3])),
+       (log2(l018.14[,3])),(log2(l021.14[,3])),(log2(l031.14[,3])),(log2(l049.14[,3])),(log2(l059.14[,3])),
+       (log2(l061.14[,3])),(log2(l066.14[,3])),(log2(l069.14[,3])),(log2(l076.14[,3])),(log2(l077.14[,3])),(log2(l029.14[,3])),(log2(l050.14[,3])),(log2(l112.14[,3])),(log2(l115.14[,3])),(log2(l117.14[,3])),
+        (log2(l123.14[,3])),(log2(l141.14[,3])),(log2(l152.14[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.14$tracking_id))))
+
+chr14Data.old <- data.frame(y=c((log2(l001.14.old[,3])),(log2(l002.14.old[,3])),(log2(l003.14.old[,3])),(log2(l004.14.old[,3])),(log2(l005.14.old[,3])),
+        (log2(l006.14.old[,3])),(log2(l007.14.old[,3])),(log2(l008.14.old[,3])),(log2(l009.14.old[,3])),(log2(l011.14.old[,3])),
+        (log2(l015.14[,3])),(log2(l028.14.old[,3])),(log2(l088.14[,3])),(log2(l108.14[,3])),(log2(l119.14[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.14.old$tracking_id))))
+
+chr14DataCombo <- rbind(chr14Data,chr14Data.old)
+
+chr14DataCombo$Line=factor(chr14DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_14_All.pdf")
+  
+boxplot(y~Line,data=chr14DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 14",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+##########
+# chrm 15 
+chr15Data <- data.frame(y=c((log2(l001.15[,3])),(log2(l002.15[,3])),(log2(l003.15[,3])),(log2(l004.15[,3])),(log2(l005.15[,3])),
+        (log2(l006.15[,3])),(log2(l007.15[,3])),(log2(l008.15[,3])),(log2(l009.15[,3])),(log2(l011.15[,3])),
+       (log2(l018.15[,3])),(log2(l021.15[,3])),(log2(l031.15[,3])),(log2(l049.15[,3])),(log2(l059.15[,3])),
+       (log2(l061.15[,3])),(log2(l066.15[,3])),(log2(l069.15[,3])),(log2(l076.15[,3])),(log2(l077.15[,3])),(log2(l029.15[,3])),(log2(l050.15[,3])),(log2(l112.15[,3])),(log2(l115.15[,3])),(log2(l117.15[,3])),
+        (log2(l123.15[,3])),(log2(l141.15[,3])),(log2(l152.15[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.15$tracking_id))))
+
+chr15Data.old <- data.frame(y=c((log2(l001.15.old[,3])),(log2(l002.15.old[,3])),(log2(l003.15.old[,3])),(log2(l004.15.old[,3])),(log2(l005.15.old[,3])),
+        (log2(l006.15.old[,3])),(log2(l007.15.old[,3])),(log2(l008.15.old[,3])),(log2(l009.15.old[,3])),(log2(l011.15.old[,3])),
+        (log2(l015.15[,3])),(log2(l028.15.old[,3])),(log2(l088.15[,3])),(log2(l108.15[,3])),(log2(l119.15[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.15.old$tracking_id))))
+
+chr15DataCombo <- rbind(chr15Data,chr15Data.old)
+
+chr15DataCombo$Line=factor(chr15DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_15_All.pdf")
+  
+boxplot(y~Line,data=chr15DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 15",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
+}
+
+##########
+# chrm 16 
+chr16Data <- data.frame(y=c((log2(l001.16[,3])),(log2(l002.16[,3])),(log2(l003.16[,3])),(log2(l004.16[,3])),(log2(l005.16[,3])),
+        (log2(l006.16[,3])),(log2(l007.16[,3])),(log2(l008.16[,3])),(log2(l009.16[,3])),(log2(l011.16[,3])),
+       (log2(l018.16[,3])),(log2(l021.16[,3])),(log2(l031.16[,3])),(log2(l049.16[,3])),(log2(l059.16[,3])),
+       (log2(l061.16[,3])),(log2(l066.16[,3])),(log2(l069.16[,3])),(log2(l076.16[,3])),(log2(l077.16[,3])),(log2(l029.16[,3])),(log2(l050.16[,3])),(log2(l112.16[,3])),(log2(l115.16[,3])),(log2(l117.16[,3])),
+        (log2(l123.16[,3])),(log2(l141.16[,3])),(log2(l152.16[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.16$tracking_id))))
+
+chr16Data.old <- data.frame(y=c((log2(l001.16.old[,3])),(log2(l002.16.old[,3])),(log2(l003.16.old[,3])),(log2(l004.16.old[,3])),(log2(l005.16.old[,3])),
+        (log2(l006.16.old[,3])),(log2(l007.16.old[,3])),(log2(l008.16.old[,3])),(log2(l009.16.old[,3])),(log2(l011.16.old[,3])),
+        (log2(l015.16[,3])),(log2(l028.16.old[,3])),(log2(l088.16[,3])),(log2(l108.16[,3])),(log2(l119.16[,3]))),
+Line=rep(c("1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","88","108","119"),each=(length(l001.16.old$tracking_id))))
+
+chr16DataCombo <- rbind(chr16Data,chr16Data.old)
+
+chr16DataCombo$Line=factor(chr16DataCombo$Line, c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","1.","2.","3.","4.","5.","6.","7.","8.","9.","11.","15","28","29","50","88","108","112","115","117","119","123","141","152"))
+
+{pdf("Chrm_16_All.pdf")
+  
+boxplot(y~Line,data=chr16DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 16",las=3,ylim=c(-3,3))
+
+abline(h=0,lty=4)
+abline(h=0.585,lty=4,col="deeppink1")
+abline(h=-1,lty=4,col="orange") 
+abline(h=1,lty=4,col="turquoise") 
 }
 
 
 
 ```
-
 
 ```{r ANOVAs, Tukey's, include=TRUE}
 ####################

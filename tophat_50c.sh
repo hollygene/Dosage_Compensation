@@ -10,7 +10,7 @@
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/
 
 
-module load trimgalore/0.4.4
+#module load trimgalore/0.4.4
 
 #trim_galore --phred33 -q 20 -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed \
 #/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/Holly_MA_Anc_S5_R1_001.fastq

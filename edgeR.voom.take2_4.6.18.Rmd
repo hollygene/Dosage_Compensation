@@ -347,32 +347,36 @@ x.GC <- calcNormFactors(x.GC,method="TMM")
 
 ```{r look at variance, include=FALSE}
 #calculating variance for each gene in each sample group
+lcpmGC <- cpm(x.GC,log=TRUE)
 lcpmGC <- data.frame(names=row.names(lcpmGC),lcpmGC)
 
 rownames(lcpmGC) <- c()
 
 genes <- data.frame(x.GC$genes$GENEID, x.GC$genes$TXCHROM)
+rownames(genes) <- genes$x.GC.genes.GENEID
+
+remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
+genes <- genes[setdiff(rownames(genes),remove),]
+removegenes <- c("YPL241C","YPL163C")
+genes <- genes[setdiff(rownames(genes),removegenes),]
+genes$x.GC.genes.GENEID <- droplevels(genes$x.GC.genes.GENEID)
+
+
+#remove NAs from data
 
 lcpmGC.test <- merge(genes,lcpmGC, by.x="x.GC.genes.GENEID", by.y="names")
-
 lcpmGC <- lcpmGC.test
-
-
 nchrm <- nlevels(lcpmGC$x.GC.genes.TXCHROM)
 lcpmGC$x.GC.genes.TXCHROM
-chrm <- levels(lcpmGC$x.GC.genes.TXCHROM)
-
 lcpmGC
-remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
-lcpmGC <- lcpmGC[setdiff(rownames(lcpmGC),remove),]
 x.GC$samples$group
 cpmGC
 length(x.GC$samples$group)
-
 names <- colnames(lcpmGC)
-length(lcpmGC)
+length(lcpmGC[,1])
 nrow(lcpmGC)
 rm(i)
+lcpmGC <- na.omit(lcpmGC)
 View(lcpmGC)
 
 rm(i)
@@ -386,6 +390,7 @@ rm(i)
 colnames(lcpmGC) <- c("gene","chr", ".11.A",".11.B",".11.C",".18.A",".18.B",".18.C",".1.A", ".1.B", ".1.C", ".21.B",".21.C",".2.A", ".2.B", ".2.C", ".31.A",".31.B",".31.C",".3.A", ".3.B", ".3.C",".49.A",".49.B",".49.C",".4.A", ".4.B",".4.C", ".59.A",".59.B",".59.C",".5.A",".5.B", ".5.C", ".61.A",".61.B",".61.C",".66.B",".66.C",".68.A",".68.B",".68.C",".6.A", ".6.B", ".6.C", ".76.A",".76.B",".76.C",".77.A",".77.B",".77.C",".7.A",".7.B", ".7.C", ".8.A", ".8.B", ".8.C",".9.A", ".9.B", ".9.C", ".GCAnc.A" ,".GCAnc.B",".GCAnc.C")
 names <- colnames(lcpmGC)
 lines.G <- c(".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.",".GCAnc.")
+colnames.G <- c("GENE","CHRM", " .11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.",".GCAnc.")
 
 i=1
 rm(i)
@@ -400,11 +405,30 @@ for (i in 1:length(lines.G)) {
   vari[,i] <- cols
 }
 
-colnames(vari) <- lines.G
-
-vari <- cbind(as.factor(genes$x.GC.genes.TXCHROM),vari)
-vari <- cbind(as.factor(genes$x.GC.genes.GENEID),vari)
+vari <- as.data.frame(vari)
+#vari <- cbind(as.factor(genes$x.GC.genes.TXCHROM),vari)
 View(vari)
+vari <- cbind(lcpmGC$gene,lcpmGC$chr,vari)
+colnames(vari) <- colnames.G
+class(vari[,3])
+vari$GENE <- droplevels(vari$GENE)
+rownames(vari) <- vari$GENE
+#vari2 <- subset(vari, vari[1:3386,]>=0.0001) # & vari[,3:23]>=0.0001)
+#summary(vari[,3:23]>=0.0001)
+#summary(vari[1:3386,]<=0.0001)
+table(rowSums(vari[3:23]>0.0001)>=21)
+keep.genes.GC <- rowSums(vari[,3:23]>=0.0001)>=21
+keep.genes.GC <- as.data.frame(keep.genes.GC)
+keep.genes.GC$genes <- rownames(keep.genes.GC)
+genes2 <- merge(keep.genes.GC,genes,by.x="genes",by.y="x.GC.genes.GENEID")
+genes2 <- genes2[!(genes2$keep.genes.GC=="FALSE"),]
+
+#remove genes with variance less than 0.00001
+lcpmGC <- merge(genes2,lcpmGC, by.x="genes", by.y="x.GC.genes.GENEID")
+lcpmGC <- lcpmGC[,-2]
+lcpmGC <- lcpmGC[,-3]
+lcpmGC <- droplevels(lcpmGC)
+vari2 <- merge(vari,lcpmGC,by.x="GENE",by.y="genes")
 
 mean <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
 is.list(mean)
@@ -416,9 +440,10 @@ for (i in 1:length(lines.G)) {
   m <- matrix(apply(cols,1,mean))
   mean[,i] <- m
 }
-colnames(mean) <- lines.G
-mean <- cbind(as.factor(genes$x.GC.genes.TXCHROM),mean)
-mean <- cbind(as.factor(genes$x.GC.genes.GENEID),mean)
+mean <- as.data.frame(mean)
+mean <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,mean)
+colnames(mean) <- colnames.G
+
 
 std <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
 length(lcpmGC)
@@ -431,23 +456,31 @@ for (i in 1:length(lines.G)) {
   colnames(cols) <- c()
   std[,i] <- cols
 }
-colnames(std) <- lines.G
-std <- cbind(as.factor(genes$x.GC.genes.TXCHROM),std)
-std <- cbind(genes$x.GC.genes.GENEID,std)
+std <- as.data.frame(std)
+std <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,std)
+colnames(std) <- colnames.G
+class(std[,3])
 
 dim(mean)
-dim(v)
+dim(vari)
 dim(std)
-#std[,3:21] <- as.numeric(std[,3:21])
+#std[,3:23] <- as.numeric(std[,3:23])
 cv <- matrix(data=NA,nrow=nrow(mean),ncol=length(ncol(mean)))
 #log transform the coefficient of variance 
 #cv <- log(cv)
+View(std)
+#mean[,3:23] <- as.numeric(mean[,3:23])
+View(mean)
+is.list(std)
+class(mean[,3:23])
+class(std[,3:23])
+class(mean[,3])
+is.list(mean)
 cv <- std[,3:23]/mean[,3:23]
 dim(cv)
 #cv <- transform_to_log_scale(cv)
-colnames(cv) <- lines.G
-cv <- cbind(genes$x.GC.genes.TXCHROM,cv)
-cv <- cbind(genes$x.GC.genes.GENEID,cv)
+cv <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,cv)
+colnames(cv) <- colnames.G
 #cv <- unlist(cv)
 #max(subset(cv,select="X3"))
 
@@ -462,13 +495,19 @@ length(mean)
 rm(i)
 for (i in 3:23) {
   pdf(paste("Mean-Variance Relationship",line.G[i],".pdf",sep=""))
-  print(ggplot () + geom_point(aes(x=mean[,i],y=v[,i],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
+  print(ggplot () + geom_point(aes(x=mean[,i],y=vari[,i],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
   dev.off()
 }
 
 #use plotly to view the graph interactively and see what points correspond to what genes/chromosomes 
+length(vari2)
+class(vari2)
+class(mean)
+length(vari2[,1])
+length(mean[,1])
+
 get.points <- function(line) {
-   ggplot () + geom_point(aes(x=mean[,line],y=v[,line],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[line]), y="variance",x="mean")
+   ggplot () + geom_point(aes(x=mean[,line],y=vari2[,line],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[line]), y="variance",x="mean")
 ggplotly()
 }
 #line=18
@@ -478,7 +517,7 @@ par(mfrow=c(1,1))
 
 for (i in 3:23) {
   pdf(paste("Dist_Variance",i,".pdf",sep=""))
-  plot(density(v[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
+  plot(density(vari[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
   title(main=paste("Distribution of Variance",line.G[i]),xlab="var of lcpm")
   abline(v=0,lty=3)
   dev.off()

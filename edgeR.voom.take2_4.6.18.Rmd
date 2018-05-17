@@ -78,57 +78,13 @@ x.GC$samples$group <- group.GC
 #come back to this later
 #run <- as.factor(rep(c(1,2), c(16,48)))
 #x.MA$samples$run <- run
-#ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
-#x$samples$ploidy <- ploidy
+ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
+x$samples$ploidy <- ploidy
 #x.MA$samples
 #organize the gene annotations
-#install mus.musuclus package
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("BSgenome.Scerevisiae.UCSC.sacCer3")
-#library(BSgenome.Scerevisiae.UCSC.sacCer3)
-#geneid <- rownames(x)
-#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
-#dim(genes)
-#head(genes)
-#biocLite("BSgenome.Scerevisiae.UCSC.sacCer1")
-#library(BSgenome.Scerevisiae.UCSC.sacCer1)
-#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("OrganismDbi")
-#library(OrganismDbi)
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("org.Sc.sgd.db")
-#library(org.Sc.sgd.db)
-#org.Sc.sgd.db
-#yeast <- org.Sc.sgd.db
-#keytypes(yeast)
-#columns(yeast)
-#genes <- select(org.Sc.sgd.db, keys=geneid, columns="TXCHR","CHRLENGTHS","ENSEMBL",keytype="GENENAME")
 #biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
 #library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
-txdb
-#txs <- transcripts(txdb)
-#txs
-#txby <- transcriptsBy(txdb,by="gene")
-#txby
-#si <- seqinfo(txdb)
-#si
-#txby <- transcriptsBy(txdb, by="gene")
-#si <- seqinfo(txby)
-#si
-#head(seqlevels(txdb))
-#seqlevelsStyle(txdb)
-#seqlevelsStyle(txdb) <- "ensembl"
-#head(seqlevels(txdb))
-#seqlevelsStyle(txdb) <- "UCSC"
-#head(seqlevels(txdb))
-#want to ignore the mitochondria
-#isActiveSeq(txdb)["chrM"] <- FALSE
-#head(isActiveSeq(txdb), n=18)
-#and 2 micron 
-#isActiveSeq(txdb)["2micron"] <- FALSE
-#head(isActiveSeq(txdb), n=18)
 columns(txdb)
 #want TXCHROM
 #want GENEID
@@ -148,52 +104,9 @@ x.GC$genes <- genesGC
 x.GC
 #x.MA$genes <- genesMA
 #x.MA
-#need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
 #myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
 #newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
 #updated_myData <- subset(x, id %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
-#updated_myData <- subset(x, id %in% c(4064, 4065, 4066))
-#id <- rownames(x$counts)
-#myData = x[!id > 4,] # equal to myData[myData$A <= 4,]
-#x <- cbind(x$counts, id) 
-#genome <- BSgenome.Scerevisiae.UCSC.sacCer3
-#columns(genome)
-#biocLite("AnnotationHub")
-#library(AnnotationHub)
-#ah <- AnnotationHub()
-##genome <- BSgenome.Scerevisiae.UCSC.sacCer3
-#genome$chrI
-#qh <- query(ah, c("sacCer2","genes"))
-#qh
-#genes2 <- qh[[which(qh$title == "SGD Genes")]]
-#genes2
-#genes <- select(genes, keys=geneid, columns="seqnames","name",keytype="name")
-#unique(ah$dataprovider)
-#ens <- query(ah, "Ensembl")
-#ens
-#ens <- subset(ah, ah$dataprovider=="Ensembl")
-#ens
-#ens$species
-#yeast <-  query(ens, "Saccharoymces cerevisiae")
-#yeast
-#orgs <- subset(ah, ah$rdataclass == "OrgDb")
-#orgs
-#yeast <- query(orgs, "Saccharomyces cerevisiae")[[1]]
-#columns(yeast)
-#keytypes(yeast)
-#head(keys(yeast, keytype="GENENAME"))
-#head(keys(yeast, keytype="ENSEMBL"))
-#head(keys(yeast, keytype="ENSEMBLTRANS"))
-#head(keys(yeast, keytype="ALIAS"))
-#head(keys(yeast, keytype="UNIPROT"))
-#geneid <- rownames(x)
-#genes <- select(yeast, keys=geneid, columns="SGD","ENSEMBL","GENENAME",keytype="GENENAME")
-#dim(genes)
-#head(genes)
-#get rid of any duplicate genes (mapping to different chromosomes)
-#data frame of gene annotations is added back to the DGEList
-#x$genes <- genes
-#x
 #########################################################
 #data pre-processing
 #get counts per million
@@ -240,7 +153,6 @@ x.GC <- x.GC.str
 nsamplesGC <- ncol(x.GC)
 colGC <- colorRampPalette(brewer.pal(21,"Set1"))(ncol(x.GC))
 nlevels(colGC)
-
 {
   pdf("Raw_dataGC.pdf")
 plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
@@ -424,7 +336,7 @@ genes2 <- merge(keep.genes.GC,genes,by.x="genes",by.y="x.GC.genes.GENEID")
 genes2 <- genes2[!(genes2$keep.genes.GC=="FALSE"),]
 
 #remove genes with variance less than 0.00001
-lcpmGC <- merge(genes2,lcpmGC, by.x="genes", by.y="x.GC.genes.GENEID")
+lcpmGC <- merge(genes2,lcpmGC, by.x="genes", by.y="gene")
 lcpmGC <- lcpmGC[,-2]
 lcpmGC <- lcpmGC[,-3]
 lcpmGC <- droplevels(lcpmGC)
@@ -441,7 +353,7 @@ for (i in 1:length(lines.G)) {
   mean[,i] <- m
 }
 mean <- as.data.frame(mean)
-mean <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,mean)
+mean <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,mean)
 colnames(mean) <- colnames.G
 
 
@@ -457,9 +369,19 @@ for (i in 1:length(lines.G)) {
   std[,i] <- cols
 }
 std <- as.data.frame(std)
-std <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,std)
+std <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,std)
 colnames(std) <- colnames.G
 class(std[,3])
+
+GCanc.stats <- data.frame(mean$GENE, mean$CHRM, mean$.GCAnc.,std$.GCAnc.)
+colnames(GCanc.stats) <- c("GENE","CHRM","mean","std")
+
+
+
+k <- ggplot(GCanc.stats, aes(CHRM, mean))#ymin = mean-std, ymax = mean+std))
+print(k)
+
+
 
 dim(mean)
 dim(vari)
@@ -479,7 +401,7 @@ is.list(mean)
 cv <- std[,3:23]/mean[,3:23]
 dim(cv)
 #cv <- transform_to_log_scale(cv)
-cv <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM.x,cv)
+cv <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,cv)
 colnames(cv) <- colnames.G
 #cv <- unlist(cv)
 #max(subset(cv,select="X3"))
@@ -495,7 +417,7 @@ length(mean)
 rm(i)
 for (i in 3:23) {
   pdf(paste("Mean-Variance Relationship",line.G[i],".pdf",sep=""))
-  print(ggplot () + geom_point(aes(x=mean[,i],y=vari[,i],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
+  print(ggplot () + geom_point(aes(x=mean[,i],y=vari2[,i],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
   dev.off()
 }
 
@@ -517,7 +439,7 @@ par(mfrow=c(1,1))
 
 for (i in 3:23) {
   pdf(paste("Dist_Variance",i,".pdf",sep=""))
-  plot(density(vari[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
+  plot(density(vari2[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
   title(main=paste("Distribution of Variance",line.G[i]),xlab="var of lcpm")
   abline(v=0,lty=3)
   dev.off()
@@ -593,15 +515,18 @@ levels(x.GC$samples$group)
 #estimate dispersion
 designGC <- model.matrix(~0+group.GC)
 designGC
-getPriorN(x.GC,design=designGC,prior.df=20)
+getPriorN(x.GC,design=designGC,prior.df = 2)
+
+x.GC.test <- x.GC[genes2$genes,keep.lib.sizes=FALSE]
+x.GC <- x.GC.test
 
 #default
-x.GC <- estimateDisp(x.GC,verbose=FALSE,design = designGC, prior.df = 20)
+x.GC <- estimateDisp(x.GC,verbose=FALSE,design=designGC,prior.df=2)
 #x.GC without model matrix
 x.GC.sm <- estimateCommonDisp(x.GC,verbose=FALSE,prior.df = 9)
 x.GC.sm <- estimateTagwiseDisp(x.GC.sm, verbose=FALSE, prior.df = 9)
 x.GC.sm <- estimateTrendedDisp(x.GC.sm, verbose=FALSE, prior.df = 9)
-et1.sm <- exactTest(x.GC.sm, pair=c(line.G[4],anc),dispersion = "trended")
+et1.sm <- exactTest(x.GC, pair=c(anc,line.G[4]),dispersion = "auto")
 top.sm <- topTags(et1,n=200,adjust.method = "BH")
 
 
@@ -614,8 +539,6 @@ View(test1.sm)
 
 #idea: test the aneuploid lines separately from the euploid lines in the analysis 
 #could be skewing the data 
-
-
 x.GC$genes$TXCHROM
 grep("chrI",x.GC$genes$TXCHROM)
 
@@ -661,8 +584,12 @@ rm(i)
 cpmGC <- data.table(cpmGC)
 write.csv(lcpmGC, file="lcpm.csv")
 
-for (i in 1:length(lines.G)) {
-  et <- exactTest(x.GC, pair=c((lines.G[i]),anc))
+x.GC$genes$TXCHROM 
+x.GC.no.aneu <- x.GC$genes$TXCHROM 
+rm(i)
+length(lines.G)
+for (i in 1:20) {
+  et <- exactTest(x.GC, pair=c(anc,lines.G[i]))
   ind <- et$table
   ind2 <- ind[,3]
   #rownames(ind2) <- c()
@@ -676,8 +603,8 @@ for (i in 1:length(lines.G)) {
 }
 pval <- data.frame(pval)
 colnames(pval) <- lines.G
-pval <- cbind(genes$x.GC.genes.TXCHROM,pval)
-pval <- cbind(genes$x.GC.genes.GENEID,pval)
+pval <- cbind(genes2$genes,pval)
+pval <- cbind(genes2$x.GC.genes.TXCHROM,pval)
 #pval versus coefficient of variation per line 
 #loop
 
@@ -689,16 +616,22 @@ pval[,21]
 colnames(pval)
 names.p <- colnames(pval)
 names.cv <- colnames(cv)
+names.cv <- as.character(names.cv)
+names.p <- as.character(names.p)
+str(names.cv)
+str(names.p)
 
 str(cv)
 str(pval)
 line.G
 rm(i)
-i=3
+i=4
 lines.G[1]
 rm(i)
-for (i in 3:22) {
-  pdf(paste("pval.vs.cv.Line",line.G[i],".pdf",sep=""))
+
+i=1
+for (i in 2:20) {
+  pdf(paste("pval.vs.cv.Line",lines.G[i],".pdf",sep=""))
   p <- grep(paste("^",(line.G[i]),"$",sep=""),names.p)
   val <- pval[,p]
   c <- grep(paste("^",(line.G[i]),"$",sep=""),names.cv)
@@ -708,6 +641,7 @@ for (i in 3:22) {
   print(ggplot () + geom_point(aes(x=val,y=v,col=pval[,2])) + scale_y_log10()  + labs(title=(paste("Pval vs CV Line",line.G[i])), y="CV",x="pval") + annotate("text",x=0.9,y=100,label=paste("pval=",corTest.cv$p.value,sep="")) + geom_vline(xintercept=0.05))
   dev.off()
 }
+line=3
 
 pvscv <- function(line) {
     p <- grep(paste("^",(line.G[line]),"$",sep=""),names.p)
@@ -716,18 +650,18 @@ pvscv <- function(line) {
   v <- cv[,c]
   corTest.cv <- cor.test(val,v)
 #  corTest.cv <- c(corTest.cv$p.value)
-  print(ggplot () + geom_point(aes(x=val,y=v,col=pval[,2])) + scale_y_log10()  + labs(title=(paste("Pval vs CV Line",line.G[line])), y="CV",x="pval") + annotate("text",x=0.9,y=100,label=paste("pval=",corTest.cv$p.value,sep="")) + geom_vline(xintercept=0.05))
+  print(ggplot () + geom_point(aes(x=val,y=v,col=pval[,1])) + scale_y_log10()  + labs(title=(paste("Pval vs CV Line",line.G[line])), y="CV",x="pval") + annotate("text",x=0.9,y=100,label=paste("pval=",corTest.cv$p.value,sep="")) + geom_vline(xintercept=0.05))
   ggplotly()
 }
 
-pvscv(4)
+pvscv(2)
 #get.points(4)
 
 #ggplot () + geom_point(aes(x=pval$X1,y=cv$X1)) + scale_y_log10() 
 #ggplot(pval,cv,col=colGC,log="y")
 #plot(pval,cv,col=colGC,log="y",xlim=c(0,0.09))
-et1 <- exactTest(x.GC, pair=c(line.G[4],anc))
-top <- topTags(et1,n=200,adjust.method = "BH")
+et1 <- exactTest(x.GC, pair=c(anc,line.G[4]))
+top <- topTags(et1,adjust.method = "BH")
 View(top)
 
 #testing to see if the decideTests looks any different
@@ -986,16 +920,18 @@ for(i in 1:length(hybrid)){
 
 #linear models for comparisons
 vfit <- lmFit(v, design)
-vfit <- contrasts.fit(vfit,contrasts=contr.matrix)
+vfitAN <- contrasts.fit(vfit,contrasts=contr.matrixAN)
+vfitEU <- contrasts.fit(vfit,contrasts = contr.matrixEU)
 #in my analysis, get rid of the eBayes part and see if it helps increase the number of DE genes
-efit <- eBayes(vfit)
-plotSA(efit)
+efitAN <- eBayes(vfitAN)
+plotSA(efitAN)
 #ordinary.t <- efit$coef[,2]/efit$stdev.unscaled[,2]/efit$sigma
 
 #looking at the number of DE genes
-summary(decideTests(vfit))
-et <- decideTests(efit)
-summary(decideTests(efit))
+summary(decideTests(vfitAN))
+summary(decideTests(vfitEU))
+et <- decideTests(efitAN)
+summary(decideTests(efitAN))
 
 #do lines with no DE genes have higher variance? 
 #sort DE genes by # lines in which they appear

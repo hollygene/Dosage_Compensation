@@ -64,7 +64,7 @@ FBASE=$(basename $file .fq)
 BASE=${FBASE%.fq}
 tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat2/${BASE}_tophat_out \
 -i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome/known \
+--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/${BASE}.fq
 

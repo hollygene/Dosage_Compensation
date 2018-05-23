@@ -64,6 +64,7 @@ x.GC
 #colnames(x.MA) <- samplenames.MA
 group.GC <- as.factor(c(".11.",".11.",".11.",".18.",".18.",".18.",".1.", ".1.", ".1.", ".21.",".21.",".2.", ".2.", ".2.", ".31.",".31.",".31.",".3.", ".3.", ".3.",".49.",".49.",".49.",".4.", ".4.",".4.", ".59.",".59.",".59.",".5.",".5.", ".5.", ".61.",".61.",".61.",".66.",".66.",".68.",".68.",".68.",".6.", ".6.", ".6.", ".76.",".76.",".76.",".77.",".77.",".77.",".7.",".7.", ".7.", ".8.", ".8.", ".8.",".9.", ".9.", ".9.", ".GCAnc." ,".GCAnc.",".GCAnc."))
 
+write.csv(x.GC$counts,file="raw_counts.csv")
 
 length(group.GC)
 levels(group.GC)
@@ -78,8 +79,8 @@ x.GC$samples$group <- group.GC
 #come back to this later
 #run <- as.factor(rep(c(1,2), c(16,48)))
 #x.MA$samples$run <- run
-ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
-x$samples$ploidy <- ploidy
+#ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
+#x$samples$ploidy <- ploidy
 #x.MA$samples
 #organize the gene annotations
 #biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
@@ -94,6 +95,15 @@ geneidGC <- rownames(x.GC)
 genesGC <- ensembldb::select(txdb, keys=geneidGC, columns="TXCHROM","GENEID",keytype="GENEID")
 genesGC
 genesGC <- genesGC[!duplicated(genesGC$GENEID),]
+genesGC.remove <- na.omit(genesGC.remove)
+genesGC.remo <- genesGC.remo[-grep("^chrM$",genesGC.remo)]
+remove <- "chrI"
+remove1 <- "chrM"
+genesGC.test <- genesGC[-(grep(paste0(remove,"$"),genesGC$TXCHROM,perl=TRUE)),]
+genesGC.test <- genesGC.test[-(grep(paste0(remove1,"$"),genesGC.test$TXCHROM,perl=TRUE)),]
+genesGC.test <- na.omit(genesGC.test)
+genesGC.test
+
 #genesGC <- genesGC[!isActiveSeq(txdb)["2micron"],]
 #genesGC <- genesGC[!isActiveSeq(txdb)["chrM"],]
 #genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
@@ -101,7 +111,12 @@ genesGC <- genesGC[!duplicated(genesGC$GENEID),]
 #genesMA <- genesMA[!duplicated(genesMA$GENEID),]
 #data frame of gene annotations is added back to the DGEList
 x.GC$genes <- genesGC
-x.GC
+x.GC.test <- x.GC
+x.GC.test$genes <- genesGC.test
+x.GC.test$genes
+x.GC.test$genes <- droplevels(x.GC.test$genes)
+
+#remove rows with NA
 #x.MA$genes <- genesMA
 #x.MA
 #myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
@@ -111,10 +126,12 @@ x.GC
 #data pre-processing
 #get counts per million
 cpmGC <- cpm(x.GC)
+cpmGC.test <- cpm(x.GC.test)
 #cpmGC$chrm <- x.GC$genes$TXCHROM
 #cpmMA <- cpm(x.MA)
 #get log counts per million
 lcpmGC <- cpm(x.GC,log=TRUE)
+lcpmGC.test <- cpm(x.GC.test, log=TRUE)
 #lcpmGC$chrm <- x.GC$genes$TXCHROM
 #lcpmMA <- cpm(x.MA,log=TRUE)
 #lcpmMA
@@ -138,6 +155,23 @@ dim(x.GC.str)
 #table(rowSums(x.GC.str$counts>0.0001))
 #make x.GC the filtered one 
 x.GC <- x.GC.str
+
+dim(x.GC.test)
+table(rowSums(x.GC.test$counts<=0)==60)
+table(rowSums(x.GC.test$counts>=1)==60)
+table(rowSums(cpmGC.test>0.00001)>=60)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+table(rowSums(cpmGC.test>0.0001)>=2)
+keep.exprsGC.test <- rowSums(cpmGC.test>1)>=2
+#keep.exprsGC.test <- rowSums(cpmGC>1.1)>=3
+str(keep.exprsGC.test)
+str(x.GC.test)
+x.GC.str.test <- x.GC.test[keep.exprsGC.test,keep.lib.sizes=FALSE]
+#x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
+dim(x.GC.str.test)
+#table(rowSums(x.GC.str$counts>0.0001))
+#make x.GC the filtered one 
+x.GC.test <- x.GC.str.test
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
 #dim(x.MA)
 #table(rowSums(x.MA$counts==0)==64)
@@ -177,6 +211,34 @@ for (i in 2:nsamplesGC) {
 }
 legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 }
+#####################################
+nsamplesGC <- ncol(x.GC.test)
+colGC.test <- colorRampPalette(brewer.pal(21,"Set1"))(ncol(x.GC.test))
+nlevels(colGC.test)
+{
+  pdf("Raw_dataGC.test.pdf")
+plot(density(lcpmGC.test[,1]),col=colGC.test[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="A. Raw Data Test", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamplesGC) {
+  den <- density(lcpmGC.test[,i])
+  lines(den$x,den$y,col=colGC.test[i],lwd=2)
+}
+legend("topright",samplenames.GC, text.col=colGC.test, bty="n",cex=0.4,ncol=4)
+}
+
+{
+pdf("Filtered_dataGC.test.pdf")
+lcpmGCfil2 <- cpm(x.GC.test, log=TRUE)
+plot(density(lcpmGCfil2[,1]),col=colGC.test[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="B. Filtered Data Test", xlab="log-cpm")
+abline(v=0, lty=3)
+for (i in 2:nsamplesGC) {
+  den <- density(lcpmGCfil2[,i])
+  lines(den$x,den$y,col=colGC.test[i],lwd=2)
+}
+legend("topright",samplenames.GC, text.col=colGC.test,bty="n",cex=0.4,ncol=4)
+}
 #plot(density(lcpmGCfil2[,2]),col=colGC[2],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
 ##MA 
 #nsamplesMA <- ncol(x.MA)
@@ -210,6 +272,8 @@ legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 #x.normGC.test$samples
 #x.normGC.test
 x.GC <- calcNormFactors(x.GC,method="TMM")
+x.GC$counts
+x.GC.test <- calcNormFactors(x.GC.test,method="TMM")
 #x.normMA <- calcNormFactors(x.MA, method="TMM")
 #x.normMA$samples
 #x.normMA
@@ -260,24 +324,31 @@ x.GC <- calcNormFactors(x.GC,method="TMM")
 ```{r look at variance, include=FALSE}
 #calculating variance for each gene in each sample group
 lcpmGC <- cpm(x.GC,log=TRUE)
+cpmGC <- cpm(x.GC)
 lcpmGC <- data.frame(names=row.names(lcpmGC),lcpmGC)
+cpmGC <- data.frame(names=row.names(cpmGC),cpmGC)
 
 rownames(lcpmGC) <- c()
 
 genes <- data.frame(x.GC$genes$GENEID, x.GC$genes$TXCHROM)
+genes <- genesGC
 rownames(genes) <- genes$x.GC.genes.GENEID
 
 remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
 genes <- genes[setdiff(rownames(genes),remove),]
 removegenes <- c("YPL241C","YPL163C")
 genes <- genes[setdiff(rownames(genes),removegenes),]
-genes$x.GC.genes.GENEID <- droplevels(genes$x.GC.genes.GENEID)
+#genes$x.GC.genes.GENEID <- droplevels(genes$x.GC.genes.GENEID)
 
 
 #remove NAs from data
 
-lcpmGC.test <- merge(genes,lcpmGC, by.x="x.GC.genes.GENEID", by.y="names")
+lcpmGC.test <- merge(genes,lcpmGC, by.x="GENEID", by.y="names")
 lcpmGC <- lcpmGC.test
+
+cpmGC.test <- merge(genes,cpmGC, by.x="GENEID", by.y="names")
+cpmGC <- cpmGC.test
+write.csv(cpmGC,file="cpm_norm.csv")
 nchrm <- nlevels(lcpmGC$x.GC.genes.TXCHROM)
 lcpmGC$x.GC.genes.TXCHROM
 lcpmGC
@@ -290,7 +361,7 @@ nrow(lcpmGC)
 rm(i)
 lcpmGC <- na.omit(lcpmGC)
 View(lcpmGC)
-
+write.csv(lcpmGC,file="log_cpm_norm.csv")
 rm(i)
 #testing to make sure this is doing what I want it to do: find the variance between replicates, not across all lines
 #lineEl <- matrix(data=NA,ncol=3,nrow=length(lcpmGC))
@@ -513,21 +584,104 @@ glMDSPlot(lcpmGC, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TRUE
 #GC lines
 levels(x.GC$samples$group)
 #estimate dispersion
-designGC <- model.matrix(~0+group.GC)
+designGC <- model.matrix(~group.GC)
 designGC
 getPriorN(x.GC,design=designGC,prior.df = 2)
-
-x.GC.test <- x.GC[genes2$genes,keep.lib.sizes=FALSE]
-x.GC <- x.GC.test
+x.GC.test$samples$group
 
 #default
-x.GC <- estimateDisp(x.GC,verbose=FALSE,design=designGC,prior.df=2)
+x.GC <- estimateDisp(x.GC,verbose=FALSE,design=designGC)
+
+#### test 
+x.GC.test <- estimateDisp(x.GC.test,verbose=FALSE)
+#with design matrix 
+x.GC.test.1 <- estimateDisp(x.GC.test,verbose=FALSE,design=designGC)
+#trying exactTest on lines 11, 18, 21
+et1.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".11."),dispersion = "auto")
+cpmGC
+et1.Dev <- exactTestByDeviance(cpmGC[,3:5],cpmGC[,61:63])
+top.test <- topTags(et1.test,n=200,adjust.method = "BH")
+View(top.test)
+
+test1.test <- decideTests(et1.test, adjust.method = "BH")
+summary(test1.test)
+View(test1.test)
+
+#with design matrix
+et1.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".11."),dispersion = "auto")
+top.test1 <- topTags(et1.test1,n=200,adjust.method = "BH")
+View(top.test1)
+
+test1.test1 <- decideTests(et1.test1, adjust.method = "BH")
+summary(test1.test1)
+View(test1.test1)
+
+#line 21
+et21.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".21."),dispersion = "auto")
+top.test21 <- topTags(et21.test,n=200,adjust.method = "BH")
+View(top.test21)
+
+test21.test <- decideTests(et21.test, adjust.method = "BH")
+summary(test21.test)
+View(test21.test)
+
+#line 21
+et21.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".21."),dispersion = "auto")
+top.test21.1 <- topTags(et21.test1,n=200,adjust.method = "BH")
+View(top.test21.1)
+
+test21.test1 <- decideTests(et21.test1, adjust.method = "BH")
+summary(test21.test1)
+View(test21.test1)
+
+#line 18 
+et18.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".18."),dispersion = "auto")
+top.test18 <- topTags(et18.test,n=200,adjust.method = "BH")
+View(top.test18)
+
+test18.test <- decideTests(et18.test, adjust.method = "BH")
+summary(test18.test)
+View(test18.test)
+
+#line 18
+et18.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".18."),dispersion = "auto")
+top.test18.1 <- topTags(et18.test1,n=200,adjust.method = "BH")
+View(top.test18.1)
+
+test18.test1 <- decideTests(et18.test1, adjust.method = "BH")
+summary(test18.test1)
+View(test18.test1)
+
+#line 4
+et4.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".4."),dispersion = "auto")
+top.test4 <- topTags(et4.test,n=200,adjust.method = "BH")
+View(top.test4)
+
+test4.test <- decideTests(et4.test, adjust.method = "BH")
+summary(test4.test)
+View(test4.test)
+
+#line 18
+et4.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".4."),dispersion = "auto")
+top.test4.1 <- topTags(et4.test1,n=200,adjust.method = "BH")
+View(top.test4.1)
+
+test4.test1 <- decideTests(et4.test1, adjust.method = "BH")
+summary(test4.test1)
+View(test4.test1)
+
 #x.GC without model matrix
 x.GC.sm <- estimateCommonDisp(x.GC,verbose=FALSE,prior.df = 9)
 x.GC.sm <- estimateTagwiseDisp(x.GC.sm, verbose=FALSE, prior.df = 9)
 x.GC.sm <- estimateTrendedDisp(x.GC.sm, verbose=FALSE, prior.df = 9)
 et1.sm <- exactTest(x.GC, pair=c(anc,line.G[4]),dispersion = "auto")
 top.sm <- topTags(et1,n=200,adjust.method = "BH")
+
+
+
+designGC <- model.matrix(~0+group.GC)
+designGC
+getPriorN(x.GC.test,design=designGC)
 
 
 View(top.sm)

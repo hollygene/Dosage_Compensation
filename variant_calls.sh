@@ -27,29 +27,44 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_fil
 #create index of reference genome
 #mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp
 
+module load samtools/1.3.1
+cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files
+
+while read SampleName
+do
+
+samtools sort -m 200G -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${SampleName}.sorted.sam \
+-T /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${SampleName} \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${SampleName}
+
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/samples.txt
+
 ## make sam files into bam files
-for file in ./*.sam
+for file in ./*.sorted.sam
 
 do
 
 FBASE=$(basename $file .sam)
 BASE=${FBASE%.sam}
 
-samtools view -b ${BASE}.sam  -o ${BASE}.bam
+samtools view -b ${BASE}.sorted.sam  -o ${BASE}.bam
 done
 
 cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 samtools faidx /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams
 for file in ./*.bam
 
 do
   FBASE=$(basename $file .bam)
   BASE=${FBASE%.bam}
-cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${BASE}.bam /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/${BASE}.bam
+
+cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${BASE}.bam /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/${BASE}.bam
 #run samtools mpileup
-mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants2
-samtools mpileup -uf /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/${BASE}.bam > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants2/${BASE}.raw_calls.bcf
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3
+
+samtools mpileup -uf /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/${BASE}.bam > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.raw_calls.bcf
 #run bcftools call
-bcftools call -v -m /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants2/${BASE}.raw_calls.bcf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants2/${BASE}.calls.vcf
+bcftools call -v -m /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.raw_calls.bcf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.calls.vcf
 done

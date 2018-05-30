@@ -7,7 +7,7 @@
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
-module load samtools/1.6
+module load samtools/1.3.1
 module load bcftools/1.6
 ##### variant calling pipeline
 ## to determine if my replicates for GC/MA lines match what they should be matching or not
@@ -47,13 +47,14 @@ do
 FBASE=$(basename $file .sam)
 BASE=${FBASE%.sam}
 
-samtools view -b ${BASE}.sorted.sam  -o ${BASE}.bam
+samtools view -b ${BASE}.sam  -o ${BASE}.bam
 done
 
 cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 samtools faidx /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams
+
 for file in ./*.bam
 
 do

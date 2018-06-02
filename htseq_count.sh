@@ -3,7 +3,7 @@
 #PBS -q batch
 #PBS -l nodes=1:ppn=4:HIGHMEM
 #PBS -l walltime=480:00:00
-#PBS -l mem=200gb
+#PBS -l mem=300gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 
@@ -34,7 +34,7 @@ done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/top
 while read SampleName
 do
 htseq-count -r name -f bam -r name -s no -i gene_id -t transcript \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/Holly_18B_redo_S13_R1_001_trimmed_tophat_out/Holly_18B_redo_S13_R1_001_trimmed_tophat_out.sorted.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/Holly_18B_redo_S13_R1_001_trimmed_tophat_out.txt
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/${SampleName}.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/samples_update.txt

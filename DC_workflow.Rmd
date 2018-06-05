@@ -5837,9 +5837,10 @@ dev.off()}
 ``` {r boxplots, include=FALSE} 
 chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3])),(log2(l004.1[,3])),(log2(l005.1[,3])),
         (log2(l006.1[,3])),(log2(l007.1[,3])),(log2(l008.1[,3])),(log2(l009.1[,3])),(log2(l011.1[,3])),
-        (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
-        (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3]))),
-Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77"),each=n))
+       (log2(l018.1[,3])),(log2(l021.1[,3])),(log2(l031.1[,3])),(log2(l049.1[,3])),(log2(l059.1[,3])),
+       (log2(l061.1[,3])),(log2(l066.1[,3])),(log2(l069.1[,3])),(log2(l076.1[,3])),(log2(l077.1[,3])),(log2(l029.1[,3])),(log2(l050.1[,3])),(log2(l112.1[,3])),(log2(l115.1[,3])),(log2(l117.1[,3])),
+        (log2(l123.1[,3])),(log2(l141.1[,3])),(log2(l152.1[,3]))),
+Line=rep(c("1","2","3","4","5","6","7","8","9","11","18","21","31","49","59","61","66","69","76","77","29","50","112","115","117","123","141","152"),each=(length(l001.1$tracking_id))))
 
 
 
@@ -5858,12 +5859,12 @@ chr1DataCombo$Line=factor(chr1DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_1_All.pdf")
   
-boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3,3))
+boxplot(y~Line,data=chr1DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3.5,3.5),col="lightslateblue")
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
-abline(h=-1,lty=4,col="orange") 
-abline(h=1,lty=4,col="turquoise") 
+abline(h=-1,lty=4,col="deepskyblue1") 
+abline(h=1,lty=4,col="purple") 
 }
 
 
@@ -5890,12 +5891,12 @@ chr2DataCombo$Line=factor(chr2DataCombo$Line, c("1","2","3","4","5","6","7","8",
 
 {pdf("Chrm_2_All.pdf")
   
-boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3))
+boxplot(y~Line,data=chr2DataCombo,xlab="Line",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 2",las=3,ylim=c(-3,3),col="lightslateblue")
 
 abline(h=0,lty=4)
 abline(h=0.585,lty=4,col="deeppink1")
-abline(h=-1,lty=4,col="orange") 
-abline(h=1,lty=4,col="turquoise") 
+abline(h=-1,lty=4,col="deepskyblue1") 
+abline(h=1,lty=4,col="purple") 
 }
 
 ############
@@ -8452,6 +8453,29 @@ MArate.mon <- 6.70E-06
 
 ```
 
+
+``` {r coverage_graphs, include=FALSE}
+sample2 <- list.files(path = "/Users/hollymcqueary/Dropbox/mentoring/Ariella_Tsfoni/new_to_graph/s2_new", pattern="*.txt",full.names = TRUE)
+sample2
+
+
+file <- read.table("/Users/hollymcqueary/Dropbox/mentoring/Ariella_Tsfoni/new_to_graph/Sample29.Coverage10K.head.txt", sep= "\t", header=TRUE)
+plot(file$Coverage, ylab="Coverage",ylim=c(0,30000), xlab="Bins (10kb)",main="Sample29",xlim=0,1300,col=as.factor(file$Chromosome))
+
+
+file.names <- list.files(path = "/Users/hollymcqueary/Dropbox/mentoring/Ariella_Tsfoni/new_to_graph", pattern="*.txt",full.names = TRUE)
+file.names
+i=3
+for(i in 1:length(file.names)){
+  files <- read.table(file.names[i], sep= "\t", header=TRUE)
+  print(file.names[i])
+  pdf(paste(file.names[i],".CovGraph.pdf", sep=""))
+  plot(files$Coverage, col=as.factor(files$Chromosome), ylab="Coverage",ylim=c(0,30000),xlim=c(0,1300), xlab="Bins (10kb)",main=tools::file_path_sans_ext(basename(file.names))[i])
+  dev.off()
+}
+ 
+
+```
 
 ## Including Plots
 

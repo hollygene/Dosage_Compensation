@@ -19,3 +19,5 @@ time  samtools index \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/${SampleName}/${SampleName}.sorted.bam
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_test/samples.txt
+
+samtools index Holly_GC_Anc_S4_R1_001_trimmed.sorted.bam

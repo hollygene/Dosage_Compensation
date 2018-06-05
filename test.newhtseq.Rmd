@@ -1,0 +1,171 @@
+---
+title: "test_cpm_new_htseq"
+author: "Holly"
+date: "6/1/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load in packages, include=FALSE}
+#load in edgeR and limma
+library(limma)
+library(Glimma)
+library(edgeR)
+library(dplyr)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+library(RColorBrewer)
+library(gplots)
+library(magicfor)
+library(tidyr)
+library(data.table)
+library(stringr)
+library(ggplot2)
+library(plotly)
+library(GenomicFeatures)
+```
+
+```{r data_packaging, include=FALSE}
+#########################################
+#########################################
+#load files into R as vector
+#using new HTseq .txt files where I specified that my libraries are NOT stranded 
+files.GC.test <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/test",pattern = "*.txt", full.names = TRUE)
+files.GC.test
+
+x.GC.test <- readDGE(files.GC.test,columns=c(1,2))
+
+class(x.GC.test)
+#class(x.MA)
+#and dimensions
+dim(x.GC.test)
+#dim(x.MA)
+#organize sample information
+#change sample names so they are simpler
+files.GC.test
+
+samplenamesGC.test <- c(".GCAnc.A" ,".GCAnc.B",".GCAnc.C",".18.A",".18.B",".18.C")
+colnames(x.GC.test) <- samplenamesGC.test
+View(x.GC.test$samples)
+View(x.GC.test$counts)
+
+ ###################################################
+#group samples together according to experiment
+x.GC.test
+#View(x.GC$samples)
+#files.MA
+#samplenames.MA <- c("M112B","M112C","M115B","M115C","M117B","M117C","M123B","M123C","M141B","M141C","M152B","M152C","M29B","M29C","M50B","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
+#length(samplenames.MA)
+#colnames(x.MA) <- samplenames.MA
+group.GC.test <- as.factor(c( ".GCAnc." ,".GCAnc.",".GCAnc.",".18.",".18.",".18."))
+
+write.csv(x.GC.test$counts,file="raw_counts.test.csv")
+
+length(group.GC.test)
+levels(group.GC.test)
+nlevels(group.GC.test)
+x.GC.test$samples$group <- group.GC.test
+
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+columns(txdb)
+#want TXCHROM
+#want GENEID
+geneidGC.test <- rownames(x.GC.test)
+#geneidMA <- rownames(x.MA)
+#ran into a problem here: select didnt want to work. turns out it was trying to use diplyr select not ensembldb select. 
+colms <- c("TXSTART","TXEND")
+genesGC <- ensembldb::select(txdb, keys=geneidGC.test, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#genelengthsGC <- 
+genesGC
+genesGC <- genesGC[!duplicated(genesGC$GENEID),]
+#genesGC.remove <- na.omit(genesGC.remove)
+#genesGC.remo <- genesGC.remo[-grep("^chrM$",genesGC.remo)]
+#remove <- "chrI"
+remove1 <- "chrM"
+#genesGC.test <- genesGC[-(grep(paste0(remove,"$"),genesGC$TXCHROM,perl=TRUE)),]
+genesGC.test <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+genesGC.test <- na.omit(genesGC.test)
+genesGC.test
+genesGC <- genesGC.test
+
+lengths <- transcriptLengths(txdb)
+
+genesGC <- merge(genesGC,lengths,by.x="GENEID",by.y="gene_id")
+#lengthsGC <- ensembldb::select(lengths, keys=geneidGC, columnns="gene_id","tx_len" , keytype="gene_id")
+
+#genesGC <- genesGC[!isActiveSeq(txdb)["2micron"],]
+#genesGC <- genesGC[!isActiveSeq(txdb)["chrM"],]
+#genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
+#genesMA
+#genesMA <- genesMA[!duplicated(genesMA$GENEID),]
+#data frame of gene annotations is added back to the DGEList
+x.GC.test$genes <- genesGC
+x.GC.test$genes$tx_len
+#x.GC.test <- x.GC
+#x.GC.test$genes <- genesGC.test
+#x.GC.test$genes
+#x.GC.test$genes <- droplevels(x.GC.test$genes)
+
+#remove rows with NA
+#x.MA$genes <- genesMA
+#x.MA
+#myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
+#newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#updated_myData <- subset(x, id %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#########################################################
+#data pre-processing
+#get counts per million
+#rpkms 
+cpmGC.test <- cpm(x.GC.test,normalized.lib.sizes = FALSE, prior.count = 0.5)
+chrms <- cbind(x.GC.test$genes$TXCHROM,x.GC.test$genes$GENEID)
+write.csv(chrms,file="chrms.csv")
+lcpmGC.test <- cpm(x.GC.test,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
+rpkmGC.test <- rpkm(x.GC.test,x.GC.test$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
+rpkmGC.test <- rbind(rpkmGC.test,x.GC.test$genes$TXCHROM)
+write.csv(cpmGC.test,file="cpm.test.csv")
+write.csv(rpkmGC.test,file="rpkm.test.csv")
+
+x.GC.TMM <- calcNormFactors(x.GC.test,method="TMM")
+
+designGC.test <- model.matrix(~group.GC.test)
+designGC.test
+
+x.GC.des.test <- estimateDisp(x.GC.test,verbose=FALSE,design=designGC.test)
+x.GC.des.TMM <- estimateDisp(x.GC.TMM,verbose=FALSE,design=designGC.test) 
+x.GC.test <- estimateDisp(x.GC.test,verbose=FALSE,design=NULL)
+x.GC.TMM <- estimateDisp(x.GC.TMM,verbose=FALSE,design=NULL)
+et.test.des <- exactTest(x.GC.des.test, pair=c(".GCAnc.",".18."))
+top.test.des <- topTags(et.test.des,adjust.method = "BH",n=200)
+View(top.test.des)
+test <- decideTests(et.test.des,adjust.method = "BH")
+summary(test)
+
+t.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".18."))
+top.test <- topTags(et.test,adjust.method = "BH",n=200)
+View(top.test)
+
+```
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

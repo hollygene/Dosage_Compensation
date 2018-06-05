@@ -14,7 +14,7 @@ THREADS=4
 
 module load python/2.7.8
 module load htseq/0.6.1p1
-#module load samtools/1.3.1
+module load samtools/1.3.1
 
 cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update
 
@@ -33,7 +33,7 @@ done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/top
 #GC
 while read SampleName
 do
-htseq-count -r name -f bam -r name -s no -i gene_id -t transcript \
+htseq-count -r name -f bam -r name -s no -i gene_id -t exon \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/${SampleName}.txt
 

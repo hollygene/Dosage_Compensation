@@ -1,5 +1,5 @@
 ---
-title: "DEGSeq_May2018"
+title: "DESeq_May2018"
 author: "Holly"
 date: "5/14/2018"
 output: html_document
@@ -28,16 +28,17 @@ samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","21A","21C
 
 group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","21","21","2","2","2","31","31","31","3","3","3","4","49","49","49","4","4","59","59","59","5","5","5","61","61","61","66","66","69","69","69","6","6","6","7","76","76","76","77","77","77","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
 
+run.GC <-  c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","3","1","2","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","3","2","1","2","2","1","2","1","2","3","1","2","1","1","2","2","2","2")
 
 
-GC.table <- data.frame(sampleName = samplenamesGC,fileName = filenames.GC, condition = group.GC)
+GC.table <- data.frame(sampleName = samplenamesGC,fileName = filenames.GC, condition = group.GC, run = run.GC)
 View(GC.table)
 
 ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC" )
 
 cols <- as.data.frame(samplenamesGC)
 
-desGC <- DESeqDataSetFromHTSeqCount(sampleTable = GC.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC", design = ~ condition)
+desGC <- DESeqDataSetFromHTSeqCount(sampleTable = GC.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC", design = ~ condition + run)
 
 View(counts(desGC))
 as.data.frame(colData(desGC))
@@ -60,17 +61,28 @@ desGC <- estimateDispersions(desGC)
 desGC.loc <- estimateDispersions(desGC,fitType = "local")
 
 plotDispEsts(desGC)
+
 plotDispEsts(desGC.loc)
 #View(counts(ddsGC))
 
 #filter data 
 table(rowSums(counts(desGC)>=10)>=3)
 table(rowSums(counts(desGC)==0)>=12)
-table(rowSums(counts(desGC)==0)<=12)
+table(rowSums(counts(desGC)<=0)>1)
+
 keep <- rowSums(counts(desGC)>=10)>=3
 keep2 <- rowSums(counts(desGC)==0)<=12
+
 desGC <- desGC[keep,]  
 desGC <- desGC[keep2,]
+keep3 <- rowSums(counts(desGC)<=0)<1
+desGC <- desGC[keep3,]
+keep <- rowSums(counts(desGC.loc)>=10)>=3
+keep2 <- rowSums(counts(desGC.loc)==0)<=12
+desGC.loc <- desGC.loc[keep,]  
+desGC.loc <- desGC.loc[keep2,]
+keep3 <- rowSums(counts(desGC.loc)<=0)<1
+desGC.loc <- desGC.loc[keep3,]
 ##trying analysis without the lines that have only 2 replicates (analyzing them separately)
 #filenamesGC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = FALSE)
 #filenamesGC <- as.data.frame(filenamesGC)
@@ -205,13 +217,13 @@ deGC.loc <- DESeq(desGC.loc,full=design(desGC.loc),test="Wald",fitType="local")
 resultsNames(deGC.loc)
 res49.loc <- results(deGC.loc, contrast = c("condition", "49","GCAnc"), pAdjustMethod = "BH")
 res49.loc
-sum(res49.loc$padj <0.05, na.rm=TRUE)
+sum(res49.loc$padj <0.1, na.rm=TRUE)
 mcols(res49.loc,use.names = TRUE)
 plotMA(res49.loc)
 
-desGC.loc$condition <- relevel(desGC.loc$condition,"GCAnc")
-deGC.loc <- DESeq(desGC.loc,full=design(desGC.loc),test="Wald",fitType="local")
-resultsNames(deGC.loc)
+#desGC.loc$condition <- relevel(desGC.loc$condition,"GCAnc")
+#deGC.loc <- DESeq(desGC.loc,full=design(desGC.loc),test="Wald",fitType="local")
+#resultsNames(deGC.loc)
 res21.loc <- results(deGC.loc, contrast = c("condition", "21","GCAnc"), pAdjustMethod = "BH")
 res21.loc
 sum(res21.loc$padj <0.1, na.rm=TRUE)
@@ -223,22 +235,34 @@ levels(bins21) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs21)]))
 ratios21 <- tapply(res21.loc$pvalue,bins21,function(p) mean(p<.1,na.rm=TRUE))
 barplot(ratios21,xlab="mean normalized count",ylab="ratio of small p values")
 
+res18.loc <- results(deGC.loc, contrast = c("condition", "18","GCAnc"), pAdjustMethod = "BH")
+sum(res18.loc$padj <0.1, na.rm=TRUE)
 
 plotDispEsts(desGC.loc)
-lines.GC <-  as.factor(c("11","18","1", "21","2", "31","3", "49","4", "59", "5", "61","66","68", "6", "76","77","7", "8", "9","GCAnc"))
-
+resultsNames(deGC.loc)
+lines.GC <-  c("1","11","18","2","21","3","31","4","49","5","59","6","61","66", "69","7","76","77","8","9")
 
 length(lines.GC)
 i=1
 rm(i)
+de.genes <- matrix(data=NA,nrow=length(lines.GC),ncol=1)
+rownames(de.genes) <- lines.GC
+resultsNames(deGC.loc)
+
+View(colData(desGC.loc))
+
 for (i in 1:20) {
-  line <- nbinomTest(ddsGC,"GCAnc",lines.GC[i])
-    pdf(paste("MA_plot_Line",lines.GC[i],".pdf",sep=""))
-  plotMA(line,main=paste("MA Plot Line",lines.GC[i],sep=" "))
-    pdf(paste("hist_pval_Line",lines.GC[i],".pdf",sep=""))
-  hist(line$padj,breaks=100,col="turquoise",border="turquoise",main=paste("Distribution of P-Values Line",lines.GC[i],sep=" "))
-  abline(v=0.05)
-  write.csv(line, file=paste("DE_results",lines.GC[i],".csv",sep="_"))
+  res <- results(deGC.loc, contrast = c("condition", lines.GC[i],"GCAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line",lines.GC[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genes[lines.GC[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line",lines.GC[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",lines.GC[i],sep=""))
   dev.off()
 }
 

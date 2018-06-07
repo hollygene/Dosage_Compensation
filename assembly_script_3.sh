@@ -154,7 +154,7 @@ THREADS=4
 #####################################################################################################################
 #then MA new
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 #trying to rename files so that I can eventually run a loop with cuffdiff
 #rename 'GC' A *.fq
 #these work
@@ -184,47 +184,47 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new
 
 #module unload trimgalore/0.4.4
 
-module load tophat/2.1.1
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/"
+#module load tophat/2.1.1
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/${BASE}.fq
 
-done
+#done
 
-module load samtools/1.3.1
+#module load samtools/1.3.1
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update
 
-ls >> samples_update.txt
+#ls >> samples_update.txt
 
-while read SampleName
-do
-time samtools sort -m 300G \
--n \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/accepted_hits.bam
+#while read SampleName
+#do
+#time samtools sort -m 300G \
+#-n \
+#-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
+#   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/samples_update.txt
+#done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/samples_update.txt
 
 module load python/2.7.8
 module load htseq/0.6.1p1
 
 while read SampleName
 do
-htseq-count -r name -f bam -r name -s no -i gene_id -t transcript \
+htseq-count -r name -f bam -r name -s no -i gene_id -t exon \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/${SampleName}.txt
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.exon.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/samples_update.txt
 
@@ -298,7 +298,7 @@ done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
 #then MA old
 
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 
 #these codes work
 
@@ -328,48 +328,48 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old
 #module unload trimgalore/0.4.4
 
 
-module load tophat/2.1.1
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
-mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/"
+#module load tophat/2.1.1
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
+#mkdir "/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/"
 
-for file in ./*.fq
+#for file in ./*.fq
 
-do
+#do
 
-FBASE=$(basename $file .fq)
-BASE=${FBASE%.fq}
-tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${BASE}_tophat_out \
--i 10 -I 1000 \
---transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/${BASE}.fq
+#FBASE=$(basename $file .fq)
+#BASE=${FBASE%.fq}
+#tophat -p $THREADS -o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${BASE}_tophat_out \
+#-i 10 -I 1000 \
+#--transcriptome-index=/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/transcriptome_data/known \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genome \
+#/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/${BASE}.fq
 
-done
+#done
 
 
-module load samtools/1.3.1
+#module load samtools/1.3.1
 
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update
 
-ls >> samples_update.txt
+#ls >> samples_update.txt
 
-while read SampleName
-do
-time samtools sort -m 300G \
--n \
--o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/accepted_hits.bam
+#while read SampleName
+#do
+#time samtools sort -m 300G \
+#-n \
+#-o /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
+#   /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/accepted_hits.bam
 
-done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/samples_update.txt
+#done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/samples_update.txt
 
 module load python/2.7.8
 module load htseq/0.6.1p1
 
 while read SampleName
 do
-htseq-count -r name -f bam -r name -s no -i gene_id -t transcript \
+htseq-count -r name -f bam -r name -s no -i gene_id -t exon \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/${SampleName}.txt
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.exon.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/samples_update.txt
 

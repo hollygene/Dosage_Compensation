@@ -222,9 +222,9 @@ module load htseq/0.6.1p1
 
 while read SampleName
 do
-htseq-count -r name -f bam -r name -s no -i gene_id -t exon \
+htseq-count -r name -f bam -i gene_id -t exon \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.exon.txt
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.stranded.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed/tophat_update/samples_update.txt
 
@@ -367,11 +367,20 @@ module load htseq/0.6.1p1
 
 while read SampleName
 do
-htseq-count -r name -f bam -r name -s no -i gene_id -t exon \
+htseq-count -r name -f bam -i gene_id -t exon \
 /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
-/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.exon.txt
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/MA/${SampleName}.stranded.txt
 
 done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed/tophat_update/samples_update.txt
+
+
+while read SampleName
+do
+htseq-count -r name -f bam -i gene_id -t exon \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/${SampleName}/${SampleName}.sorted.bam \
+/lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/genes.gtf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/HTseq_update/${SampleName}.stranded.txt
+
+done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update/samples_update.txt
 
 #unload tophat
 

@@ -21,38 +21,24 @@ library(gplots)
 ```
 
 ```{r load in data, include=FALSE}
-filenames.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC",pattern = "*.txt", full.names = FALSE)
+filenames.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/6.11.18",pattern = "*.txt", full.names = FALSE)
 filenames.GC <- as.data.frame(filenames.GC)
 
-samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","21A","21C","2A","2B","2C","31A","31B","31C","3A","3B","3C","4A","49A","49B","49C","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","66B","66C","69A","69B","69C","6A","6B","6C","7A","76A","76B","76C","77A","77B","77C","7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
+samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","21A","21C","2A","2B","2C","31A","31B","31C","3A","3B","3C","49A","49B","49C","4A","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","66B","66C","69A","69B","69C","6A","6B","6C","76A","76B","76C","77A","77B","77C","7A","7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
 
-group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","21","21","2","2","2","31","31","31","3","3","3","4","49","49","49","4","4","59","59","59","5","5","5","61","61","61","66","66","69","69","69","6","6","6","7","76","76","76","77","77","77","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
+group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","21","21","2","2","2","31","31","31","3","3","3","49","49","49","4","4","4","59","59","59","5","5","5","61","61","61","66","66","69","69","69","6","6","6","76","76","76","77","77","77","7","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
 
-run.GC <-  c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","3","1","2","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","3","2","1","2","2","1","2","1","2","3","1","2","1","1","2","2","2","2")
+run.GC <- c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","1","2","3","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","2","1","2","2","1","2","3","1","2","3","1","2","1","1","2","2","2","2")
 
 
 GC.table <- data.frame(sampleName = samplenamesGC,fileName = filenames.GC, condition = group.GC, run = run.GC)
 View(GC.table)
 
-ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC" )
+#ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons" )
 
 cols <- as.data.frame(samplenamesGC)
 
-desGC <- DESeqDataSetFromHTSeqCount(sampleTable = GC.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC", design = ~ condition + run)
-
-View(counts(desGC))
-as.data.frame(colData(desGC))
-
-colnames(ddsGC)
-rownames(ddsGC)
-
-#ddsGC$groupGC <- relevel(ddsGC$groupGC, ref=".GCAnc.")
-ddsGC <- estimateSizeFactors(ddsGC)
-sizeFactors(ddsGC)
-head(counts(ddsGC,normalized=TRUE))
-ddsGC <- estimateDispersions(ddsGC)
-# ,method="per-condition" 
-
+desGC <- DESeqDataSetFromHTSeqCount(sampleTable = GC.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons", design = ~ condition + run)
 desGC <- estimateSizeFactors(desGC)
 sizeFactors(desGC)
 head(counts(desGC))
@@ -83,6 +69,7 @@ desGC.loc <- desGC.loc[keep,]
 desGC.loc <- desGC.loc[keep2,]
 keep3 <- rowSums(counts(desGC.loc)<=0)<1
 desGC.loc <- desGC.loc[keep3,]
+
 ##trying analysis without the lines that have only 2 replicates (analyzing them separately)
 #filenamesGC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = FALSE)
 #filenamesGC <- as.data.frame(filenamesGC)
@@ -154,7 +141,6 @@ heatmap.2(counts(desGC)[select,],col=hmcol,trace="none",margin=c(10,6))
 #rownames(mat) = colnames(mat) = with(pData(desGC),paste(condition,libType,sep=":"))
 
 ```
-
 
 ```{r DE, include=TRUE}
 
@@ -268,6 +254,452 @@ for (i in 1:20) {
 
 
 
+```
+
+``` {r analyzing problematic lines separately, include = FALSE}
+#problematic lines
+filenames.prob <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/problematic_lines",pattern = "*.txt", full.names = FALSE)
+filenames.prob <- as.data.frame(filenames.prob)
+
+
+
+samplenames.prob <- c("21A","21C","31A","31B","31C","66B","66C","69A","69B","69C","7A","7B","7C","GCAncA","GCAncB","GCAncC")
+
+group.prob <- as.factor(c("21","21","31","31","31","66","66","69","69","69","7","7","7","GCAnc","GCAnc","GCAnc"))
+
+#run.GC <- c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","1","2","3","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","2","1","2","2","1","2","3","1","2","3","1","2","1","1","2","2","2","2")
+
+
+GC.prob <- data.frame(sampleName = samplenames.prob,fileName = filenames.prob, condition = group.prob)
+View(GC.prob)
+
+#ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons" )
+
+cols <- as.data.frame(samplenames.prob)
+
+des.prob <- DESeqDataSetFromHTSeqCount(sampleTable = GC.prob, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/problematic_lines", design = ~ condition)
+
+View(counts(desGC))
+as.data.frame(colData(desGC))
+
+View(counts(des.prob))
+as.data.frame(colData(des.prob))
+
+#colnames(ddsGC)
+#rownames(ddsGC)
+
+#ddsGC$groupGC <- relevel(ddsGC$groupGC, ref=".GCAnc.")
+#ddsGC <- estimateSizeFactors(ddsGC)
+#sizeFactors(ddsGC)
+#head(counts(ddsGC,normalized=TRUE))
+#ddsGC <- estimateDispersions(ddsGC)
+# ,method="per-condition" 
+
+des.prob <- estimateSizeFactors(des.prob)
+sizeFactors(des.prob)
+head(counts(des.prob))
+des.prob <- estimateDispersions(des.prob)
+#trying local fit only just in case
+desGC.loc.prob <- estimateDispersions(des.prob,fitType = "local")
+
+plotDispEsts(des.prob)
+
+plotDispEsts(desGC.loc.prob)
+#View(counts(ddsGC))
+
+#filter data 
+table(rowSums(counts(des.prob)>=10)>=3)
+table(rowSums(counts(des.prob)==0)>=12)
+table(rowSums(counts(des.prob)<=0)>1)
+
+keep <- rowSums(counts(des.prob)>=10)>=3
+keep2 <- rowSums(counts(des.prob)==0)<=12
+
+des.prob <- des.prob[keep,]  
+des.prob <- des.prob[keep2,]
+keep3 <- rowSums(counts(des.prob)<=0)<1
+des.prob <- des.prob[keep3,]
+
+keep <- rowSums(counts(desGC.loc.prob)>=10)>=3
+keep2 <- rowSums(counts(desGC.loc.prob)==0)<=12
+desGC.loc.prob <- desGC.loc.prob[keep,]  
+desGC.loc.prob <- desGC.loc.prob[keep2,]
+keep3 <- rowSums(counts(desGC.loc.prob)<=0)<1
+desGC.loc.prob <- desGC.loc.prob[keep3,]
+
+
+lines.prob <-  c("21","31","66", "69","7")
+
+length(lines.prob)
+i=1
+rm(i)
+desGC.loc.prob$condition <- relevel(desGC.loc.prob$condition,"GCAnc")
+deGC.loc.prob <- DESeq(desGC.loc.prob,full=design(desGC.loc.prob),test="Wald",fitType="local")
+
+de.genes.prob <- matrix(data=NA,nrow=length(lines.prob),ncol=1)
+rownames(de.genes.prob) <- lines.prob
+resultsNames(deGC.loc.prob)
+
+View(colData(desGC.loc.prob))
+
+for (i in 1:5) {
+  res <- results(deGC.loc.prob, contrast = c("condition", lines.prob[i],"GCAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line.prob.",lines.prob[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genes.prob[lines.prob[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line.prob.",lines.prob[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",lines.prob[i],sep=""))
+  dev.off()
+}
+
+
+#okay lines
+filenames.okay <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/okay_lines",pattern = "*.txt", full.names = FALSE)
+filenames.okay <- as.data.frame(filenames.okay)
+
+samplenames.okay <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","2A","2B","2C","3A","3B","3C","49A","49B","49C","4A","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","6A","6B","6C","76A","76B","76C","77A","77B","77C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
+
+group.okay <- as.factor(c("1","11","11","11","18","18","18","1","1","2","2","2","3","3","3","49","49","49","4","4","4","59","59","59","5","5","5","61","61","61","6","6","6","76","76","76","77","77","77","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
+
+#run.GC <- c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","1","2","3","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","2","1","2","2","1","2","3","1","2","3","1","2","1","1","2","2","2","2")
+
+
+GC.okay <- data.frame(sampleName = samplenames.okay,fileName = filenames.okay, condition = group.okay)
+View(GC.okay)
+
+#ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons" )
+
+cols <- as.data.frame(samplenames.okay)
+
+des.okay <- DESeqDataSetFromHTSeqCount(sampleTable = GC.okay, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/okay_lines", design = ~ condition)
+
+View(counts(des.okay))
+as.data.frame(colData(des.okay))
+
+#colnames(ddsGC)
+#rownames(ddsGC)
+
+#ddsGC$groupGC <- relevel(ddsGC$groupGC, ref=".GCAnc.")
+#ddsGC <- estimateSizeFactors(ddsGC)
+#sizeFactors(ddsGC)
+#head(counts(ddsGC,normalized=TRUE))
+#ddsGC <- estimateDispersions(ddsGC)
+# ,method="per-condition" 
+
+des.okay <- estimateSizeFactors(des.okay)
+sizeFactors(des.okay)
+head(counts(des.okay))
+des.okay <- estimateDispersions(des.okay)
+#trying local fit only just in case
+desGC.loc.okay <- estimateDispersions(des.okay,fitType = "local")
+
+plotDispEsts(des.okay)
+
+plotDispEsts(desGC.loc.okay)
+#View(counts(ddsGC))
+
+#filter data 
+table(rowSums(counts(des.okay)>=10)>=3)
+table(rowSums(counts(des.okay)==0)>=12)
+table(rowSums(counts(des.okay)<=0)>1)
+
+keep <- rowSums(counts(des.okay)>=10)>=3
+
+
+des.okay <- des.okay[keep,]  
+keep2 <- rowSums(counts(des.okay)==0)<=12
+des.okay <- des.okay[keep2,]
+keep3 <- rowSums(counts(des.okay)<=0)<1
+des.okay <- des.okay[keep3,]
+
+keep <- rowSums(counts(desGC.loc.okay)>=10)>=3
+
+desGC.loc.okay <- desGC.loc.okay[keep,]  
+keep2 <- rowSums(counts(desGC.loc.okay)==0)<=12
+desGC.loc.okay <- desGC.loc.okay[keep2,]
+keep3 <- rowSums(counts(desGC.loc.okay)<=0)<1
+desGC.loc.okay <- desGC.loc.okay[keep3,]
+
+
+lines.okay <- c("1","11","18","2","3","49","4","59","5","61","6","76","77","8","9")
+
+length(lines.okay)
+i=1
+rm(i)
+desGC.loc.okay$condition <- relevel(desGC.loc.okay$condition,"GCAnc")
+deGC.loc.okay <- DESeq(desGC.loc.okay,full=design(desGC.loc.okay),test="Wald",fitType="local")
+
+de.genes.okay <- matrix(data=NA,nrow=length(lines.okay),ncol=1)
+rownames(de.genes.okay) <- lines.okay
+resultsNames(deGC.loc.okay)
+
+View(colData(desGC.loc.okay))
+lines.okay[7]
+
+for (i in 1:length(lines.okay)) {
+  res <- results(deGC.loc.okay, contrast = c("condition", lines.okay[i],"GCAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line.okay.",lines.okay[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genes.okay[lines.okay[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line.okay.",lines.okay[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",lines.okay[i],sep=""))
+  dev.off()
+}
+
+```
+
+```{r MA lines, include=TRUE}
+#okay lines
+filenamesMA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/6.11.18",pattern = "*.txt", full.names = FALSE)
+filenamesMA <- as.data.frame(filenamesMA)
+
+samplenamesMA <- c("112B","112C","115B","115C","117B","117C","123B","123C","141B","141C","152B","152C","29B","29C","50B","50C","112A","115A","117A","123A","141A","152A","29A","50A","MAAncB","MAAncA","MAAncC")
+
+groupMA <- as.factor(c("112","112","115","115","117","117","123","123","141","141","152","152","29","29","50","50","112","115","117","123","141","152","29","50","MAAnc","MAAnc","MAAnc"))
+
+#run.GC <- c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","1","2","3","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","2","1","2","2","1","2","3","1","2","3","1","2","1","1","2","2","2","2")
+
+
+MA.table <- data.frame(sampleName = samplenamesMA,fileName = filenamesMA, condition = groupMA)
+View(MA.table)
+
+#ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons" )
+
+#cols <- as.data.frame(samplenames.okay)
+
+desMA <- DESeqDataSetFromHTSeqCount(sampleTable = MA.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/6.11.18", design = ~ condition)
+
+View(counts(desMA))
+as.data.frame(colData(desMA))
+
+#colnames(ddsGC)
+#rownames(ddsGC)
+
+#ddsGC$groupGC <- relevel(ddsGC$groupGC, ref=".GCAnc.")
+#ddsGC <- estimateSizeFactors(ddsGC)
+#sizeFactors(ddsGC)
+#head(counts(ddsGC,normalized=TRUE))
+#ddsGC <- estimateDispersions(ddsGC)
+# ,method="per-condition" 
+
+desMA <- estimateSizeFactors(desMA)
+sizeFactors(desMA)
+head(counts(desMA))
+desMA <- estimateDispersions(desMA)
+#trying local fit only just in case
+desMA.loc <- estimateDispersions(desMA,fitType = "local")
+
+plotDispEsts(desMA)
+
+plotDispEsts(desMA.loc)
+#View(counts(ddsGC))
+
+#filter data 
+table(rowSums(counts(desMA)>=10)>=3)
+table(rowSums(counts(desMA)==0)>=12)
+table(rowSums(counts(desMA)<=0)>3)
+
+keep <- rowSums(counts(desMA)>=10)>=3
+desMA <- desMA[keep,]  
+
+keep2 <- rowSums(counts(desMA)==0)<=12
+desMA <- desMA[keep2,]
+
+#keep3 <- rowSums(counts(desMA)<=0)<1
+#desMA <- desMA[keep3,]
+
+keep <- rowSums(counts(desMA.loc)>=10)>=3
+desMA.loc <- desMA.loc[keep,]  
+
+keep2 <- rowSums(counts(desMA.loc)==0)<=12
+desMA.loc <- desMA.loc[keep2,]
+#keep3 <- rowSums(counts(desMA.loc)<=0)<1
+#desMA.loc <- desMA.loc[keep3,]
+
+desMA <- estimateDispersions(desMA)
+#trying local fit only just in case
+desMA.loc <- estimateDispersions(desMA,fitType = "local")
+
+linesMA <- c("112","115","123","141","152","29","50")
+length(linesMA)
+#i=1
+#rm(i)
+desMA.loc$condition <- relevel(desMA.loc$condition,"MAAnc")
+deMA.loc <- DESeq(desMA.loc,full=design(desMA.loc),test="Wald",fitType="local")
+
+write.csv(counts(desMA),"counts.MA.stranded.csv")
+
+de.genesMA <- matrix(data=NA,nrow=length(linesMA),ncol=1)
+rownames(de.genesMA) <- linesMA
+resultsNames(deMA.loc)
+
+View(colData(desMA.loc))
+
+
+for (i in 1:length(linesMA)) {
+  res <- results(deMA.loc, contrast = c("condition", linesMA[i],"MAAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line.MA.",linesMA[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genesMA[linesMA[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line.MA.",linesMA[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",linesMA[i],sep=""))
+  dev.off()
+}
+
+#not local fit 
+desMA$condition <- relevel(desMA$condition,"MAAnc")
+deMA <- DESeq(desMA,full=design(desMA),test="Wald")
+
+write.csv(counts(desMA),"counts.MA.stranded.csv")
+
+de.genesMA2 <- matrix(data=NA,nrow=length(linesMA),ncol=1)
+rownames(de.genesMA2) <- linesMA
+resultsNames(deMA)
+
+
+
+
+for (i in 1:length(linesMA)) {
+  res <- results(deMA, contrast = c("condition", linesMA[i],"MAAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line.MA.",linesMA[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genesMA2[linesMA[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line.MA.",linesMA[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",linesMA[i],sep=""))
+  dev.off()
+}
+
+
+
+#### old ma lines
+filenamesMA2 <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old",pattern = "*.txt", full.names = FALSE)
+filenamesMA2 <- as.data.frame(filenamesMA2)
+
+samplenamesMA2 <- c("1B","1C","1A","2A","2B","2C","3A","3B","3C","4A","4B","4C","5A","5B","5C","6A","6C","6B","7A","7B","7C","8A","8B","8C","9A","9B","9C", "11A","11B","11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","MAAncA","MAAncB","MAAnC")
+
+groupMA2 <- as.factor(c("1","1","1","2","2","2","3","3","3","4","4","4","5","5","5","6","6","6","7","7","7","8","8","8","9","9","9", "11","11","11","15","15","15","28","28","28","88","88","88","108","108","108","119","119","119","MAAnc","MAAnc","MAAnc"))
+
+#run.GC <- c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","1","2","3","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","2","1","2","2","1","2","3","1","2","3","1","2","1","1","2","2","2","2")
+
+
+MA2.table <- data.frame(sampleName = samplenamesMA2,fileName = filenamesMA2, condition = groupMA2)
+View(MA2.table)
+
+#ddsGC <- newCountDataSetFromHTSeqCount(sampleTable = GC.table, directory="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons" )
+
+#cols <- as.data.frame(samplenames.okay)
+
+desMA2 <- DESeqDataSetFromHTSeqCount(sampleTable = MA2.table, directory = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old", design = ~ condition)
+
+
+View(counts(desMA2))
+as.data.frame(colData(desMA2))
+
+#colnames(ddsGC)
+#rownames(ddsGC)
+
+#ddsGC$groupGC <- relevel(ddsGC$groupGC, ref=".GCAnc.")
+#ddsGC <- estimateSizeFactors(ddsGC)
+#sizeFactors(ddsGC)
+#head(counts(ddsGC,normalized=TRUE))
+#ddsGC <- estimateDispersions(ddsGC)
+# ,method="per-condition" 
+
+desMA2 <- estimateSizeFactors(desMA2)
+sizeFactors(desMA2)
+head(counts(desMA2))
+desMA2 <- estimateDispersions(desMA2)
+#trying local fit only just in case
+desMA2.loc <- estimateDispersions(desMA2,fitType = "local")
+
+plotDispEsts(desMA2)
+
+plotDispEsts(desMA2.loc)
+#View(counts(ddsGC))
+
+#filter data 
+table(rowSums(counts(desMA2)>=10)>=3)
+table(rowSums(counts(desMA2)==0)>=12)
+table(rowSums(counts(desMA2)<=0)>1)
+
+keep <- rowSums(counts(desMA2)>=10)>=3
+
+
+desMA2 <- desMA2[keep,]  
+keep2 <- rowSums(counts(desMA2)==0)<=12
+desMA2 <- desMA2[keep2,]
+keep3 <- rowSums(counts(desMA2)<=0)<1
+desMA2 <- desMA2[keep3,]
+
+keep <- rowSums(counts(desMA2.loc)>=10)>=3
+
+desMA2.loc <- desMA2.loc[keep,]  
+keep2 <- rowSums(counts(desMA2.loc)==0)<=12
+desMA2.loc <- desMA2.loc[keep2,]
+keep3 <- rowSums(counts(desMA2.loc)<=0)<1
+desMA2.loc <- desMA2.loc[keep3,]
+
+desMA2 <- estimateSizeFactors(desMA2)
+sizeFactors(desMA2)
+head(counts(desMA2))
+desMA2 <- estimateDispersions(desMA2)
+#trying local fit only just in case
+desMA2.loc <- estimateDispersions(desMA2,fitType = "local")
+
+plotDispEsts(desMA2)
+
+plotDispEsts(desMA2.loc)
+
+
+
+linesMA2 <- c("1","2","3","4","5","6","7","8","9", "11","15","28","88","108","119")
+length(linesMA2)
+i=1
+rm(i)
+desMA2.loc$condition <- relevel(desMA2.loc$condition,"MAAnc")
+deMA2.loc <- DESeq(desMA2.loc,full=design(desMA2.loc),test="Wald",fitType="local")
+
+de.genesMA2 <- matrix(data=NA,nrow=length(linesMA2),ncol=1)
+rownames(de.genesMA2) <- linesMA2
+resultsNames(deMA2.loc)
+
+View(colData(desMA2.loc))
+
+
+for (i in 1:length(linesMA2)) {
+  res <- results(deMA2.loc, contrast = c("condition", linesMA2[i],"MAAnc"), pAdjustMethod = "BH")
+   pdf(paste("MA_plot_line.MA2.",linesMA2[i],".pdf",sep=""))
+  plotMA(res)
+  de <- sum(res$padj <0.1, na.rm=TRUE)
+  de.genesMA2[linesMA2[i],] <- de
+  qs <- c(0, quantile(res$baseMean[res$baseMean > 0],0:7/7))
+  bins <- cut(res$baseMean, qs)
+  levels(bins) <- paste0("~",round(.5*qs[-1]+.5*qs[-length(qs)]))
+  ratios <- tapply(res$pvalue,bins,function(p) mean(p<.1,na.rm=TRUE))
+  pdf(paste("ratio_p_vals_plot_line.MA2.",linesMA2[i],".pdf",sep=""))
+  barplot(ratios,xlab="mean normalized count",ylab="ratio of small p values",main=paste("Line",linesMA2[i],sep=""))
+  dev.off()
+}
 ```
 
 

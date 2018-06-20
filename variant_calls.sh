@@ -53,37 +53,44 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_fil
 #cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 #samtools faidx /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa
 
-#mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams
+mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams
 
-#for file in ./*.bam
+for file in /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/*.bam
 
-#do
-#  FBASE=$(basename $file .bam)
-#  BASE=${FBASE%.bam}
+do
+  FBASE=$(basename $file .bam)
+  BASE=${FBASE%.bam}
 
-#cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${BASE}.bam /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/${BASE}.bam
+#cp /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_files/${BASE}.bam /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/bams/
 #run samtools mpileup
+
 #mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3
 
-#samtools mpileup -uf /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/${BASE}.bam > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.raw_calls.bcf
+samtools mpileup -uf /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/genome.fa /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/bams/${BASE}.bam > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.raw_calls.bcf
 #run bcftools call
 #bcftools call -v -m /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.raw_calls.bcf > /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants3/${BASE}.calls.vcf
-#done
+
+done
 
 
 ####################################
 #query the vcf files
-cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants
-module load vcftools/0.1.12b
+#cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/variants/temp/variants
+#module load vcftools/0.1.12b
 #have to compress them with bgzip first (in vcftools module on Sapelo)
-for file in ./*.vcf
-do
-  FBASE=$(basename $file .vcf)
-  BASE=${FBASE%.vcf}
-bgzip ${BASE}.vcf
+#for file in ./*.vcf
+#do
+#  FBASE=$(basename $file .vcf)
+#  BASE=${FBASE%.vcf}
+#bgzip ${BASE}.vcf
 
-done
+#done
 
-bcftools query -f '%CHROM  %POS  %REF  %ALT{0}\n' *.vcf > *.subset.vcf
+#for file in ./*.vcf.gz
+#do
+#  FBASE=$(basename $file .vcf.gz)
+#  BASE=${FBASE%.vcf.gz}
+#bcftools query -o ${BASE}.subset.vcf -f '%CHROM  %POS  %REF  %ALT{0}\n'  ${BASE}.vcf.gz
+#done
 
-bcftools query -f '%CHROM  %POS  %REF  %ALT{0}\n' Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out.calls.vcf > Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out.calls.subset.vcf
+#bcftools query -f '%CHROM  %POS  %REF  %ALT{0}\n' Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out.calls.vcf > Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out.calls.subset.vcf

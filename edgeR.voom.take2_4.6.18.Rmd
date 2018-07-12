@@ -31,20 +31,20 @@ library(GenomicFeatures)
 #########################################
 #load files into R as vector
 #using new HTseq .txt files where I specified that my libraries are NOT stranded 
-files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC",pattern = "*.txt", full.names = TRUE)
-files.GC
+files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/exons_unstranded",pattern = "*.txt", full.names = TRUE)
+files.MA
 #files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
 #files.MA
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
-x.GC <- readDGE(files.GC,columns=c(1,2))
+x.MA <- readDGE(files.MA,columns=c(1,2))
 
 #x.MA <- readDGE(files.MA,columns=c(1,2))
 #check the parameters
-class(x.GC)
+class(x.MA)
 #class(x.MA)
 #and dimensions
-dim(x.GC)
+dim(x.MA)
 #dim(x.MA)
 #organize sample information
 #change sample names so they are simpler
@@ -52,15 +52,24 @@ files.GC
 #samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
 #length(samplenames.GC)
 #put filenames into DGEList as column names 
-samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","21A","21C","2A","2B","2C","31A","31B","31C","3A","3B","3C","4A","49A","49B","49C","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","66B","66C","68A","68B","68C","6A","6B","6C","7A","76A","76B","76C","77A","77B","77C","7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
+#samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","21A","21C","2A","2B","2C","31A","31B","31C","3A","3B","3C","4A","49A","49B","49C","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","68A","68B","68C","6A","6B","6C","7A","76A","76B","76C","77A","77B","77C","7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
 
-group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","21","21","2","2","2","31","31","31","3","3","3","4","49","49","49","4","4","59","59","59","5","5","5","61","61","61","66","66","68","68","68","6","6","6","7","76","76","76","77","77","77","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
+#group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","21","21","2","2","2","31","31","31","3","3","3","4","49","49","49","4","4","59","59","59","5","5","5","61","61","61","68","68","68","6","6","6","7","76","76","76","77","77","77","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
 
-run.GC <-  c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","3","1","2","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","3","2","1","2","2","1","2","1","2","3","1","2","1","1","2","2","2","2")
+#run.GC <-  c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","3","1","2","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","3","2","1","2","2","1","2","1","2","3","1","2","1","1","2","2","2","2")
+#length(samplenamesGC)
+#colnames(x.GC) <- samplenamesGC
+#View(x.GC$samples)
+#View(x.GC$counts)
 
-colnames(x.GC) <- samplenamesGC
-View(x.GC$samples)
-View(x.GC$counts)
+samplenamesMA <- c("SC001_1","SC001_2","SC001_3","SC002_1","SC002_2","SC002_3","SC003_1","SC003_2","SC003_3","SC004_1","SC004_2","SC004_3","SC005_1","SC005_2","SC005_3","SC006_1","SC006_3","SC006_2","SC007_1","SC007_2","SC007_3","SC008_1","SC008_2","SC008_3","SC009_1","SC009_2","SC009_3","SC011_1","SC011_2","SC011_3","SC015_1","SC015_2","SC015_3","SC028_1","SC028_2","SC028_3","SC088_1","SC088_2","SC088_3","SC108_1","SC108_2","SC108_3","SC119_1","SC119_2","SC119_3","SCA_1","SCA_2","SCA_3")
+
+group.MA <- as.factor(c("SC001","SC001","SC001","SC002","SC002","SC002","SC003","SC003","SC003","SC004","SC004","SC004","SC005","SC005","SC005","SC006","SC006","SC006","SC007","SC007","SC007","SC008","SC008","SC008","SC009","SC009","SC009","SC011","SC011","SC011","SC015","SC015","SC015","SC028","SC028","SC028","SC088","SC088","SC088","SC108","SC108","SC108","SC119","SC119","SC119","SCA","SCA","SCA"))
+
+length(samplenamesMA)
+colnames(x.MA) <- samplenamesMA
+View(x.MA$samples)
+View(x.MA$counts)
 
  ###################################################
 #group samples together according to experiment
@@ -73,13 +82,15 @@ x.GC
 #group.GC <- as.factor(c(".11.",".11.",".11.",".18.",".18.",".18.",".1.", ".1.", ".1.", ".21.",".21.",".2.", ".2.", ".2.", ".31.",".31.",".31.",".3.", ".3.", ".3.",".49.",".49.",".49.",".4.", ".4.",".4.", ".59.",".59.",".59.",".5.",".5.", ".5.", ".61.",".61.",".61.",".66.",".66.",".68.",".68.",".68.",".6.", ".6.", ".6.", ".76.",".76.",".76.",".77.",".77.",".77.",".7.",".7.", ".7.", ".8.", ".8.", ".8.",".9.", ".9.", ".9.", ".GCAnc." ,".GCAnc.",".GCAnc."))
 
 write.csv(x.GC$counts,file="raw_counts.csv")
+write.csv(x.MA$counts,file="raw_counts_oldMA.csv")
 
 length(group.GC)
 levels(group.GC)
 nlevels(group.GC)
-x.GC$samples$group <- group.GC
+#x.GC$samples$group <- group.GC
+x.MA$samples$group <- group.MA
 
-x.GC$samples$run <- run.GC
+#x.GC$samples$run <- run.GC
 
 #group.MA <- as.factor(c("M112","M112","M115","M115","M117","M117","M123","M123","M141","M141","M152","M152","M29","M29","M50","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAA","MAA","MAA"))
 #length(group.MA)
@@ -95,30 +106,39 @@ x.GC$samples$run <- run.GC
 #organize the gene annotations
 #biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
 #library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
-txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
 columns(txdb)
 #want TXCHROM
 #want GENEID
-geneidGC <- rownames(x.GC)
-#geneidMA <- rownames(x.MA)
+#geneidGC <- rownames(x.GC)
+geneidMA <- rownames(x.MA)
 #ran into a problem here: select didnt want to work. turns out it was trying to use diplyr select not ensembldb select. 
-colms <- c("TXSTART","TXEND")
-genesGC <- ensembldb::select(txdb, keys=geneidGC, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#colms <- c("TXSTART","TXEND")
+#genesGC <- ensembldb::select(txdb, keys=geneidGC, columnns="GENEID","TXCHROM" , keytype="GENEID")
+genesMA <- ensembldb::select(txdb, keys=geneidMA, columnns="GENEID","TXCHROM" , keytype="GENEID")
 #genelengthsGC <- 
-genesGC
-genesGC <- genesGC[!duplicated(genesGC$GENEID),]
+#genesGC
+#genesGC <- genesGC[!duplicated(genesGC$GENEID),]
+genesMA <- genesMA[!duplicated(genesMA$GENEID),]
 #genesGC.remove <- na.omit(genesGC.remove)
 #genesGC.remo <- genesGC.remo[-grep("^chrM$",genesGC.remo)]
 #remove <- "chrI"
 remove1 <- "chrM"
+remove2 <- c("21S_rRNA","RPR1","")
 #genesGC.test <- genesGC[-(grep(paste0(remove,"$"),genesGC$TXCHROM,perl=TRUE)),]
 genesGC.test <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
 genesGC.test <- na.omit(genesGC.test)
 genesGC.test
 genesGC <- genesGC.test
 
+genesMA.test <- genesMA[-(grep(paste0(remove1,"$"),genesMA$TXCHROM,perl=TRUE)),]
+genesMA.test <- na.omit(genesMA.test)
+genesMA.test
+genesMA <- genesMA.test
+
 lengths <- transcriptLengths(txdb)
 
+genesMA <- merge(genesMA,lengths,by.x="GENEID",by.y="gene_id")
 genesGC <- merge(genesGC,lengths,by.x="GENEID",by.y="gene_id")
 #lengthsGC <- ensembldb::select(lengths, keys=geneidGC, columnns="gene_id","tx_len" , keytype="gene_id")
 
@@ -130,6 +150,21 @@ genesGC <- merge(genesGC,lengths,by.x="GENEID",by.y="gene_id")
 #data frame of gene annotations is added back to the DGEList
 x.GC$genes <- genesGC
 x.GC$genes$tx_len
+
+x.MA$genes <- genesMA
+x.MA$genes$tx_len
+
+rownames(x.MA$counts)
+x.MA$genes$GENEID
+length(x.MA$genes$GENEID)
+length(rownames(x.MA$counts))
+#testing to remove the genes I don't want 
+counts <- x.MA$counts
+(rownames(counts))%in%genesMA$GENEID
+test <- subset(counts,(rownames(counts))%in%genesMA$GENEID)
+#works!
+x.MA$counts <- test
+View(x.MA$counts)
 #x.GC.test <- x.GC
 #x.GC.test$genes <- genesGC.test
 #x.GC.test$genes
@@ -150,6 +185,12 @@ lcpmGC <- cpm(x.GC,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
 rpkmGC <- rpkm(x.GC,x.GC$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
 write.csv(cpmGC,file="cpm.csv")
 write.csv(rpkmGC,file="rpkm.csv")
+
+cpmMA <- cpm(x.MA,normalized.lib.sizes = FALSE, prior.count = 0.5)
+lcpmMA <- cpm(x.MA,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
+rpkmMA <- rpkm(x.MA,x.MA$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
+write.csv(cpmMA,file="cpm_MAold.csv")
+write.csv(rpkmMA,file="rpkm_MAold.csv")
 
 #cpmGC.test <- cpm(x.GC.test)
 #cpmGC$chrm <- x.GC$genes$TXCHROM
@@ -187,7 +228,20 @@ dim(x.GC)
 #make x.GC the filtered one 
 x.GC <- na.omit(x.GC)
 
-dim(x.GC)
+table(rowSums(cpmMA>0.0001)>=3)
+table(rowSums(cpmMA>99999)<=1 & rowSums(cpmMA>0)>=3)
+keep.exprsMA <- rowSums(cpmMA>99999)<=1 & rowSums(cpmMA>0)>=3
+#keep.exprsGC.test <- rowSums(cpmGC>1.1)>=3
+#str(keep.exprsGC)
+#str(x.GC)
+x.MA <- x.MA[keep.exprsMA,keep.lib.sizes=FALSE]
+#x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
+dim(x.MA)
+#table(rowSums(x.GC.str$counts>0.0001))
+#make x.GC the filtered one 
+x.MA <- na.omit(x.MA)
+
+dim(x.MA)
 #table(rowSums(x.GC.test$counts<=0)==60)
 #table(rowSums(x.GC.test$counts>=1)==60)
 #table(rowSums(cpmGC.test>0.00001)>=60)
@@ -242,6 +296,35 @@ for (i in 2:nsamplesGC) {
   lines(den$x,den$y,col=colGC[i],lwd=2)
 }
 legend("topright",samplenamesGC, text.col=colGC,bty="n",cex=0.4,ncol=4)
+}
+
+nsamplesMA <- ncol(x.MA)
+colMA <- colorRampPalette(brewer.pal(48,"Set1"))(ncol(x.MA))
+nlevels(colMA)
+{
+  pdf("Raw_dataMA_cpm.pdf")
+plot(density(cpmMA[,1]),col=colMA[1],lwd=2,las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamplesMA) {
+  den <- density(cpmMA[,i])
+ lines(den$x,den$y,col=colMA[i],lwd=2)
+}
+legend("topright",samplenamesMA, text.col=colMA, bty="n",cex=0.4,ncol=4)
+}
+
+
+{
+pdf("Filtered_dataMA_cpm.pdf")
+cpmMAfil<- cpm(x.MA)
+plot(density(cpmMAfil[,1]),na.rm=TRUE, col=colMA[1],lwd=2,las=2,main="",xlab="")
+title(main="B. Filtered Data", xlab="cpm")
+abline(v=0, lty=3)
+for (i in 2:nsamplesMA) {
+  den <- density(cpmMAfil[,i])
+  lines(den$x,den$y,col=colMA[i],lwd=2)
+}
+legend("topright",samplenamesMA, text.col=colMA,bty="n",cex=0.4,ncol=4)
 }
 #####################################
 #nsamplesGC <- ncol(x.GC.test)
@@ -304,6 +387,12 @@ legend("topright",samplenamesGC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 #x.normGC.test$samples
 #x.normGC.test
 x.GC.TMM <- calcNormFactors(x.GC,method="TMM")
+View(x.GC.TMM$samples)
+
+#x.MA.TMM <- calcNormFactors(x.MA,method="TMM",refColumn = 47,doWeighting = FALSE)
+#View(x.MA.TMM$samples)
+#what if i don't normalize it 
+x.MA.no <- calcNormFactors(x.MA,method="none")
 #x.GC.RLE <- calcNormFactors(x.GC,method="RLE")
 #x.GC.UQ <- calcNormFactors(x.GC,method="upperquartile")
 #View(x.GC$counts)
@@ -658,7 +747,7 @@ summary(l11.des)
 #View(l11)
 
 #line 21
-et18 <- exactTest(x.GC, pair=c("GCAnc","18"))
+et18 <- exactTest(x.GC.des, pair=c("GCAnc","18"))
 top.test18 <- topTags(et18,n=200,adjust.method = "BH")
 View(top.test18)
 test18.test <- decideTests(et18, adjust.method = "BH")
@@ -666,7 +755,7 @@ summary(test18.test)
 
 
 #line 21
-et21.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".21."),dispersion = "auto")
+et21.test1 <- exactTest(x.GC.des, pair=c("GCAnc","21"))
 top.test21.1 <- topTags(et21.test1,n=200,adjust.method = "BH")
 View(top.test21.1)
 
@@ -675,7 +764,7 @@ summary(test21.test1)
 View(test21.test1)
 
 #line 18 
-et18.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".18."),dispersion = "auto")
+et18.test <- exactTest(x.GC, pair=c("GCAnc","7"),dispersion = "auto")
 top.test18 <- topTags(et18.test,n=200,adjust.method = "BH")
 View(top.test18)
 
@@ -693,9 +782,12 @@ summary(test18.test1)
 View(test18.test1)
 
 #line 4
-et4.test <- exactTest(x.GC.test, pair=c(".GCAnc.",".4."),dispersion = "auto")
+View(et4.test$table)
+et4.test <- exactTest(x.GC.des, pair=c("GCAnc","66"))
 top.test4 <- topTags(et4.test,n=200,adjust.method = "BH")
 View(top.test4)
+
+View(x.GC.des$counts)
 
 test4.test <- decideTests(et4.test, adjust.method = "BH")
 summary(test4.test)
@@ -1036,6 +1128,85 @@ abline(0,padj[4]/length(p))
 
 ```
 
+```{r edgeR MA tests, include=TRUE}
+x.MA.TMM <- estimateDisp(x.MA.TMM)
+x.MA.TMM$samples$group
+
+x.MA.no <- estimateDisp(x.MA.no)
+
+et1 <- exactTest(x.MA.TMM,pair=c("SCA","SC001"))
+topEt1 <- topTags(et1)
+de1 <-summary(dt1 <- decideTests(et1))
+de1
+et1.2 <- exactTest(x.MA.no,pair=c("SCA","SC001"))
+topEt1.2 <- topTags(et1.2)
+de1.2 <-summary(dt1 <- decideTests(et1.2))
+de1.2
+
+#try on an aneuploid line
+et15 <- exactTest(x.MA.TMM,pair=c("SCA","SC015"))
+topEt15 <- topTags(et15)
+de15 <- summary(dt15 <- decideTests(et15))
+de15 
+et15.2 <- exactTest(x.MA.no,pair=c("SCA","SC015"))
+topEt15.2 <- topTags(et15.2)
+de15.2 <- summary(dt15 <- decideTests(et15.2))
+de15.2
+
+et2 <- exactTest(x.MA.TMM,pair=c("SCA","SC002"))
+topEt2 <- topTags(et2)
+de2 <- summary(dt2 <- decideTests(et2))
+de2
+
+et3 <- exactTest(x.MA.TMM,pair=c("SCA","SC003"))
+topEt3 <- topTags(et3)
+de3 <- summary(dt3 <- decideTests(et3))
+de3
+
+et4 <- exactTest(x.MA.TMM,pair=c("SCA","SC004"))
+topEt4 <- topTags(et4)
+de4 <- summary(dt4 <- decideTests(et4))
+de4
+
+et5 <- exactTest(x.MA.TMM,pair=c("SCA","SC005"))
+topEt5 <- topTags(et5)
+de5 <- summary(dt5 <- decideTests(et5))
+de5
+
+et6 <- exactTest(x.MA.TMM,pair=c("SCA","SC006"))
+topEt6 <- topTags(et6)
+de6 <- summary(dt6 <- decideTests(et6))
+de6
+
+et7 <- exactTest(x.MA.TMM,pair=c("SCA","SC007"))
+topEt7 <- topTags(et7)
+de7 <- summary(dt7 <- decideTests(et7))
+de7
+
+et8 <- exactTest(x.MA.TMM,pair=c("SCA","SC008"))
+topEt8 <- topTags(et8)
+de8 <- summary(dt8 <- decideTests(et8))
+de8
+
+sample <- levels(x.MA.TMM$samples$group)
+de.genesMA <- matrix(data=NA,nrow=length(sample),ncol=1)
+rownames(de.genesMA) <- sample
+
+###prestons help 
+x.MA.TMM <- calcNormFactors(x.MA.TMM)
+x.MA.TMM = calcNormFactors(x.MA.TMM)
+design = model.matrix(~x.MA.TMM$samples$group)
+x.MA.TMM = estimateDisp(x.MA.TMM,design)
+et8 <- exactTest(x.MA.TMM,pair=c("SCA","SC008"))
+topEt8 <- topTags(et8)
+de8 <- summary(dt8 <- decideTests(et8))
+de8
+diff_exp_s7vAnc = exactTest(dge_list)
+
+
+```
+
+
 ```{r differential expression analysis, include=TRUE}
 #make a design matrix
 #this is under the assumption that the data is normally distributed
@@ -1077,6 +1248,12 @@ contr.matrix
 
 x.GC$samples$group
 #voom mean-variance trend
+
+
+glm.GC <- glmFit(x.GC,design=design,dispersion=NULL,prior.count=0.5,coef="group.GCGCAnc")
+resultsGC <- glmLRT(glm.GC,coef="group.GCGCAnc")
+topTags(resultsGC)
+
 v <- voom(x.GC, design, plot=TRUE)
 v
 
@@ -1426,7 +1603,67 @@ camera(X11vsGCA, ubp6, design)
 
 ```
 
+```{r prestons help, include=FALSE}
+library("edgeR")
 
+# Read in data
+ancA_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_GC_Anc_A_S4_R1_001_trimmed_tophat_out.exon.txt", header=FALSE)
+ancB_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_GC_Anc_B_S2_R1_001_trimmed_tophat_out.exon.txt", header=FALSE)
+ancC_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_GC_Anc_C_S32_R1_001_trimmed_tophat_out.exon.txt", header=FALSE)
+
+s7A_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_7A-redo_S4_R1_001_trimmed_tophat_out.exon.txt", header = FALSE)
+s7B_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_7B_S12_R1_001_trimmed_tophat_out.exon.txt", header = FALSE)
+s7C_counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons/Holly_7C_S9_R1_001_trimmed_tophat_out.exon.txt", header = FALSE)
+
+
+# combine into one dataframe
+all_counts = data.frame(ancA_counts$V2, ancB_counts$V2, ancC_counts$V2, s7A_counts$V2, s7B_counts$V2, s7C_counts$V2, row.names = ancA_counts$V1)
+
+counts = read.delim("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_stranded/GC_counts.txt",header=FALSE)
+
+colnames(counts) = c("geneid","1A","1B","1C","2A","2B","2C","3A","3B","3C","4A","4B","4C","5A","5B","5C","6A","6B","6C","7A","7B","7C","8A","8B","8C","9A","9B","9C","11A","11B","11C","18A","18B","18C","21B","21C","31A","31B","31C","49A","49B","49C","59A","59B","59C","61A","61B","61C","69A","69B","69C", "76A","76B","76C","77A","77B","77C","AncA","AncB","AncC")
+my.data <- data.frame(counts)
+rownames(my.data) <- my.data$geneid
+my.data <- subset(my.data, select=-c(1))
+#removes rows of unassigned counts
+all_counts = my.data[-c(7127,7128,7129,7130,7131),]
+
+#count number of features
+num_features = length(row.names(my.data))
+
+# group replicates
+# 0 is the ancestor
+group = factor(c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,11,11,11,18,18,18,21,21,31,31,31,49,49,49,59,59,59,61,61,61,69,69,69,76,76,76,77,77,77,0,0,0))
+
+# edgeR workflow for exact test
+dge_list = DGEList(counts = my.data,group = group)
+dge_list = calcNormFactors(dge_list,ref="59")
+design = model.matrix(~group)
+dge_list = estimateDisp(dge_list,design)
+diff_exp_1 = exactTest(dge_list,pair=c("0","1"))
+
+# make dataframe of adjusted p values
+s1vAnc = data.frame(matrix(NA, nrow=num_features,ncol=2))
+s1vAnc$X2 = p.adjust(diff_exp_1$table$PValue, method = "BH") #Benjamini–Hochberg procedure
+s1vAnc$X1 <- row.names(my.data)
+table(rowSums(my.data<=0)==59)
+
+# make table of counts and adjusted pvalues
+out_table = data.frame(s7vAnc$X1,all_counts,s7vAnc$X2)
+
+# rename columns
+colnames(out_table)[1] = "feature"
+colnames(out_table)[2] = "ancA_counts"
+colnames(out_table)[3] = "ancB_counts"
+colnames(out_table)[4] = "ancC_counts"
+colnames(out_table)[5] = "s7A_counts"
+colnames(out_table)[6] = "s7B_counts"
+colnames(out_table)[7] = "s7C_counts"
+colnames(out_table)[8] = "padj(BH)"
+
+# output results table
+write.table(out_table, "diff_expression_s7_v_Ancestor.txt",row.names = FALSE, col.names = TRUE, sep = "\t")
+```
 ## Including Plots
 
 You can also embed plots, for example:

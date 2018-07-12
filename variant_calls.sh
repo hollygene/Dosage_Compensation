@@ -55,8 +55,7 @@ cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/sam_fil
 
 mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams
 
-for file in /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/temp/bams/*.bam
-
+for file in ./*.bam
 do
   FBASE=$(basename $file .bam)
   BASE=${FBASE%.bam}

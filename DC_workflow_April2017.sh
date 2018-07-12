@@ -318,6 +318,8 @@ for file in genes_fpkm_chrm.nomito.tsv; do cat $file| tr '[\t]' '[,]' > genes_fp
 cp genes_fpkm_chrm.nomito.commas.tsv genes_fpkm_chrm.nomito.commas.csv
 ##
 awk 'NR==FNR {a[$2]; next} $2 in a {print}'  genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv genes_fpkm_chrm.nomito.commas.csv > genes_fpkm_match_oldtonew.csv
+awk 'FS="," {a[$1]; next} $2 in a {print}' genes.sorted.csv  fpkm_sorted.csv  > fpkm_match.csv
+awk 'NR==FNR {a[$2]; next} $2 in a {print}'  fpkm_sorted.csv cpm_sorted.csv > genes.csv
 ##concatenate them together somehow
 #this ALMOST works, but messes up some lines... not sure why yet.will continue tomorrow.
 #pr -mts, genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt.csv genes_fpkm_match_oldtonew.csv > genes_fpkm_merge.csv
@@ -901,3 +903,59 @@ head -7127 HTseq_All_Header.csv > HTseq_All_Header_short.csv
 awk -F',' '{print $1',' $2',' $4','	$6','	$8','	$10','	$12','	$14','	$16','	$18','	$20','	$22','	$24','	$26','	$28','	$30','	$32','	$34','	$36','	$38','	$40','	$42','	$44','	$46','	$48','	$50','	$52','	$54','	$56','	$58','	$60','	$62','	$64','	$66','	$68','	$70','	$72','	$74','	$76','	$78','	$80','	$82','	$84','	$86','	$88','	$90','	$92','	$94','	$96','	$98','	$100','	$102','	$104',' $106','	$108','	$110','	$112','	$114','	$116','	$118','	$120','	$122','	$124','	$126','	$128','	$130','	$132','	$134','	$136','	$138','	$140','	$142','	$144','	$146','	$148','	$150','	$152','	$154','	$156','	$158','	$160','	$162','	$164','	$166','	$168','	$170','	$172','	$174','	$176','	$178','	$180}' HTseq_All_Header_short.csv > HTseq_All_Header_short2.csv
 
 tr ' ' ',' <HTseq_All_Header_short2.csv > HTseq_All_Header_short3.csv
+
+
+
+
+############################
+#put all htseq lines together
+#this one works
+join -t $'\t' Holly_1_redo_R1_001_trimmed_tophat_out.stranded.txt Holly_1B_S6_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_1C_S3_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_2A_S1_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_2B_S7_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_2C_S4_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_3A_S2_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_3B_redo_S12_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_3C_S5_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_4-redo_S3_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_4B_S9_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_4C_S6_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_5A_S3_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_5B_S10_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_5C_redo_S16_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_6A_S4_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_6B_S11_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_6C_S8_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_7-redo_S4_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_7B_S12_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_7C_S9_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_8-redo_S5_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_8B_S13_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_8C_S10_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_9A_S5_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_9B_S14_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_9C_S11_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_11_S17_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_11B_S15_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_11C_S12_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_18-redo_S7_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_18B_redo_S13_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_18C_S13_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_21-redo_S8_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_21C_S14_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_31-redo_S9_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_31B_S19_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_31C_S16_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_49-redo_S10_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_49B_S20_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_49C_S17_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_59_S12_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_59B_S22_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_59C_S19_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_61-redo_S11_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_61B_S23_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_61C_S20_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_69_S1_R1_001_tophat_out.stranded.txt | join -t $'\t' - Holly_69B_S25_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_69C_S22_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_76_S2_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_76B_S26_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_76C_redo_S18_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_77_S3_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_77B_S27_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_77C_S24_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_Anc_A_R1_001_trimmed_tophat_out.stranded.txt | join -t $'\t' - Holly_Anc_B_S2_R1_001_trimmed_tophat_out.stranded.txt |
+join -t $'\t' - Holly_Anc_C_S32_R1_001_trimmed_tophat_out.stranded.txt > GC_counts.txt
+
+
+
+
+#### VCF work
+
+#want code that does:
+awk -F'\t' '{
+if (NR>1) {
+if ($12=="Sample2_Genotype_phased_LOH") print $0 } else print $0 }' GC_LOH_datafileB.txt > Sample2_DNA_SNPs.txt
+
+
+#change chromosome names
+awk -F'\t' '{
+if ($2=="ref|NC_001133|") print $0,"\t","I";
+if ($2=="ref|NC_001134|") print $0,"\t","II";
+if ($2=="ref|NC_001135|") print $0,"\t","III";
+if ($2=="ref|NC_001136|") print $0,"\t","IV";
+if ($2=="ref|NC_001137|") print $0,"\t","V";
+if ($2=="ref|NC_001138|") print $0,"\t","VI";
+if ($2=="ref|NC_001139|") print $0,"\t","VII";
+if ($2=="ref|NC_001140|") print $0,"\t","VIII";
+if ($2=="ref|NC_001141|") print $0,"\t","IX";
+if ($2=="ref|NC_001142|") print $0,"\t","X";
+if ($2=="ref|NC_001143|") print $0,"\t","XI";
+if ($2=="ref|NC_001144|") print $0,"\t","XII";
+if ($2=="ref|NC_001145|") print $0,"\t","XIII";
+if ($2=="ref|NC_001146|") print $0,"\t","XIV";
+if ($2=="ref|NC_001147|") print $0,"\t","XV";
+if ($2=="ref|NC_001148|") print $0,"\t","XVI";
+
+}' Sample2_DNA_SNPs.txt > Sample2_DNA_SNPs_chrm.txt

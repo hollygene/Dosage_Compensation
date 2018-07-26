@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-``` {r deseq, load packages, include=FALSE}
+```{r deseq, load packages, include=FALSE}
 ## try http:// if https:// URLs are not supported
 #source("https://bioconductor.org/biocLite.R")
 #biocLite("DESeq2")
@@ -706,6 +706,2162 @@ for (i in 1:length(linesMA2)) {
 ```
 
 
+Here are my latest (date: 7/23/18) scripts from DESeq2: 
+```{r load data,packages, include=FALSE}
+library(apeglm)
+directory <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
+
+#with only behaving lines 
+directoryB <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/behaving"
+
+#3 reps only 
+directory3 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/3_reps"
+
+sampleFiles <- list.files(directory)
+sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data.csv",header=TRUE)
+sampleTable <- data.frame(sampleName = sampleInfo$sample,
+                          fileName = sampleInfo$filename,
+                          run = sampleInfo$seq_run,
+                          condition = sampleInfo$group)
+
+sampleFilesB <- list.files(directoryB)
+sampleInfoB <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_behaving.csv",header=TRUE)
+sampleTableB <- data.frame(sampleName = sampleInfoB$sample,
+                          fileName = sampleInfoB$filename,
+                          run = sampleInfoB$seq_run,
+                          condition = sampleInfoB$group)
+
+#with 3 reps only (no 21 and 66)
+
+sampleFiles3 <- list.files(directory3)
+sampleInfo3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_3reps.csv",header=TRUE)
+sampleTable3 <- data.frame(sampleName = sampleInfo3$sample,
+                          fileName = sampleInfo3$filename,
+                          run = sampleInfo3$seq_run,
+                          condition = sampleInfo3$group)
+
+```
+
+```{r hsteqDds}
+#library("DESeq2")
+ddsHTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
+                                       directory = directory,
+                                       design= ~ condition + run)
+ ddsHTSeq
+
+write.csv(counts(ddsHTSeq),file="counts.DEseq.csv")
+
+ddsHTSeqB <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableB,
+                                       directory = directoryB,
+                                       design= ~ run + condition)
+ddsHTSeqB
+
+write.csv(counts(ddsHTSeq),file="counts.DEseq.csv")
+
+ddsHTSeq3 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable3,
+                                       directory = directory3,
+                                       design= ~ run + condition)
+ddsHTSeq3
+
+#write.csv(counts(dds),file="counts.HTSeq.csv")
+
+```
+
+```{r relevel}
+ddsHTSeq$condition <- relevel(ddsHTSeq$condition, ref = "Holly_Anc")
+
+ddsHTSeqB$condition <- relevel(ddsHTSeqB$condition, ref = "Holly_Anc")
+
+ddsHTSeq3$condition <- relevel(ddsHTSeq3$condition, ref = "Holly_Anc")
+#dds$group <- relevel(dds$group, ref="Anc")
+``` 
+
+```{r prefilter}
+keep <- rowSums(counts(ddsHTSeq)) >= 20
+ddsHTSeq <- ddsHTSeq[keep,]
+ddsHTSeq
+
+keepB <- rowSums(counts(ddsHTSeqB)) >= 20
+ddsHTSeqB <- ddsHTSeqB[keep,]
+ddsHTSeqB
+
+keep3 <- rowSums(counts(ddsHTSeq3)) >= 20
+ddsHTSeq3 <- ddsHTSeq3[keep,]
+ddsHTSeq3
+
+colnames(ddsHTSeq3)
+#rsubread
+#keep <- rowSums(counts(dds)) >= 10
+#dds <- dds[keep,]
+```
+
+```{r DESeq:full dataset, include=TRUE}
+#####################################################
+#default 
+ddsDef <- DESeq(ddsHTSeq)
+attr(dispersionFunction(ddsDef),"dispPriorVar")
+norm.factors.with.aneu <- as.data.frame(sizeFactors(ddsDef))
+dispersions.with.aneu <- dispersions(ddsDef)
+
+res1Def <- results(ddsDef, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1Def)
+hist(res1Def$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+
+#####################################
+#behaving lines only
+ddsDefB <- DESeq(ddsHTSeqB)
+attr(dispersionFunction(ddsDefB),"dispPriorVar")
+
+#results 
+res1DefB <- results(ddsDefB, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1DefB)
+hist(res1DefB$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+
+res2DefB <- results(ddsDefB, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2DefB)
+hist(res2DefB$pvalue,col="pink", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
+
+#############
+#3 rep lines only
+ddsDef3 <- DESeq(ddsHTSeq3)
+attr(dispersionFunction(ddsDef3),"dispPriorVar")
+###############
+#results 
+res1Def3 <- results(ddsDef3, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1Def3)
+hist(res1Def3$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+
+res2Def3 <- results(ddsDef3, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2Def3)
+hist(res2Def3$pvalue,col="pink", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
+
+res7Def3 <- results(ddsDef3, contrast=c("condition","Holly_7","Holly_Anc"))
+summary(res7Def3)
+hist(res7Def3$pvalue,col="pink", main="7 vs Anc, with aneuploid c'somes", xlab="p values")
+
+##################
+attr(dispersionFunction(ddsDef), "dispPriorVar")
+
+geneID <- rownames(ddsDef)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+
+genes <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
+
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genes <- na.omit(genes)
+genes <- as.data.frame(genes)
+remove1 <- "chrM"
+genes <- genes[-(grep(paste0(remove1,"$"),genes$TXCHROM,perl=TRUE)),]
+
+#add annotation to DESeq2 data set
+all(rownames(ddsDef) == genes$GENEID)
+
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedDef <- intersect(rownames(ddsDef), genes$GENEID)
+
+keep3 <- rownames(ddsDef) %in% matchedDef
+ddsDef <- ddsDef[keep3,]
+length(ddsDef)
+all(rownames(ddsDef) == genes$GENEID)
+
+mcols(ddsDef)
+
+#then check again
+all(rownames(ddsDef) == genes$GENEID)
+
+nrow(ddsDef)
+nrow(genes)
+mcols(ddsDef) <- cbind(mcols(ddsDef), genes)
+
+mcols(ddsDef)
+```
+
+```{r results,aneu included, eval=TRUE}
+res <- results(ddsDef)
+res
+resultsNames(ddsDef)
+#euploid line
+#line 1 
+rm(res1Def)
+res1Def <- results(ddsDef, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1Def)
+#line 2 
+res2Def <- results(ddsDef, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2Def)
+#line 3 
+res3Def <- results(ddsDef, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3Def)
+#line 4 
+res4Def <- results(ddsDef, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4Def)
+#line 5 
+res5Def <- results(ddsDef, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5Def)
+#line 7 
+res7Def <- results(ddsDef, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(res7Def)
+#line 8 
+res8Def <- results(ddsDef, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8Def)
+#line 9 
+res9Def <- results(ddsDef, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9Def)
+#line 11
+res11Def <- results(ddsDef, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11Def)
+#line 18 
+res18Def <- results(ddsDef, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18Def)
+#line 21
+res21Def <- results(ddsDef,contrast=c("condition","Holly_21","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(res21Def)
+#line 31
+res31Def <- results(ddsDef, contrast=c("condition","Holly_31","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res31Def)
+#line 49 
+res49Def <- results(ddsDef, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49Def)
+#line 59
+res59Def <- results(ddsDef, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59Def)
+#line 61
+res61Def <- results(ddsDef, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61Def)
+#line 66 
+res66Def <- results(ddsDef, contrast=c("condition","Holly_66","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res66Def)
+#line 69
+res69Def <- results(ddsDef, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res69Def)
+#line 76 
+res76Def <- results(ddsDef, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76Def)
+#line 77
+res77Def <- results(ddsDef, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77Def)
+
+#####################
+### P VALUE HISTOGRAMS ######
+#plot histograms of the pvalues, identify lines that look concerning 
+hist(res1Def$pvalue,col="purple", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+res1Def
+hist(res2Def$pvalue,col="purple", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res3Def$pvalue,col="purple", main="3 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res4Def$pvalue,col="purple", main="4 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res5Def$pvalue,col="purple", main="5 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res7Def$pvalue,col="purple", main="7 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res8Def$pvalue,col="purple", main="8 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res9Def$pvalue,col="purple", main="9 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res11Def$pvalue,col="purple", main="11 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res18Def$pvalue,col="purple", main="18 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res21Def$pvalue,col="purple", main="21 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res31Def$pvalue,col="purple", main="31 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res49Def$pvalue,col="purple", main="49 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res59Def$pvalue,col="purple", main="59 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res61Def$pvalue,col="purple", main="61 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res66Def$pvalue,col="purple", main="66 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res69Def$pvalue,col="purple", main="69 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res76Def$pvalue,col="purple", main="76 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res77Def$pvalue,col="purple", main="77 vs Anc, with aneuploid c'somes", xlab="p values")
+
+
+########################
+### WITH ONLY BEHAVING LINES
+res <- results(ddsDefB)
+res
+resultsNames(ddsDefB)
+#euploid line
+#line 1 
+rm(res1DefB)
+res1DefB <- results(ddsDefB, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1DefB)
+#line 2 
+res2DefB <- results(ddsDefB, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2DefB)
+#line 3 
+res3DefB <- results(ddsDefB, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3DefB)
+#line 4 
+res4DefB <- results(ddsDefB, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4DefB)
+#line 5 
+res5DefB <- results(ddsDefB, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5DefB)
+#line 7 
+#res7DefB <- results(ddsDefB, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+#summary(res7DefB)
+#line 8 
+res8DefB <- results(ddsDefB, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8DefB)
+#line 9 
+res9DefB <- results(ddsDefB, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9DefB)
+#line 11
+res11DefB <- results(ddsDefB, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11DefB)
+#line 18 
+res18DefB <- results(ddsDefB, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18DefB)
+#line 21
+#res21DefB <- results(ddsDefB,contrast=c("condition","Holly_21","Holly_Anc"))#,cooksCutoff=FALSE)
+#summary(res21DefB)
+#line 31
+#res31DefB <- results(ddsDefB, contrast=c("condition","Holly_31","Holly_Anc"))#, cooksCutoff = FALSE)
+#summary(res31DefB)
+#line 49 
+res49DefB <- results(ddsDefB, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49DefB)
+#line 59
+res59DefB <- results(ddsDefB, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59DefB)
+#line 61
+res61DefB <- results(ddsDefB, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61DefB)
+#line 66 
+#res66DefB <- results(ddsDefB, contrast=c("condition","Holly_66","Holly_Anc"))#, cooksCutoff = FALSE)
+#summary(res66DefB)
+#line 69
+#res69DefB <- results(ddsDefB, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
+#summary(res69DefB)
+#line 76 
+res76DefB <- results(ddsDefB, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76DefB)
+#line 77
+res77DefB <- results(ddsDefB, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77DefB)
+
+#####################
+### P VALUE HISTOGRAMS ######
+#plot histograms of the pvalues, identify lines that look concerning 
+hist(res1DefB$pvalue,col="purple", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+res1DefB
+hist(res2DefB$pvalue,col="purple", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res3DefB$pvalue,col="purple", main="3 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res4DefB$pvalue,col="purple", main="4 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res5DefB$pvalue,col="purple", main="5 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res7DefB$pvalue,col="purple", main="7 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res8DefB$pvalue,col="purple", main="8 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res9DefB$pvalue,col="purple", main="9 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res11DefB$pvalue,col="purple", main="11 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res18DefB$pvalue,col="purple", main="18 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res21DefB$pvalue,col="purple", main="21 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res31DefB$pvalue,col="purple", main="31 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res49DefB$pvalue,col="purple", main="49 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res59DefB$pvalue,col="purple", main="59 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res61DefB$pvalue,col="purple", main="61 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res66DefB$pvalue,col="purple", main="66 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res69DefB$pvalue,col="purple", main="69 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res76DefB$pvalue,col="purple", main="76 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res77DefB$pvalue,col="purple", main="77 vs Anc, with aneuploid c'somes", xlab="p values")
+
+########################
+### ONLY WITH LINES WITH THREE REPLICATES
+res <- results(ddsDef3)
+res
+resultsNames(ddsDef3)
+#euploid line
+#line 1 
+rm(res1Def3)
+res1Def3 <- results(ddsDef3, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(res1Def3)
+#line 2 
+res2Def3 <- results(ddsDef3, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2Def3)
+#line 3 
+res3Def3 <- results(ddsDef3, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3Def3)
+#line 4 
+res4Def3 <- results(ddsDef3, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4Def3)
+#line 5 
+res5Def3 <- results(ddsDef3, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5Def3)
+#line 7 
+#res7Def3 <- results(ddsDef3, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+#summary(res7Def3)
+#line 8 
+res8Def3 <- results(ddsDef3, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8Def3)
+#line 9 
+res9Def3 <- results(ddsDef3, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9Def3)
+#line 11
+res11Def3 <- results(ddsDef3, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11Def3)
+#line 18 
+res18Def3 <- results(ddsDef3, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18Def3)
+#line 21
+#res21Def3 <- results(ddsDef3,contrast=c("condition","Holly_21","Holly_Anc"))#,cooksCutoff=FALSE)
+#summary(res21Def3)
+#line 31
+res31Def3 <- results(ddsDef3, contrast=c("condition","Holly_31","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res31Def3)
+#line 49 
+res49Def3 <- results(ddsDef3, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49Def3)
+#line 59
+res59Def3 <- results(ddsDef3, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59Def3)
+#line 61
+res61Def3 <- results(ddsDef3, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61Def3)
+#line 66 
+#res66Def3 <- results(ddsDef3, contrast=c("condition","Holly_66","Holly_Anc"))#, cooksCutoff = FALSE)
+#summary(res66Def3)
+#line 69
+res69Def3 <- results(ddsDef3, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res69Def3)
+#line 76 
+res76Def3 <- results(ddsDef3, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76Def3)
+#line 77
+res77Def3 <- results(ddsDef3, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77Def3)
+
+#####################
+### P VALUE HISTOGRAMS ######
+#plot histograms of the pvalues, identify lines that look concerning 
+hist(res1Def3$pvalue,col="purple", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
+res1Def3
+hist(res2Def3$pvalue,col="purple", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res3Def3$pvalue,col="purple", main="3 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res4Def3$pvalue,col="purple", main="4 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res5Def3$pvalue,col="purple", main="5 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res7Def3$pvalue,col="purple", main="7 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res8Def3$pvalue,col="purple", main="8 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res9Def3$pvalue,col="purple", main="9 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res11Def3$pvalue,col="purple", main="11 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res18Def3$pvalue,col="purple", main="18 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res21Def3$pvalue,col="purple", main="21 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res31Def3$pvalue,col="purple", main="31 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res49Def3$pvalue,col="purple", main="49 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res59Def3$pvalue,col="purple", main="59 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res61Def3$pvalue,col="purple", main="61 vs Anc, with aneuploid c'somes", xlab="p values")
+#hist(res66Def3$pvalue,col="purple", main="66 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res69Def3$pvalue,col="purple", main="69 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res76Def3$pvalue,col="purple", main="76 vs Anc, with aneuploid c'somes", xlab="p values")
+hist(res77Def3$pvalue,col="purple", main="77 vs Anc, with aneuploid c'somes", xlab="p values")
+```
+
+```{r fdrtool correction, aneu included, include=TRUE}
+library(fdrtool)
+################################ Default: Aneuploid chromosomes left in 
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res1Def <- res1Def[!is.na(res1Def$pvalue),]
+res1Def <- res1Def[!is.na(res1Def$padj),]
+#remove original adjusted p values
+res1Def <- res1Def[,-which(names(res1Def)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res1Def <- fdrtool(res1Def$stat,statistic="normal",plot=T)
+FDR.res1Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res1Def[,"padj"] <- p.adjust(FDR.res1Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res1Def$pval,col="royalblue4", main="1 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res1Def[,"padj"] < 0.1)
+sigGenes1Def <- rownames(subset(res1Def,padj<0.1))
+genesSig1Def <- as.data.frame(subset(genes, GENEID %in% sigGenes1Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res1Def3 <- res1Def3[!is.na(res1Def3$pvalue),]
+res1Def3 <- res1Def3[!is.na(res1Def3$padj),]
+#remove original adjusted p values
+res1Def3 <- res1Def3[,-which(names(res1Def3)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res1Def3 <- fdrtool(res1Def3$stat,statistic="normal",plot=T)
+FDR.res1Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res1Def3[,"padj"] <- p.adjust(FDR.res1Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res1Def3$pval,col="royalblue4", main="1 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res1Def3[,"padj"] < 0.1)
+sigGenes1Def3 <- rownames(subset(res1Def3,padj<0.1))
+genesSig1Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes1Def3))
+
+###### without misbehaving samples 
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res1DefB <- res1DefB[!is.na(res1DefB$pvalue),]
+res1DefB <- res1DefB[!is.na(res1DefB$padj),]
+#remove original adjusted p values
+res1DefB <- res1DefB[,-which(names(res1DefB)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res1DefB <- fdrtool(res1DefB$stat,statistic="normal",plot=T)
+FDR.res1DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res1DefB[,"padj"] <- p.adjust(FDR.res1DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res1DefB$pval,col="royalblue4", main="1 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res1DefB[,"padj"] < 0.1)
+sigGenes1DefB <- rownames(subset(res1DefB,padj<0.1))
+genesSig1DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes1DefB))
+
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res2Def <- res2Def[!is.na(res2Def$pvalue),]
+res2Def <- res2Def[!is.na(res2Def$padj),]
+#remove original adjusted p values
+res2Def <- res2Def[,-which(names(res2Def)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res2Def <- fdrtool(res2Def$stat,statistic="normal",plot=T)
+FDR.res2Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res2Def[,"padj"] <- p.adjust(FDR.res2Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res2Def$pval,col="royalblue4", main="2 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res2Def[,"padj"] < 0.1)
+sigGenes2Def <- rownames(subset(res2Def,padj<0.1))
+genesSig2Def <- as.data.frame(subset(genes, GENEID %in% sigGenes2Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res2Def3 <- res2Def3[!is.na(res2Def3$pvalue),]
+res2Def3 <- res2Def3[!is.na(res2Def3$padj),]
+#remove original adjusted p values
+res2Def3 <- res2Def3[,-which(names(res2Def3)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res2Def3 <- fdrtool(res2Def3$stat,statistic="normal",plot=T)
+FDR.res2Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res2Def3[,"padj"] <- p.adjust(FDR.res2Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res2Def3$pval,col="royalblue4", main="2 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res2Def3[,"padj"] < 0.1)
+sigGenes2Def3 <- rownames(subset(res2Def3,padj<0.1))
+genesSig2Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes2Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res2DefB <- res2DefB[!is.na(res2DefB$pvalue),]
+res2DefB <- res2DefB[!is.na(res2DefB$padj),]
+#remove original adjusted p values
+res2DefB <- res2DefB[,-which(names(res2DefB)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res2DefB <- fdrtool(res2DefB$stat,statistic="normal",plot=T)
+FDR.res2DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res2DefB[,"padj"] <- p.adjust(FDR.res2DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res2DefB$pval,col="royalblue4", main="2 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res2DefB[,"padj"] < 0.1)
+sigGenes2DefB <- rownames(subset(res2DefB,padj<0.1))
+genesSig2DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes2DefB))
+
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res3Def <- res3Def[!is.na(res3Def$pvalue),]
+res3Def <- res3Def[!is.na(res3Def$padj),]
+#remove original adjusted p values
+res3Def <- res3Def[,-which(names(res3Def)=="padj")]
+#use the z-scores from DESeq3 as input to fdrtool to re-estimate p values
+FDR.res3Def <- fdrtool(res3Def$stat,statistic="normal",plot=T)
+FDR.res3Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res3Def[,"padj"] <- p.adjust(FDR.res3Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res3Def$pval,col="royalblue4", main="3 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res3Def[,"padj"] < 0.1)
+sigGenes3Def <- rownames(subset(res3Def,padj<0.1))
+genesSig3Def <- as.data.frame(subset(genes, GENEID %in% sigGenes3Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res3Def3 <- res3Def3[!is.na(res3Def3$pvalue),]
+res3Def3 <- res3Def3[!is.na(res3Def3$padj),]
+#remove original adjusted p values
+res3Def3 <- res3Def3[,-which(names(res3Def3)=="padj")]
+#use the z-scores from DESeq3 as input to fdrtool to re-estimate p values
+FDR.res3Def3 <- fdrtool(res3Def3$stat,statistic="normal",plot=T)
+FDR.res3Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res3Def3[,"padj"] <- p.adjust(FDR.res3Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res3Def3$pval,col="royalblue4", main="3 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res3Def3[,"padj"] < 0.1)
+sigGenes3Def3 <- rownames(subset(res3Def3,padj<0.1))
+genesSig3Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes3Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res3DefB <- res3DefB[!is.na(res3DefB$pvalue),]
+res3DefB <- res3DefB[!is.na(res3DefB$padj),]
+#remove original adjusted p values
+res3DefB <- res3DefB[,-which(names(res3DefB)=="padj")]
+#use the z-scores from DESeq3 as input to fdrtool to re-estimate p values
+FDR.res3DefB <- fdrtool(res3DefB$stat,statistic="normal",plot=T)
+FDR.res3DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res3DefB[,"padj"] <- p.adjust(FDR.res3DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res3DefB$pval,col="royalblue4", main="3 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res3DefB[,"padj"] < 0.1)
+sigGenes3DefB <- rownames(subset(res3DefB,padj<0.1))
+genesSig3DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes3DefB))
+
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res4Def <- res4Def[!is.na(res4Def$pvalue),]
+res4Def <- res4Def[!is.na(res4Def$padj),]
+#remove original adjusted p values
+res4Def <- res4Def[,-which(names(res4Def)=="padj")]
+#use the z-scores from DESeq4 as input to fdrtool to re-estimate p values
+FDR.res4Def <- fdrtool(res4Def$stat,statistic="normal",plot=T)
+FDR.res4Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res4Def[,"padj"] <- p.adjust(FDR.res4Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res4Def$pval,col="royalblue4", main="4 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res4Def[,"padj"] < 0.1)
+sigGenes4Def <- rownames(subset(res4Def,padj<0.1))
+genesSig4Def <- as.data.frame(subset(genes, GENEID %in% sigGenes4Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res4Def3 <- res4Def3[!is.na(res4Def3$pvalue),]
+res4Def3 <- res4Def3[!is.na(res4Def3$padj),]
+#remove original adjusted p values
+res4Def3 <- res4Def3[,-which(names(res4Def3)=="padj")]
+#use the z-scores from DESeq4 as input to fdrtool to re-estimate p values
+FDR.res4Def3 <- fdrtool(res4Def3$stat,statistic="normal",plot=T)
+FDR.res4Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res4Def3[,"padj"] <- p.adjust(FDR.res4Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res4Def3$pval,col="royalblue4", main="4 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res4Def3[,"padj"] < 0.1)
+sigGenes4Def3 <- rownames(subset(res4Def3,padj<0.1))
+genesSig4Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes4Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res4DefB <- res4DefB[!is.na(res4DefB$pvalue),]
+res4DefB <- res4DefB[!is.na(res4DefB$padj),]
+#remove original adjusted p values
+res4DefB <- res4DefB[,-which(names(res4DefB)=="padj")]
+#use the z-scores from DESeq4 as input to fdrtool to re-estimate p values
+FDR.res4DefB <- fdrtool(res4DefB$stat,statistic="normal",plot=T)
+FDR.res4DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res4DefB[,"padj"] <- p.adjust(FDR.res4DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res4DefB$pval,col="royalblue4", main="4 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res4DefB[,"padj"] < 0.1)
+sigGenes4DefB <- rownames(subset(res4DefB,padj<0.1))
+genesSig4DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes4DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res5Def <- res5Def[!is.na(res5Def$pvalue),]
+res5Def <- res5Def[!is.na(res5Def$padj),]
+#remove original adjusted p values
+res5Def <- res5Def[,-which(names(res5Def)=="padj")]
+#use the z-scores from DESeq5 as input to fdrtool to re-estimate p values
+FDR.res5Def <- fdrtool(res5Def$stat,statistic="normal",plot=T)
+FDR.res5Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res5Def[,"padj"] <- p.adjust(FDR.res5Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res5Def$pval,col="royalblue4", main="5 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res5Def[,"padj"] < 0.1)
+sigGenes5Def <- rownames(subset(res5Def,padj<0.1))
+genesSig5Def <- as.data.frame(subset(genes, GENEID %in% sigGenes5Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res5Def3 <- res5Def3[!is.na(res5Def3$pvalue),]
+res5Def3 <- res5Def3[!is.na(res5Def3$padj),]
+#remove original adjusted p values
+res5Def3 <- res5Def3[,-which(names(res5Def3)=="padj")]
+#use the z-scores from DESeq5 as input to fdrtool to re-estimate p values
+FDR.res5Def3 <- fdrtool(res5Def3$stat,statistic="normal",plot=T)
+FDR.res5Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res5Def3[,"padj"] <- p.adjust(FDR.res5Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res5Def3$pval,col="royalblue4", main="5 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res5Def3[,"padj"] < 0.1)
+sigGenes5Def3 <- rownames(subset(res5Def3,padj<0.1))
+genesSig5Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes5Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res5DefB <- res5DefB[!is.na(res5DefB$pvalue),]
+res5DefB <- res5DefB[!is.na(res5DefB$padj),]
+#remove original adjusted p values
+res5DefB <- res5DefB[,-which(names(res5DefB)=="padj")]
+#use the z-scores from DESeq5 as input to fdrtool to re-estimate p values
+FDR.res5DefB <- fdrtool(res5DefB$stat,statistic="normal",plot=T)
+FDR.res5DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res5DefB[,"padj"] <- p.adjust(FDR.res5DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res5DefB$pval,col="royalblue4", main="5 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res5DefB[,"padj"] < 0.1)
+sigGenes5DefB <- rownames(subset(res5DefB,padj<0.1))
+genesSig5DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes5DefB))
+
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res6Def <- res6Def[!is.na(res6Def$pvalue),]
+res6Def <- res6Def[!is.na(res6Def$padj),]
+#remove original adjusted p values
+res6Def <- res6Def[,-which(names(res6Def)=="padj")]
+#use the z-scores from DESeq6 as input to fdrtool to re-estimate p values
+FDR.res6Def <- fdrtool(res6Def$stat,statistic="normal",plot=T)
+FDR.res6Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res6Def[,"padj"] <- p.adjust(FDR.res6Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res6Def$pval,col="royalblue4", main="6 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res6Def[,"padj"] < 0.1)
+sigGenes6Def <- rownames(subset(res6Def,padj<0.1))
+genesSig6Def <- as.data.frame(subset(genes, GENEID %in% sigGenes6Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res6Def3 <- res6Def3[!is.na(res6Def3$pvalue),]
+res6Def3 <- res6Def3[!is.na(res6Def3$padj),]
+#remove original adjusted p values
+res6Def3 <- res6Def3[,-which(names(res6Def3)=="padj")]
+#use the z-scores from DESeq6 as input to fdrtool to re-estimate p values
+FDR.res6Def3 <- fdrtool(res6Def3$stat,statistic="normal",plot=T)
+FDR.res6Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res6Def3[,"padj"] <- p.adjust(FDR.res6Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res6Def3$pval,col="royalblue4", main="6 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res6Def3[,"padj"] < 0.1)
+sigGenes6Def3 <- rownames(subset(res6Def3,padj<0.1))
+genesSig6Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes6Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res6DefB <- res6DefB[!is.na(res6DefB$pvalue),]
+res6DefB <- res6DefB[!is.na(res6DefB$padj),]
+#remove original adjusted p values
+res6DefB <- res6DefB[,-which(names(res6DefB)=="padj")]
+#use the z-scores from DESeq6 as input to fdrtool to re-estimate p values
+FDR.res6DefB <- fdrtool(res6DefB$stat,statistic="normal",plot=T)
+FDR.res6DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res6DefB[,"padj"] <- p.adjust(FDR.res6DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res6DefB$pval,col="royalblue4", main="6 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res6DefB[,"padj"] < 0.1)
+sigGenes6DefB <- rownames(subset(res6DefB,padj<0.1))
+genesSig6DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes6DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res7Def <- res7Def[!is.na(res7Def$pvalue),]
+res7Def <- res7Def[!is.na(res7Def$padj),]
+#remove original adjusted p values
+res7Def <- res7Def[,-which(names(res7Def)=="padj")]
+#use the z-scores from DESeq7 as input to fdrtool to re-estimate p values
+FDR.res7Def <- fdrtool(res7Def$stat,statistic="normal",plot=T)
+FDR.res7Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res7Def[,"padj"] <- p.adjust(FDR.res7Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res7Def$pval,col="royalblue4", main="7 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res7Def[,"padj"] < 0.1)
+sigGenes7Def <- rownames(subset(res7Def,padj<0.1))
+genesSig7Def <- as.data.frame(subset(genes, GENEID %in% sigGenes7Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res8Def <- res8Def[!is.na(res8Def$pvalue),]
+res8Def <- res8Def[!is.na(res8Def$padj),]
+#remove original adjusted p values
+res8Def <- res8Def[,-which(names(res8Def)=="padj")]
+#use the z-scores from DESeq8 as input to fdrtool to re-estimate p values
+FDR.res8Def <- fdrtool(res8Def$stat,statistic="normal",plot=T)
+FDR.res8Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res8Def[,"padj"] <- p.adjust(FDR.res8Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res8Def$pval,col="royalblue4", main="8 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res8Def[,"padj"] < 0.1)
+sigGenes8Def <- rownames(subset(res8Def,padj<0.1))
+genesSig8Def <- as.data.frame(subset(genes, GENEID %in% sigGenes8Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res8Def3 <- res8Def3[!is.na(res8Def3$pvalue),]
+res8Def3 <- res8Def3[!is.na(res8Def3$padj),]
+#remove original adjusted p values
+res8Def3 <- res8Def3[,-which(names(res8Def3)=="padj")]
+#use the z-scores from DESeq8 as input to fdrtool to re-estimate p values
+FDR.res8Def3 <- fdrtool(res8Def3$stat,statistic="normal",plot=T)
+FDR.res8Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res8Def3[,"padj"] <- p.adjust(FDR.res8Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res8Def3$pval,col="royalblue4", main="8 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res8Def3[,"padj"] < 0.1)
+sigGenes8Def3 <- rownames(subset(res8Def3,padj<0.1))
+genesSig8Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes8Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res8DefB <- res8DefB[!is.na(res8DefB$pvalue),]
+res8DefB <- res8DefB[!is.na(res8DefB$padj),]
+#remove original adjusted p values
+res8DefB <- res8DefB[,-which(names(res8DefB)=="padj")]
+#use the z-scores from DESeq8 as input to fdrtool to re-estimate p values
+FDR.res8DefB <- fdrtool(res8DefB$stat,statistic="normal",plot=T)
+FDR.res8DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res8DefB[,"padj"] <- p.adjust(FDR.res8DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res8DefB$pval,col="royalblue4", main="8 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res8DefB[,"padj"] < 0.1)
+sigGenes8DefB <- rownames(subset(res8DefB,padj<0.1))
+genesSig8DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes8DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res9Def <- res9Def[!is.na(res9Def$pvalue),]
+res9Def <- res9Def[!is.na(res9Def$padj),]
+#remove original adjusted p values
+res9Def <- res9Def[,-which(names(res9Def)=="padj")]
+#use the z-scores from DESeq9 as input to fdrtool to re-estimate p values
+FDR.res9Def <- fdrtool(res9Def$stat,statistic="normal",plot=T)
+FDR.res9Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res9Def[,"padj"] <- p.adjust(FDR.res9Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res9Def$pval,col="royalblue4", main="9 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res9Def[,"padj"] < 0.1)
+sigGenes9Def <- rownames(subset(res9Def,padj<0.1))
+genesSig9Def <- as.data.frame(subset(genes, GENEID %in% sigGenes9Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res9Def3 <- res9Def3[!is.na(res9Def3$pvalue),]
+res9Def3 <- res9Def3[!is.na(res9Def3$padj),]
+#remove original adjusted p values
+res9Def3 <- res9Def3[,-which(names(res9Def3)=="padj")]
+#use the z-scores from DESeq9 as input to fdrtool to re-estimate p values
+FDR.res9Def3 <- fdrtool(res9Def3$stat,statistic="normal",plot=T)
+FDR.res9Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res9Def3[,"padj"] <- p.adjust(FDR.res9Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res9Def3$pval,col="royalblue4", main="9 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res9Def3[,"padj"] < 0.1)
+sigGenes9Def3 <- rownames(subset(res9Def3,padj<0.1))
+genesSig9Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes9Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res9DefB <- res9DefB[!is.na(res9DefB$pvalue),]
+res9DefB <- res9DefB[!is.na(res9DefB$padj),]
+#remove original adjusted p values
+res9DefB <- res9DefB[,-which(names(res9DefB)=="padj")]
+#use the z-scores from DESeq9 as input to fdrtool to re-estimate p values
+FDR.res9DefB <- fdrtool(res9DefB$stat,statistic="normal",plot=T)
+FDR.res9DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res9DefB[,"padj"] <- p.adjust(FDR.res9DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res9DefB$pval,col="royalblue4", main="9 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res9DefB[,"padj"] < 0.1)
+sigGenes9DefB <- rownames(subset(res9DefB,padj<0.1))
+genesSig9DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes9DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res11Def <- res11Def[!is.na(res11Def$pvalue),]
+res11Def <- res11Def[!is.na(res11Def$padj),]
+#remove original adjusted p values
+res11Def <- res11Def[,-which(names(res11Def)=="padj")]
+#use the z-scores from DESeq11 as input to fdrtool to re-estimate p values
+FDR.res11Def <- fdrtool(res11Def$stat,statistic="normal",plot=T)
+FDR.res11Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res11Def[,"padj"] <- p.adjust(FDR.res11Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res11Def$pval,col="royalblue4", main="11 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res11Def[,"padj"] < 0.1)
+sigGenes11Def <- rownames(subset(res11Def,padj<0.1))
+genesSig11Def <- as.data.frame(subset(genes, GENEID %in% sigGenes11Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res11Def3 <- res11Def3[!is.na(res11Def3$pvalue),]
+res11Def3 <- res11Def3[!is.na(res11Def3$padj),]
+#remove original adjusted p values
+res11Def3 <- res11Def3[,-which(names(res11Def3)=="padj")]
+#use the z-scores from DESeq11 as input to fdrtool to re-estimate p values
+FDR.res11Def3 <- fdrtool(res11Def3$stat,statistic="normal",plot=T)
+FDR.res11Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res11Def3[,"padj"] <- p.adjust(FDR.res11Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res11Def3$pval,col="royalblue4", main="11 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res11Def3[,"padj"] < 0.1)
+sigGenes11Def3 <- rownames(subset(res11Def3,padj<0.1))
+genesSig11Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes11Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res11DefB <- res11DefB[!is.na(res11DefB$pvalue),]
+res11DefB <- res11DefB[!is.na(res11DefB$padj),]
+#remove original adjusted p values
+res11DefB <- res11DefB[,-which(names(res11DefB)=="padj")]
+#use the z-scores from DESeq11 as input to fdrtool to re-estimate p values
+FDR.res11DefB <- fdrtool(res11DefB$stat,statistic="normal",plot=T)
+FDR.res11DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res11DefB[,"padj"] <- p.adjust(FDR.res11DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res11DefB$pval,col="royalblue4", main="11 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res11DefB[,"padj"] < 0.1)
+sigGenes11DefB <- rownames(subset(res11DefB,padj<0.1))
+genesSig11DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes11DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res18Def <- res18Def[!is.na(res18Def$pvalue),]
+res18Def <- res18Def[!is.na(res18Def$padj),]
+#remove original adjusted p values
+res18Def <- res18Def[,-which(names(res18Def)=="padj")]
+#use the z-scores from DESeq18 as input to fdrtool to re-estimate p values
+FDR.res18Def <- fdrtool(res18Def$stat,statistic="normal",plot=T)
+FDR.res18Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res18Def[,"padj"] <- p.adjust(FDR.res18Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res18Def$pval,col="royalblue4", main="18 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res18Def[,"padj"] < 0.1)
+sigGenes18Def <- rownames(subset(res18Def,padj<0.1))
+genesSig18Def <- as.data.frame(subset(genes, GENEID %in% sigGenes18Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res18Def3 <- res18Def3[!is.na(res18Def3$pvalue),]
+res18Def3 <- res18Def3[!is.na(res18Def3$padj),]
+#remove original adjusted p values
+res18Def3 <- res18Def3[,-which(names(res18Def3)=="padj")]
+#use the z-scores from DESeq18 as input to fdrtool to re-estimate p values
+FDR.res18Def3 <- fdrtool(res18Def3$stat,statistic="normal",plot=T)
+FDR.res18Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res18Def3[,"padj"] <- p.adjust(FDR.res18Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res18Def3$pval,col="royalblue4", main="18 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res18Def3[,"padj"] < 0.1)
+sigGenes18Def3 <- rownames(subset(res18Def3,padj<0.1))
+genesSig18Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes18Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res18DefB <- res18DefB[!is.na(res18DefB$pvalue),]
+res18DefB <- res18DefB[!is.na(res18DefB$padj),]
+#remove original adjusted p values
+res18DefB <- res18DefB[,-which(names(res18DefB)=="padj")]
+#use the z-scores from DESeq18 as input to fdrtool to re-estimate p values
+FDR.res18DefB <- fdrtool(res18DefB$stat,statistic="normal",plot=T)
+FDR.res18DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res18DefB[,"padj"] <- p.adjust(FDR.res18DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res18DefB$pval,col="royalblue4", main="18 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res18DefB[,"padj"] < 0.1)
+sigGenes18DefB <- rownames(subset(res18DefB,padj<0.1))
+genesSig18DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes18DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res21Def <- res21Def[!is.na(res21Def$pvalue),]
+res21Def <- res21Def[!is.na(res21Def$padj),]
+#remove original adjusted p values
+res21Def <- res21Def[,-which(names(res21Def)=="padj")]
+#use the z-scores from DESeq21 as input to fdrtool to re-estimate p values
+FDR.res21Def <- fdrtool(res21Def$stat,statistic="normal",plot=T)
+FDR.res21Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res21Def[,"padj"] <- p.adjust(FDR.res21Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res21Def$pval,col="royalblue4", main="21 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res21Def[,"padj"] < 0.1)
+sigGenes21Def <- rownames(subset(res21Def,padj<0.1))
+genesSig21Def <- as.data.frame(subset(genes, GENEID %in% sigGenes21Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res31Def <- res31Def[!is.na(res31Def$pvalue),]
+res31Def <- res31Def[!is.na(res31Def$padj),]
+#remove original adjusted p values
+res31Def <- res31Def[,-which(names(res31Def)=="padj")]
+#use the z-scores from DESeq31 as input to fdrtool to re-estimate p values
+FDR.res31Def <- fdrtool(res31Def$stat,statistic="normal",plot=T)
+FDR.res31Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res31Def[,"padj"] <- p.adjust(FDR.res31Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res31Def$pval,col="royalblue4", main="31 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res31Def[,"padj"] < 0.1)
+sigGenes31Def <- rownames(subset(res31Def,padj<0.1))
+genesSig31Def <- as.data.frame(subset(genes, GENEID %in% sigGenes31Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res31Def3 <- res31Def3[!is.na(res31Def3$pvalue),]
+res31Def3 <- res31Def3[!is.na(res31Def3$padj),]
+#remove original adjusted p values
+res31Def3 <- res31Def3[,-which(names(res31Def3)=="padj")]
+#use the z-scores from DESeq31 as input to fdrtool to re-estimate p values
+FDR.res31Def3 <- fdrtool(res31Def3$stat,statistic="normal",plot=T)
+FDR.res31Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res31Def3[,"padj"] <- p.adjust(FDR.res31Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res31Def3$pval,col="royalblue4", main="31 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res31Def3[,"padj"] < 0.1)
+sigGenes31Def3 <- rownames(subset(res31Def3,padj<0.1))
+genesSig31Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes31Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res49Def <- res49Def[!is.na(res49Def$pvalue),]
+res49Def <- res49Def[!is.na(res49Def$padj),]
+#remove original adjusted p values
+res49Def <- res49Def[,-which(names(res49Def)=="padj")]
+#use the z-scores from DESeq49 as input to fdrtool to re-estimate p values
+FDR.res49Def <- fdrtool(res49Def$stat,statistic="normal",plot=T)
+FDR.res49Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res49Def[,"padj"] <- p.adjust(FDR.res49Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res49Def$pval,col="royalblue4", main="49 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res49Def[,"padj"] < 0.1)
+sigGenes49Def <- rownames(subset(res49Def,padj<0.1))
+genesSig49Def <- as.data.frame(subset(genes, GENEID %in% sigGenes49Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res49Def3 <- res49Def3[!is.na(res49Def3$pvalue),]
+res49Def3 <- res49Def3[!is.na(res49Def3$padj),]
+#remove original adjusted p values
+res49Def3 <- res49Def3[,-which(names(res49Def3)=="padj")]
+#use the z-scores from DESeq49 as input to fdrtool to re-estimate p values
+FDR.res49Def3 <- fdrtool(res49Def3$stat,statistic="normal",plot=T)
+FDR.res49Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res49Def3[,"padj"] <- p.adjust(FDR.res49Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res49Def3$pval,col="royalblue4", main="49 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res49Def3[,"padj"] < 0.1)
+sigGenes49Def3 <- rownames(subset(res49Def3,padj<0.1))
+genesSig49Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes49Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res49DefB <- res49DefB[!is.na(res49DefB$pvalue),]
+res49DefB <- res49DefB[!is.na(res49DefB$padj),]
+#remove original adjusted p values
+res49DefB <- res49DefB[,-which(names(res49DefB)=="padj")]
+#use the z-scores from DESeq49 as input to fdrtool to re-estimate p values
+FDR.res49DefB <- fdrtool(res49DefB$stat,statistic="normal",plot=T)
+FDR.res49DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res49DefB[,"padj"] <- p.adjust(FDR.res49DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res49DefB$pval,col="royalblue4", main="49 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res49DefB[,"padj"] < 0.1)
+sigGenes49DefB <- rownames(subset(res49DefB,padj<0.1))
+genesSig49DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes49DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res59Def <- res59Def[!is.na(res59Def$pvalue),]
+res59Def <- res59Def[!is.na(res59Def$padj),]
+#remove original adjusted p values
+res59Def <- res59Def[,-which(names(res59Def)=="padj")]
+#use the z-scores from DESeq59 as input to fdrtool to re-estimate p values
+FDR.res59Def <- fdrtool(res59Def$stat,statistic="normal",plot=T)
+FDR.res59Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res59Def[,"padj"] <- p.adjust(FDR.res59Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res59Def$pval,col="royalblue4", main="59 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res59Def[,"padj"] < 0.1)
+sigGenes59Def <- rownames(subset(res59Def,padj<0.1))
+genesSig59Def <- as.data.frame(subset(genes, GENEID %in% sigGenes59Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res59Def3 <- res59Def3[!is.na(res59Def3$pvalue),]
+res59Def3 <- res59Def3[!is.na(res59Def3$padj),]
+#remove original adjusted p values
+res59Def3 <- res59Def3[,-which(names(res59Def3)=="padj")]
+#use the z-scores from DESeq59 as input to fdrtool to re-estimate p values
+FDR.res59Def3 <- fdrtool(res59Def3$stat,statistic="normal",plot=T)
+FDR.res59Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res59Def3[,"padj"] <- p.adjust(FDR.res59Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res59Def3$pval,col="royalblue4", main="59 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res59Def3[,"padj"] < 0.1)
+sigGenes59Def3 <- rownames(subset(res59Def3,padj<0.1))
+genesSig59Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes59Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res59DefB <- res59DefB[!is.na(res59DefB$pvalue),]
+res59DefB <- res59DefB[!is.na(res59DefB$padj),]
+#remove original adjusted p values
+res59DefB <- res59DefB[,-which(names(res59DefB)=="padj")]
+#use the z-scores from DESeq59 as input to fdrtool to re-estimate p values
+FDR.res59DefB <- fdrtool(res59DefB$stat,statistic="normal",plot=T)
+FDR.res59DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res59DefB[,"padj"] <- p.adjust(FDR.res59DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res59DefB$pval,col="royalblue4", main="59 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res59DefB[,"padj"] < 0.1)
+sigGenes59DefB <- rownames(subset(res59DefB,padj<0.1))
+genesSig59DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes59DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res61Def <- res61Def[!is.na(res61Def$pvalue),]
+res61Def <- res61Def[!is.na(res61Def$padj),]
+#remove original adjusted p values
+res61Def <- res61Def[,-which(names(res61Def)=="padj")]
+#use the z-scores from DESeq61 as input to fdrtool to re-estimate p values
+FDR.res61Def <- fdrtool(res61Def$stat,statistic="normal",plot=T)
+FDR.res61Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res61Def[,"padj"] <- p.adjust(FDR.res61Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res61Def$pval,col="royalblue4", main="61 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res61Def[,"padj"] < 0.1)
+sigGenes61Def <- rownames(subset(res61Def,padj<0.1))
+genesSig61Def <- as.data.frame(subset(genes, GENEID %in% sigGenes61Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res61Def3 <- res61Def3[!is.na(res61Def3$pvalue),]
+res61Def3 <- res61Def3[!is.na(res61Def3$padj),]
+#remove original adjusted p values
+res61Def3 <- res61Def3[,-which(names(res61Def3)=="padj")]
+#use the z-scores from DESeq61 as input to fdrtool to re-estimate p values
+FDR.res61Def3 <- fdrtool(res61Def3$stat,statistic="normal",plot=T)
+FDR.res61Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res61Def3[,"padj"] <- p.adjust(FDR.res61Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res61Def3$pval,col="royalblue4", main="61 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res61Def3[,"padj"] < 0.1)
+sigGenes61Def3 <- rownames(subset(res61Def3,padj<0.1))
+genesSig61Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes61Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res61DefB <- res61DefB[!is.na(res61DefB$pvalue),]
+res61DefB <- res61DefB[!is.na(res61DefB$padj),]
+#remove original adjusted p values
+res61DefB <- res61DefB[,-which(names(res61DefB)=="padj")]
+#use the z-scores from DESeq61 as input to fdrtool to re-estimate p values
+FDR.res61DefB <- fdrtool(res61DefB$stat,statistic="normal",plot=T)
+FDR.res61DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res61DefB[,"padj"] <- p.adjust(FDR.res61DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res61DefB$pval,col="royalblue4", main="61 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res61DefB[,"padj"] < 0.1)
+sigGenes61DefB <- rownames(subset(res61DefB,padj<0.1))
+genesSig61DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes61DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res66Def <- res66Def[!is.na(res66Def$pvalue),]
+res66Def <- res66Def[!is.na(res66Def$padj),]
+#remove original adjusted p values
+res66Def <- res66Def[,-which(names(res66Def)=="padj")]
+#use the z-scores from DESeq66 as input to fdrtool to re-estimate p values
+FDR.res66Def <- fdrtool(res66Def$stat,statistic="normal",plot=T)
+FDR.res66Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res66Def[,"padj"] <- p.adjust(FDR.res66Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res66Def$pval,col="royalblue4", main="66 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res66Def[,"padj"] < 0.1)
+sigGenes66Def <- rownames(subset(res66Def,padj<0.1))
+genesSig66Def <- as.data.frame(subset(genes, GENEID %in% sigGenes66Def))
+
+
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res69Def <- res69Def[!is.na(res69Def$pvalue),]
+res69Def <- res69Def[!is.na(res69Def$padj),]
+#remove original adjusted p values
+res69Def <- res69Def[,-which(names(res69Def)=="padj")]
+#use the z-scores from DESeq69 as input to fdrtool to re-estimate p values
+FDR.res69Def <- fdrtool(res69Def$stat,statistic="normal",plot=T)
+FDR.res69Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res69Def[,"padj"] <- p.adjust(FDR.res69Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res69Def$pval,col="royalblue4", main="69 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res69Def[,"padj"] < 0.1)
+sigGenes69Def <- rownames(subset(res69Def,padj<0.1))
+genesSig69Def <- as.data.frame(subset(genes, GENEID %in% sigGenes69Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res69Def3 <- res69Def3[!is.na(res69Def3$pvalue),]
+res69Def3 <- res69Def3[!is.na(res69Def3$padj),]
+#remove original adjusted p values
+res69Def3 <- res69Def3[,-which(names(res69Def3)=="padj")]
+#use the z-scores from DESeq69 as input to fdrtool to re-estimate p values
+FDR.res69Def3 <- fdrtool(res69Def3$stat,statistic="normal",plot=T)
+FDR.res69Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res69Def3[,"padj"] <- p.adjust(FDR.res69Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res69Def3$pval,col="royalblue4", main="69 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res69Def3[,"padj"] < 0.1)
+sigGenes69Def3 <- rownames(subset(res69Def3,padj<0.1))
+genesSig69Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes69Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res76Def <- res76Def[!is.na(res76Def$pvalue),]
+res76Def <- res76Def[!is.na(res76Def$padj),]
+#remove original adjusted p values
+res76Def <- res76Def[,-which(names(res76Def)=="padj")]
+#use the z-scores from DESeq76 as input to fdrtool to re-estimate p values
+FDR.res76Def <- fdrtool(res76Def$stat,statistic="normal",plot=T)
+FDR.res76Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res76Def[,"padj"] <- p.adjust(FDR.res76Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res76Def$pval,col="royalblue4", main="76 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res76Def[,"padj"] < 0.1)
+sigGenes76Def <- rownames(subset(res76Def,padj<0.1))
+genesSig76Def <- as.data.frame(subset(genes, GENEID %in% sigGenes76Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res76Def3 <- res76Def3[!is.na(res76Def3$pvalue),]
+res76Def3 <- res76Def3[!is.na(res76Def3$padj),]
+#remove original adjusted p values
+res76Def3 <- res76Def3[,-which(names(res76Def3)=="padj")]
+#use the z-scores from DESeq76 as input to fdrtool to re-estimate p values
+FDR.res76Def3 <- fdrtool(res76Def3$stat,statistic="normal",plot=T)
+FDR.res76Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res76Def3[,"padj"] <- p.adjust(FDR.res76Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res76Def3$pval,col="royalblue4", main="76 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res76Def3[,"padj"] < 0.1)
+sigGenes76Def3 <- rownames(subset(res76Def3,padj<0.1))
+genesSig76Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes76Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res76DefB <- res76DefB[!is.na(res76DefB$pvalue),]
+res76DefB <- res76DefB[!is.na(res76DefB$padj),]
+#remove original adjusted p values
+res76DefB <- res76DefB[,-which(names(res76DefB)=="padj")]
+#use the z-scores from DESeq76 as input to fdrtool to re-estimate p values
+FDR.res76DefB <- fdrtool(res76DefB$stat,statistic="normal",plot=T)
+FDR.res76DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res76DefB[,"padj"] <- p.adjust(FDR.res76DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res76DefB$pval,col="royalblue4", main="76 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res76DefB[,"padj"] < 0.1)
+sigGenes76DefB <- rownames(subset(res76DefB,padj<0.1))
+genesSig76DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes76DefB))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res77Def <- res77Def[!is.na(res77Def$pvalue),]
+res77Def <- res77Def[!is.na(res77Def$padj),]
+#remove original adjusted p values
+res77Def <- res77Def[,-which(names(res77Def)=="padj")]
+#use the z-scores from DESeq77 as input to fdrtool to re-estimate p values
+FDR.res77Def <- fdrtool(res77Def$stat,statistic="normal",plot=T)
+FDR.res77Def$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res77Def[,"padj"] <- p.adjust(FDR.res77Def$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res77Def$pval,col="royalblue4", main="77 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res77Def[,"padj"] < 0.1)
+sigGenes77Def <- rownames(subset(res77Def,padj<0.1))
+genesSig77Def <- as.data.frame(subset(genes, GENEID %in% sigGenes77Def))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res77Def3 <- res77Def3[!is.na(res77Def3$pvalue),]
+res77Def3 <- res77Def3[!is.na(res77Def3$padj),]
+#remove original adjusted p values
+res77Def3 <- res77Def3[,-which(names(res77Def3)=="padj")]
+#use the z-scores from DESeq77 as input to fdrtool to re-estimate p values
+FDR.res77Def3 <- fdrtool(res77Def3$stat,statistic="normal",plot=T)
+FDR.res77Def3$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res77Def3[,"padj"] <- p.adjust(FDR.res77Def3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res77Def3$pval,col="royalblue4", main="77 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res77Def3[,"padj"] < 0.1)
+sigGenes77Def3 <- rownames(subset(res77Def3,padj<0.1))
+genesSig77Def3 <- as.data.frame(subset(genes, GENEID %in% sigGenes77Def3))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res77DefB <- res77DefB[!is.na(res77DefB$pvalue),]
+res77DefB <- res77DefB[!is.na(res77DefB$padj),]
+#remove original adjusted p values
+res77DefB <- res77DefB[,-which(names(res77DefB)=="padj")]
+#use the z-scores from DESeq77 as input to fdrtool to re-estimate p values
+FDR.res77DefB <- fdrtool(res77DefB$stat,statistic="normal",plot=T)
+FDR.res77DefB$param[1,"sd"]
+#add the new BH-adjusted p-values to the results frame 
+res77DefB[,"padj"] <- p.adjust(FDR.res77DefB$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res77DefB$pval,col="royalblue4", main="77 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res77DefB[,"padj"] < 0.1)
+sigGenes77DefB <- rownames(subset(res77DefB,padj<0.1))
+genesSig77DefB <- as.data.frame(subset(genes, GENEID %in% sigGenes77DefB))
+
+```
+
+The following codes are without the aneuploid chromosomes in the dataset.
+
+```{r DESeq:no aneuploid csomes in normalization, include=TRUE}
+##########################################################################################
+#aneuploid chromosomes removed
+#all samples
+ddsNoAneuInNorm <- estimateSizeFactors(ddsHTSeq, controlGenes=c(133:572,573:740,741:1547,1849:1980,3459:3797,4331:4821))
+#behaving samples only
+ddsNoAneuInNormB <- estimateSizeFactors(ddsHTSeqB, controlGenes=c(133:572,573:740,741:1547,1849:1980,3459:3797,4331:4821))
+#3 replicate samples only 
+ddsNoAneuInNorm3 <- estimateSizeFactors(ddsHTSeq3, controlGenes=c(133:572,573:740,741:1547,1849:1980,3459:3797,4331:4821))
+
+#########################
+### GET ANNOTATIONS ###############
+geneID <- rownames(ddsNoAneuInNorm)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+genesNoAneu <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesNoAneu <- na.omit(genesNoAneu)
+genesNoAneu <- as.data.frame(genesNoAneu)
+remove1 <- "chrM"
+genesNoAneu <- genesNoAneu[-(grep(paste0(remove1,"$"),genesNoAneu$TXCHROM,perl=TRUE)),]
+geneIDB <- rownames(ddsNoAneuInNormB)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+genesNoAneuB <- ensembldb::select(txdb, keys=geneIDB, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesNoAneuB <- na.omit(genesNoAneuB)
+genesNoAneuB <- as.data.frame(genesNoAneuB)
+remove1 <- "chrM"
+genesNoAneuB <- genesNoAneuB[-(grep(paste0(remove1,"$"),genesNoAneuB$TXCHROM,perl=TRUE)),]
+#### and for the other datasets 
+geneID3 <- rownames(ddsNoAneuInNorm3)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+genesNoAneu3 <- ensembldb::select(txdb, keys=geneID3, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesNoAneu3 <- na.omit(genesNoAneu3)
+genesNoAneu3 <- as.data.frame(genesNoAneu3)
+remove1 <- "chrM"
+genesNoAneu3 <- genesNoAneu3[-(grep(paste0(remove1,"$"),genesNoAneu3$TXCHROM,perl=TRUE)),]
+#########################
+#########################
+### Run the rest of the DESeq functions ###############
+###  
+ddsNoAneuInNorm <- estimateDispersions(ddsNoAneuInNorm)
+attr(dispersionFunction(ddsNoAneuInNorm),"dispPriorVar")
+ddsNoAneuInNorm <- nbinomWaldTest(ddsNoAneuInNorm,useT=TRUE,df=(nrow(ddsNoAneuInNorm)))
+#Save the normalization factors and dispersions as objects to compare later
+norm.factors.no.aneu <- as.data.frame(sizeFactors(ddsNoAneuInNorm))
+dispersions.no.aneu <- dispersions(ddsNoAneuInNorm)
+##same for other datasets 
+ddsNoAneuInNormB <- estimateDispersions(ddsNoAneuInNormB)
+attr(dispersionFunction(ddsNoAneuInNormB),"dispPriorVar")
+ddsNoAneuInNormB <- nbinomWaldTest(ddsNoAneuInNormB)
+norm.factors.no.aneuB <- as.data.frame(sizeFactors(ddsNoAneuInNormB))
+dispersions.no.aneuB <- dispersions(ddsNoAneuInNormB)
+## and the next one 
+ddsNoAneuInNorm3 <- estimateDispersions(ddsNoAneuInNorm3)
+attr(dispersionFunction(ddsNoAneuInNorm3),"dispPriorVar")
+ddsNoAneuInNorm3 <- nbinomWaldTest(ddsNoAneuInNorm3)
+norm.factors.no.aneu3 <- as.data.frame(sizeFactors(ddsNoAneuInNorm3))
+dispersions.no.aneu3 <- dispersions(ddsNoAneuInNorm3)
+#test the dispersion prior variance for each different set of data 
+attr(dispersionFunction(ddsNoAneuInNorm), "dispPriorVar")
+attr(dispersionFunction(ddsNoAneuInNormB), "dispPriorVar")
+attr(dispersionFunction(ddsNoAneuInNorm3), "dispPriorVar")
+################
+#########################
+### ADD ANNOTATIONS ###############
+all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedNoAneu <- intersect(rownames(ddsNoAneuInNorm), genesNoAneu$GENEID)
+keep3 <- rownames(ddsNoAneuInNorm) %in% matchedNoAneu
+ddsNoAneuInNorm <- ddsNoAneuInNorm[keep3,]
+length(ddsNoAneuInNorm)
+all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+mcols(ddsNoAneuInNorm)
+#then check again
+all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+nrow(ddsNoAneuInNorm)
+nrow(genesNoAneu)
+mcols(ddsNoAneuInNorm) <- cbind(mcols(ddsNoAneuInNorm), genesNoAneu)
+mcols(ddsNoAneuInNorm)
+
+all(rownames(ddsNoAneuInNormB) == genesNoAneu$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedNoAneuB <- intersect(rownames(ddsNoAneuInNormB), genesNoAneu$GENEID)
+keep3B <- rownames(ddsNoAneuInNormB) %in% matchedNoAneuB
+ddsNoAneuInNormB <- ddsNoAneuInNormB[keep3,]
+length(ddsNoAneuInNormB)
+all(rownames(ddsNoAneuInNormB) == genesNoAneu$GENEID)
+mcols(ddsNoAneuInNormB)
+#then check again
+all(rownames(ddsNoAneuInNormB) == genesNoAneu$GENEID)
+nrow(ddsNoAneuInNormB)
+nrow(genesNoAneuB)
+mcols(ddsNoAneuInNormB) <- cbind(mcols(ddsNoAneuInNormB), genesNoAneu)
+mcols(ddsNoAneuInNormB)
+
+all(rownames(ddsNoAneuInNorm3) == genesNoAneu$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedNoAneu3 <- intersect(rownames(ddsNoAneuInNorm3), genesNoAneu$GENEID)
+keep33 <- rownames(ddsNoAneuInNorm3) %in% matchedNoAneu3
+ddsNoAneuInNorm3 <- ddsNoAneuInNorm3[keep3,]
+length(ddsNoAneuInNorm3)
+all(rownames(ddsNoAneuInNorm3) == genesNoAneu$GENEID)
+mcols(ddsNoAneuInNorm3)
+#then check again
+all(rownames(ddsNoAneuInNorm3) == genesNoAneu$GENEID)
+nrow(ddsNoAneuInNorm3)
+nrow(genesNoAneu3)
+mcols(ddsNoAneuInNorm3) <- cbind(mcols(ddsNoAneuInNorm3), genesNoAneu)
+mcols(ddsNoAneuInNorm3)
+###################
+#### WRITE TO CSV FILES
+#the annotations
+write.csv(genes,file="gene_anno.csv")
+#the raw (filtered) counts for each dataset
+write.csv(counts(ddsHTSeq),file="counts.filtered.All.csv")
+write.csv(counts(ddsHTSeqB),file="counts.filtered.B.csv")
+write.csv(counts(ddsHTSeq3),file="counts.filtered.3.csv")
+``` 
+
+```{r results, no aneu, include=TRUE}
+###########################################
+#without aneuploid chromosomes
+res <- results(ddsNoAneuInNorm)
+res
+resultsNames(ddsNoAneuInNorm)
+
+resB <- results(ddsNoAneuInNormB)
+resB
+resultsNames(ddsNoAneuInNormB)
+
+res.3 <- results(ddsNoAneuInNorm3)
+res.3
+resultsNames(ddsNoAneuInNorm3)
+
+#euploid line
+res2 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2)
+
+res2.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2.B)
+
+res2.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(res2.3)
+
+#aneuploid line 
+resultsNames(ddsNoAneuInNorm)
+res21 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_21","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(res21)
+
+
+res7 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(res7)
+
+res7.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(res7.3)
+
+res18 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18)
+res18.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18.B)
+res18.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res18.3)
+
+res11 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11)
+res11.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11.B)
+res11.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res11.3)
+
+res1 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_1","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res1)
+res1.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_1","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res1.B)
+res1.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_1","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res1.3)
+
+res3 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3)
+res3.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3.B)
+res3.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res3.3)
+
+res31 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_31","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res31)
+res31.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_31","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res31.3)
+
+res4 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4)
+res4.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4.B)
+res4.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res4.3)
+
+res49 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49)
+res49.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49.B)
+res49.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res49.3)
+
+res59 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59)
+res59.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59.B)
+res59.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res59.3)
+
+res61 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61)
+res61.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61.B)
+res61.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res61.3)
+
+res6 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_6","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res6)
+res6.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_6","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res6.B)
+res6.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_6","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res6.3)
+
+res7 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res7)
+res7.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_7","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res7.3)
+
+res8 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8)
+res8.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8.B)
+res8.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res8.3)
+
+res9 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9)
+res9.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9.B)
+res9.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res9.3)
+
+res66 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_66","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res66)
+
+res69 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res69)
+res69.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res69.3)
+
+res76 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76)
+res76.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76.B)
+res76.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res76.3)
+
+res77 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77)
+res77.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77.B)
+res77.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res77.3)
+
+res5 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5)
+res5.B <- results(ddsNoAneuInNormB, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5.B)
+res5.3 <- results(ddsNoAneuInNorm3, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(res5.3)
+
+#############################
+#### P VALUE HISTOGRAMS
+##without aneuploid chromosomes
+hist(res1$pvalue,col="turquoise", main="1 vs Anc, withoutout aneuploid c'somes", xlab="p values")
+hist(res1.B$pvalue,col="turquoise", main="1 vs Anc, withoutout aneuploid c'somes", xlab="p values")
+hist(res1.3$pvalue,col="turquoise", main="1 vs Anc, withoutout aneuploid c'somes", xlab="p values")
+
+hist(res2$pvalue,col="turquoise", main="2 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res2.B$pvalue,col="turquoise", main="2 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res2.3$pvalue,col="turquoise", main="2 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res3$pvalue,col="turquoise", main="3 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res3.B$pvalue,col="turquoise", main="3 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res3.3$pvalue,col="turquoise", main="3 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res4$pvalue,col="turquoise", main="4 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res4.B$pvalue,col="turquoise", main="4 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res4.3$pvalue,col="turquoise", main="4 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res5$pvalue,col="turquoise", main="5 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res5.B$pvalue,col="turquoise", main="5 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res5.3$pvalue,col="turquoise", main="5 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res6$pvalue,col="turquoise", main="6 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res6.B$pvalue,col="turquoise", main="6 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res6.3$pvalue,col="turquoise", main="6 vs Anc, without aneuploid c'somes", xlab="p values")
+
+
+hist(res7$pvalue,col="turquoise", main="7 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res7.3$pvalue,col="turquoise", main="7 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res8$pvalue,col="turquoise", main="8 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res8.B$pvalue,col="turquoise", main="8 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res8.3$pvalue,col="turquoise", main="8 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res9$pvalue,col="turquoise", main="9 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res9.B$pvalue,col="turquoise", main="9 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res9.3$pvalue,col="turquoise", main="9 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res11$pvalue,col="turquoise", main="11 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res11.B$pvalue,col="turquoise", main="11 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res11.3$pvalue,col="turquoise", main="11 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res18$pvalue,col="turquoise", main="18 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res18.B$pvalue,col="turquoise", main="18 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res18.3$pvalue,col="turquoise", main="18 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res21$pvalue,col="turquoise", main="21 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res31$pvalue,col="turquoise", main="31 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res31.3$pvalue,col="turquoise", main="31 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res49$pvalue,col="turquoise", main="49 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res49.B$pvalue,col="turquoise", main="49 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res49.3$pvalue,col="turquoise", main="49 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res59$pvalue,col="turquoise", main="59 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res59.B$pvalue,col="turquoise", main="59 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res59.3$pvalue,col="turquoise", main="59 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res61$pvalue,col="turquoise", main="61 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res61.B$pvalue,col="turquoise", main="61 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res61.3$pvalue,col="turquoise", main="61 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res66$pvalue,col="turquoise", main="66 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res69$pvalue,col="turquoise", main="69 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res69.3$pvalue,col="turquoise", main="69 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res76$pvalue,col="turquoise", main="76 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res76.B$pvalue,col="turquoise", main="76 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res76.3$pvalue,col="turquoise", main="76 vs Anc, without aneuploid c'somes", xlab="p values")
+
+hist(res77$pvalue,col="turquoise", main="77 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res77.B$pvalue,col="turquoise", main="77 vs Anc, without aneuploid c'somes", xlab="p values")
+hist(res77.3$pvalue,col="turquoise", main="77 vs Anc, without aneuploid c'somes", xlab="p values")
+
+```
+
+
+```{r fdrtool correction, no aneu, include=TRUE}
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res1 <- res1[!is.na(res1$pvalue),]
+res1 <- res1[!is.na(res1$padj),]
+#remove original adjusted p values
+res1 <- res1[,-which(names(res1)=="padj")]
+res1
+summary(is.na(res1))
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res1 <- fdrtool(res1$stat,statistic="normal",plot=T)
+FDR.res1$param[1,"sd"]
+#new estimated null model variance is 0.8267165, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+summary(res1)
+res1[,"padj"] <- p.adjust(FDR.res1$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res1$pval,col="deeppink1", main="1 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res1[,"padj"] < 0.1)
+sigGenes1 <- rownames(subset(res1,padj<0.1))
+#genesSig1 <- as.data.frame(subset(genes, GENEID %in% sigGenes1))
+summary(res1)
+
+###########line 2 
+#remove the genes filtered out by independent filtering and dispersion outliers
+res2 <- res2[!is.na(res2$pvalue),]
+res2 <- res2[!is.na(res2$padj),]
+#remove original adjusted p values
+res2 <- res2[,-which(names(res2)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res2 <- fdrtool(res2$stat,statistic="normal",plot=T)
+FDR.res2$param[1,"sd"]
+#new estimated null model variance is 0.8267165, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res2[,"padj"] <- p.adjust(FDR.res2$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res2$pval,col="deeppink1", main="2 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res2[,"padj"] < 0.1)
+sigGenes2 <- rownames(subset(res2,padj<0.1))
+summary(res2)
+#genesSig2 <- as.data.frame(subset(genes, GENEID %in% sigGenes2))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res21 <- res21[!is.na(res21$pvalue),]
+res21 <- res21[!is.na(res21$padj),]
+#remove original adjusted p values
+res21 <- res21[,-which(names(res21)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res21 <- fdrtool(res21$stat,statistic="normal",plot=T)
+FDR.res21$param[1,"sd"]
+#new estimated null model variance is 0.8267165, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res21[,"padj"] <- p.adjust(FDR.res21$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res21$pval,col="deeppink1", main="21 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+table(res21[,"padj"] < 0.1)
+summary(res21)
+sigGenes21 <- rownames(subset(res21,padj<0.1))
+sigGenes21
+genesSig21 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes21))
+
+##do the same for line 7 that actually has 3 replicates (21 might just need to be discarded)
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res7 <- res7[!is.na(res7$pvalue),]
+res7 <- res7[!is.na(res7$padj),]
+#remove original adjusted p values
+res7 <- res7[,-which(names(res7)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res7 <- fdrtool(res7$stat,statistic="normal",plot=T)
+#FDR.res7$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res7[,"padj"] <- p.adjust(FDR.res7$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res7$pval,col="deeppink1", main="7 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res7[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res7)
+summary(res7)
+sigGenes7 <- rownames(subset(res7,padj<0.1))
+genesSig7 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes7))
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res69 <- res69[!is.na(res69$pvalue),]
+res69 <- res69[!is.na(res69$padj),]
+#remove original adjusted p values
+res69 <- res69[,-which(names(res69)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res69 <- fdrtool(res69$stat,statistic="normal",plot=T)
+FDR.res69$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res69[,"padj"] <- p.adjust(FDR.res69$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res69$pval,col="deeppink1", main="69 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res69[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res69)
+summary(res69)
+sigGenes69 <- rownames(subset(res69,padj<0.1))
+genesSig69 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes69))
+summary(res69)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res3 <- res3[!is.na(res3$pvalue),]
+res3 <- res3[!is.na(res3$padj),]
+#remove original adjusted p values
+res3 <- res3[,-which(names(res3)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res3 <- fdrtool(res3$stat,statistic="normal",plot=T)
+FDR.res3$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+FDR.res3$qval
+res3[,"padj"] <- p.adjust(FDR.res3$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res3$pval,col="deeppink1", main="3 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res3[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res3)
+sigGenes3 <- rownames(subset(res3,padj<0.1))
+genesSig3 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes3))
+summary(res3)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res9 <- res9[!is.na(res9$pvalue),]
+res9 <- res9[!is.na(res9$padj),]
+#remove original adjusted p values
+res9 <- res9[,-which(names(res9)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res9 <- fdrtool(res9$stat,statistic="normal",plot=T)
+FDR.res9$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res9[,"padj"] <- p.adjust(FDR.res9$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res9$pval,col="deeppink1", main="9 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res9[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res9)
+sigGenes9 <- rownames(subset(res9,padj<0.1))
+genesSig9 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes9))
+summary(res9)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res4 <- res4[!is.na(res4$pvalue),]
+res4 <- res4[!is.na(res4$padj),]
+#remove original adjusted p values
+res4 <- res4[,-which(names(res4)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res4 <- fdrtool(res4$stat,statistic="normal",plot=T)
+FDR.res4$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res4[,"padj"] <- p.adjust(FDR.res4$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res4$pval,col="deeppink1", main="4 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res4[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res4)
+sigGenes4 <- rownames(subset(res4,padj<0.1))
+genesSig4 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes4))
+summary(res4)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res5 <- res5[!is.na(res5$pvalue),]
+res5 <- res5[!is.na(res5$padj),]
+#remove original adjusted p values
+res5 <- res5[,-which(names(res5)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res5 <- fdrtool(res5$stat,statistic="normal",plot=T)
+FDR.res5$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res5[,"padj"] <- p.adjust(FDR.res5$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res5$pval,col="deeppink1", main="5 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 50! 50 more than 0! 
+table(res5[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res5)
+sigGenes5 <- rownames(subset(res5,padj<0.1))
+genesSig5 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes5))
+summary(res5)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res6 <- res6[!is.na(res6$pvalue),]
+res6 <- res6[!is.na(res6$padj),]
+#remove original adjusted p values
+res6 <- res6[,-which(names(res6)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res6 <- fdrtool(res6$stat,statistic="normal",plot=T)
+FDR.res6$param[1,"sd"]
+#new estimated null model variance is 0.6807261, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res6[,"padj"] <- p.adjust(FDR.res6$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res6$pval,col="deeppink1", main="6 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 60! 60 more than 0! 
+table(res6[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res6)
+sigGenes6 <- rownames(subset(res6,padj<0.1))
+genesSig6 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes6))
+summary(res6)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res8 <- res8[!is.na(res8$pvalue),]
+res8 <- res8[!is.na(res8$padj),]
+#remove original adjusted p values
+res8 <- res8[,-which(names(res8)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res8 <- fdrtool(res8$stat,statistic="normal",plot=T)
+FDR.res8$param[1,"sd"]
+#new estimated null model variance is 0.8807281, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res8[,"padj"] <- p.adjust(FDR.res8$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res8$pval,col="deeppink1", main="8 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 80! 80 more than 0! 
+table(res8[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res8)
+sigGenes8 <- rownames(subset(res8,padj<0.1))
+genesSig8 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes8))
+summary(res8)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res11 <- res11[!is.na(res11$pvalue),]
+res11 <- res11[!is.na(res11$padj),]
+#remove original adjusted p values
+res11 <- res11[,-which(names(res11)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res11 <- fdrtool(res11$stat,statistic="normal",plot=T)
+FDR.res11$param[1,"sd"]
+#new estimated null model variance is 0.1111072111, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res11[,"padj"] <- p.adjust(FDR.res11$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res11$pval,col="deeppink1", main="11 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 110! 110 more than 0! 
+table(res11[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res11)
+sigGenes11 <- rownames(subset(res11,padj<0.1))
+genesSig11 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes11))
+summary(res11)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res18 <- res18[!is.na(res18$pvalue),]
+res18 <- res18[!is.na(res18$padj),]
+#remove original adjusted p values
+res18 <- res18[,-which(names(res18)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res18 <- fdrtool(res18$stat,statistic="normal",plot=T)
+FDR.res18$param[1,"sd"]
+#new estimated null model variance is 0.1818072181, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res18[,"padj"] <- p.adjust(FDR.res18$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res18$pval,col="deeppink1", main="18 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 180! 180 more than 0! 
+table(res18[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res18)
+sigGenes18 <- rownames(subset(res18,padj<0.1))
+genesSig18 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes18))
+summary(res18)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res31 <- res31[!is.na(res31$pvalue),]
+res31 <- res31[!is.na(res31$padj),]
+#remove original adjusted p values
+res31 <- res31[,-which(names(res31)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res31 <- fdrtool(res31$stat,statistic="normal",plot=T)
+FDR.res31$param[1,"sd"]
+#new estimated null model variance is 0.3131072311, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res31[,"padj"] <- p.adjust(FDR.res31$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res31$pval,col="deeppink1", main="31 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 310! 310 more than 0! 
+table(res31[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res31)
+sigGenes31 <- rownames(subset(res31,padj<0.1))
+genesSig31 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes31))
+summary(res31)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res49 <- res49[!is.na(res49$pvalue),]
+res49 <- res49[!is.na(res49$padj),]
+#remove original adjusted p values
+res49 <- res49[,-which(names(res49)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res49 <- fdrtool(res49$stat,statistic="normal",plot=T)
+FDR.res49$param[1,"sd"]
+#new estimated null model variance is 0.4949072491, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res49[,"padj"] <- p.adjust(FDR.res49$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res49$pval,col="deeppink1", main="49 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 490! 490 more than 0! 
+table(res49[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res49)
+sigGenes49 <- rownames(subset(res49,padj<0.1))
+genesSig49 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes49))
+summary(res49)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res61 <- res61[!is.na(res61$pvalue),]
+res61 <- res61[!is.na(res61$padj),]
+#remove original adjusted p values
+res61 <- res61[,-which(names(res61)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res61 <- fdrtool(res61$stat,statistic="normal",plot=T)
+FDR.res61$param[1,"sd"]
+#new estimated null model variance is 0.6161072611, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res61[,"padj"] <- p.adjust(FDR.res61$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res61$pval,col="deeppink1", main="61 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 610! 610 more than 0! 
+table(res61[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res61)
+sigGenes61 <- rownames(subset(res61,padj<0.1))
+genesSig61 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes61))
+summary(res61)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res59 <- res59[!is.na(res59$pvalue),]
+res59 <- res59[!is.na(res59$padj),]
+#remove original adjusted p values
+res59 <- res59[,-which(names(res59)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res59 <- fdrtool(res59$stat,statistic="normal",plot=T)
+FDR.res59$param[1,"sd"]
+#new estimated null model variance is 0.5959072591, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res59[,"padj"] <- p.adjust(FDR.res59$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res59$pval,col="deeppink1", main="59 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 590! 590 more than 0! 
+table(res59[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res59)
+sigGenes59 <- rownames(subset(res59,padj<0.1))
+genesSig59 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes59))
+summary(res59)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res66 <- res66[!is.na(res66$pvalue),]
+res66 <- res66[!is.na(res66$padj),]
+#remove original adjusted p values
+res66 <- res66[,-which(names(res66)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res66 <- fdrtool(res66$stat,statistic="normal",plot=T)
+FDR.res66$param[1,"sd"]
+#new estimated null model variance is 0.6666072661, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res66[,"padj"] <- p.adjust(FDR.res66$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res66$pval,col="deeppink1", main="66 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 660! 660 more than 0! 
+table(res66[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res66)
+sigGenes66 <- rownames(subset(res66,padj<0.1))
+genesSig66 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes66))
+summary(res66)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res69 <- res66[!is.na(res69$pvalue),]
+res69 <- res66[!is.na(res69$padj),]
+#remove original adjusted p values
+res69 <- res69[,-which(names(res69)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res69 <- fdrtool(res69$stat,statistic="normal",plot=T)
+FDR.res69$param[1,"sd"]
+#new estimated null model variance is 0.6969072691, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res69[,"padj"] <- p.adjust(FDR.res69$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res69$pval,col="deeppink1", main="69 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 690! 690 more than 0! 
+table(res69[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res69)
+sigGenes69 <- rownames(subset(res69,padj<0.1))
+genesSig69 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes69))
+summary(res69)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res76 <- res76[!is.na(res76$pvalue),]
+res76 <- res76[!is.na(res76$padj),]
+#remove original adjusted p values
+res76 <- res76[,-which(names(res76)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res76 <- fdrtool(res76$stat,statistic="normal",plot=T)
+FDR.res76$param[1,"sd"]
+#new estimated null model variance is 0.7676072761, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res76[,"padj"] <- p.adjust(FDR.res76$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res76$pval,col="deeppink1", main="76 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 760! 760 more than 0! 
+table(res76[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res76)
+sigGenes76 <- rownames(subset(res76,padj<0.1))
+genesSig76 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes76))
+summary(res76)
+
+#remove the genes filtered out by independent filtering and dispersion outliers 
+res77 <- res77[!is.na(res77$pvalue),]
+res77 <- res77[!is.na(res77$padj),]
+#remove original adjusted p values
+res77 <- res77[,-which(names(res77)=="padj")]
+#use the z-scores from DESeq2 as input to fdrtool to re-estimate p values
+FDR.res77 <- fdrtool(res77$stat,statistic="normal",plot=T)
+FDR.res77$param[1,"sd"]
+#new estimated null model variance is 0.7777072771, lower than 1 (theoretical one)
+#add the new BH-adjusted p-values to the results frame 
+res77[,"padj"] <- p.adjust(FDR.res77$pval, method="BH")
+#plot the histogram of the "Correct" pvalues 
+hist(FDR.res77$pval,col="deeppink1", main="77 vs Anc, correct null model", xlab="CORRECTED p values")
+#test how many of the genes are now differentially expressed with this new null model
+###now there are 770! 770 more than 0! 
+table(res77[,"padj"] < 0.1)
+#plot the MA plot
+plotMA(res77)
+sigGenes77 <- rownames(subset(res77,padj<0.1))
+genesSig77 <- as.data.frame(subset(genesNoAneu, GENEID %in% sigGenes77))
+summary(res77)
+
+```
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.

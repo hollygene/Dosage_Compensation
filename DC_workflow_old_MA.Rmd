@@ -32,7 +32,7 @@ library(dunn.test)
 library(rcompanion)
 ```
 
-``` {r load in data,make matrices}
+```{r load in data,make matrices}
 sc_counts.old <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Final_Chrom_wide_Analyses/Cuffnorm/genes.fpkm_table.joined.rmcom.split.commas.rmvmito.chgchr.rmhead.nwhd.shrt_old.csv",header=T)
 class(sc_counts.old)
 str(sc_counts.old)
@@ -75,7 +75,7 @@ ancAvg.MA.old <- cbind(sc_anc.old[,1:2],ancAvg.MA.old)
 
 ```
 
-``` {r automated functions}
+```{r automated functions}
 #first write some functions that help automate the process
 ##########
 #this gets the average FPKM for a given line from the sc_des matrix
@@ -180,7 +180,7 @@ logMatsd2.MA.old <-cbind(chrms,logMatsd.MA.old)
 
 ```
 
-``` {r graph:line log2 ratio per chr,echo=FALSE}
+```{r graph:line log2 ratio per chr,echo=FALSE}
 ######################################################################################
 #how to make a graph of the chromosomes and their respective error bars 
 #changes the margins to the standard margin width
@@ -583,7 +583,7 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
 ```
 
-``` {r ratio files, echo=FALSE}
+```{r ratio files, echo=FALSE}
 #get ratios
 setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
 
@@ -1086,7 +1086,7 @@ l119.16.red <- l119.16[which(l119.16[,3]>0.1),]
 
 ```
 
-``` {r new boxplots, include=TRUE}
+```{r new boxplots, include=TRUE}
 
 #New boxplot codes
 

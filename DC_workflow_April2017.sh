@@ -959,3 +959,7 @@ if ($2=="ref|NC_001147|") print $0,"\t","XV";
 if ($2=="ref|NC_001148|") print $0,"\t","XVI";
 
 }' Sample2_DNA_SNPs.txt > Sample2_DNA_SNPs_chrm.txt
+
+####################################
+#modified the gtf file to make it so that there was no MT in it
+awk '$1!="MT"{print$0}' genes.gtf > test.gtf

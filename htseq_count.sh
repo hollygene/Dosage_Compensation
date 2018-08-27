@@ -12,8 +12,7 @@ cd $basedir
 THREADS=4
 
 
-module load python/2.7.8
-module load htseq/0.6.1p1
+module load HTSeq/0.9.1-foss-2016b-Python-2.7.14
 #module load samtools/1.3.1
 
 #cd /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/trimmed/tophat_update

@@ -1,9 +1,9 @@
 #!/bin/bash
 #PBS -N htseq
-#PBS -q batch
+#PBS -q highmem_q
 #PBS -l nodes=1:ppn=4:HIGHMEM
-#PBS -l walltime=480:00:00
-#PBS -l mem=300gb
+#PBS -l walltime=48:00:00
+#PBS -l mem=100gb
 #PBS -M hmcqueary@uga.edu
 #PBS -m ae
 

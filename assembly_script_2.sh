@@ -18,7 +18,10 @@ THREADS=4
 #rename 'GC' A *.fq
 #mkdir fastqc
 #module load java/jdk1.8.0_20 fastqc
-#fastqc *.fastq -o fastqc
+module load FastQC/0.11.5-Java-1.8.0_144
+fastqc *.fq -o fastQC
+
+
 
 #module unload java/jdk1.8.0_20 fastqc
 

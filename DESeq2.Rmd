@@ -211,92 +211,6 @@ and the sample information table, which we will name `coldata`.
 Further below we describe how to extract these objects from,
 e.g. *featureCounts* output. 
 
-```{r loadDataFromRSubread}
-#source("https://bioconductor.org/biocLite.R")
-      #  biocLite("pasilla")
-#library("pasilla")
-#pasCts <- system.file("extdata",
-                   #   "pasilla_gene_counts.tsv",
-                    #  package="pasilla", mustWork=TRUE)
-#pasAnno <- system.file("extdata",
-                     #  "pasilla_sample_annotation.csv",
-                      # package="pasilla", mustWork=TRUE)
-#cts <- as.matrix(read.csv(pasCts,sep="\t",row.names="gene_id"))
-ctsGC <- as.matrix(count_data$counts)
-sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_rsubread.csv",header=TRUE)
-
-#coldata <- read.csv(pasAnno, row.names=1)
-#coldata <- coldata[,c("condition","type")]
-```
-
-We examine the count matrix and column data to see if they are
-consistent in terms of sample order.
-
-```{r showData}
-head(ctsGC,2)
-sampleInfo
-```
-
-Note that these are not in the same order with respect to samples! 
-
-It is absolutely critical that the columns of the count matrix and the
-rows of the column data (information about samples) are in the same
-order.  DESeq2 will not make guesses as to which column of the count
-matrix belongs to which row of the column data, these must be provided
-to DESeq2 already in consistent order.
-
-As they are not in the correct order as given, we need to re-arrange
-one or the other so that they are consistent in terms of sample order
-(if we do not, later functions would produce an error). We
-additionally need to chop off the `"fb"` of the row names of
-`coldata`, so the naming is consistent.
-
-```{r reorderData}
-colnames(ctsGC) <- sub("X.Users.hollymcqueary.Dropbox.McQueary.Dosage.Compensation.Indiv_Genes.Rsubread.bams.", "", colnames(ctsGC))
-
-colnames(ctsGC) <- sub(".bam", "", colnames(ctsGC))
-colnames(ctsGC)
-all(rownames(sampleInfo) %in% colnames(ctsGC))
-all(rownames(sampleInfo) == colnames(ctsGC))
-rownames(sampleInfo) <- sampleInfo$sample
-ctsGC <- ctsGC[, rownames(sampleInfo)]
-sampleInfo <- sampleInfo[colnames(ctsGC),]
-all(rownames(sampleInfo) == colnames(ctsGC))
-rownames(sampleInfo)
-
-```
-
-If you have used the *featureCounts* function [@Liao2013feature] in the 
-[Rsubread](http://bioconductor.org/packages/Rsubread) package, 
-the matrix of read counts can be directly 
-provided from the `"counts"` element in the list output.
-The count matrix and column data can typically be read into R 
-from flat files using base R functions such as *read.csv*
-or *read.delim*. For *htseq-count* files, see the dedicated input
-function below. 
-
-With the count matrix, `cts`, and the sample
-information, `coldata`, we can construct a *DESeqDataSet*:
-
-```{r matrixInput}
-#library("DESeq2")
-dds <- DESeqDataSetFromMatrix(countData = ctsGC,
-                              colData = sampleInfo,
-                              design = ~ group + seq_run)
-dds
-```
-
-If you have additional feature data, it can be added to the
-*DESeqDataSet* by adding to the metadata columns of a newly
-constructed object. (Here we add redundant data just for demonstration, as
-the gene names are already the rownames of the `dds`.)
-
-```{r addFeatureData}
-featureData <- data.frame(gene=rownames(cts))
-mcols(dds) <- DataFrame(mcols(dds), featureData)
-mcols(dds)
-```
-
 <a name="htseq"/>
 
 ### *htseq-count* input
@@ -313,11 +227,6 @@ output files are located.
 ```{r htseqDirI, eval=FALSE}
 directory <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
 
-#with only behaving lines 
-#directoryB <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/behaving"
-
-#3 reps only 
-#directory3 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/3_reps"
 ```
 
 We specify which files to read in using *list.files*,
@@ -334,21 +243,6 @@ sampleTable <- data.frame(sampleName = sampleInfo$sample,
                           fileName = sampleInfo$filename,
                           run = sampleInfo$seq_run,
                           condition = sampleInfo$group)
-
-#sampleFilesB <- list.files(directoryB)
-#sampleInfoB <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_behaving.csv",header=TRUE)
-#sampleTableB <- data.frame(sampleName = sampleInfoB$sample,
-     #                     fileName = sampleInfoB$filename,
-      #                    run = sampleInfoB$seq_run,
-       #                   condition = sampleInfoB$group)
-#with 3 reps only (no 21 and 66)
-
-#sampleFiles3 <- list.files(directory3)
-#sampleInfo3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_3reps.csv",header=TRUE)
-#sampleTable3 <- data.frame(sampleName = sampleInfo3$sample,
- #                         fileName = sampleInfo3$filename,
-  #                        run = sampleInfo3$seq_run,
-   #                       condition = sampleInfo3$group)
 
 
 ```
@@ -370,20 +264,6 @@ ddsHTSeq
 
 write.csv(counts(ddsHTSeq),file="counts.DEseq.csv")
 
-#ddsHTSeqB <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableB,
-#                                       directory = directoryB,
- #                                      design= ~ run + condition)
-#ddsHTSeqB
-
-#write.csv(counts(ddsHTSeq),file="counts.DEseq.csv")
-
-#ddsHTSeq3 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable3,
- #                                      directory = directory3,
-  #                                     design= ~ run + condition)
-#ddsHTSeq3
-
-#write.csv(counts(dds),file="counts.HTSeq.csv")
-
 ```
 ### Note on factor levels 
 
@@ -401,10 +281,6 @@ during or afterward.
 ```{r relevel}
 ddsHTSeq$condition <- relevel(ddsHTSeq$condition, ref = "Holly_Anc")
 
-#ddsHTSeqB$condition <- relevel(ddsHTSeqB$condition, ref = "Holly_Anc")
-
-#ddsHTSeq3$condition <- relevel(ddsHTSeq3$condition, ref = "Holly_Anc")
-#dds$group <- relevel(dds$group, ref="Anc")
 ``` 
 
 
@@ -425,18 +301,6 @@ keep <- rowSums(counts(ddsHTSeq)) >= 20
 ddsHTSeq <- ddsHTSeq[keep,]
 ddsHTSeq
 
-#keepB <- rowSums(counts(ddsHTSeqB)) >= 20
-#ddsHTSeqB <- ddsHTSeqB[keep,]
-#ddsHTSeqB
-
-#keep3 <- rowSums(counts(ddsHTSeq3)) >= 20
-#ddsHTSeq3 <- ddsHTSeq3[keep,]
-#ddsHTSeq3
-
-#colnames(ddsHTSeq3)
-#rsubread
-#keep <- rowSums(counts(dds)) >= 10
-#dds <- dds[keep,]
 ```
 
 <a name="factorlevels"/>
@@ -511,282 +375,6 @@ hist(resSV7$pvalue,col="green", main="7 vs Anc, with aneuploid c'somes", xlab="p
 
 ```
 
-
-```{r results and stuff, include=TRUE}
-#################
-#subset data set to do one comparison at a time 
-colnames(ddsHTSeq)
-ddsS1 <- ddsHTSeq[,c(7:9,49:51)]
-ddsS1$condition <- droplevels(ddsS1$condition)
-ddsS1$run <- droplevels(ddsS1$run)
-colnames(ddsS1)
-ddsS1 <- DESeq(ddsS1)
-rowData(ddsS1)$dispersion
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS1),"dispPriorVar")
-#annotations
-geneID <- rownames(ddsS1)
-library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
-txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
-genes <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
-#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
-genes <- na.omit(genes)
-genes <- as.data.frame(genes)
-remove1 <- "chrM"
-genes <- genes[-(grep(paste0(remove1,"$"),genes$TXCHROM,perl=TRUE)),]
-all(rownames(ddsS1) == genes$GENEID)
-#need to remove the ones in rownames of dds that don't match genes$GENEID
-matchedS1 <- intersect(rownames(ddsS1), genes$GENEID)
-keep3 <- rownames(ddsS1) %in% matchedS1
-ddsS1 <- ddsS1[keep3,]
-length(ddsS1)
-all(rownames(ddsS1) == genes$GENEID)
-mcols(ddsS1) <- cbind(mcols(ddsS1), genes)
-
-#mcols(ddsDef)
-#######################################################################################
-#sample 2 
-colnames(ddsHTSeq)
-ddsS2 <- ddsHTSeq[,c(10:12,49:51)]
-ddsS2$condition <- droplevels(ddsS2$condition)
-ddsS2$run <- droplevels(ddsS2$run)
-colnames(ddsS2)
-ddsS2 <- DESeq(ddsS2)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS2),"dispPriorVar")
-
-#######################################################################################
-#sample 3 
-colnames(ddsHTSeq)
-ddsS3 <- ddsHTSeq[,c(13:15,49:51)]
-ddsS3$condition <- droplevels(ddsS3$condition)
-ddsS3$run <- droplevels(ddsS3$run)
-colnames(ddsS3)
-ddsS3 <- DESeq(ddsS3)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS3),"dispPriorVar")
-
-#######################################################################################
-#sample 4 
-colnames(ddsHTSeq)
-ddsS4 <- ddsHTSeq[,c(19:21,49:51)]
-ddsS4$condition <- droplevels(ddsS4$condition)
-ddsS4$run <- droplevels(ddsS4$run)
-colnames(ddsS4)
-ddsS4 <- DESeq(ddsS4)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS4),"dispPriorVar")
-
-#######################################################################################
-#sample 5 
-colnames(ddsHTSeq)
-ddsS5 <- ddsHTSeq[,c(25:27,49:51)]
-ddsS5$condition <- droplevels(ddsS5$condition)
-ddsS5$run <- droplevels(ddsS5$run)
-colnames(ddsS5)
-ddsS5 <- estimateSizeFactors(ddsS5)
-ddsS5 <- estimateDispersions(ddsS5)
-ddsS5 <- DESeq(ddsS5)
-
-##### dds not working: error below 
-### Error in checkFullRank(modelMatrix) : 
-#the model matrix is not full rank, so the model cannot be fit as specified.
- # One or more variables or interaction terms in the design formula are linear
-#  combinations of the others and must be removed.
-
- # Please read the vignette section 'Model matrix not full rank':
-
-#  vignette('DESeq2')
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS5),"dispPriorVar")
-
-#######################################################################################
-#sample 7 
-colnames(ddsHTSeq)
-ddsS7 <- ddsHTSeq[,c(40:42,49:51)]
-ddsS7$condition <- droplevels(ddsS7$condition)
-ddsS7$run <- droplevels(ddsS7$run)
-colnames(ddsS7)
-ddsS7 <- DESeq(ddsS7)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS7),"dispPriorVar")
-
-#######################################################################################
-#sample 8 
-colnames(ddsHTSeq)
-ddsS8 <- ddsHTSeq[,c(43:45,49:51)]
-ddsS8$condition <- droplevels(ddsS8$condition)
-colnames(ddsS8)
-ddsS8 <- DESeq(ddsS8)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS8),"dispPriorVar")
-
-#######################################################################################
-#sample 9 
-colnames(ddsHTSeq)
-ddsS9 <- ddsHTSeq[,c(46:48,49:51)]
-ddsS9$condition <- droplevels(ddsS9$condition)
-ddsS9$run <- droplevels(ddsS9$run)
-colnames(ddsS9)
-ddsS9 <- DESeq(ddsS9)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS9),"dispPriorVar")
-
-#######################################################################################
-#sample 18 
-colnames(ddsHTSeq)
-ddsS18 <- ddsHTSeq[,c(4:6,49:51)]
-ddsS18$condition <- droplevels(ddsS18$condition)
-ddsS18$run <- droplevels(ddsS18$run)
-colnames(ddsS18)
-ddsS18 <- DESeq(ddsS18)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS18),"dispPriorVar")
-
-#######################################################################################
-#sample 11 
-colnames(ddsHTSeq)
-ddsS11 <- ddsHTSeq[,c(1:3,49:51)]
-ddsS11$condition <- droplevels(ddsS11$condition)
-ddsS11$run <- droplevels(ddsS11$run)
-colnames(ddsS11)
-ddsS11 <- DESeq(ddsS11)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS11),"dispPriorVar")
-
-#######################################################################################
-#sample 49 
-colnames(ddsHTSeq)
-ddsS49 <- ddsHTSeq[,c(16:18,49:51)]
-ddsS49$condition <- droplevels(ddsS49$condition)
-ddsS49$run <- droplevels(ddsS49$run)
-colnames(ddsS49)
-ddsS49 <- DESeq(ddsS49)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS49),"dispPriorVar")
-
-#######################################################################################
-#sample 59 
-colnames(ddsHTSeq)
-ddsS59 <- ddsHTSeq[,c(22:24,49:51)]
-ddsS59$condition <- droplevels(ddsS59$condition)
-ddsS59$run <- droplevels(ddsS59$run)
-colnames(ddsS59)
-ddsS59 <- DESeq(ddsS59)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS59),"dispPriorVar")
-
-#######################################################################################
-#sample 61 
-colnames(ddsHTSeq)
-ddsS61 <- ddsHTSeq[,c(28:30,49:51)]
-ddsS61$condition <- droplevels(ddsS61$condition)
-ddsS61$run <- droplevels(ddsS61$run)
-colnames(ddsS61)
-ddsS61 <- DESeq(ddsS61)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS61),"dispPriorVar")
-
-#######################################################################################
-#sample 69 
-colnames(ddsHTSeq)
-ddsS69 <- ddsHTSeq[,c(31:33,49:51)]
-ddsS69$condition <- droplevels(ddsS69$condition)
-ddsS69$run <- droplevels(ddsS69$run)
-colnames(ddsS69)
-ddsS69 <- DESeq(ddsS69)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS69),"dispPriorVar")
-
-#######################################################################################
-#sample 76 
-colnames(ddsHTSeq)
-ddsS76 <- ddsHTSeq[,c(34:36,49:51)]
-ddsS76$condition <- droplevels(ddsS76$condition)
-ddsS76$run <- droplevels(ddsS76$run)
-colnames(ddsS76)
-ddsS76 <- DESeq(ddsS76)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS76),"dispPriorVar")
-
-#######################################################################################
-#sample 77 
-colnames(ddsHTSeq)
-ddsS77 <- ddsHTSeq[,c(37:39,49:51)]
-ddsS77$condition <- droplevels(ddsS77$condition)
-ddsS77$run <- droplevels(ddsS77$run)
-colnames(ddsS77)
-ddsS77 <- DESeq(ddsS77)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS77),"dispPriorVar")
-
-########################################################################################
-############# Results with subsetted dataset ###########################################
-resS1 <- results(ddsS1, contrast=c("condition","Holly_1","Holly_Anc"))
-summary(resS1)
-hist(resS1$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
-sigGenes1 <- rownames(subset(resS1,padj<0.1))
-#line 2 
-resS2 <- results(ddsS2, contrast=c("condition","Holly_2","Holly_Anc"))
-summary(resS2)
-hist(resS2$pvalue,col="pink", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
-sigGenes2 <- rownames(subset(resS2,padj<0.1))
-#line 3 
-resS3 <- results(ddsS3, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(resS3)
-sigGenes3 <- rownames(subset(resS3,padj<0.1))
-hist(resS3$pvalue,col="pink", main="3 vs Anc, with aneuploid c'somes", xlab="p values")
-
-#line 4 
-resS4 <- results(ddsS4, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(resS4)
-hist(resS4$pvalue,col="pink", main="4 vs Anc, with aneuploid c'somes", xlab="p values")
-sigGenes4 <- rownames(subset(resS4,padj<0.1))
-#line 5 
-resS5 <- results(ddsS5, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(resS5)
-
-#line 7 
-res7Def <- results(ddsS7, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
-summary(res7Def)
-#line 8 
-res8Def <- results(ddsS8, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res8Def)
-#line 9 
-res9Def <- results(ddsS9, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res9Def)
-#line 11
-res11Def <- results(ddsS11, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res11Def)
-#line 18 
-res18Def <- results(ddsS18, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res18Def)
-
-#line 49 
-res49Def <- results(ddsS49, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res49Def)
-#line 59
-res59Def <- results(ddsS59, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res59Def)
-#line 61
-res61Def <- results(ddsS61, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res61Def)
-#line 69
-#res69Def <- results(ddsS69, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
-#summary(res69Def)
-#line 76 
-res76Def <- results(ddsS76, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res76Def)
-#line 77
-res77Def <- results(ddsS77, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res77Def)
-
-#loop to put significant genes in array
-
-
-```
-
-
 ```{r full dataset, include=TRUE}
 #####################################################
 #default 
@@ -812,66 +400,10 @@ attr(dispersionFunction(ddsDef),"dispPriorVar")
 norm.factors.with.aneu <- as.data.frame(sizeFactors(ddsDef))
 dispersions.with.aneu <- dispersions(ddsDef)
 
-#####################################
-#behaving lines only
-#ddsDefB <- DESeq(ddsHTSeqB)
-#attr(dispersionFunction(ddsDefB),"dispPriorVar")
-#results 
-#res1DefB <- results(ddsDefB, contrast=c("condition","Holly_1","Holly_Anc"))
-#summary(res1DefB)
-#hist(res1DefB$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
-#res2DefB <- results(ddsDefB, contrast=c("condition","Holly_2","Holly_Anc"))
-#summary(res2DefB)
-#hist(res2DefB$pvalue,col="pink", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
-
-#############
-#3 rep lines only
-#ddsDef3 <- DESeq(ddsHTSeq3)
-#attr(dispersionFunction(ddsDef3),"dispPriorVar")
-###############
-#results 
-#res1Def3 <- results(ddsDef3, contrast=c("condition","Holly_1","Holly_Anc"))
-#summary(res1Def3)
-#hist(res1Def3$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
-
-#res2Def3 <- results(ddsDef3, contrast=c("condition","Holly_2","Holly_Anc"))
-#summary(res2Def3)
-#hist(res2Def3$pvalue,col="pink", main="2 vs Anc, with aneuploid c'somes", xlab="p values")
-
-#res7Def3 <- results(ddsDef3, contrast=c("condition","Holly_7","Holly_Anc"))
-#summary(res7Def3)
-#hist(res7Def3$pvalue,col="pink", main="7 vs Anc, with aneuploid c'somes", xlab="p values")
-
-##################
-#attr(dispersionFunction(ddsDef), "dispPriorVar")
-#attr(dispersionFunction(ddsNoAneuInNorm), "dispPriorVar")
-#geneID <- rownames(ddsDef)
-#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
-#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
-# genes <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
-# #remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
-# genes <- na.omit(genes)
-# genes <- as.data.frame(genes)
-# remove1 <- "chrM"
-# genes <- genes[-(grep(paste0(remove1,"$"),genes$TXCHROM,perl=TRUE)),]
-# #add annotation to DESeq2 data set
-# all(rownames(ddsDef) == genes$GENEID)
-# #need to remove the ones in rownames of dds that don't match genes$GENEID
-# matchedDef <- intersect(rownames(ddsDef), genes$GENEID)
-# keep3 <- rownames(ddsDef) %in% matchedDef
-# ddsDef <- ddsDef[keep3,]
-# length(ddsDef)
-# all(rownames(ddsDef) == genes$GENEID)
-# mcols(ddsDef)
-# #then check again
-# all(rownames(ddsDef) == genes$GENEID)
-# nrow(ddsDef)
-# nrow(genes)
-# mcols(ddsDef) <- cbind(mcols(ddsDef), genes)
-# mcols(ddsDef)
-##########################################################################################
 #aneuploid chromosomes removed
-ddsNoAneuInNorm <- estimateSizeFactors(ddsHTSeq, controlGenes=c(132:570,571:737,738:1542,1844:1975,3452:3790,4323:4812))
+allGenes <- as.data.frame(mcols(ddsHTSeq))
+View(allGenes)
+ddsNoAneuInNorm <- estimateSizeFactors(ddsHTSeq, controlGenes=c(106:537,538:701,702:1498,1796:1924,3382:3717,4239:4723))
 geneID <- rownames(ddsNoAneuInNorm)
 #library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
@@ -885,22 +417,23 @@ ddsNoAneuInNorm <- estimateDispersions(ddsNoAneuInNorm)
 attr(dispersionFunction(ddsNoAneuInNorm),"dispPriorVar")
 ddsNoAneuInNorm <- nbinomWaldTest(ddsNoAneuInNorm,useT=TRUE,df=(nrow(ddsNoAneuInNorm)))
 norm.factors.no.aneu <- as.data.frame(sizeFactors(ddsNoAneuInNorm))
+design(ddsNoAneuInNorm)
 dispersions.no.aneu <- dispersions(ddsNoAneuInNorm)
 #add annotation to DESeq2 data set
 all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
 #need to remove the ones in rownames of dds that don't match genes$GENEID
-matchedNoAneu <- intersect(rownames(ddsNoAneuInNorm), genesNoAneu$GENEID)
-keep3 <- rownames(ddsNoAneuInNorm) %in% matchedNoAneu
-ddsNoAneuInNorm <- ddsNoAneuInNorm[keep3,]
-length(ddsNoAneuInNorm)
-all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
-mcols(ddsNoAneuInNorm)
+#matchedNoAneu <- intersect(rownames(ddsNoAneuInNorm), genesNoAneu$GENEID)
+#keep3 <- rownames(ddsNoAneuInNorm) %in% matchedNoAneu
+#ddsNoAneuInNorm <- ddsNoAneuInNorm[keep3,]
+#length(ddsNoAneuInNorm)
+#all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+#mcols(ddsNoAneuInNorm)
 #then check again
 all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
-nrow(ddsNoAneuInNorm)
-nrow(genesNoAneu)
-mcols(ddsNoAneuInNorm) <- cbind(mcols(ddsNoAneuInNorm), genesNoAneu)
-mcols(ddsNoAneuInNorm)
+#nrow(ddsNoAneuInNorm)
+#nrow(genesNoAneu)
+#mcols(ddsNoAneuInNorm) <- cbind(mcols(ddsNoAneuInNorm), genesNoAneu)
+#mcols(ddsNoAneuInNorm)
 #write.csv(counts(dds), file="counts.Rsubread.csv")
 #mcols(dds)
 write.csv(genes,file="gene_anno.csv")
@@ -913,81 +446,6 @@ to build a results table for, using either of the following equivalent
 commands:
 
 ```{r results, eval=TRUE}
-###############
-# res <- results(ddsDef)
-# res
-# resultsNames(ddsDef)
-#euploid line
-# #line 1 
-# rm(res1Def)
-# res1Def <- results(ddsDef, contrast=c("condition","Holly_1","Holly_Anc"))
-# summary(res1Def)
-# sigGenes1 <- rownames(subset(res1Def,padj<0.1))
-# View(sigGenes1)
-# #line 2 
-# res2Def <- results(ddsDef, contrast=c("condition","Holly_2","Holly_Anc"))
-# summary(res2Def)
-# sigGenes2 <- rownames(subset(res2Def,padj<0.1))
-# #line 3 
-# res3Def <- results(ddsDef, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res3Def)
-# sigGenes3 <- rownames(subset(res3Def,padj<0.1))
-# #line 4 
-# res4Def <- results(ddsDef, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res4Def)
-# sigGenes4 <- rownames(subset(res4Def,padj<0.1))
-# #line 5 
-# res5Def <- results(ddsDef, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res5Def)
-# sigGenes5 <- rownames(subset(res5Def,padj<0.1))
-# 
-# #line 7 
-# res7Def <- results(ddsDef, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
-# summary(res7Def)
-# sigGenes7 <- rownames(subset(res7Def,padj<0.1))
-# #line 8 
-# res8Def <- results(ddsDef, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res8Def)
-# sigGenes8 <- rownames(subset(res8Def,padj<0.1))
-# #line 9 
-# res9Def <- results(ddsDef, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res9Def)
-# sigGenes9 <- rownames(subset(res9Def,padj<0.1))
-# #line 11
-# res11Def <- results(ddsDef, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res11Def)
-# sigGenes11 <- rownames(subset(res11Def,padj<0.1))
-# #line 18 
-# res18Def <- results(ddsDef, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res18Def)
-# sigGenes18 <- rownames(subset(res18Def,padj<0.1))
-# 
-# #line 49 
-# res49Def <- results(ddsDef, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res49Def)
-# sigGenes49 <- rownames(subset(res49Def,padj<0.1))
-# #line 59
-# res59Def <- results(ddsDef, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res59Def)
-# sigGenes59 <- rownames(subset(res59Def,padj<0.1))
-# #line 61
-# res61Def <- results(ddsDef, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res61Def)
-# sigGenes61 <- rownames(subset(res61Def,padj<0.1))
-# 
-# #line 69
-# res69Def <- results(ddsDef, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res69Def)
-# sigGenes69 <- rownames(subset(res69Def,padj<0.1))
-# #line 76 
-# res76Def <- results(ddsDef, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res76Def)
-# sigGenes76 <- rownames(subset(res76Def,padj<0.1))
-# #line 77
-# res77Def <- results(ddsDef, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
-# summary(res77Def)
-# sigGenes77 <- rownames(subset(res77Def,padj<0.1))
-
 ###########################################
 #without aneuploid chromosomes
 res <- results(ddsNoAneuInNorm)
@@ -1026,9 +484,6 @@ sigGenes59 <- rownames(subset(res59,padj<0.1))
 res61 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
 summary(res61)
 sigGenes61 <- rownames(subset(res61,padj<0.1))
-res7 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res7)
-sigGenes7 <- rownames(subset(res7,padj<0.1))
 res8 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
 summary(res8)
 sigGenes8 <- rownames(subset(res8,padj<0.1))
@@ -1043,151 +498,342 @@ sigGenes76 <- rownames(subset(res76,padj<0.1))
 res77 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
 summary(res77)
 sigGenes77 <- rownames(subset(res77,padj<0.1))
+
+
+
+
 res5 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
 summary(res5)
 sigGenes5 <- rownames(subset(res5,padj<0.1))
 
 
 
-```
 
-```{r common sig genes, Euploids, include=TRUE}
-#Euploid lines 
-eupLines <- c(1,2,3,5,9)
-library(data.table)
-
-res1Dat <- as.data.frame(res1)
-setDT(res1Dat, keep.rownames = TRUE)[]
-setnames(res1Dat, 1, "GENEID")
-genes1DE <- subset(res1Dat,padj<0.1)
-
-res2Dat <- as.data.frame(res2)
-setDT(res2Dat, keep.rownames = TRUE)[]
-setnames(res2Dat, 1, "GENEID")
-genes2DE <- subset(res2Dat,padj<0.1)
-
-res3Dat <- as.data.frame(res3)
-setDT(res3Dat, keep.rownames = TRUE)[]
-setnames(res3Dat, 1, "GENEID")
-genes3DE <- subset(res3Dat,padj<0.1)
-
-res5Dat <- as.data.frame(res5)
-setDT(res5Dat, keep.rownames = TRUE)[]
-setnames(res5Dat, 1, "GENEID")
-genes5DE <- subset(res5Dat,padj<0.1)
-
-res9Dat <- as.data.frame(res9)
-setDT(res9Dat, keep.rownames = TRUE)[]
-setnames(res9Dat, 1, "GENEID")
-genes9DE <- subset(res9Dat,padj<0.1)
-
-#find common DE genes between samples
-#are there any commonly DE genes in all of the euploid lines?
-test <- dplyr::inner_join(genes1DE,genes2DE, by="GENEID")
-common12.3 <- inner_join(test,genes3DE, by="GENEID")
-common123.5 <- inner_join(common12.3, genes5DE, by="GENEID")
-common1235.9 <- inner_join(common123.5, genes9DE, by="GENEID")
-
-#there are 326 commonly DE genes across 5 euploid lines 
 
 ```
 
+```{r common sig genes, include=TRUE}
+## Big Problem: How many genes are differentially expressed in ALL samples?
+# need to get results from DESeq into a more easily workable format (ie data frame)
+  # make results from DESeq a data frame to work with
+  res1Dat <- as.data.frame(res1)
+  res2Dat <- as.data.frame(res2)
+  res3Dat <- as.data.frame(res3)
+  res5Dat <- as.data.frame(res5)
+  res9Dat <- as.data.frame(res9)
+  res4Dat <- as.data.frame(res4)
+  res7Dat <- as.data.frame(res7)
+  res8Dat <- as.data.frame(res8)
+  res11Dat <- as.data.frame(res11)
+  res18Dat <- as.data.frame(res18)
+  res49Dat <- as.data.frame(res49)
+  res59Dat <- as.data.frame(res59)
+  res61Dat <- as.data.frame(res61)
+  res76Dat <- as.data.frame(res76)
+  res77Dat <- as.data.frame(res77)
 
+    # need to make a column identifying the sample 
+    res1Dat$Sample <- "1"
+    res2Dat$Sample <- "2"
+    res3Dat$Sample <- "3"
+    res4Dat$Sample <- "4"
+    res5Dat$Sample <- "5"
+    res7Dat$Sample <- "7"
+    res8Dat$Sample <- "8"
+    res9Dat$Sample <- "9"
+    res11Dat$Sample <- "11"
+    res18Dat$Sample <- "18"
+    res49Dat$Sample <- "49"
+    res59Dat$Sample <- "59"
+    res61Dat$Sample <- "61"
+    res76Dat$Sample <- "76"
+    res77Dat$Sample <- "77"
+
+      # put all sample expression data in the same data frame 
+      allSamplesExpr <- rbind(res1Dat, res2Dat, res3Dat, res4Dat, res5Dat, res7Dat, res8Dat, res9Dat, res11Dat, res18Dat, res49Dat, res59Dat, res61Dat, res76Dat, res77Dat)
+
+# want to find how many genes are differentially expressed in 2 samples, 3 samples, 4 samples, etc
+#
+  # first need to filter allSamplesExpr based on p-adj level 
+    allSamplesDiffExpr <- subset(allSamplesExpr, padj<0.1)
+    write.csv(allSamplesDiffExpr,file="allDiffExpr.csv")
+    # then ask how many times each GENEID is found in allSamplesExpr 
+    library(plyr)
+    geneFreq <- plyr::count(allSamplesDiffExpr, c("GENEID"))
+      # want to know how many genes are DE in 1, 2, 3, 4 , etc samples 
+      numGenesDE <- plyr::count(geneFreq,"freq")
+        # rename columns so that I know what is going on: column 1 is how many samples a gene is DE in, column 2 is how many           genes are in that category 
+        colnames(numGenesDE) <- c("numSamples", "numGenes")
+          # export as .csv to use in excel or whatever
+          write.csv(numGenesDE, file="numb_comm_DE_genesALL.csv")
+##############################################################################################          
+# want to know how many genes are differentially expressed commonly in 1,2,3 etc EUPLOID lines
+#
+  # put all EUPLOID samples in same data frame
+    eupSamplesExpr <- rbind(res1Dat, res2Dat, res3Dat, res5Dat, res9Dat)
+      # first need to filter allSamplesExpr based on p-adj level 
+      eupSamplesDiffExpr <- subset(eupSamplesExpr, padj<0.1)
+      #
+        # then ask how many times each GENEID  is found in eupSamplesExpr 
+        library(plyr)
+        geneFreqEu <- plyr::count(eupSamplesDiffExpr, c("GENEID"))
+        #
+          # want to know how many genes are DE in 1, 2, 3, 4 , etc samples 
+          numEupGenesDE <- plyr::count(geneFreqEu,"freq")
+          #
+            # rename columns so that I know what is going on: column 1 is how many samples a gene is DE               in, column 2 is how many genes are in that category 
+            colnames(numEupGenesDE) <- c("numSamples", "numGenes")
+            #
+              # export as .csv to use in excel or whatever
+              write.csv(numEupGenesDE, file="numb_comm_DE_genesEUP.csv")
+##############################################################################################          
+# want to know how many genes are differentially expressed commonly in 1,2,3 etc ANEUPLOID lines
+#
+  # put all ANEUPLOID samples in same data frame
+    aneuSamplesExpr <- rbind(res4Dat, res7Dat, res8Dat,  res11Dat, res18Dat, res49Dat, res59Dat, res61Dat, res76Dat, res77Dat)
+      # first need to filter allSamplesExpr based on p-adj level 
+      aneuSamplesDiffExpr <- subset(aneuSamplesExpr, padj<0.1)
+      #
+        # then ask how many times each GENEID  is found in eupSamplesExpr 
+        library(plyr)
+        geneFreqAneu <- plyr::count(aneuSamplesDiffExpr, c("GENEID"))
+        #
+          # want to know how many genes are DE in 1, 2, 3, 4 , etc samples 
+          numAneuGenesDE <- plyr::count(geneFreqAneu,"freq")
+          #
+            # rename columns so that I know what is going on: column 1 is how many samples a gene is DE               in, column 2 is how many genes are in that category 
+            colnames(numAneuGenesDE) <- c("numSamples", "numGenes")
+            #
+              # export as .csv to use in excel or whatever
+              write.csv(numAneuGenesDE, file="numb_comm_DE_genesANEU.csv")     
+              
+##############################################################################################          
+# want to know how many genes are differentially expressed commonly in 1,2,3 etc ANEUPLOID lines
+# with the SAME ANEUPLOID CHROMOSOME
+  # put all samples in same data frame
+    aneuChrISamplesExpr <- rbind(res7Dat,  res11Dat, res18Dat)
+      aneuChrItriExpr <- rbind(res7Dat, res18Dat)
+      aneuChrVtriExpr <- rbind(res4Dat, res49Dat)
+      aneuChrVIItriExpr <- rbind(res59Dat, res61Dat)
+      aneuChrXIItriExpr <- rbind(res18Dat, res77Dat)
+      # first need to filter allSamplesExpr based on p-adj level 
+      aneuChrISamplesDiffExpr <- subset(aneuChrISamplesExpr, padj<0.1)
+        triChrISamplesDiffExpr <- subset(aneuChrItriExpr, padj<0.1)
+        triChrVSamplesDiffExpr <- subset(aneuChrVtriExpr, padj<0.1)
+        triChrVIISamplesDiffExpr <- subset(aneuChrVIItriExpr, padj<0.1)
+        triChrXIISamplesDiffExpr <- subset(aneuChrXIItriExpr, padj<0.1)
+      #
+        # then ask how many times each GENEID  is found in eupSamplesExpr 
+        library(plyr)
+        geneFreqAneuChrI <- plyr::count(aneuChrISamplesDiffExpr, c("GENEID"))
+          geneFreqtriChrI <- plyr::count(triChrISamplesDiffExpr, c("GENEID"))
+          geneFreqtriChrV <- plyr::count(triChrVSamplesDiffExpr, c("GENEID"))
+          geneFreqtriChrVII <- plyr::count(triChrVIISamplesDiffExpr, c("GENEID"))
+          geneFreqtriChrXII <- plyr::count(triChrXIISamplesDiffExpr, c("GENEID"))
+        #
+          # want to know how many genes are DE in 1, 2, 3, 4 , etc samples 
+          numAneuChrIGenesDE <- plyr::count(geneFreqAneuChrI,"freq")
+            numtriChrIGenesDE <- plyr::count(geneFreqtriChrI,"freq")
+            numtriChrVGenesDE <- plyr::count(geneFreqtriChrV,"freq")
+            numtriChrVIIGenesDE <- plyr::count(geneFreqtriChrVII,"freq")
+            numtriChrXIIGenesDE <- plyr::count(geneFreqtriChrXII,"freq")
+          #
+            # rename columns so that I know what is going on: column 1 is how many samples a gene is DE               in, column 2 is how many genes are in that category 
+            colnames(numAneuChrIGenesDE) <- c("numSamples", "numGenes")
+              colnames(numtriChrIGenesDE) <- c("numSamples", "numGenes")
+              colnames(numtriChrVGenesDE) <- c("numSamples", "numGenes")
+              colnames(numtriChrVIIGenesDE) <- c("numSamples", "numGenes")
+              colnames(numtriChrXIIGenesDE) <- c("numSamples", "numGenes")
+            #
+              # export as .csv to use in excel or whatever
+              write.csv(numAneuChrIGenesDE, file="numb_comm_DE_genesANEUchrI.csv")  
+                write.csv(numtriChrIGenesDE, file="numb_comm_DE_genesTRIchrI.csv") 
+                write.csv(numtriChrVGenesDE, file="numb_comm_DE_genesTRIchrV.csv")
+                write.csv(numtriChrVIIGenesDE, file="numb_comm_DE_genesTRIchrVII.csv")
+                write.csv(numtriChrXIIGenesDE, file="numb_comm_DE_genesTRIchrXII.csv")
+
+# want to know how many genes are NOT DE on the aneuploid chromosome in aneuploid samples
+  # first need to subset the data frame of gene expression for each aneuploid sample to include those genes that have a p-value above 0.1 
+  #
+    # then subset the data frame of genes with a p-value above 0.1 to only include genes that are located on the aneuploid chromosome 
+    #
+      # then compare how many of these genes are shared between samples aneuploid for the same chromosome       #
+        # want to know WHAT genes are not DE - GO analysis?           
+        
+# put this information into a venn diagram 
+  # 
+  # subset the allSamplesDiffExpr data frame into vectors by sample with gene names 
+        genes1DE <- subset(allSamplesDiffExpr, Sample=="1")
+        write.table(genes1DE, file="genes1DE.txt")
+        genes2DE <- subset(allSamplesDiffExpr, Sample=="2")
+        write.table(genes2DE, file="genes2DE.txt")
+        genes3DE <- subset(allSamplesDiffExpr, Sample=="3")
+        write.table(genes3DE, file="genes3DE.txt")
+        genes4DE <- subset(allSamplesDiffExpr, Sample=="4")
+        write.table(genes4DE, file="genes4DE.txt")
+        genes5DE <- subset(allSamplesDiffExpr, Sample=="5")
+        write.table(genes5DE, file="genes5DE.txt")
+        genes7DE <- subset(allSamplesDiffExpr, Sample=="7")
+        write.table(genes7DE, file="genes7DE.txt")
+        genes8DE <- subset(allSamplesDiffExpr, Sample=="8")
+        write.table(genes8DE, file="genes8DE.txt")
+        genes9DE <- subset(allSamplesDiffExpr, Sample=="9")
+        write.table(genes9DE, file="genes9DE.txt")
+        genes11DE <- subset(allSamplesDiffExpr, Sample=="11")
+        write.table(genes11DE, file="genes11DE.txt")
+        genes18DE <- subset(allSamplesDiffExpr, Sample=="18")
+        write.table(genes18DE, file="genes18DE.txt")
+        genes49DE <- subset(allSamplesDiffExpr, Sample=="49")
+        write.table(genes49DE, file="genes49DE.txt")
+        genes59DE <- subset(allSamplesDiffExpr, Sample=="59")
+        write.table(genes59DE, file="genes59DE.txt")
+        genes61DE <- subset(allSamplesDiffExpr, Sample=="61")
+        write.table(genes61DE, file="genes61DE.txt")
+        genes76DE <- subset(allSamplesDiffExpr, Sample=="76")
+        write.table(genes76DE, file="genes76DE.txt")
+        genes77DE <- subset(allSamplesDiffExpr, Sample=="77")
+        write.table(genes77DE, file="genes77DE.txt")
+      # trying different things to make a venn diagram 
+        library(VennDiagram)
+          pdf("venn_diagram.pdf")
+          venn.plot <- venn.diagram(list(genes1DE$GENEID, genes2DE$GENEID,genes3DE$GENEID,genes4DE$GENEID, genes5DE$GENEID, genes7DE$GENEID, genes8DE$GENEID, genes9DE$GENEID, genes11DE$GENEID, genes18DE$GENEID, genes49DE$GENEID, genes59DE$GENEID, genes61DE$GENEID, genes76DE$GENEID, genes77DE$GENEID), NULL, fill=c("red", "green","blue","pink","orange","turquoise","yellow","purple","lightblue","lightyellow","lightred","lightgreen","lightpink","lightorange"), alpha=c(0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5), cex = 2, cat.fontface=3, category.names=c("Sample1", "Sample2","Sample3", "Sample4","Sample5","Sample7","Sample8","Sample9","Sample11","Sample18","Sample49","Sample59","Sample61","Sample76","Sample77"))
+          grid.draw(venn.plot)
+          dev.off()
+
+
+# later want to ask how many genes are DE in only euploid samples or only aneuploid samples 
+#
+  # then query which samples the gene is DE in 
+
+```
 
 ```{r common DE genes, Aneuploids, include=TRUE}
-res4Dat <- as.data.frame(res4)
-setDT(res4Dat, keep.rownames = TRUE)[]
-setnames(res4Dat, 1, "GENEID")
-genes4DE <- subset(res4Dat,padj<0.1)
 
-res7Dat <- as.data.frame(res7)
-setDT(res7Dat, keep.rownames = TRUE)[]
-setnames(res7Dat, 1, "GENEID")
-genes7DE <- subset(res7Dat,padj<0.1)
+# setDT(res4Dat, keep.rownames = TRUE)[]
+# setnames(res4Dat, 1, "GENEID")
+# genes4DE <- subset(res4Dat,padj<0.1)
 
-res8Dat <- as.data.frame(res8)
-setDT(res8Dat, keep.rownames = TRUE)[]
-setnames(res8Dat, 1, "GENEID")
-genes8DE <- subset(res8Dat,padj<0.1)
 
-res11Dat <- as.data.frame(res11)
-setDT(res11Dat, keep.rownames = TRUE)[]
-setnames(res11Dat, 1, "GENEID")
-genes11DE <- subset(res11Dat,padj<0.1)
+# setDT(res7Dat, keep.rownames = TRUE)[]
+# setnames(res7Dat, 1, "GENEID")
+# genes7DE <- subset(res7Dat,padj<0.1)
 
-res18Dat <- as.data.frame(res18)
-setDT(res18Dat, keep.rownames = TRUE)[]
-setnames(res18Dat, 1, "GENEID")
-genes18DE <- subset(res18Dat,padj<0.1)
 
-res49Dat <- as.data.frame(res49)
-setDT(res49Dat, keep.rownames = TRUE)[]
-setnames(res49Dat, 1, "GENEID")
-genes49DE <- subset(res49Dat,padj<0.1)
+# setDT(res8Dat, keep.rownames = TRUE)[]
+# setnames(res8Dat, 1, "GENEID")
+# genes8DE <- subset(res8Dat,padj<0.1)
 
-res59Dat <- as.data.frame(res59)
-setDT(res59Dat, keep.rownames = TRUE)[]
-setnames(res59Dat, 1, "GENEID")
-genes59DE <- subset(res59Dat,padj<0.1)
 
-res61Dat <- as.data.frame(res61)
-setDT(res61Dat, keep.rownames = TRUE)[]
-setnames(res61Dat, 1, "GENEID")
-genes61DE <- subset(res61Dat,padj<0.1)
+# setDT(res11Dat, keep.rownames = TRUE)[]
+# setnames(res11Dat, 1, "GENEID")
+# genes11DE <- subset(res11Dat,padj<0.1)
 
-res76Dat <- as.data.frame(res76)
-setDT(res76Dat, keep.rownames = TRUE)[]
-setnames(res76Dat, 1, "GENEID")
-genes76DE <- subset(res76Dat,padj<0.1)
 
-res77Dat <- as.data.frame(res77)
-setDT(res77Dat, keep.rownames = TRUE)[]
-setnames(res77Dat, 1, "GENEID")
-genes77DE <- subset(res77Dat,padj<0.1)
+# setDT(res18Dat, keep.rownames = TRUE)[]
+# setnames(res18Dat, 1, "GENEID")
+# genes18DE <- subset(res18Dat,padj<0.1)
+
+
+# setDT(res49Dat, keep.rownames = TRUE)[]
+# setnames(res49Dat, 1, "GENEID")
+# genes49DE <- subset(res49Dat,padj<0.1)
+
+
+# setDT(res59Dat, keep.rownames = TRUE)[]
+# setnames(res59Dat, 1, "GENEID")
+# genes59DE <- subset(res59Dat,padj<0.1)
+
+
+# setDT(res61Dat, keep.rownames = TRUE)[]
+# setnames(res61Dat, 1, "GENEID")
+# genes61DE <- subset(res61Dat,padj<0.1)
+
+
+# setDT(res76Dat, keep.rownames = TRUE)[]
+# setnames(res76Dat, 1, "GENEID")
+# genes76DE <- subset(res76Dat,padj<0.1)
+
+
+# setDT(res77Dat, keep.rownames = TRUE)[]
+# setnames(res77Dat, 1, "GENEID")
+# genes77DE <- subset(res77Dat,padj<0.1)
 
 #remove genes that are commonly DE in euploid lines 
-genes4DE.r <- anti_join(genes4DE, common1235.9,by="GENEID")
-genes7DE.r <- anti_join(genes7DE, common1235.9,by="GENEID")
-genes8DE.r <- anti_join(genes8DE, common1235.9,by="GENEID")
-genes11DE.r <- anti_join(genes11DE, common1235.9,by="GENEID")
-genes18DE.r <- anti_join(genes18DE, common1235.9,by="GENEID")
-genes49DE.r <- anti_join(genes49DE, common1235.9,by="GENEID")
-genes59DE.r <- anti_join(genes59DE, common1235.9,by="GENEID")
-genes61DE.r <- anti_join(genes61DE, common1235.9,by="GENEID")
-genes76DE.r <- anti_join(genes76DE, common1235.9,by="GENEID")
-genes77DE.r <- anti_join(genes77DE, common1235.9,by="GENEID")
+# genes4DE.r <- anti_join(genes4DE, common1235.9,by="GENEID")
+# genes7DE.r <- anti_join(genes7DE, common1235.9,by="GENEID")
+# genes8DE.r <- anti_join(genes8DE, common1235.9,by="GENEID")
+# genes11DE.r <- anti_join(genes11DE, common1235.9,by="GENEID")
+# genes18DE.r <- anti_join(genes18DE, common1235.9,by="GENEID")
+# genes49DE.r <- anti_join(genes49DE, common1235.9,by="GENEID")
+# genes59DE.r <- anti_join(genes59DE, common1235.9,by="GENEID")
+# genes61DE.r <- anti_join(genes61DE, common1235.9,by="GENEID")
+# genes76DE.r <- anti_join(genes76DE, common1235.9,by="GENEID")
+# genes77DE.r <- anti_join(genes77DE, common1235.9,by="GENEID")
 
 #find common DE genes in aneuploids with same chromosome aneuploid 
-chrI.tri <- inner_join(genes7DE,genes18DE, by="GENEID")
-chrI.all <- inner_join(chrI, genes11DE, by="GENEID")
+# chrI.tri <- inner_join(genes7DE,genes18DE, by="GENEID")
+# matchedI <- intersect(chrI.tri$GENEID, genes$GENEID)
+# keepI <- chrI.tri$GENEID %in% matchedI
+# chrI.tri <- chrI.tri[keepI,]
+# keepGen <- genes$GENEID %in% matchedI
+# Gen <- genes[keepGen,]
+# chrI.tri <- cbind(Gen$TXCHROM, chrI.tri)
+# 
+# chrI.all <- inner_join(chrI.tri, genes11DE, by="GENEID")
+# matchedI <- intersect(chrI.all$GENEID, genes$GENEID)
+# keepI <- chrI.all$GENEID %in% matchedI
+# chrI.all <- chrI.all[keepI,]
+# 
+# chrV.tri <- inner_join(genes4DE, genes49DE, by="GENEID")
+# matchedV <- intersect(chrV.tri$GENEID, genes$GENEID)
+# keepV <- chrV.tri$GENEID %in% matchedV
+# chrV.tri <- chrV.tri[keepI,]
+# keepGen <- genes$GENEID %in% matchedV
+# Gen <- genes[keepGen,]
+# chrV.tri <- cbind(Gen$TXCHROM, chrV.tri)
+# 
+# chrVII.tri <- inner_join(genes59DE, genes61DE, by="GENEID")
+# matchedVII <- intersect(chrVII.tri$GENEID, genes$GENEID)
+# keepVII <- chrVII.tri$GENEID %in% matchedVII
+# chrVII.tri <- chrVII.tri[keepVII,]
+# keepGen <- genes$GENEID %in% matchedVII
+# Gen <- genes[keepGen,]
+# chrVII.tri <- cbind(Gen$TXCHROM, chrVII.tri)
+# 
+# chrXII.tri <- inner_join(genes18DE, genes77DE, by="GENEID")
+# matchedXII <- intersect(chrXII.tri$GENEID, genes$GENEID)
+# keepXII <- chrXII.tri$GENEID %in% matchedXII
+# chrXII.tri <- chrXII.tri[keepXII,]
+# keepGen <- genes$GENEID %in% matchedXII
+# Gen <- genes[keepGen,]
+# chrXII.tri <- cbind(Gen$TXCHROM, chrXII.tri)
 
-chrV.all <- inner_join(genes4DE, genes49DE, by="GENEID")
+##any commonly DE genes between 2+ aneuploids?
 
-chrVII.all <- inner_join(genes59DE, genes61DE, by="GENEID")
-
-chrXII.all <- inner_join(genes18DE, genes77DE, by="GENEID")
+#that are NOT commonly DE in euploid lines 
+# dupRows <- dupsBetweenGroups(allSamplesDE, "Sample")
 
 #find any genes on aneuploid chromosomes that are NOT DE 
-notDE4 <- subset(res4Dat,padj>0.1)
-notDE7 <- subset(res7Dat,padj>0.1)
-notDE8 <- subset(res8Dat,padj>0.1)
-notDE11 <- subset(res11Dat,padj>0.1)
-notDE18 <- subset(res18Dat,padj>0.1)
-notDE49 <- subset(res49Dat,padj>0.1)
-notDE59 <- subset(res59Dat,padj>0.1)
-notDE61 <- subset(res61Dat,padj>0.1)
-notDE76 <- subset(res76Dat,padj>0.1)
-notDE77 <- subset(res77Dat,padj>0.1)
+# notDE4 <- subset(res4Dat,padj>0.1)
+# notDE7 <- subset(res7Dat,padj>0.1)
+# notDE8 <- subset(res8Dat,padj>0.1)
+# notDE11 <- subset(res11Dat,padj>0.1)
+# notDE18 <- subset(res18Dat,padj>0.1)
+# notDE49 <- subset(res49Dat,padj>0.1)
+# notDE59 <- subset(res59Dat,padj>0.1)
+# notDE61 <- subset(res61Dat,padj>0.1)
+# notDE76 <- subset(res76Dat,padj>0.1)
+# notDE77 <- subset(res77Dat,padj>0.1)
 
-notDECom <- inner_join(notDE4, notDE7, by="GENEID")
-notDECom <- inner_join(notDECom, notDE8, by="GENEID")
-notDECom <- inner_join(notDECom, notDE11, by="GENEID")
-notDECom <- inner_join(notDECom, notDE18, by="GENEID")
-notDECom <- inner_join(notDECom, notDE49, by="GENEID")
-notDECom <- inner_join(notDECom, notDE59, by="GENEID")
-notDECom <- inner_join(notDECom, notDE61, by="GENEID")
-notDECom <- inner_join(notDECom, notDE76, by="GENEID")
-notDECom <- inner_join(notDECom, notDE77, by="GENEID")
+# notDECom <- inner_join(notDE4, notDE7, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE8, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE11, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE18, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE49, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE59, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE61, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE76, by="GENEID")
+# notDECom <- inner_join(notDECom, notDE77, by="GENEID")
 
 ```
 

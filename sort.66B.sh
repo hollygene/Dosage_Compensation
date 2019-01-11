@@ -1,1 +1,0 @@
-/usr/local/samtools/latest/samtools sort /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly-66B-redo-136232_S14_R1_001_tophat_out/accepted_hits.bam /panfs/pstor.storage/scratch/dwhlab/Holly/RNA_seq/fastq_files/Holly-66B-redo-136232_S14_R1_001_tophat_out/accepted_hits.66B.sorted

@@ -1,0 +1,467 @@
+---
+title: "edgeR_voom_workflow"
+author: "Holly"
+date: "10/18/2017"
+output: html_document
+---
+This workflow is following the protocol in Law et al 2016, F1000Research
+
+First, we load our packages
+```{r load_packages, include=TRUE}
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("limma")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("edgeR")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("biomaRt")
+#install.packages("dplyr")
+
+library(limma)
+library(Glimma)
+library(edgeR)
+library(dplyr)
+library(RColorBrewer)
+library(biomaRt)
+```
+
+Then we read in our data
+``` {r read data, include=TRUE}
+
+
+##import htseq count files
+#you need "row.name=1" in this so that the row names will be known as row names not factors, and the DGEList function will work later on
+
+raw <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/Holly_Seq/HTseq_All_Header_short3.csv",header=TRUE)
+
+colnames(raw)[1] <- "gene_id"
+
+counts <- raw[,-(1)]
+head(counts)
+rownames(counts) <- raw[,1]
+head(counts)
+x <- DGEList(counts=counts)
+colnames(counts)
+
+#I need to get rid of 11A,21B, and 59A for now since I don't know what replicates I need to remove 
+#except 21B is actually 11 so I can just rename it 11A
+counts <- counts[,c(1:9,11:29,30:51,53:90)]
+colnames(counts)
+colnames(counts)[27] <- "X11A"
+
+##add a grouping factor (for us this is the sample)
+group <- as.factor(c("X112","X112","X112","X115","X115","X115","X117","X117","X117","X11","X11","X123","X123","X123","X141","X141","X141","X152","X152","X152","X18","X18","X18","X1","X1","X1","X11","X21","X21","X29","X29","X29","X2","X2","X2","X31","X31","X31","X3","X3","X3","X49","X49","X49","X4","X4","X4","X50","X50","X50","X59","X59","X5","X5","X5","X61","X61","X61","X66","X66","X66","X69","X69","X69","X6","X6","X6","X76","X76","X76","X77","X77","X77","X7","X7","X7","X8","X8","X8","X9","X9","X9","GCA","GCA","GCA","MAA","MAA","MAA"))
+##convert the data into a DGEList-object (this uses edgeR)
+#remove the zero read counts (got rid of 290)
+x <- DGEList(counts=counts,group=group,remove.zeros=TRUE)
+x$samples$group <- group
+x
+exp <- as.factor(rep(c("MA","GC","MA","GC","MA","GC","MA"),c(9,2,9,9,3,53,3)))
+x$samples$exp <- exp
+x$samples
+##describes the type of data this is
+class(x)
+###this tells you the dimensions of your object
+dim(x)
+
+```
+
+After reading our data, we organize it the way we want it.
+``` {r organize_data, include=TRUE}
+###there is a data frame called samples in this and it stores group, library size, and normalization factor information
+{x$samples
+##I decided to use my own gene information that I have from cuffnorm output
+#geneattr <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/September_2017/genes.attr_table.csv")
+#using information from bioMArt since I used HTseq and don't have the gene attributes file 
+listMarts()
+
+ensembl = useMart("ENSEMBL_MART_ENSEMBL")
+listDatasets(ensembl)
+ensembl=useDataset("scerevisiae_gene_ensembl",mart=ensembl)
+}
+geneid <- rownames(x)
+Attr <- listAttributes(ensembl)
+genes <- select(ensembl, keys=geneid, columns=c("chromosome_name", "ensembl_gene_id",
+                                                "start_position","end_position"),keytype="ensembl_gene_id")
+dim(genes)
+
+#make sure there aren't any duplicates
+genes <- genes[!duplicated(genes$ensembl_gene_id),]
+dim(genes)
+
+
+
+#weren't any 
+#need to get the gene ids in the same order in both our DGEList and the annotation
+merged.raw <- merge(genes, raw, by.x = "ensembl_gene_id", by.y="gene_id")
+
+genes
+genes$ensembl_gene_id <- merged.raw$ensembl_gene_id
+genes$chromosome_name <- merged.raw$chromosome_name
+genes$start_position <- merged.raw$start_position
+genes$end_position <- merged.raw$end_position
+genes
+
+x$genes <- genes
+x
+
+#geneattrnames <- c("tracking_id","class_code","nearest_ref_id","gene_id","gene_short_name","tss_id","locus","length")
+#colnames(geneattr) <- geneattrnames
+#geneattrnames
+#View(geneattr)
+##make a file with only the things that you want in it (in my case, I just want gene id and locus)
+#genenames <- select(geneattr,columns=c("gene_short_name","locus","length"))
+##eliminate duplicates
+#x$genes <- genenames
+#x
+#genecolnames <- c("gene_id","locus","length")
+##make a vector of gene lengths
+#gene.lengths <- as.numeric(x$genes$length)
+#gene.lengths
+#x
+samplenames <- c("X112_0","X112_1","X112_2","X115_0","X115_1","X115_2","X117_0","X117_1","X117_2","X11_1","X11_2","X123_0","X123_1","X123_2","X141_0","X141_1","X141_2","X152_0","X152_1","X152_2","X18_0","X18_1","X18_2","X1_0","X1_1","X1_2","X21_0","X21_1","X21_2","X29_0","X29_1","X29_2","X2_0","X2_1","X2_2","X31_0","X31_1","X31_2","X3_0","X3_1","X3_2","X49_0","X49_1","X49_2","X4_0","X4_1","X4_2","X50_0","X50_1","X50_2","X59_0","X59_2","X5_0","X5_1","X5_2","X61_0","X61_1","X61_2","X66_0","X66_1","X66_2","X69_0","X69_1","X69_2","X6_0","X6_1","X6_2","X76_0","X76_1","X76_2","X77_0","X77_1","X77_2","X7_0","X7_1","X7_2","X8_0","X8_1","X8_2","X9_0","X9_1","X9_2","GCA_0","GCA_1","GCA_2","MAA_0","MAA_1","MAA_2")
+```
+
+Next, we move on to filtering the data.
+We are filtering with count-per-million (CPM) rather than counts directly, since counts directly doesn't account for differences in library sizes. (from edgeR Users Guide)
+``` {r filtering, include= TRUE}
+
+cpm <- cpm(x)
+lcpm <- cpm(x,log=TRUE)
+table(rowSums(x$counts==0)==90)
+#genes must be expressed in at least one group (group size 3-biological replicates) to be kept for downstream analysis
+#removed an extra 147 genes
+keep <- rowSums(cpm>1) >= 3
+
+#filters out lowly expressed genes
+x <- x[keep,, keep.lib.sizes=FALSE]
+dim(x)
+#recalculate the library sizes after filtering
+
+```
+
+``` {r raw_vs_filtered, include=TRUE}
+nsamples <- ncol(x)
+col <- brewer.pal(nsamples,"Paired")
+par(mfrow=c(1,2))
+{pdf("raw_vs_filtered.pdf")
+plot(density(lcpm[,1]), col=col[1],lwd=2,ylim=c(0,0.3),las=2,main="",xlab="")
+title(main="A. Raw data",xlab="Log-cpm")
+abline(v=0,lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+} 
+legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3)
+lcpm <- cpm(x,log=TRUE)
+plot(density(lcpm[,1]), col=col[1],lwd=2,ylim=c(0,0.3),las=2,main="",xlab="")
+title(main="B. Filtered data",xlab="Log-cpm")
+abline(v=0,lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm[,i])
+  lines(den$x,den$y,col=col[i],lwd=2)
+}
+legend("topright",samplenames,text.col=col, bty="n",cex=0.3,pt.cex=1,ncol=3) }
+```
+
+
+Next we move onto normalization of our data
+Here I'm trying out all of the different normalization methods
+Still looks like TMM is the best option for me. 
+``` {r normalization, include=TRUE}
+
+x.norm <- calcNormFactors(x, method="TMM")
+
+#x.norm <- calcNormFactors(x.fil)
+summary(x.norm)
+x.norm
+#write.csv(x.norm,file="norm.TMM.edgeR.csv")
+#x.norm.TMM <- calcNormFactors(x.fil, method="TMM")
+#x.norm.RLE <- calcNormFactors(x.fil, method="RLE")
+#x.norm.UQ <- calcNormFactors(x.fil, method="upperquartile")
+#can look at magnitude of scaling factors
+x.norm$samples$norm.factors
+#x.norm.TMM$samples$norm.factors
+#x.norm.RLE$samples$norm.factors
+#x.norm.UQ$samples$norm.factors
+#visualize the effects of normalization
+
+{pdf("normalization.graph.pdf")
+par(mfrow=c(1,2))
+lcpm <- cpm(x,log=TRUE)
+boxplot(lcpm,las=2,col=col,main="", cex=.2,cex.axis=.4)
+title(main="A.Example: unnormalized data", ylab="Log-cpm")
+
+lcpm.norm<- cpm(x.norm,log=TRUE)
+boxplot(lcpm.norm,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="B. Example: Normalized data-TMM", ylab="Log-cpm")
+}
+
+lcpm.norm.RLE <- cpm(x.norm.RLE,log=TRUE)
+boxplot(lcpm.norm.RLE,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="C. Example: Normalized data-RLE", ylab="Log-cpm")
+
+lcpm.norm.UQ <- cpm(x.norm.UQ,log=TRUE)
+boxplot(lcpm.norm.UQ,las=2,col=col,main="",cex=.2,cex.axis=.4)
+title(main="D. Example: Normalized data-UQ", ylab="Log-cpm")
+```
+
+
+``` {r MDS_Plots_Loraine_et_al, include=TRUE}
+cn.color = 'blue'
+tr.color = 'brown'
+main = 'MDS Plot for Count Data'
+colors=c(rep(cn.color,5),rep(tr.color,5))
+plotMDS(x.norm, main=main, labels = colnames(x.norm$counts),col=colors,las=1)
+```
+
+``` {r hierarchical clustering plot, loraine et al, include = TRUE}
+normalized.counts = cpm(x.norm)
+transposed = t(normalized.counts)
+distance = dist(transposed)
+clusters=hclust(distance)
+{pdf("hierarchical_clustering.pdf")
+plot(clusters)
+}
+```
+This DE analysis is giving me 0 DE genes. I think this may be because my data were split across two runs. I think I should use the generalized linear model to account for the variation in my groups because of them splitting across two runs (i.e. esp the ones that were "redos")
+``` {r differential expr analysis, loraine et al, include = TRUE}
+#first estimate dispersion (variance)
+x = estimateCommonDisp(x)
+x = estimateTagwiseDisp(x)
+#trying this with the filtered data not the normalized data, since the user's manual says normalization is only needed with sample-specific effects and I don't think I have those here
+#x.fil = estimateCommonDisp(x.fil)
+#x.fil = estimateTagwiseDisp(x.fil)
+
+#test DE, using Fisher's exact test. most simple way of finding DE in edgeR
+#have to do it group by group
+#comparing line 1 GC (euploid) to ancestor 
+dex = exactTest(x,pair=c("X1","GCA"),dispersion="tagwise")
+
+#dex.fil = exactTest(x.fil, pair=c("X1","GCA"),dispersion="tagwise")
+#output is a DGEExact differential expression results object, containing the log2 fold-change and p-value result for each gene
+#add FDR to the output
+#fdrvalues = p.adjust(dex$table$PValue,method="BH")
+#fdrvalues.fil = p.adjust(dex.fil$table$PValue,method="BH")
+
+#dex$table$fdr=fdrvalues
+#dex.fil$table$fdr=fdrvalues.fil
+#evaluate possible FDR cutoffs
+summary(decideTestsDGE(dex,p=0.05))
+#no DE genes at all with this cutoff 
+summary(decideTestsDGE(dex,p=0.01))
+summary(decideTestsDGE(dex,p=0.005))
+#same with these 
+# not surprising because it is a euploid line... but shouldn't some of them be DE?
+# lets see how high we have to go to get DE genes
+summary(decideTestsDGE(dex,p=0.06))
+summary(decideTestsDGE(dex,p=0.07))
+summary(decideTestsDGE(dex,p=0.08))
+summary(decideTestsDGE(dex,p=0.09))
+summary(decideTestsDGE(dex,p=0.1))
+summary(decideTestsDGE(dex,p=0.5))
+summary(decideTestsDGE(dex,p=0.9))
+#okay... still no DE genes until p = 0.9 
+# thats obviously not going to work
+# lets see what happens when we look at an aneuploid line 
+
+dex11 = exactTest(x.norm,pair=c("X11","GCA"),dispersion="tagwise")
+#output is a DGEExact differential expression results object, containing the log2 fold-change and p-value result for each gene
+#add FDR to the output
+fdrvalues = p.adjust(dex11$table$PValue,method="BH")
+dex11$table$fdr=fdrvalues
+#evaluate possible FDR cutoffs
+summary(decideTestsDGE(dex11,p=0.05))
+
+
+
+```
+
+
+Multidimensional scaling plots can be used with limma. These plots show similarities between samples in an unsupervised manner so that you can determine how much differential expression can be found before you start testing things. (Law, et al 2016 F1000Research).
+I used the plotMDS function below to make such a plot for my normalized data. First, I calculated the log-counts per million and then I plotted them. The first dimension will always explain most of the variation in the data (in my case, that was sample group). I then tried experimental groups (GC vs MA) and found that that explained a little of the variance too. Next time I could try clustering them by aneuploid and not aneuploid and see what happens (I would expect to see a greater difference between those than most of the other groups).
+
+
+
+
+```{r MDS plots, include=TRUE}
+lcpm <- cpm(x.norm,log=TRUE)
+cpm.norm <- cpm(x.norm)
+class(x.norm)
+par(mfrow=c(1,2))
+col.group <- group
+{pdf("MDS_plot.pdf")
+  levels(col.group) <- palette(rainbow(nlevels(col.group)))
+col.group <- as.character(col.group)
+plotMDS(lcpm,labels=group,col=col.group,main="A.Sample groups",cex=0.5) 
+col.exp <- exp
+levels(col.exp) <- brewer.pal(2, "PuRd")
+col.exp <- as.character(col.exp)
+plotMDS(lcpm,labels=exp,col=col.exp,dim=c(3,4),main="B. Experiment",cex=0.5)
+}
+#also can make MDS plots
+
+glMDSPlot(lcpm,labels=paste(group,exp,sep="_"),groups=x$samples[,c(2)],launch=TRUE)
+```
+
+Here, I made a design matrix and also a contrasts matrix
+``` {r make_contrasts, include=TRUE}
+design <- model.matrix(~0+group+exp)
+colnames(design) <- gsub("group","",colnames(design))
+design
+contr.matrix <- makeContrasts(
+  X1vsGCA = X1-GCA,
+  X11vsGCA = X11-GCA,
+  X112vsMAnc = X112-MAA,
+  X115vsMAnc = X115-MAA,
+  X117vsMAnc = X117-MAA,
+  X123vsMAnc = X123-MAA,
+  X141vsMAnc= X141-MAA,
+  X152vsMAnc = X152-MAA,
+  X18vsGCA = X18-GCA,
+  X2vsGCA = X2-GCA,
+  X21vsGCA = X21-GCA,
+  X29vsMAnc = X29-MAA,
+  X3vsGCA = X3-GCA,
+  X31vsGCA = X31-GCA,
+  X4vsGCA = X4-GCA,
+  X49vsGCA = X49-GCA,
+  X5vsGCA = X5-GCA,
+  X50vsMAnc = X50-MAA,
+  X59vsGCA = X59-GCA,
+  X6vsGCA = X6-GCA,
+  X61vsGCA = X61-GCA,
+  X66vsGCA = X66-GCA,
+  X69vsGCA = X69-GCA,
+  X7vsGCA = X7-GCA,
+  X76vsGCA = X76-GCA,
+  X77vsGCA = X77-GCA,
+  X8vsGCA = X8-GCA,
+  X9vsGCA = X9-GCA,
+  levels=colnames(design)
+)
+
+```
+
+
+``` {r voom, include=TRUE}
+v <- voom(x.norm, design, plot=TRUE)
+v 
+vfit <- lmFit(v, design) 
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix) 
+efit <- eBayes(vfit)
+
+plotSA(efit)
+plotSA(vfit)
+summary(decideTests(efit,method="separate",adjust.method="fdr",p.value=0.05)) 
+summary(decideTests(vfit,method="separate",adjust.method="fdr",p.value=0.05)) 
+```
+
+``` {r using treat, include=TRUE}
+tfit <- treat(vfit, lfc=0.1) 
+dt <- decideTests(tfit) 
+summary(dt) 
+```
+
+``` {r compare cuffdiff to edgeR normalization, include=TRUE}
+#cuffdiff.2 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/2_diff_out/genes.fpkm_#tracking",header=TRUE)
+#library(splitstackshape)
+#cuffdiff.2 <- cSplit(cuffdiff.2, "locus", ":")
+#plot(col=as.factor(cuffdiff.2$locus_1), cuffdiff.2$X2_FPKM, ylab="FPKM", xlab="locus")
+#cuffdiff.1 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/1_diff_out/genes.fpkm_tracking",header=TRUE)
+#cuffdiff.1 <- cSplit(cuffdiff.1, "locus", ":")
+#plot(cuffdiff.1$X1_FPKM, col=as.factor(cuffdiff.1$locus_1), ylab="FPKM", xlab="Locus")
+#cuffdiff.3 <- read.table("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffdiff_files/3_diff_out/genes.fpkm_tracking",header=TRUE)
+#cuffdiff.3 <- cSplit(cuffdiff.3, "locus", ":")
+#plot(cuffdiff.3$X3_FPKM, col=as.factor(cuffdiff.3$locus_1), ylab="FPKM", xlab="Locus")
+
+cuffnorm <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Redo/Cuffnorm/genes.fpkm_table.csv",header=TRUE)
+plot(cuffnorm$X3_1, col=as.factor(cuffnorm$Chr), ylab="FPKM", xlab="Chr")
+qplot(cuffnorm$Chr, cuffnorm$X3_1, data = cuffnorm, color=cuffnorm$Chr)
+
+#plot the same sort of graph with the normalized cpm from edgeR
+edgeR <- data.frame(cpm.norm)
+#make the rownames into their own column since they weren't before
+edgeR$gene <- rownames(edgeR)
+#merge the cpm with the gene attributes matrix so we know more information (ie chromosome)
+edgeR = merge(edgeR,geneattr,by.x="gene",by.y="gene_id")
+#split the locus column so we know which chromosome it is on 
+library(splitstackshape)
+edgeR = cSplit(edgeR,"locus",":")
+#get rid of mitochondrial sequences
+edgeR = edgeR[!grepl("MT",edgeR$locus_1),]
+#confirm that it worked
+levels(edgeR$locus_1)
+plot(edgeR$X3_1, col=nlevels(as.factor(edgeR$locus_1)), ylab="CPM", xlab="Chr")
+library(ggplot2)
+require(ggplot2)
+data(edgeR)
+qplot(edgeR$locus_1, edgeR$X3_1, data = edgeR, color=edgeR$locus_1)
+
+#plot the same thing but in lcpm for curiosity's sake
+edgeR.log <- data.frame(lcpm.norm.TMM)
+edgeR.log$gene <- rownames(edgeR.log)
+#merge the cpm with the gene attributes matrix so we know more information (ie chromosome)
+edgeR.log = merge(edgeR.log,geneattr,by.x="gene",by.y="gene_id")
+#split the locus column so we know which chromosome it is on 
+#library(splitstackshape)
+edgeR.log = cSplit(edgeR.log,"locus",":")
+#get rid of mitochondrial sequences
+edgeR.log = edgeR.log[!grepl("MT",edgeR.log$locus_1),]
+#confirm that it worked
+levels(edgeR.log$locus_1)
+qplot(edgeR.log$locus_1, edgeR.log$X3_1, data = edgeR.log, color=edgeR.log$locus_1)
+
+#compare an aneuploid line that I'm confident is aneuploid:
+qplot(cuffnorm$Chr, cuffnorm$X7_1, data = cuffnorm, color=cuffnorm$Chr)
+qplot(edgeR$locus_1, edgeR$X7_1, data = edgeR.log, color=edgeR$locus_1)
+
+qplot(cuffnorm$Chr, cuffnorm$X11_1, data = cuffnorm, color=cuffnorm$Chr)
+qplot(edgeR$locus_1, edgeR$X11_1, data = edgeR.log, color=edgeR$locus_1)
+```
+
+
+```{r quasi-likelihood F-tests, include=TRUE}
+x <- read.delim("fileofcounts.txt",row.names="Symbol")
+group <- factor(c(1,1,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+design <- model.matrix(~group)
+y <- estimateDisp(y,design)
+fit <- glmQLFit(y,design)
+qlf <- glmQLFTest(fit,coef=2)
+topTags(qlf)
+```
+
+## edgeR notes from the documentation
+I will put in code blocks of certain things you can do in edgeR and I can rearrange it later
+
+```{r likelihood ratio tests, include=TRUE}
+fit <- glmFit(y,design)
+lrt <- glmLRT(fit,coef=2)
+topTags(lrt)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

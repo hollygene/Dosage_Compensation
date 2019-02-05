@@ -1,0 +1,1454 @@
+---
+title: "edgeR.voom.take2"
+author: "Holly"
+date: "3/21/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load in packages, include=FALSE}
+#load in edgeR and limma
+library(limma)
+library(Glimma)
+library(edgeR)
+library(dplyr)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+library(RColorBrewer)
+library(gplots)
+library(magicfor)
+library(tidyr)
+library(data.table)
+library(stringr)
+library(ggplot2)
+```
+
+```{r data_packaging, include=FALSE}
+#########################################
+#load files into R as vector
+files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = TRUE)
+files.GC
+#files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
+#files.MA
+#load in data from files using readDGE from edgeR
+#getting out just the EntrezID and read count, neglecting genelength
+x.GC <- readDGE(files.GC,columns=c(1,2))
+#x.MA <- readDGE(files.MA,columns=c(1,2))
+#check the parameters
+class(x.GC)
+#class(x.MA)
+#and dimensions
+dim(x.GC)
+#dim(x.MA)
+#organize sample information
+#change sample names so they are simpler
+files.GC
+samplenames.GC <- tools::file_path_sans_ext(list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/GC",pattern = "*.txt", full.names = FALSE))
+samplenames.GC
+#samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
+#length(samplenames.GC)
+#put filenames into DGEList as column names 
+colnames(x.GC) <-samplenames.GC
+colnames(x.GC) <- lines.G
+x.GC$counts
+ ###################################################
+#group samples together according to experiment
+x.GC
+#View(x.GC$samples)
+#files.MA
+#samplenames.MA <- c("M112B","M112C","M115B","M115C","M117B","M117C","M123B","M123C","M141B","M141C","M152B","M152C","M29B","M29C","M50B","MAC","M1A","M1B","M1C","M2A","M2B","M2C","M3A","M3B","M3C","M4A","M4B","M4C","M5A","M5B","M5C","M6A","M6C","M6B","M7A","M7B","M7C","M8A","M8B","M8C","M9A","M9B","M9C","M11A","M11B","M11C","15A","15B","15C","28A","28B","28C","88A","88B","88C","108A","108B","108C","119A","119B","119C","OMAA","OMAB","OMAC")
+#length(samplenames.MA)
+#colnames(x.MA) <- samplenames.MA
+group.GC <- as.factor(c(".11.",".11.",".11.",".18.",".18.",".18.",".1.", ".1.", ".1.", ".21.",".21.",".2.", ".2.", ".2.", ".31.",".31.",".31.",".3.", ".3.", ".3.",".49.",".49.",".49.",".4.", ".4.",".4.", ".59.",".59.",".59.",".5.",".5.", ".5.", ".61.",".61.",".61.",".66.",".66.",".68.",".68.",".68.",".6.", ".6.", ".6.", ".76.",".76.",".76.",".77.",".77.",".77.",".7.",".7.", ".7.", ".8.", ".8.", ".8.",".9.", ".9.", ".9.", ".GCAnc." ,".GCAnc.",".GCAnc."))
+
+
+length(group.GC)
+levels(group.GC)
+nlevels(group.GC)
+x.GC$samples$group <- group.GC
+
+#group.MA <- as.factor(c("M112","M112","M115","M115","M117","M117","M123","M123","M141","M141","M152","M152","M29","M29","M50","MA","M1","M1","M1","M2","M2","M2","M3","M3","M3","M4","M4","M4","M5","M5","M5","M6","M6","M6","M7","M7","M7","M8","M8","M8","M9","M9","M9","M11","M11","M11","M15","M15","M15","M28","M28","M28","M88","M88","M88","M108","M108","M108","M119","M119","M119","MAA","MAA","MAA"))
+#length(group.MA)
+#levels(group.MA)
+#nlevels(group.MA)
+#x.MA$samples$group <- group.MA
+#come back to this later
+#run <- as.factor(rep(c(1,2), c(16,48)))
+#x.MA$samples$run <- run
+#ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
+#x$samples$ploidy <- ploidy
+#x.MA$samples
+#organize the gene annotations
+#install mus.musuclus package
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("BSgenome.Scerevisiae.UCSC.sacCer3")
+#library(BSgenome.Scerevisiae.UCSC.sacCer3)
+#geneid <- rownames(x)
+#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
+#dim(genes)
+#head(genes)
+#biocLite("BSgenome.Scerevisiae.UCSC.sacCer1")
+#library(BSgenome.Scerevisiae.UCSC.sacCer1)
+#genes <- select(BSgenome.Scerevisiae.UCSC.sacCer3, keys=geneid, columns="SYMBOL","TXCHROM",keytype="GENENAME")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("OrganismDbi")
+#library(OrganismDbi)
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("org.Sc.sgd.db")
+#library(org.Sc.sgd.db)
+#org.Sc.sgd.db
+#yeast <- org.Sc.sgd.db
+#keytypes(yeast)
+#columns(yeast)
+#genes <- select(org.Sc.sgd.db, keys=geneid, columns="TXCHR","CHRLENGTHS","ENSEMBL",keytype="GENENAME")
+#biocLite("TxDb.Scerevisiae.UCSC.sacCer2.sgdGene")
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+txdb
+#txs <- transcripts(txdb)
+#txs
+#txby <- transcriptsBy(txdb,by="gene")
+#txby
+#si <- seqinfo(txdb)
+#si
+#txby <- transcriptsBy(txdb, by="gene")
+#si <- seqinfo(txby)
+#si
+#head(seqlevels(txdb))
+#seqlevelsStyle(txdb)
+#seqlevelsStyle(txdb) <- "ensembl"
+#head(seqlevels(txdb))
+#seqlevelsStyle(txdb) <- "UCSC"
+#head(seqlevels(txdb))
+#want to ignore the mitochondria
+#isActiveSeq(txdb)["chrM"] <- FALSE
+#head(isActiveSeq(txdb), n=18)
+#and 2 micron 
+#isActiveSeq(txdb)["2micron"] <- FALSE
+#head(isActiveSeq(txdb), n=18)
+columns(txdb)
+#want TXCHROM
+#want GENEID
+geneidGC <- rownames(x.GC)
+#geneidMA <- rownames(x.MA)
+genesGC <- select(txdb, keys=geneidGC, columns="TXCHROM","GENEID",keytype="GENEID")
+genesGC
+genesGC <- genesGC[!duplicated(genesGC$GENEID),]
+#genesGC <- genesGC[!isActiveSeq(txdb)["2micron"],]
+#genesGC <- genesGC[!isActiveSeq(txdb)["chrM"],]
+#genesMA <- select(txdb, keys=geneidMA, columns="TXCHROM","GENEID",keytype="GENEID")
+#genesMA
+#genesMA <- genesMA[!duplicated(genesMA$GENEID),]
+#data frame of gene annotations is added back to the DGEList
+x.GC$genes <- genesGC
+x.GC
+#x.MA$genes <- genesMA
+#x.MA
+#need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
+#myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
+#newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#updated_myData <- subset(x, id %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
+#updated_myData <- subset(x, id %in% c(4064, 4065, 4066))
+#id <- rownames(x$counts)
+#myData = x[!id > 4,] # equal to myData[myData$A <= 4,]
+#x <- cbind(x$counts, id) 
+#genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#columns(genome)
+#biocLite("AnnotationHub")
+#library(AnnotationHub)
+#ah <- AnnotationHub()
+##genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#genome$chrI
+#qh <- query(ah, c("sacCer2","genes"))
+#qh
+#genes2 <- qh[[which(qh$title == "SGD Genes")]]
+#genes2
+#genes <- select(genes, keys=geneid, columns="seqnames","name",keytype="name")
+#unique(ah$dataprovider)
+#ens <- query(ah, "Ensembl")
+#ens
+#ens <- subset(ah, ah$dataprovider=="Ensembl")
+#ens
+#ens$species
+#yeast <-  query(ens, "Saccharoymces cerevisiae")
+#yeast
+#orgs <- subset(ah, ah$rdataclass == "OrgDb")
+#orgs
+#yeast <- query(orgs, "Saccharomyces cerevisiae")[[1]]
+#columns(yeast)
+#keytypes(yeast)
+#head(keys(yeast, keytype="GENENAME"))
+#head(keys(yeast, keytype="ENSEMBL"))
+#head(keys(yeast, keytype="ENSEMBLTRANS"))
+#head(keys(yeast, keytype="ALIAS"))
+#head(keys(yeast, keytype="UNIPROT"))
+#geneid <- rownames(x)
+#genes <- select(yeast, keys=geneid, columns="SGD","ENSEMBL","GENENAME",keytype="GENENAME")
+#dim(genes)
+#head(genes)
+#get rid of any duplicate genes (mapping to different chromosomes)
+#data frame of gene annotations is added back to the DGEList
+#x$genes <- genes
+#x
+#########################################################
+#data pre-processing
+#get counts per million
+cpmGC <- cpm(x.GC)
+#cpmGC$chrm <- x.GC$genes$TXCHROM
+#cpmMA <- cpm(x.MA)
+#get log counts per million
+lcpmGC <- cpm(x.GC,log=TRUE)
+#lcpmGC$chrm <- x.GC$genes$TXCHROM
+#lcpmMA <- cpm(x.MA,log=TRUE)
+#lcpmMA
+############################################################################
+#do the same thing but be more stringent
+###USE THIS ONE!! 
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+dim(x.GC)
+table(rowSums(x.GC$counts<=0)==60)
+table(rowSums(x.GC$counts>=1)==60)
+table(rowSums(cpmGC>0.00001)>=60)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+table(rowSums(cpmGC>0.0001)>=2)
+keep.exprsGC <- rowSums(cpmGC>1)>=2
+#keep.exprsGC.test <- rowSums(cpmGC>1.1)>=3
+str(keep.exprsGC)
+str(x.GC)
+x.GC.str <- x.GC[keep.exprsGC,keep.lib.sizes=FALSE]
+#x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
+dim(x.GC.str)
+#table(rowSums(x.GC.str$counts>0.0001))
+#make x.GC the filtered one 
+x.GC <- x.GC.str
+#remove genes that are lowly expressed in all samples (ie not expressed in any)
+#dim(x.MA)
+#table(rowSums(x.MA$counts==0)==64)
+#only keep genes that are expressed in at least one group (group size=3 in this case)
+#table(rowSums(cpmMA>1)>=3)
+#keep.exprsMA <- rowSums(cpmMA>1)>=3
+#x.MA <- x.MA[keep.exprsMA,,keep.lib.sizes=FALSE]
+#dontkeep.exprMA <- rowSums(x.MA$counts==0)==64
+#x.MA <- x.MA[!dontkeep.exprMA,,keep.lib.sizes=FALSE]
+#dim(x.MA)
+###################################################
+#make graphs to compare raw versus filtered data
+nsamplesGC <- ncol(x.GC)
+colGC <- colorRampPalette(brewer.pal(21,"Set1"))(ncol(x.GC))
+nlevels(colGC)
+
+{
+  pdf("Raw_dataGC.pdf")
+plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="A. Raw Data", xlab="Log-cpm")
+abline(v=0,lty=3)
+for(i in 2:nsamplesGC) {
+  den <- density(lcpmGC[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
+}
+legend("topright",samplenames.GC, text.col=colGC, bty="n",cex=0.4,ncol=4)
+}
+
+{
+pdf("Filtered_dataGC.pdf")
+lcpmGCfil2 <- cpm(x.GC, log=TRUE)
+plot(density(lcpmGCfil2[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+title(main="B. Filtered Data", xlab="log-cpm")
+abline(v=0, lty=3)
+for (i in 2:nsamplesGC) {
+  den <- density(lcpmGCfil2[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
+}
+legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
+}
+#plot(density(lcpmGCfil2[,2]),col=colGC[2],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+##MA 
+#nsamplesMA <- ncol(x.MA)
+#colMA <- brewer.pal(nsamplesMA,"Paired")
+#{
+#  pdf("Raw_dataMA.pdf")
+#plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+#title(main="A. Raw Data", xlab="Log-cpm")
+#abline(v=0,lty=3)
+#for(i in 2:nsamplesMA) {
+#  den <- density(lcpmMA[,i])
+#  lines(den$x,den$y,col=colMA[i],lwd=2)
+#}
+#legend("topright",samplenames.MA, text.col=colMA, bty="n",cex=0.4,ncol=4)
+#}
+#{
+#pdf("Filtered_dataMA.pdf")
+#lcpmMAfil <- cpm(x.MA, log=TRUE)
+#plot(density(lcpmMA[,1]),col=colMA[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+#title(main="B. Filtered Data", xlab="log-cpm")
+#abline(v=0, lty=3)
+#for (i in 2:nsamplesMA) {
+#  den <- density(lcpmMAfil[,i])
+#  lines(den$x,den$y,col=colMA[i],lwd=2)
+#}
+#legend("topright",samplenames.MA,text.col=colMA,bty="n",cex=0.4,ncol=4)
+#}
+############################################################################################
+#normalization
+#x.normGC.test <- calcNormFactors(x.GC.test, method="TMM")
+#x.normGC.test$samples
+#x.normGC.test
+x.GC <- calcNormFactors(x.GC,method="TMM")
+#x.normMA <- calcNormFactors(x.MA, method="TMM")
+#x.normMA$samples
+#x.normMA
+#this part is not necessary 
+#visually see the data normalized by screwing with the data artificially to make it look a lot different
+#x3 <- x.norm
+#x3$samples$norm.factors <- 1
+#x3$counts[,1] <- ceiling(x3$counts[,1]*0.05)
+#x3$counts[,2] <- x$counts[,2]*5
+#par(mfrow=c(1,2))
+#{
+#  pdf("norm.vs.unnorm.pdf")
+#  par(mfrow=c(1,2))
+#  lcpm1 <- cpm(x3,log=TRUE)
+#boxplot(lcpm,las=2,col=col,main="")
+#title(main="A. Example: unnormalized data",ylab="Log-cpm")
+#x4 <- calcNormFactors(x3)
+#lcpm.4 <- cpm(x4, log=TRUE)
+#boxplot(lcpm.4,las=2, col=col, main="")
+#title(main="B. Example: normalized data", ylab="Log-cpm")
+#}
+#without messing with the data 
+#{
+#  pdf("norm.vs.unnormGC.pdf")
+#  par(mfrow=c(1,2))
+#  lcpmGC <- cpm(x.GC,log=TRUE)
+#boxplot(lcpmGC,las=2,col=colGC,main="")
+#title(main="A. Example: unnormalized data",ylab="Log-cpm")
+
+#lcpmGC1 <- cpm(x.normGC.test, log=TRUE)
+#boxplot(lcpmGC1,las=2, col=colGC, main="")
+#title(main="B. Example: normalized data", ylab="Log-cpm")
+
+#}
+#{
+ # pdf("norm.vs.unnormMA.pdf")
+#  par(mfrow=c(1,2))
+#  lcpmMA <- cpm(x.MA,log=TRUE)
+#boxplot(lcpmMA,las=2,col=colMA,main="")
+#title(main="A. Example: unnormalized data",ylab="Log-cpm")
+#lcpmMA1 <- cpm(x.normMA, log=TRUE)
+#boxplot(lcpmMA1,las=2, col=colMA, main="")
+#title(main="B. Example: normalized data", ylab="Log-cpm")
+#}
+
+```
+
+```{r look at variance, include=FALSE}
+#View(cpmGC)
+lcpmGC <- data.frame(names=row.names(lcpmGC),lcpmGC)
+#lcpmGC <- as.matrix(lcpmGC)
+rownames(lcpmGC) <- c()
+
+genes <- data.frame(x.GC$genes$GENEID, x.GC$genes$TXCHROM)
+
+lcpmGC.test <- merge(genes,lcpmGC, by.x="x.GC.genes.GENEID", by.y="names")
+#View(lcpmGC.test)
+lcpmGC <- lcpmGC.test
+
+#nchrm <- 16
+nchrm <- nlevels(lcpmGC$x.GC.genes.TXCHROM)
+lcpmGC$x.GC.genes.TXCHROM
+chrm <- levels(lcpmGC$x.GC.genes.TXCHROM)
+#colChrm <- colorRampPalette(brewer.pal(16,"Set1"))(nchrm)
+
+
+
+lcpmGC
+#cpmGC <- cpm(x.GC)
+remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
+lcpmGC <- lcpmGC[setdiff(rownames(lcpmGC),remove),]
+x.GC$samples$group
+cpmGC
+length(x.GC$samples$group)
+#lines <- list(c(1:3),c(4:6),c(7:9),c(10:12),c(13:15))
+#lines.GC <- as.factor(c("11","18","1","21","2","31","3","49","4","59","5","61","66","68","6","76","77","7","8","9","A"))
+
+#lcpmGC <-cpm(x.GC, log=TRUE)
+#lcpmGC$chrm <- 
+#  str(x.GC)
+#x.GC$data.frame$TXCHROM
+#nrow(lcpmGC)
+#rm(i)
+#cpmGC[,grep(("11"),colnames(cpmGC))]
+#var <- matrix(nrow=3291,ncol=61)
+#var 
+#plot(density(lcpmGC[,1]),col=colGC[1],lwd=2,ylim=c(0,0.33),las=2,main="",xlab="")
+#title(main="A. Raw Data", xlab="Log-cpm")
+#abline(v=0,lty=3)
+#var <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var),byrow=FALSE) 
+#magic_for(cbind)
+#magic_free()
+#i=2
+#for(i in 2:lines.GC) { 
+#  var <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var),byrow=FALSE)
+ # var[i] <- (apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+  #varAll <- rbind(var,var[i])
+#  for (i in 2:lines.GC) { 
+ #   magic_for(data.frame)
+#    data.frame(var,var[i])
+#  }
+#}
+#apply(cpmGC[,grep(("11"),colnames(cpmGC))],1,var)
+#magic_result_as_dataframe()
+#n.rows <- nrow(cpmGC)
+#n.rows
+#out <- matrix(NA, nrow=n.rows, ncol=ncol(cpmGC))
+#out
+#for (i in 2:lines.GC) {
+#  var <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var),byrow=FALSE)
+#  out[i,] <- (apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+#}
+#str(lines.GC)
+#View(rep.MA)
+#for(line in rep.MA){
+#  for(chr in 1:16){
+#    y.MA <- c(y.MA,median(getChrmRatio.MA(line,chr)[,3],na.rm=T))
+#  }
+#}
+#ratMatMed.MA <- matrix(y.MA,nrow=16,ncol=8)
+#var2 <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
+#for (i in 2:length(lines.GC)) {
+#  v <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+#  var2[i] <- v
+#  varAll <- cbind(var2,var2[i])
+#}
+#rm(i)
+#for (i in 2:length(lines.GC)) {
+#  var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
+#  v <- (apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+#  test.out <- cbind(L11=var, L[i]=v)
+#  return(test.out)
+#}
+#i=2
+names <- colnames(lcpmGC)
+#str(lines.GC)
+length(lcpmGC)
+nrow(lcpmGC)
+rm(i)
+View(lcpmGC)
+
+
+ #ind <- grep(as.character(lines.GC["11"]),names)
+#  cols <- lcpmGC[,ind]
+#  cols <- matrix(apply(cols,1,var))
+
+rm(i)
+#testing to make sure this is doing what I want it to do: find the variance between replicates, not across all lines
+#lineEl <- matrix(data=NA,ncol=3,nrow=length(lcpmGC))
+#lineEl.ind <- grep(as.character(lines.GC[1]),names)
+#ind.El <- lcpmGC[,lineEl.ind]
+#test.M <- matrix(apply(ind.El,1,var))
+#yes it is working
+
+
+colnames(lcpmGC) <- c("gene","chr", ".11.A",".11.B",".11.C",".18.A",".18.B",".18.C",".1.A", ".1.B", ".1.C", ".21.B",".21.C",".2.A", ".2.B", ".2.C", ".31.A",".31.B",".31.C",".3.A", ".3.B", ".3.C",".49.A",".49.B",".49.C",".4.A", ".4.B",".4.C", ".59.A",".59.B",".59.C",".5.A",".5.B", ".5.C", ".61.A",".61.B",".61.C",".66.B",".66.C",".68.A",".68.B",".68.C",".6.A", ".6.B", ".6.C", ".76.A",".76.B",".76.C",".77.A",".77.B",".77.C",".7.A",".7.B", ".7.C", ".8.A", ".8.B", ".8.C",".9.A", ".9.B", ".9.C", ".GCAnc.A" ,".GCAnc.B",".GCAnc.C")
+names <- colnames(lcpmGC)
+lines.G <- c(".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.",".GCAnc.")
+
+i=1
+rm(i)
+v <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
+is.list(v)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  cols <- matrix(apply(cols,1,var))
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  #View(cols)
+  v[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+colnames(v) <- lines.G
+v <- cbind(genes$x.GC.genes.TXCHROM,v)
+v <- data.frame(v)
+
+#(paste("^",lines.GC[i],"$",sep="")
+#v <- cbind(genes$x.GC.genes.TXCHROM,v)
+#v <- cbind(genes$x.GC.genes.GENEID,v)
+#v <- unlist(v)
+#is.list(v)
+
+mean <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
+is.list(mean)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  #View(cols)
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  m <- matrix(apply(cols,1,mean))
+  mean[,i] <- m
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+colnames(mean) <- lines.G
+mean <- cbind(as.factor(genes$x.GC.genes.TXCHROM),mean)
+mean <- data.frame(mean)
+#mean <- data.frame(mean)
+#mean <- unlist(mean)
+
+std <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
+length(lcpmGC)
+is.list(std)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  cols <- matrix(apply(cols,1,sd))
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  #View(cols)
+  std[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+colnames(std) <- lines.G
+std <- cbind(genes$x.GC.genes.TXCHROM,std)
+std <- data.frame(std)
+#std <- unlist(std)
+
+dim(mean)
+dim(v)
+dim(std)
+#std[,3:21] <- as.numeric(std[,3:21])
+cv <- matrix(data=NA,nrow=nrow(mean),ncol=length(ncol(mean)))
+#log transform the coefficient of variance 
+#cv <- log(cv)
+cv <- std[,2:22]/mean[,2:22]
+dim(cv)
+#cv <- transform_to_log_scale(cv)
+#cv <- cbind(genes$x.GC.genes.GENEID,cv)
+colnames(cv) <- lines.G
+cv <- cbind(genes$x.GC.genes.TXCHROM,cv)
+#cv <- data.frame(cv)
+#cv <- unlist(cv)
+#max(subset(cv,select="X3"))
+
+par(mar=c(1,1,1,1))
+#pdf("test.pdf")
+cl <- colors(distinct = TRUE)
+set.seed(15887) # to set random generator seed
+mycols2 <- sample(cl, 16)
+#colChrm <- palette(rainbow(16))
+#mean[,1] <- as.character(mean[,1])
+#nlevels(mean[,1])
+#v <- data.frame(v)
+#na.omit(v)
+#na.omit(mean)
+#testPal <- colorRampPalette()
+#is.list(mean)
+#mean <- unlist(mean)
+#v[,1] <- testPal(16)[as.numeric(cut(v[,1],breaks=16))]
+#is.list(v)
+#v <- unlist(v)
+#mean <- unlist(mean)
+#v <- unlist(v)
+
+plot(mean,v,col=mycols2,log="y")
+legend <- col
+{plot(mean,cv,log="y",col=factor(mean[,1]))
+  
+legend("topright", legend = legend,col=factor(mean[,1]))}
+dim(cv)
+plot(mean,v,col=factor(mean[,1]))
+
+#,legend("topright",chrm,text.col=colChrm,bty="n",cex=0.4,ncol=4)
+
+par(mfrow=c(1,1))
+
+nlevels(colChrm)
+{pdf("test1.pdf")
+plot(mean,cv,col=factor(mean[,1]))
+}
+
+
+### same thing but not log transformed
+#v.c <- matrix(data=NA,nrow=nrow(cpmGC),ncol=length(lines.GC))
+#for (i in 1:length(lines.GC)) {
+#  cpm2 <- cpmGC[,1:60]
+#  ind <- grep(as.character(lines.GC[i]),names)
+#  cols <- cpmGC[,ind]
+#  cols <- matrix(apply(cols,1,var))
+#  rownames(cols) <- c()
+#  colnames(cols) <- c()
+  #View(cols)
+#  v.c[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+#}
+
+#mean.c <- matrix(data=NA,nrow=nrow(cpmGC),ncol=length(lines.GC))
+#for (i in 1:length(lines.GC)) {
+#  cpm2 <- cpmGC[,1:60]
+#  ind <- grep(as.character(lines.GC[i]),names)
+#  cols <- cpmGC[,ind]
+#  #View(cols)
+ # rownames(cols) <- c()
+#  colnames(cols) <- c()
+#  m <- matrix(apply(cols,1,mean))
+#  mean.c[,i] <- m
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+#}
+
+#std.c <- matrix(data=NA,nrow=nrow(cpmGC),ncol=length(lines.GC))
+#for (i in 1:length(lines.GC)) {
+#  cpm2 <- cpmGC[,1:60]
+#  ind <- grep(as.character(lines.GC[i]),names)
+#  cols <- cpmGC[,ind]
+#  cols <- matrix(apply(cols,1,sd))
+#  rownames(cols) <- c()
+#  colnames(cols) <- c()
+#  #View(cols)
+#  std.c[,i] <- cols
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+#}
+#cv.c <- std.c/mean.c
+
+#plot(mean.c,cv.c,col=colGC)
+
+#plot(mean.c,v.c,col=colGC)
+#colnames(v) <- lines.GC
+#View(v)
+#v <- data.frame(v)
+
+for (i in 1:21) {
+  pdf(paste("Dist_Variance",i,".pdf",sep=""))
+  plot(density(v[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
+  title(main=paste("Distribution of Variance",lines.GC[i]),xlab="var of lcpm")
+  abline(v=0,lty=3)
+  dev.off()
+}
+
+#make colnames into the proper column names
+colnames(v) <-  c("11","18","1","21","2","31","3","49","4","59","5","61","66","68","6","76","77","7","8","9","A")
+str(v)
+# all on the same graph 
+{
+pdf("Dis_variance.pdf")
+plot(density(v[,1]),col=colGC[1],lwd=2,las=2,main="",xlab="")
+title(main="Variance", xlab="variance")
+abline(v=0, lty=3)
+for (i in 2:length(lines.GC)) {
+  den <- density(v[,i])
+  lines(den$x,den$y,col=colGC[i],lwd=2)
+}
+abline(v=0,lty=3)
+legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
+}
+#   {
+#  den <- density(lcpmGCfil2[,i])
+#  lines(den$x,den$y,col=colGC[i],lwd=2)
+#}
+#rm(den)
+#View(cols)
+#lcpmGC[,grep(("[21]"),colnames(lcpmGC))]
+#fix 
+#pdf("example.pdf")
+#var2 <- as.matrix(apply(lcpmGC[,grep((lines.GC[1]),colnames(lcpmGC))],1,var),byrow=FALSE)
+#  plot(density(var2[,1]),col=colGC[1],lwd=2,las=2,main="",xlab="")
+#v <- as.matrix(apply(lcpmGC[,grep((lines.GC[2]),colnames(lcpmGC))],1,var))
+#  den <- density(v[,1])
+#  lines(den$x,den$y,col=colGC[2],lwd=2)
+#lines.GC
+#rm(v[i])
+#length(v)
+#length(var2)
+#length((apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var)))
+#histogram of distribution of variance
+#hist(var2)
+#for (i in 2:(lines.GC)) {
+#  var2 <- cbind(var2,(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
+#  return(var2)
+#}
+#var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
+#  test.out <- cbind(L11=var, "l"(i)=(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
+#  return(test.out)
+#remove unwanted rows from cpmGC data frame
+#attempt at aggregate
+#by = list()
+#class(cpmGC)
+#cpmGC <- data.frame(cpmGC)
+#test1 <- aggregate(cpmGC,by = list(cpmGC$HTseq11A,cpmGC$HTseq11B,cpmGC$HTseq11C),var)
+#names <- colnames(cpmGC)
+#dim(v)
+#dim(var2)
+#rm(var2)
+#rm(varAll)
+#varAll <- matrix(varAll,nrow=3292,ncol=61)
+#calcVar <- function (i) {
+#  var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
+#  v <- (apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+#  test.out <- cbind(var, v)
+#  return(test.out)
+#}
+#test.out <- t(tapply(1:length(lines.GC), FUN=calcVar))
+#str(cpmGC)
+#test.out <- sapply(1:length(lines.GC), function(n)
+#  (apply(cpmGC[,grep((n),colnames(cpmGC))],1,var)))
+#magic_for(print, silent=TRUE)
+#for (i in 1:length(lines.GC)) {
+#  var <- as.matrix(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var))
+#  print(var)
+#}
+#magic_result_as_dataframe()
+#l1_var <- apply(cpmGC[,1:3], 1, var)
+#l1_var
+#l1_mean <- apply(cpmGC[,1:3],1,mean)
+#l1_mean
+#correlation of mean and variance
+#cor(l1_mean,l1_var,method="spearman")
+#plot(log2(l1_mean),log2(l1_var),pch=".")
+#plot(l1_var,l1_mean)
+#plot(density(l1_var),pch=".")
+#class(cpmGC)
+#str(cpmGC)
+#samplesTest <- colnames(cpmGC)
+#samplesTest
+#mock_var <- apply(data_subset_cpm[,1:4], 1, var)
+#mock_mean <- apply(data_subset_cpm[,1:4], 1, mean)
+#dht_var <- apply(data_subset_cpm[,5:7], 1, var)
+# dht_mean <- apply(data_subset_cpm[,5:7], 1, mean)
+#par(mfrow=c(1,2))
+#plot(density(mock_mean))
+#plot(density(dht_mean))
+```
+
+Next I want to plot the variance agains the p-value of each gene (does a high variance correlate with a higher p-value??)
+
+```{r unsupervised_clustering_of_samples, include=FALSE}
+#make MDS plots
+#GC
+lcpmGC <- cpm(x.GC,log=TRUE)
+par(mfrow=c(1,2))
+
+col.groupGC <- group.GC
+levels(col.groupGC)
+nlevels(col.groupGC)
+colorsGC = colorRampPalette(brewer.pal(8,"Set1"))(21)
+levels(col.groupGC) <- colorsGC
+col.groupGC
+col.groupGC <- as.character(col.groupGC)
+
+#MA
+#lcpmMA <- cpm(x.normMA,log=TRUE)
+#par(mfrow=c(1,2))
+#col.groupMA <- group.MA
+#levels(col.groupMA)
+#nlevels(col.groupMA)
+#colorsMA = colorRampPalette(brewer.pal(8,"Set1"))(25)
+#levels(col.groupMA) <- colorsMA
+#col.groupMA
+#col.groupMA <- as.character(col.groupMA)
+#col.runMA <- run
+#levels(col.runMA) <- brewer.pal(nlevels(col.runMA), "Set3")
+#col.runMA <- as.character(col.runMA)
+#col.ploidy <- x$samples$ploidy
+#ploidy
+#length(ploidy)
+#levels(col.ploidy) <- brewer.pal(nlevels(col.ploidy),"Set2")
+#col.ploidy <- as.character(col.ploidy)
+#GC
+{
+  pdf(file="sample_groupsGC.pdf")
+  plotMDS(lcpmGC, labels=group.GC, col=col.groupGC)
+title(main="Sample groups")
+}
+#{
+#  pdf(file="sample_groupsMA.pdf")
+#  plotMDS(lcpmMA, labels=group.MA, col=col.groupMA)
+#title(main="Sample groups")
+#}
+
+#{
+#  pdf(file="seq_runMA.pdf")
+#plotMDS(lcpmMA, labels=run, col=col.runMA)
+#title(main="Sequencing Run")
+#}
+#plotMDS(lcpm, labels=ploidy, col=col.ploidy, dim=c(3,4))
+#title(main="B. Ploidy")
+
+#can also look at an interactive MDS plot using glimma
+#not really useful for GC lines 
+glMDSPlot(lcpmGC, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TRUE)
+#umore useful for MA lines because I can see how much of an effect the sequencing run had 
+#glMDSPlot(lcpmMA, labels=paste(group.MA,run,sep="_"),groups=x.MA$samples[,c(2,5)], launch=TRUE)
+```
+
+```{r edgeR exact tests, include = TRUE}
+# all of these are the line compared to its respective ancestor
+#GC lines
+levels(x.GC$samples$group)
+#estimate dispersion
+designGC <- model.matrix(~0+group.GC)
+designGC
+#default
+x.GC <- estimateDisp(x.GC,verbose=FALSE,design = designGC)
+
+colnames(x.GC) <- c(".11.A",".11.B",".11.C",".18.A",".18.B",".18.C",".1.A", ".1.B", ".1.C", ".21.B",".21.C",".2.A", ".2.B", ".2.C", ".31.A",".31.B",".31.C",".3.A", ".3.B", ".3.C",".49.A",".49.B",".49.C",".4.A", ".4.B",".4.C", ".59.A",".59.B",".59.C",".5.A",".5.B", ".5.C", ".61.A",".61.B",".61.C",".66.B",".66.C",".68.A",".68.B",".68.C",".6.A", ".6.B", ".6.C", ".76.A",".76.B",".76.C",".77.A",".77.B",".77.C",".7.A",".7.B", ".7.C", ".8.A", ".8.B", ".8.C",".9.A", ".9.B", ".9.C", ".GCAnc.A" ,".GCAnc.B",".GCAnc.C")
+x.GC$counts
+#setting prior manually 
+#x <- estimateDisp(x,prior.df=20)
+#x <- estimateCommonDisp(x2, prior.df=20)
+#x <- estimateTagwiseDisp(x2, prior.df=20)
+#calculate SD of each gene among replicates
+#levels(x.MA$samples$group)
+#estimate dispersion
+#designMA <- model.matrix(~0+group.MA)
+#designMA
+#default
+#x.MA <- estimateDisp(x.MA,verbose=TRUE,design = designMA)
+
+#lines.GC <- as.factor(c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6","G76","G77","G7","G8","G9","GA"))
+
+#lines.MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","MA","M1","M2","M3","M4","M5",
+ #                       "M6","M7","M8","M9","M11","M15","M28","M88","M108","M119","MAA"))
+#for(i in 1:length(hybrid)){
+ #   eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
+#}
+#i=1
+x.GC$samples$group 
+groups.GC <- x.GC$samples$group
+groups.GC
+lines.G
+#lines.GC
+#lines.GC
+#pval <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.GC))
+pval <- matrix(data=NA, nrow=nrow(x.GC),ncol=length(lines.G))
+str(pval)
+lines.G
+rm(i)
+anc <- lines.G[21]
+anc
+x.GC
+i=1
+rm(i)
+for (i in 1:length(lines.G)) {
+  et <- exactTest(x.GC, pair=c((lines.G[i]),anc))
+  ind <- et$table
+  ind2 <- ind[,3]
+  #rownames(ind2) <- c()
+  #colnames(ind2) <- c()
+  #View(cols)
+  length(ind2)
+  pval[,i] <- ind2
+  # den[,i] <- density(v[,i])
+  #lines(den[i]$x,den[i]$y,col=colGC[i],lwd=2)
+}
+pval <- data.frame(pval)
+colnames(pval) <- lines.G
+pval <- cbind(genes$x.GC.genes.TXCHROM,pval)
+#pval versus coefficient of variation per line 
+#loop
+lines.GC
+line.GC <- c("na","1",   "11" , "18" , "2"  , "21",  "3"  , "31" , "4",  "49" , "5"  , "59" , "6",   "61" ,"66",  "68",  "7" ,  "76"  ,"77",  "8" ,  "9")
+length(line.GC)
+i=20
+rm(i)
+pval[,21]
+colnames(pval)
+names.p <- colnames(pval)
+names.cv <- colnames(cv)
+
+str(cv)
+str(pval)
+
+rm(i)
+length(val)
+length(v)
+lines.G[1]
+rm(i)
+for (i in 1:20) {
+  pdf(paste("pval.vs.cv.Line",lines.G[i],".pdf",sep=""))
+  p <- grep(paste("^",(lines.G[i]),"$",sep=""),names.p)
+  val <- pval[,p]
+  c <- grep(paste("^",(lines.G[i]),"$",sep=""),names.cv)
+  v <- cv[,c]
+  corTest.cv <- cor.test(val,v)
+#  corTest.cv <- c(corTest.cv$p.value)
+  print(ggplot () + geom_point(aes(x=val,y=v,col=pval[,1])) + scale_y_log10()  + labs(title=(paste("Pval vs CV Line",lines.G[i])), y="CV",x="pval") + annotate("text",x=0.9,y=100,label=paste("pval=",corTest.cv$p.value,sep="")) + geom_vline(xintercept=0.05))
+  dev.off()
+}
+
+  
+#ggplot () + geom_point(aes(x=pval$X1,y=cv$X1)) + scale_y_log10() 
+#ggplot(pval,cv,col=colGC,log="y")
+#plot(pval,cv,col=colGC,log="y",xlim=c(0,0.09))
+
+rownames(pval) <- rownames(ind)
+colnames(pval) <- c("G11","G18","G1","G21","G2","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6","G76","G77","G7","G8","G9","GA")
+colnames(pval)
+pval
+View(pval)
+library(coin)
+plot(pval,cv)
+c.test <- cor(c(pval),c(cv))
+corTest.cv <- cor.test(c(pval),c(cv))
+corTest.cv
+corTest.v <- cor.test(c(pval),c(v))
+corTest.v
+symnum(c.test)
+pval.plot <- plot(pval,v,col=colGC,xlim=c(0,0.1))
+
+
+plot(pval,mean)
+lines.GC
+str(lines.GC)
+
+#plot the variance of each line against its pvalue for each gene 
+
+
+for (i in 1:length(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+
+#for (i in 1:length(lines.MA)) {
+#  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+#}
+
+str(table)
+table <- data.frame()
+
+#dim(testsMA)
+#6792 by 125
+#str(testsMA)
+dim(testsGC)
+#6690 by 105 
+str(testsGC)
+list(testsGC)
+#trying something else 
+
+#write this in a generic function
+#resGC <- list(length=length(lines.GC))
+#xacTests <- function(file) {
+  #runs exactTest on each line against the ancestor
+  #puts the output into a table 
+# for (i in seq_along(lines.GC)) {
+#  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+#}
+  #writes the output in a file 
+  #write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+#}
+for (i in seq_along(lines.GC)) {
+  et <- exactTest(x.GC, pair=c((lines.GC[i]),(lines.GC[21])))
+  table <- (et$table)
+  write.csv(table, file = paste("topTags",lines.GC[i],".csv",sep="")) 
+}
+#for (i in 1:length(lines.MA)) {
+#  et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#  table <- (et$table)
+#  write.csv(table, file = paste("topTags",lines.MA[i],".csv",sep="")) 
+#}
+#niceFunction (x,i) {
+#    et <- exactTest(x.MA, pair=c((lines.MA[i]),(lines.MA[25])))
+#    table <- list(et$table)
+#}
+#magic_for()
+#MA.list <- magic_result()
+#output <- vector("list", 21)
+#for (i in 1:length(lines.GC)){
+#   output[i] <- niceFunction(x[i],i)
+#}
+#as.character(group.GC[i]:group.GC[]))
+#G1,2,3,5,6,9, are euploid
+#also 31, 69 
+
+#read in files that I just made since I can't figure out how to actually make my results into an R object...
+tempGC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/GC",pattern = "*.csv", full.names = TRUE)
+#put into R objects
+
+testsGC <- do.call(cbind, lapply(tempGC, function(x) cbind(name = tools::file_path_sans_ext(basename(x)),read.csv(x))))
+View(testsGC)
+
+testsGC <- setNames(lapply(ls(pattern = "*.csv"), function(x) read.csv(x), ls(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/GC",pattern = "*.csv")))
+
+testsGCList
+#find common DE genes in aneuploid lines that are NOT common DE in euploid lines
+#remove genes commonly DE in euploid lines
+#make a list of euploid lines for GC
+
+euploidGC = c("topTagsG1","topTagsG2","topTagsG3","topTagsG5","topTagsG6","topTagsG9","topTagsG31","topTagsG69")
+
+common.euGC <- which((testsGC$name=="topTagsG1" & testsGC$PValue<0.05) & (testsGC$name=="topTagsG2" & testsGC$PValue<0.05))
+length(common.euGC)
+View(common.euGC)
+
+
+
+#& etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
+
+aneuploidGC = c("topTagsG4","topTagsG7","topTagsG8","topTagsG11","topTagsG18","topTagsG21","topTagsG49","topTagsG59","topTagsG61","topTagsG66","topTagsG76","topTagsG77")
+
+common.euGC <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
+
+#exactTests
+tempMA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/edgeR.voom.take2..Rmd_files/exactTests/MA",pattern = "*.csv", full.names = TRUE)
+testsMA <- do.call(cbind, lapply(tempMA, function(x) cbind(name = tools::file_path_sans_ext(basename(x)),read.csv(x))))
+View(testsMA)
+
+
+
+#commonly DE genes in aneuploid lines (for whatever chromosome), not including genes that are DE in euploid lines 
+common.de.aneu <- which(etG4$table$PValue<0.05 & etG7$table$PValue<0.05 & etG8$table$PValue<0.05 & etG11$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG49$table$PValue<0.05 & etG59$table$PValue<0.05 & etG61$table$PValue<0.05 & etG66$table$PValue<0.05 & etG76$table$PValue<0.05 & etG77$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
+length(common.de.aneu)
+common.de.eu.test <- which(pval[,3]<0.05 & pval[,5]<0.05 & pval[,6]<0.05 & pval[,7]<0.05 & pval[,11]<0.05 & pval[,13]<0.05 & pval[,14]<0.05 & pval[,15]<0.05 & pval[,20]<0.05)
+
+length(which(pval[,1]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 11
+length(which(pval[,2]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 18
+length(which(pval[,4]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) # line 21
+length(which(pval[,8]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 49
+length(which(pval[,9]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 4 
+length(which(pval[,10]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 59
+length(which(pval[,12]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) # line 61
+length(which(pval[,16]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 76
+length(which(pval[,17]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 77
+length(which(pval[,18]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 7 
+length(which(pval[,19]<0.05 & pval[,3]>0.05 & pval[,5]>0.05 & pval[,6]>0.05 & pval[,7]>0.05 & pval[,11]>0.05 & pval[,13]>0.05 & pval[,14]>0.05 & pval[,15]>0.05 & pval[,20]>0.05)) #line 8 
+
+
+
+#2/11 lines had more than the expected # of DE Genes 
+#9/11 lines had less than expected # of DE Genes
+
+common.de.test <- which(pval[,1]<0.05 & pval[,2]<0.05 & pval[,4]<0.05 & pval[,8]<0.05 & pval[,9]<0.05 & pval[,10]<0.05 & pval[,12]<0.05 & pval[,16]<0.05 & pval[,17]<0.05 & pval[,18]<0.05 & pval[,19]<0.05)
+
+common.de.test
+#okay so no common de genes across aneuploids for different chromosomes that are not also differentially expressed in the euploid lines 
+
+#what about lines aneuploid for the same chromosome
+#chromosomes the same: 
+#1: 7, 18, 21
+common.de.aneu <- which(etG7$table$PValue<0.05 & etG18$table$PValue<0.05 & etG21$table$PValue<0.05 & etG1$table$PValue>0.05 & etG2$table$PValue>0.05 & etG3$table$PValue>0.05 & etG5$table$PValue>0.05 & etG6$table$PValue>0.05 & etG9$table$PValue>0.05 & etG31$table$PValue>0.05 & etG69$table$PValue>0.05)
+head(etG7$genes$GENEID[common.de.aneu],n=3)
+vennDiagram(et[,2:3], circle.col=c("turquoise","salmon"))
+length(common.de.aneu)
+#5: 4, 40, 49 
+#7: 59, 61 
+#16: 8, 40, 69 
+
+
+#what about common genes in aneuploid lines and forget about euploid lines 
+#what about common genes in all the lines
+
+de.common <- which(etM119$table$PValue<0.05 & etM108$table$PValue<0.05 & etM88$table$PValue<0.05 & etM8$table$PValue>0.05)
+length(de.common)
+
+p <- sort(c(.01,.2,.21,.22,.5,.51,.52,.8,.9))
+padj <- p.adjust(p, method="BH")
+plot(p,ylim=c(0,1),xlim=c(0,length(p)))
+text(seq_along(p),p,round(padj,3),pos=3)
+abline(0,padj[4]/length(p))
+
+
+```
+
+```{r differential expression analysis, include=TRUE}
+#make a design matrix
+#this is under the assumption that the data is normally distributed
+#maybe just use the modeling for when I want to compare lines with same aneuploidies from different batches (to eliminate batch effects?) 
+#although maybe I do want "batch effects" because they're really not batch effects they're biological because they have different heterozygosity levels? 
+View(x.GC$counts)
+design <- model.matrix(~0+group.GC)
+design
+x.GC
+#make contrasts matrix
+contr.matrix <- makeContrasts(
+  X1vsGCA = group.GC1-group.GCAnc,
+  X11vsGCA = group.GC11-group.GCAnc,
+  X18vsGCA = group.GC18-group.GCAnc,
+  X2vsGCA = group.GC2-group.GCAnc,
+  X21vsGCA = group.GC21-group.GCAnc,
+  X3vsGCA = group.GC3-group.GCAnc,
+  X31vsGCA = group.GC31-group.GCAnc,
+  X4vsGCA = group.GC4-group.GCAnc,
+  X49vsGCA = group.GC49-group.GCAnc,
+  X5vsGCA = group.GC5-group.GCAnc,
+  X59vsGCA = group.GC59-group.GCAnc,
+  X6vsGCA = group.GC6-group.GCAnc,
+  X61vsGCA = group.GC61-group.GCAnc,
+  X66vsGCA = group.GC66-group.GCAnc,
+  X68vsGCA = group.GC68-group.GCAnc,
+  X7vsGCA = group.GC7-group.GCAnc,
+  X76vsGCA = group.GC76-group.GCAnc,
+  X77vsGCA = group.GC77-group.GCAnc,
+  X8vsGCA = group.GC8-group.GCAnc,
+  X9vsGCA = group.GC9-group.GCAnc,
+  levels=colnames(design)
+)
+contr.matrix
+
+x.GC$samples$group
+#voom mean-variance trend
+v <- voom(x.GC, design,plot=TRUE)
+v
+
+v <- voom(x.normGC.test, design,plot=TRUE)
+v
+
+# (DE in all aneuploid)  NOT (DE in all euploid lines)
+
+# indices of (DE in all aneuploid)
+# vector of line names such that numbers
+#vector of line names in order
+#lab_strain <- c("M119vsMA",	"M2vsMA",	"M7vsMA",	"X117vsMAnc",	"X115vsMAnc",	"X152vsMAnc",	"X29vsMAnc",	"M11vsMA",	"M3vsMA",	"M88vsMA",	"X50vsMAnc",	"M15vsMA",	"M4vsMA",	"M8vsMA",	"M1vsMA",	"M5vsMA",	"M9vsMA",	"X141vsMAnc",	"M108vsMA",	"M28vsMA",	"M6vsMA",	"X112vsMAA",	"X123vsMAnc")
+
+hybrid <-  c("X5vsGCA",	"X76vsGCA",	"X18vsGCA",	"X2vsGCA",	"X49vsGCA",	"X61vsGCA",	"X77vsGCA",	"X11vsGCA",	"X1vsGCA",	"X4vsGCA",	"X66vsGCA",	"X7vsGCA",	"X21vsGCA",	"X3vsGCA",	"X59vsGCA",	"X6vsGCA",	"X9vsGCA",	"X31vsGCA",	"X69vsGCA",	"X8vsGCA")
+
+#GC <- as.factor(c("G11","G18","G1","G2","G21","G31","G3","G49","G4","G59","G5","G61","G66","G69","G6","G76","G77","G7","G8","G9"))
+#length(GC)
+#MA <- as.factor(c("M112","M115","M117","M123","M141","M152","M29","M50","M1","M2","M3","M4","M5","M6","M7","M8","M9","M11","M15","M28","M88","M108","M119"))
+#length(MA)
+
+# indices of (DE in all euploid)
+
+# set diff( all lines , intersect((DE in all aneuploid)  & (DE in all euploid lines) )
+setdiff()
+
+de.common <- which(et[,2]!=0 & et[,3]!=0 & et[,1]!=0 & et[,4]!=0 & et[,5]!=0)
+length(de.common)
+eval(    parse(text=paste("genes <- ",hybrid[1])   )    )
+for(i in 1:length(hybrid)){
+    eval(    parse(text=paste("genes <- intersect(genes,",hybrid[i],")")   )    )
+}
+
+#linear models for comparisons
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit,contrasts=contr.matrix)
+#in my analysis, get rid of the eBayes part and see if it helps increase the number of DE genes
+efit <- eBayes(vfit)
+plotSA(efit)
+ordinary.t <- efit$coef[,2]/efit$stdev.unscaled[,2]/efit$sigma
+
+#looking at the number of DE genes
+summary(decideTests(efit))
+et <- decideTests(efit)
+
+#do lines with no DE genes have higher variance? 
+#sort DE genes by # lines in which they appear
+i=1
+for(i in 1:length(hybrid)){
+    eval(    parse(text=paste("genes <- c(genes,unname(unlist(",hybrid[i],"[1])))",sep = "")   )    )
+}
+genes <- unlist(genes)
+for(i in 1:length(hybrid)) {
+    # prepare call string
+    name_call <- paste("genes <- c(genes,unname(unlist(",hybrid[i],"[,1])))",sep = "")
+    # evaluate command from string
+    nth <- eval(parse(text= name_call))
+    print(nth)
+}
+genes
+genes <- unlist(genes,recursive=TRUE)
+genes.interest <- genes[1:length(genes)]
+genes.interest <- unlist(genes.interest)
+
+
+str(genes)
+class(genes)
+class(hybrid[i])
+str(M108vsMA)
+class(M108vsMA)
+#can use log-FC above or below certain value to make the cutoff stricter 
+#use treat for this
+#do not use
+#tfit <- treat(vfit,lfc=1)
+#dt <- decideTests(tfit)
+#summary(dt)
+
+#can find commonly DE genes (this is between line 11 and line 112)
+de.common <- which(et[,2]!=0 & et[,3]!=0)
+length(de.common)
+#7 common DE genes 
+
+head(efit$genes$GENEID[de.common],n=44)
+vennDiagram(et[,2:3], circle.col=c("turquoise","salmon"))
+write.fit(efit, et, file="results11.112.txt")
+
+#looking at individual DE genes from top to bottom
+for (i in 1:43){
+    eval( parse(text = paste("DE_",toString(i)," <- topTable(efit, coef=",toString(i),", n=Inf)",sep="")))
+  }
+X1vsGCA <- topTable(efit, coef=1, n=Inf)
+X11vsGCA <- topTable(efit, coef=2, n=Inf)
+X112vsMAA <- topTable(efit, coef=3, n=Inf)
+X115vsMAnc  <- topTable(efit, coef=4, n=Inf)
+X117vsMAnc <- topTable(efit, coef=5, n=Inf)
+X123vsMAnc <- topTable(efit, coef=6, n=Inf)
+X141vsMAnc <- topTable(efit, coef=7, n=Inf)
+X152vsMAnc <- topTable(efit, coef=8, n=Inf)
+X18vsGCA <- topTable(efit, coef=9, n=Inf)
+X2vsGCA <- topTable(efit, coef=10, n=Inf)
+X21vsGCA <- topTable(efit, coef=11, n=Inf)
+X29vsMAnc <- topTable(efit, coef=12, n=Inf)
+X3vsGCA <- topTable(efit, coef=13, n=Inf)
+X31vsGCA <- topTable(efit, coef=14, n=Inf)
+X4vsGCA <- topTable(efit, coef=15, n=Inf)
+X49vsGCA <- topTable(efit, coef=16, n=Inf)
+X5vsGCA <- topTable(efit, coef=17, n=Inf)
+X50vsMAnc <- topTable(efit, coef=18, n=Inf)
+X59vsGCA <- topTable(efit, coef=19, n=Inf)
+X6vsGCA <- topTable(efit, coef=20, n=Inf)
+X61vsGCA <- topTable(efit, coef=21, n=Inf)
+X66vsGCA <- topTable(efit, coef=22, n=Inf)
+X69vsGCA <- topTable(efit, coef=23, n=Inf)
+X7vsGCA <- topTable(efit, coef=24, n=Inf)
+X76vsGCA <- topTable(efit, coef=25, n=Inf)
+X77vsGCA <- topTable(efit, coef=26, n=Inf)
+X8vsGCA <- topTable(efit, coef=27, n=Inf)
+X9vsGCA <- topTable(efit, coef=28, n=Inf)
+M1vsMA <- topTable(efit, coef=29, n=Inf)
+M2vsMA <- topTable(efit, coef=30, n=Inf)
+M3vsMA <- topTable(efit, coef=31, n=Inf)
+M4vsMA  <- topTable(efit, coef=32, n=Inf)
+M5vsMA <- topTable(efit, coef=33, n=Inf)
+M6vsMA <- topTable(efit, coef=34, n=Inf)
+M7vsMA <- topTable(efit, coef=35, n=Inf)
+M8vsMA <- topTable(efit, coef=36, n=Inf)
+M9vsMA <- topTable(efit, coef=37, n=Inf)
+M11vsMA <- topTable(efit, coef=38, n=Inf)
+M15vsMA <- topTable(efit, coef=39, n=Inf)
+M28vsMA <- topTable(efit, coef=40, n=Inf)
+M88vsMA <- topTable(efit, coef=41, n=Inf)
+M108vsMA <- topTable(efit, coef=42, n=Inf)
+M119vsMA <- topTable(efit, coef=43, n=Inf)
+lines <- c("X1","X11","X112","X115","X117","X123","X141","X152","X18","X2","X21","X29","X3","X31","X4","X49","X5","X50","X59","X6","X61","X66","X69","X7","X76","X77","X8","X9","M1","M2","M3","M4","M5","M6","M7","M8","M9","M11","M15","M28","M88","M108","M119")
+lines <- gsub("X", "G", lines)
+
+View(M119vsMA)
+#want p-value out of these 
+p.vals <- c(M108vsMA$P.Value,M119vsMA$P.Value)
+p.vals
+
+#look at only: G8, G6, G5, G50,G3,G11
+#M29,M123,M117,M117,M112,M115, M119, M1, M2, M5 
+#
+
+
+#can use TopTable for eBayes stuff
+#not sure what to use for non eBayes or Treat stuff
+head(X11vsGCA)
+head(X112vsMAA)
+
+#library(Glimma)
+##graphical representations of DE results
+#plodMD function - highlights the DE genes in a mean-variance plot
+#line 1
+#change names of graphs to represent aneuploid chromosomes and hybrid/lab strains
+{pdf("MD_line1.pdf")
+plotMD(efit, column=1, status=et[,1],main="",xlim=c(-8,13))}
+#line 11
+{pdf ("MD_line11.pdf")
+plotMD(efit, column=2, status=et[,2],main=colnames(efit)[2],xlim=c(-8,13))}
+#line 112
+{pdf("MD_line112.pdf")
+plotMD(efit, column=3, status=et[,3],main=colnames(efit)[3],xlim=c(-8,13))}
+#line 115
+{
+pdf("MD_line115.pdf")
+plotMD(efit, column=4, status=et[,4],main=colnames(efit)[4],xlim=c(-8,13))}
+#line 117
+{pdf("MD_line117.pdf")
+plotMD(efit, column=5, status=et[,5],main=colnames(efit)[5],xlim=c(-8,13))}
+#line123
+{pdf("MD_line123.pdf")
+plotMD(efit, column=6, status=et[,6],main=colnames(efit)[6],xlim=c(-8,13))}
+#line 141
+{pdf("MD_line141.pdf")
+plotMD(efit, column=7, status=et[,7],main=colnames(efit)[7],xlim=c(-8,13))}
+#line152
+{pdf("MD_line152.pdf")
+plotMD(efit, column=8, status=et[,8],main=colnames(efit)[8],xlim=c(-8,13))}
+#line18 
+{pdf("MD_line18.pdf")
+plotMD(efit, column=9, status=et[,9],main=colnames(efit)[9],xlim=c(-8,13))}
+#line 2
+{pdf("MD_line2.pdf")
+plotMD(efit, column=10, status=et[,10],main=colnames(efit)[10],xlim=c(-8,13))}
+#line 21
+{pdf("MD_line21.pdf")
+plotMD(efit, column=11, status=et[,11],main=colnames(efit)[11],xlim=c(-8,13))}
+# line 29
+{pdf("MD_line29.pdf")
+plotMD(efit, column=12, status=et[,12],main=colnames(efit)[12],xlim=c(-8,13))}
+# line 3
+{pdf("MD_line3.pdf")
+plotMD(efit, column=13, status=et[,13],main=colnames(efit)[13],xlim=c(-8,13))}
+# line 31
+{pdf("MD_line31.pdf")
+plotMD(efit, column=14, status=et[,14],main=colnames(efit)[14],xlim=c(-8,13))}
+#line 4 
+{pdf("MD_line4.pdf")
+plotMD(efit, column=15, status=et[,15],main=colnames(efit)[15],xlim=c(-8,13))}
+#line 49
+{pdf("MD_line49.pdf")
+plotMD(efit, column=16, status=et[,16],main=colnames(efit)[16],xlim=c(-8,13))}
+#line 5 
+{pdf("MD_line5.pdf")
+plotMD(efit, column=17, status=et[,17],main=colnames(efit)[17],xlim=c(-8,13))}
+#line 50
+{pdf("MD_line50.pdf")
+plotMD(efit, column=18, status=et[,18],main=colnames(efit)[18],xlim=c(-8,13))}
+#line 59
+{pdf("MD_line59.pdf")
+plotMD(efit, column=19, status=et[,19],main=colnames(efit)[19],xlim=c(-8,13))}
+#line 6
+{pdf("MD_line6.pdf")
+plotMD(efit, column=20, status=et[,20],main=colnames(efit)[20],xlim=c(-8,13))}
+#line 61
+{pdf("MD_line61.pdf")
+plotMD(efit, column=21, status=et[,21],main=colnames(efit)[21],xlim=c(-8,13))}
+#line 66
+{pdf("MD_line66.pdf")
+plotMD(efit, column=22, status=et[,22],main=colnames(efit)[22],xlim=c(-8,13))}
+#line 69
+{pdf("MD_line69.pdf")
+plotMD(efit, column=23, status=et[,23],main=colnames(efit)[23],xlim=c(-8,13))}
+#line 7
+{pdf("MD_line7.pdf")
+plotMD(efit, column=24, status=et[,24],main=colnames(efit)[24],xlim=c(-8,13))}
+#line 76
+{pdf("MD_line76.pdf")
+plotMD(efit, column=25, status=et[,25],main=colnames(efit)[25],xlim=c(-8,13))}
+#line 77 
+{pdf("MD_line77.pdf")
+plotMD(efit, column=26, status=et[,26],main=colnames(efit)[26],xlim=c(-8,13))}
+#line 8
+{pdf("MD_line8.pdf")
+plotMD(efit, column=27, status=et[,27],main=colnames(efit)[27],xlim=c(-8,13))}
+#line 9 
+{pdf("MD_line9.pdf")
+plotMD(efit, column=28, status=et[,28],main=colnames(efit)[28],xlim=c(-8,13))}
+#GC vs MA ancestors 
+{pdf("MD_ancestors.pdf")
+plotMD(efit, column=29, status=et[,29],main=colnames(efit)[29],xlim=c(-8,13))}
+
+
+
+#library(Glimma)
+#glimma has one too
+#its interactive
+glMDPlot(efit,coef=1, status=et[,1], main=colnames(efit)[1], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=2, status=et[,2], main=colnames(efit)[2], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=3, status=et[,3], main=colnames(efit)[3], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=4, status=et[,4], main=colnames(efit)[4], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=5, status=et[,5], main=colnames(efit)[5], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=6, status=et[,6], main=colnames(efit)[6], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=7, status=et[,7], main=colnames(efit)[7], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=8, status=et[,8], main=colnames(efit)[8], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=9, status=et[,9], main=colnames(efit)[9], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=10, status=et[,10], main=colnames(efit)[10], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=11, status=et[,11], main=colnames(efit)[11], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=12, status=et[,12], main=colnames(efit)[12], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=13, status=et[,13], main=colnames(efit)[13], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=14, status=et[,14], main=colnames(efit)[14], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=15, status=et[,15], main=colnames(efit)[15], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=16, status=et[,16], main=colnames(efit)[16], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=17, status=et[,17], main=colnames(efit)[17], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=18, status=et[,18], main=colnames(efit)[18], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=19, status=et[,19], main=colnames(efit)[19], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=20, status=et[,20], main=colnames(efit)[20], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=21, status=et[,21], main=colnames(efit)[21], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=22, status=et[,22], main=colnames(efit)[22], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=23, status=et[,23], main=colnames(efit)[23], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=24, status=et[,24], main=colnames(efit)[24], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=25, status=et[,25], main=colnames(efit)[25], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=26, status=et[,26], main=colnames(efit)[26], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=27, status=et[,27], main=colnames(efit)[27], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=28, status=et[,28], main=colnames(efit)[28], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+glMDPlot(efit,coef=29, status=et[,29], main=colnames(efit)[29], id.column="GENENAME", counts=x$counts, groups=group, launch=TRUE)
+
+#can also create heatmaps
+#for certain contrasts
+
+X11.vs.anc.topgenes <- X11vsGCA$GENEID[1:20]
+
+i <- which(v$genes$GENEID %in% X11.vs.anc.topgenes)
+mycol <- colorpanel(1000,"blue","white","red")
+v$E[i,]
+heatmap.2(v$E[i,],scale="row",col=mycol, labRow=v$genes$GENENAME[i],density.info="none",dendrogram="column")
+par("mar")
+par(mar=c(1,1,1,1))
+
+#plot variance of each gene among replicates
+x$samples$group
+#standard deviation of each gene, average of SD across replicates
+#plot level of DE against variance in scatterplot
+x$counts
+x$genes$GENEID
+View(lcpm)
+
+#loop: get unique(x$samples$group) 
+groupNames <- unique(x$samples$group)
+ancestors = c("GA","MA","OMA");
+groupNamesNoAncestors = setdiff(groupNames,ancestors)
+stdevs <- matrix(data=NA,nrow=nrow(lcpm),ncol=length(groupNamesNoAncestors))
+for (i in 1:length(groupNamesNoAncestors)) {
+      ind <- which((ifelse(groups %in% groupNamesNoAncestors[i], 1, 0))!=0)
+   if (length(ind)>1){   
+        #stdevs[,i] <- sd(lcpm[,ind])
+        stdevs[,i] <- apply(lcpm[,ind],1,sd)
+      }
+} 
+
+#get rid of NAs
+
+#plot these by DE level of each gene 
+#from the exactTest/decideTests but without p value cutoff 
+groups
+groupNames
+
+#for (i in 1:43){
+#  eval( parse(text = paste(" <- "DE_",toString(i)",sep="")))
+#  ifelse( %in% )
+#}
+#plot(M108vsMA$adj.P.Val,ifelse(stdevs %in% groupNames[M108]))
+# which((ifelse(groups %in% groupNames[i], 1, 0))!=0)
+
+#plot BCV
+#normal
+plotBCV(x2,xlab="Average log CPM", ylab="Biological coefficient of variation",
+     pch=16, cex=0.2, col.common="red", col.trend="blue", col.tagwise="black")
+#prior set to 20 
+plotBCV(x,xlab="Average log CPM", ylab="Biological coefficient of variation",
+     pch=16, cex=0.2, col.common="red", col.trend="blue", col.tagwise="black")
+
+
+ 
+```
+
+```{r camera and mroast to find DE genes, include=TRUE}
+ubp6 <- c("YFR010W")
+idx <- ids2indices(ubp6, X11vsGCA$GENEID,remove.empty=TRUE)
+camera(X11vsGCA, ubp6, design)
+
+
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -329,7 +329,7 @@ using *read.table*.
 
 ```{r htseqInput}
 sampleFiles <- list.files(directory)
-sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_shrt.csv",header=TRUE)
+sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
 sampleTable <- data.frame(sampleName = sampleInfo$sample,
                           fileName = sampleInfo$filename,
                           run = sampleInfo$seq_run,
@@ -516,7 +516,7 @@ hist(resSV7$pvalue,col="green", main="7 vs Anc, with aneuploid c'somes", xlab="p
 #################
 #subset data set to do one comparison at a time 
 colnames(ddsHTSeq)
-ddsS1 <- ddsHTSeq[,c(7:9,49:51)]
+ddsS1 <- ddsHTSeq[,c(7:9,46:48)]
 ddsS1$condition <- droplevels(ddsS1$condition)
 ddsS1$run <- droplevels(ddsS1$run)
 colnames(ddsS1)
@@ -547,7 +547,7 @@ mcols(ddsS1) <- cbind(mcols(ddsS1), genes)
 #######################################################################################
 #sample 2 
 colnames(ddsHTSeq)
-ddsS2 <- ddsHTSeq[,c(10:12,49:51)]
+ddsS2 <- ddsHTSeq[,c(10:12,46:48)]
 ddsS2$condition <- droplevels(ddsS2$condition)
 ddsS2$run <- droplevels(ddsS2$run)
 colnames(ddsS2)
@@ -558,7 +558,7 @@ attr(dispersionFunction(ddsS2),"dispPriorVar")
 #######################################################################################
 #sample 3 
 colnames(ddsHTSeq)
-ddsS3 <- ddsHTSeq[,c(13:15,49:51)]
+ddsS3 <- ddsHTSeq[,c(13:15,46:48)]
 ddsS3$condition <- droplevels(ddsS3$condition)
 ddsS3$run <- droplevels(ddsS3$run)
 colnames(ddsS3)
@@ -569,7 +569,7 @@ attr(dispersionFunction(ddsS3),"dispPriorVar")
 #######################################################################################
 #sample 4 
 colnames(ddsHTSeq)
-ddsS4 <- ddsHTSeq[,c(19:21,49:51)]
+ddsS4 <- ddsHTSeq[,c(19:21,46:48)]
 ddsS4$condition <- droplevels(ddsS4$condition)
 ddsS4$run <- droplevels(ddsS4$run)
 colnames(ddsS4)
@@ -580,11 +580,12 @@ attr(dispersionFunction(ddsS4),"dispPriorVar")
 #######################################################################################
 #sample 5 
 colnames(ddsHTSeq)
-ddsS5 <- ddsHTSeq[,c(25:27,49:51)]
+ddsS5 <- ddsHTSeq[,c(25:27,46:48)]
 ddsS5$condition <- droplevels(ddsS5$condition)
 ddsS5$run <- droplevels(ddsS5$run)
 colnames(ddsS5)
 ddsS5 <- estimateSizeFactors(ddsS5)
+
 ddsS5 <- estimateDispersions(ddsS5)
 ddsS5 <- DESeq(ddsS5)
 
@@ -603,7 +604,8 @@ attr(dispersionFunction(ddsS5),"dispPriorVar")
 #######################################################################################
 #sample 7 
 colnames(ddsHTSeq)
-ddsS7 <- ddsHTSeq[,c(40:42,49:51)]
+
+ddsS7 <- ddsHTSeq[,c(37:39,46:48)]
 ddsS7$condition <- droplevels(ddsS7$condition)
 ddsS7$run <- droplevels(ddsS7$run)
 colnames(ddsS7)
@@ -614,7 +616,7 @@ attr(dispersionFunction(ddsS7),"dispPriorVar")
 #######################################################################################
 #sample 8 
 colnames(ddsHTSeq)
-ddsS8 <- ddsHTSeq[,c(43:45,49:51)]
+ddsS8 <- ddsHTSeq[,c(40:42,46:48)]
 ddsS8$condition <- droplevels(ddsS8$condition)
 colnames(ddsS8)
 ddsS8 <- DESeq(ddsS8)
@@ -624,7 +626,7 @@ attr(dispersionFunction(ddsS8),"dispPriorVar")
 #######################################################################################
 #sample 9 
 colnames(ddsHTSeq)
-ddsS9 <- ddsHTSeq[,c(46:48,49:51)]
+ddsS9 <- ddsHTSeq[,c(43:45,46:48)]
 ddsS9$condition <- droplevels(ddsS9$condition)
 ddsS9$run <- droplevels(ddsS9$run)
 colnames(ddsS9)
@@ -635,7 +637,7 @@ attr(dispersionFunction(ddsS9),"dispPriorVar")
 #######################################################################################
 #sample 18 
 colnames(ddsHTSeq)
-ddsS18 <- ddsHTSeq[,c(4:6,49:51)]
+ddsS18 <- ddsHTSeq[,c(4:6,46:48)]
 ddsS18$condition <- droplevels(ddsS18$condition)
 ddsS18$run <- droplevels(ddsS18$run)
 colnames(ddsS18)
@@ -646,7 +648,7 @@ attr(dispersionFunction(ddsS18),"dispPriorVar")
 #######################################################################################
 #sample 11 
 colnames(ddsHTSeq)
-ddsS11 <- ddsHTSeq[,c(1:3,49:51)]
+ddsS11 <- ddsHTSeq[,c(1:3,46:48)]
 ddsS11$condition <- droplevels(ddsS11$condition)
 ddsS11$run <- droplevels(ddsS11$run)
 colnames(ddsS11)
@@ -657,7 +659,7 @@ attr(dispersionFunction(ddsS11),"dispPriorVar")
 #######################################################################################
 #sample 49 
 colnames(ddsHTSeq)
-ddsS49 <- ddsHTSeq[,c(16:18,49:51)]
+ddsS49 <- ddsHTSeq[,c(16:18,46:48)]
 ddsS49$condition <- droplevels(ddsS49$condition)
 ddsS49$run <- droplevels(ddsS49$run)
 colnames(ddsS49)
@@ -668,7 +670,7 @@ attr(dispersionFunction(ddsS49),"dispPriorVar")
 #######################################################################################
 #sample 59 
 colnames(ddsHTSeq)
-ddsS59 <- ddsHTSeq[,c(22:24,49:51)]
+ddsS59 <- ddsHTSeq[,c(22:24,46:48)]
 ddsS59$condition <- droplevels(ddsS59$condition)
 ddsS59$run <- droplevels(ddsS59$run)
 colnames(ddsS59)
@@ -679,7 +681,7 @@ attr(dispersionFunction(ddsS59),"dispPriorVar")
 #######################################################################################
 #sample 61 
 colnames(ddsHTSeq)
-ddsS61 <- ddsHTSeq[,c(28:30,49:51)]
+ddsS61 <- ddsHTSeq[,c(28:30,46:48)]
 ddsS61$condition <- droplevels(ddsS61$condition)
 ddsS61$run <- droplevels(ddsS61$run)
 colnames(ddsS61)
@@ -688,20 +690,20 @@ ddsS61 <- DESeq(ddsS61)
 attr(dispersionFunction(ddsS61),"dispPriorVar")
 
 #######################################################################################
-#sample 69 
-colnames(ddsHTSeq)
-ddsS69 <- ddsHTSeq[,c(31:33,49:51)]
-ddsS69$condition <- droplevels(ddsS69$condition)
-ddsS69$run <- droplevels(ddsS69$run)
-colnames(ddsS69)
-ddsS69 <- DESeq(ddsS69)
-####find dispersion prior variance 
-attr(dispersionFunction(ddsS69),"dispPriorVar")
+# #sample 69 
+# colnames(ddsHTSeq)
+# ddsS69 <- ddsHTSeq[,c(31:33,46:48)]
+# ddsS69$condition <- droplevels(ddsS69$condition)
+# ddsS69$run <- droplevels(ddsS69$run)
+# colnames(ddsS69)
+# ddsS69 <- DESeq(ddsS69)
+# ####find dispersion prior variance 
+# attr(dispersionFunction(ddsS69),"dispPriorVar")
 
 #######################################################################################
 #sample 76 
 colnames(ddsHTSeq)
-ddsS76 <- ddsHTSeq[,c(34:36,49:51)]
+ddsS76 <- ddsHTSeq[,c(31:33,46:48)]
 ddsS76$condition <- droplevels(ddsS76$condition)
 ddsS76$run <- droplevels(ddsS76$run)
 colnames(ddsS76)
@@ -712,7 +714,7 @@ attr(dispersionFunction(ddsS76),"dispPriorVar")
 #######################################################################################
 #sample 77 
 colnames(ddsHTSeq)
-ddsS77 <- ddsHTSeq[,c(37:39,49:51)]
+ddsS77 <- ddsHTSeq[,c(34:36,46:48)]
 ddsS77$condition <- droplevels(ddsS77$condition)
 ddsS77$run <- droplevels(ddsS77$run)
 colnames(ddsS77)
@@ -726,6 +728,14 @@ resS1 <- results(ddsS1, contrast=c("condition","Holly_1","Holly_Anc"))
 summary(resS1)
 hist(resS1$pvalue,col="pink", main="1 vs Anc, with aneuploid c'somes", xlab="p values")
 sigGenes1 <- rownames(subset(resS1,padj<0.1))
+s1FC <- resS1$log2FoldChange
+s1FC <- as.data.frame(s1FC)
+rownames(s1FC) <- rownames(resS1)
+s1FC <- cat(s1FC,resS1$padj)
+resS1$padj
+
+View(s1FC)
+write.csv(s1FC,file="s1FC.csv")
 #line 2 
 resS2 <- results(ddsS2, contrast=c("condition","Holly_2","Holly_Anc"))
 summary(resS2)
@@ -1057,26 +1067,32 @@ eupLines <- c(1,2,3,5,9)
 library(data.table)
 
 res1Dat <- as.data.frame(res1)
+write.csv(res1Dat, file="s1DEseqRes.csv")
 setDT(res1Dat, keep.rownames = TRUE)[]
 setnames(res1Dat, 1, "GENEID")
+
 genes1DE <- subset(res1Dat,padj<0.1)
 
 res2Dat <- as.data.frame(res2)
+write.csv(res2Dat, file="s2DEseqRes.csv")
 setDT(res2Dat, keep.rownames = TRUE)[]
 setnames(res2Dat, 1, "GENEID")
 genes2DE <- subset(res2Dat,padj<0.1)
 
 res3Dat <- as.data.frame(res3)
+write.csv(res3Dat, file="s3DEseqRes.csv")
 setDT(res3Dat, keep.rownames = TRUE)[]
 setnames(res3Dat, 1, "GENEID")
 genes3DE <- subset(res3Dat,padj<0.1)
 
 res5Dat <- as.data.frame(res5)
+write.csv(res5Dat, file="s5DEseqRes.csv")
 setDT(res5Dat, keep.rownames = TRUE)[]
 setnames(res5Dat, 1, "GENEID")
 genes5DE <- subset(res5Dat,padj<0.1)
 
 res9Dat <- as.data.frame(res9)
+write.csv(res9Dat, file="s9DEseqRes.csv")
 setDT(res9Dat, keep.rownames = TRUE)[]
 setnames(res9Dat, 1, "GENEID")
 genes9DE <- subset(res9Dat,padj<0.1)
@@ -1096,6 +1112,7 @@ common1235.9 <- inner_join(common123.5, genes9DE, by="GENEID")
 
 ```{r common DE genes, Aneuploids, include=TRUE}
 res4Dat <- as.data.frame(res4)
+write.csv(res4Dat, file="s4DEseqRes.csv")
 setDT(res4Dat, keep.rownames = TRUE)[]
 setnames(res4Dat, 1, "GENEID")
 genes4DE <- subset(res4Dat,padj<0.1)
@@ -3294,15 +3311,69 @@ in the following code and visually by MA-plots in the following figures.
 ```{r lfcThresh}
 par(mfrow=c(2,2),mar=c(2,2,1,1))
 ylim <- c(-2.5,2.5)
-resGA <- results(dds, lfcThreshold=.5, altHypothesis="greaterAbs", test="Wald")
-resLA <- results(dds, lfcThreshold=.5, altHypothesis="lessAbs", test="Wald")
-resG <- results(dds, lfcThreshold=.5, altHypothesis="greater", test="Wald")
-resL <- results(dds, lfcThreshold=.5, altHypothesis="less", test="Wald")
-drawLines <- function() abline(h=c(-.5,.5),col="dodgerblue",lwd=2)
-plotMA(resGA, ylim=ylim); drawLines()
-plotMA(resLA, ylim=ylim); drawLines()
-plotMA(resG, ylim=ylim); drawLines()
-plotMA(resL, ylim=ylim); drawLines()
+# resGA <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="greaterAbs", test="Wald")
+# resLA <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="lessAbs", test="Wald")
+# resG <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="greater", test="Wald")
+# resL <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="less", test="Wald")
+# drawLines <- function() abline(h=c(-.5,.5),col="dodgerblue",lwd=2)
+# plotMA(resGA, ylim=ylim); drawLines()
+# plotMA(resLA, ylim=ylim); drawLines()
+# plotMA(resG, ylim=ylim); drawLines()
+# plotMA(resL, ylim=ylim); drawLines()
+
+# Test for DC 
+ddsNoAneuInNorm$condition
+res11DC <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0,altHypothesis = "greaterAbs",test="Wald")
+View(res11DC$padj)
+write.csv(res11DC,file="res11DC.csv")
+res11DCnS <- as.data.frame(subset(res11DC,padj>0.1))
+res11DCnS <- cbind(names = rownames(res11DCnS), res11DCnS)
+res11DCS <- as.data.frame(subset(res11DC,padj<=0.1))
+res11DCS <- cbind(names = rownames(res11DCS), res11DCS)
+
+res11noDCTri <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0.538,altHypothesis = "greater",test="Wald")
+View(res11noDCTri$padj)
+write.csv(res11noDCTri,file="res11noDCTri.csv")
+res11noDCTriS <- as.data.frame(subset(res11noDCTri,padj<=0.1))
+res11noDCTriS <- cbind(names = rownames(res11noDCTriS), res11noDCTriS)
+res11noDCTriNS <- as.data.frame(subset(res11noDCTri,padj>0.1))
+res11noDCTriNS <- cbind(names = rownames(res11noDCTriNS), res11noDCTriNS)
+
+
+res11noDCMon <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 1,altHypothesis = "less",test="Wald")
+View(res11noDCMon$padj)
+write.csv(res11noDCMon,file="res11noDCMon.csv")
+res11noDCMonS <- as.data.frame(subset(res11noDCMon,padj<=0.1))
+res11noDCMonS <- cbind(names = rownames(res11noDCMonS), res11noDCMonS)
+res11noDCMonNS <- as.data.frame(subset(res11noDCMon,padj>0.1))
+res11noDCMonNS <- cbind(names = rownames(res11noDCMonNS), res11noDCMonNS)
+
+
+# now for the intersections 
+# No DC:
+  # intersection of no DC test not sig and DC test sig 
+
+    res11MonNoDC <- dplyr::inner_join(res11noDCMonNS,res11DCnS,by="names")
+    write.csv(res11MonNoDC,file="Sample11NoDCMon.csv")
+    res11TriNoDC <- dplyr::inner_join(res11noDCTriNS,res11DCnS,by="names")
+    write.csv(res11TriNoDC,file="Sample11NoDCTri.csv")
+    
+# DC 
+    # intersection of no DC test sig and DC test not sig
+    res11MonDC <- dplyr::inner_join(res11noDCMonS,res11DCnS,by="names")
+    write.csv(res11MonDC,file="Sample11DCMon.csv")
+    res11TriDC <- dplyr::inner_join(res11noDCTriS,res11DCnS,by="names")
+    write.csv(res11TriDC,file="Sample11DCTri.csv")
+    View(res11MonDC)
+# partial?
+    # intersection of no DC test sig and DC test sig
+    res11MonPartial <- dplyr::inner_join(res11noDCMonS,res11DCS,by="names")
+    write.csv(res11MonPartial,file="Sample11PartialDCMon.csv")
+    res11TriPartial <- dplyr::inner_join(res11noDCTriS,res11DCS,by="names")
+    write.csv(res11TriPartial,file="Sample11PartialDCTri.csv")
+    
+
+    
 ```
 
 <a name="access"/>

@@ -94,7 +94,7 @@ using *read.table*.
 
 ```{r htseqInput}
 sampleFiles <- list.files(directory)
-sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Drafts/sample_data_shrt.csv",header=TRUE)
+sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
 sampleTable <- data.frame(sampleName = sampleInfo$sample,
                           fileName = sampleInfo$filename,
                           run = sampleInfo$seq_run,
@@ -230,6 +230,209 @@ hist(resSV7$pvalue,col="green", main="7 vs Anc, with aneuploid c'somes", xlab="p
 
 
 ```
+
+```{r look at variance, include=FALSE}
+#calculating variance for each gene in each sample group
+# these were for edgeR, I need to get counts from DESeq
+# lcpmGC <- cpm(x.GC,log=TRUE)
+# cpmGC <- cpm(x.GC)
+# lcpmGC <- data.frame(names=row.names(lcpmGC),lcpmGC)
+# cpmGC <- data.frame(names=row.names(cpmGC),cpmGC)
+counts(ddsHTSeq)
+ddsDef
+
+rownames(lcpmGC) <- c()
+
+genes <- data.frame(x.GC$genes$GENEID, x.GC$genes$TXCHROM)
+genes <- genesGC
+rownames(genes) <- genes$x.GC.genes.GENEID
+
+remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
+genes <- genes[setdiff(rownames(genes),remove),]
+removegenes <- c("YPL241C","YPL163C")
+genes <- genes[setdiff(rownames(genes),removegenes),]
+#genes$x.GC.genes.GENEID <- droplevels(genes$x.GC.genes.GENEID)
+
+
+#remove NAs from data
+
+lcpmGC.test <- merge(genes,lcpmGC, by.x="GENEID", by.y="names")
+lcpmGC <- lcpmGC.test
+
+
+cpmGC.test <- merge(genesGC,cpmGC, by.x="GENEID", by.y="names")
+cpmGC <- cpmGC.test
+write.csv(cpmGC,file="cpm_norm.csv")
+
+nchrm <- nlevels(lcpmGC$x.GC.genes.TXCHROM)
+lcpmGC$x.GC.genes.TXCHROM
+lcpmGC
+x.GC$samples$group
+cpmGC
+length(x.GC$samples$group)
+names <- colnames(lcpmGC)
+length(lcpmGC[,1])
+nrow(lcpmGC)
+rm(i)
+lcpmGC <- na.omit(lcpmGC)
+View(lcpmGC)
+write.csv(lcpmGC,file="log_cpm_norm.csv")
+rm(i)
+#testing to make sure this is doing what I want it to do: find the variance between replicates, not across all lines
+#lineEl <- matrix(data=NA,ncol=3,nrow=length(lcpmGC))
+#lineEl.ind <- grep(as.character(lines.GC[1]),names)
+#ind.El <- lcpmGC[,lineEl.ind]
+#test.M <- matrix(apply(ind.El,1,var))
+#yes it is working
+
+colnames(lcpmGC) <- c("gene","chr", ".11.A",".11.B",".11.C",".18.A",".18.B",".18.C",".1.A", ".1.B", ".1.C", ".21.B",".21.C",".2.A", ".2.B", ".2.C", ".31.A",".31.B",".31.C",".3.A", ".3.B", ".3.C",".49.A",".49.B",".49.C",".4.A", ".4.B",".4.C", ".59.A",".59.B",".59.C",".5.A",".5.B", ".5.C", ".61.A",".61.B",".61.C",".66.B",".66.C",".68.A",".68.B",".68.C",".6.A", ".6.B", ".6.C", ".76.A",".76.B",".76.C",".77.A",".77.B",".77.C",".7.A",".7.B", ".7.C", ".8.A", ".8.B", ".8.C",".9.A", ".9.B", ".9.C", ".GCAnc.A" ,".GCAnc.B",".GCAnc.C")
+names <- colnames(lcpmGC)
+lines.G <- c(".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.",".GCAnc.")
+colnames.G <- c("GENE","CHRM", " .11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.",".GCAnc.")
+
+i=1
+rm(i)
+vari <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
+is.list(vari)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  cols <- matrix(apply(cols,1,var))
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  vari[,i] <- cols
+}
+
+vari <- as.data.frame(vari)
+#vari <- cbind(as.factor(genes$x.GC.genes.TXCHROM),vari)
+View(vari)
+vari <- cbind(lcpmGC$gene,lcpmGC$chr,vari)
+colnames(vari) <- colnames.G
+class(vari[,3])
+vari$GENE <- droplevels(vari$GENE)
+rownames(vari) <- vari$GENE
+#vari2 <- subset(vari, vari[1:3386,]>=0.0001) # & vari[,3:23]>=0.0001)
+#summary(vari[,3:23]>=0.0001)
+#summary(vari[1:3386,]<=0.0001)
+table(rowSums(vari[3:23]>0.0001)>=21)
+keep.genes.GC <- rowSums(vari[,3:23]>=0.0001)>=21
+keep.genes.GC <- as.data.frame(keep.genes.GC)
+keep.genes.GC$genes <- rownames(keep.genes.GC)
+genes2 <- merge(keep.genes.GC,genes,by.x="genes",by.y="x.GC.genes.GENEID")
+genes2 <- genes2[!(genes2$keep.genes.GC=="FALSE"),]
+
+#remove genes with variance less than 0.00001
+lcpmGC <- merge(genes2,lcpmGC, by.x="genes", by.y="gene")
+lcpmGC <- lcpmGC[,-2]
+lcpmGC <- lcpmGC[,-3]
+lcpmGC <- droplevels(lcpmGC)
+vari2 <- merge(vari,lcpmGC,by.x="GENE",by.y="genes")
+
+mean <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
+is.list(mean)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  m <- matrix(apply(cols,1,mean))
+  mean[,i] <- m
+}
+mean <- as.data.frame(mean)
+mean <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,mean)
+colnames(mean) <- colnames.G
+
+
+std <- matrix(data=NA,nrow=nrow(lcpmGC),ncol=length(lines.G))
+length(lcpmGC)
+is.list(std)
+for (i in 1:length(lines.G)) {
+  ind <- grep(as.character(lines.G[i]),names)
+  cols <- lcpmGC[,ind]
+  cols <- matrix(apply(cols,1,sd))
+  rownames(cols) <- c()
+  colnames(cols) <- c()
+  std[,i] <- cols
+}
+std <- as.data.frame(std)
+std <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,std)
+colnames(std) <- colnames.G
+class(std[,3])
+
+GCanc.stats <- data.frame(mean$GENE, mean$CHRM, mean$.GCAnc.,std$.GCAnc.)
+colnames(GCanc.stats) <- c("GENE","CHRM","mean","std")
+
+
+
+k <- ggplot(GCanc.stats, aes(CHRM, mean))#ymin = mean-std, ymax = mean+std))
+print(k)
+
+
+
+dim(mean)
+dim(vari)
+dim(std)
+#std[,3:23] <- as.numeric(std[,3:23])
+cv <- matrix(data=NA,nrow=nrow(mean),ncol=length(ncol(mean)))
+#log transform the coefficient of variance 
+#cv <- log(cv)
+View(std)
+#mean[,3:23] <- as.numeric(mean[,3:23])
+View(mean)
+is.list(std)
+class(mean[,3:23])
+class(std[,3:23])
+class(mean[,3])
+is.list(mean)
+cv <- std[,3:23]/mean[,3:23]
+dim(cv)
+#cv <- transform_to_log_scale(cv)
+cv <- cbind(lcpmGC$genes,lcpmGC$x.GC.genes.TXCHROM,cv)
+colnames(cv) <- colnames.G
+#cv <- unlist(cv)
+#max(subset(cv,select="X3"))
+
+par(mar=c(1,1,1,1))
+
+#loop to plot mean-variance relationship for all lines
+lines.G
+line.G <- c("NA",".GCAnc.",".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.")
+i=3
+length(line.G)
+length(mean)
+rm(i)
+for (i in 3:23) {
+  pdf(paste("Mean-Variance Relationship",line.G[i],".pdf",sep=""))
+  print(ggplot () + geom_point(aes(x=mean[,i],y=vari2[,i],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[i]), y="variance",x="mean"))
+  dev.off()
+}
+
+#use plotly to view the graph interactively and see what points correspond to what genes/chromosomes 
+length(vari2)
+class(vari2)
+class(mean)
+length(vari2[,1])
+length(mean[,1])
+
+get.points <- function(line) {
+   ggplot () + geom_point(aes(x=mean[,line],y=vari2[,line],col=factor(mean[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",line.G[line]), y="variance",x="mean")
+ggplotly()
+}
+#line=18
+get.points(18)
+
+par(mfrow=c(1,1))
+
+for (i in 3:23) {
+  pdf(paste("Dist_Variance",i,".pdf",sep=""))
+  plot(density(vari2[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
+  title(main=paste("Distribution of Variance",line.G[i]),xlab="var of lcpm")
+  abline(v=0,lty=3)
+  dev.off()
+}
+
+```
+
 
 ```{r full dataset, include=TRUE}
 #####################################################
@@ -1441,6 +1644,8 @@ eupLines <- list(genes1DE, genes2DE, genes3DE, genes5DE, genes9DE)
 commonDEeup <- Reduce(intersect, Map("[[", eupLines, "GENEID"))
 #Reduc
 commonDEeup <- as.vector(commonDEeup)
+commonDEeup <- as.data.frame(commonDEeup)
+colnames(commonDEeup) <- c("names")
 write.csv(commonDEeup, file="commonDEeup.csv")
 
 # what genes are commonly DE in aneuploid lines, but NOT located on the aneuploid chromosomes?
@@ -1597,6 +1802,197 @@ commonDEaneu3 <- Reduce(intersect, Map("[[", aneuLines3, "GENEID"))
 # notDECom <- inner_join(notDECom, notDE77, by="GENEID")
 
 ```
+
+Below is a script for differentiating genes that are differentially expressed from those that are not dosage compensated, dosage compensated, or partially dosage compensated. I used the log fold change threshold function of the results function to isolate these genes. FDR p values < 0.1 were considered statistically significant. 
+
+```{r lfcThresh}
+par(mfrow=c(2,2),mar=c(2,2,1,1))
+ylim <- c(-2.5,2.5)
+# resGA <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="greaterAbs", test="Wald")
+# resLA <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="lessAbs", test="Wald")
+# resG <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="greater", test="Wald")
+# resL <- results(ddsNoAneuInNorm, lfcThreshold=.5, altHypothesis="less", test="Wald")
+# drawLines <- function() abline(h=c(-.5,.5),col="dodgerblue",lwd=2)
+# plotMA(resGA, ylim=ylim); drawLines()
+# plotMA(resLA, ylim=ylim); drawLines()
+# plotMA(resG, ylim=ylim); drawLines()
+# plotMA(resL, ylim=ylim); drawLines()
+
+# Test for DC 
+ddsNoAneuInNorm$condition
+res11DC <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0,altHypothesis = "greaterAbs",test="Wald")
+View(res11DC$padj)
+write.csv(res11DC,file="res11DC.csv")
+res11DCnS <- as.data.frame(subset(res11DC,padj>0.1))
+res11DCnS <- cbind(names = rownames(res11DCnS), res11DCnS)
+res11DCS <- as.data.frame(subset(res11DC,padj<=0.1))
+res11DCS <- cbind(names = rownames(res11DCS), res11DCS)
+
+res11noDCTri <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0.538,altHypothesis = "greater",test="Wald")
+View(res11noDCTri$padj)
+write.csv(res11noDCTri,file="res11noDCTri.csv")
+res11noDCTriS <- as.data.frame(subset(res11noDCTri,padj<=0.1))
+res11noDCTriS <- cbind(names = rownames(res11noDCTriS), res11noDCTriS)
+res11noDCTriNS <- as.data.frame(subset(res11noDCTri,padj>0.1))
+res11noDCTriNS <- cbind(names = rownames(res11noDCTriNS), res11noDCTriNS)
+
+
+res11noDCMon <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 1,altHypothesis = "less",test="Wald")
+View(res11noDCMon$padj)
+write.csv(res11noDCMon,file="res11noDCMon.csv")
+res11noDCMonS <- as.data.frame(subset(res11noDCMon,padj<=0.1))
+res11noDCMonS <- cbind(names = rownames(res11noDCMonS), res11noDCMonS)
+res11noDCMonNS <- as.data.frame(subset(res11noDCMon,padj>0.1))
+res11noDCMonNS <- cbind(names = rownames(res11noDCMonNS), res11noDCMonNS)
+
+
+# now for the intersections 
+# No DC:
+  # intersection of no DC test not sig and DC test sig 
+
+    res11MonNoDC <- dplyr::inner_join(res11noDCMonNS,res11DCnS,by="names")
+    res11MonNoDC <- dplyr::anti_join(res11MonNoDC, commonDEeup,by="names")
+    res11MonNoDC <- dplyr::inner_join(genes,res11MonNoDC,by=c("GENEID"="names"))
+    write.csv(res11MonNoDC,file="Sample11NoDCMon.csv")
+    res11TriNoDC <- dplyr::inner_join(res11noDCTriNS,res11DCnS,by="names")
+    res11TriNoDC <- dplyr::anti_join(res11TriNoDC,commonDEeup,by="names")
+      # add chromosome number
+      res11TriNoDC <- dplyr::inner_join(genes,res11TriNoDC,by=c("GENEID"="names"))
+          write.csv(res11TriNoDC,file="Sample11NoDCTri.csv")
+    
+# DC 
+    # intersection of no DC test sig and DC test not sig
+    res11MonDC <- dplyr::inner_join(res11noDCMonS,res11DCnS,by="names")
+    res11MonDC <- dplyr::anti_join(res11MonDC,commonDEeup,by="names")
+        res11MonDC <- dplyr::inner_join(genes,res11MonDC,by=c("GENEID"="names"))
+    write.csv(res11MonDC,file="Sample11DCMon.csv")
+    res11TriDC <- dplyr::inner_join(res11noDCTriS,res11DCnS,by="names")
+    res11TriDC <- dplyr::anti_join(res11TriDC,commonDEeup,by="names")
+    res11TriDC <- dplyr::inner_join(genes,res11TriDC,by=c("GENEID"="names"))
+    write.csv(res11TriDC,file="Sample11DCTri.csv")
+    View(res11MonDC)
+# partial?
+    # intersection of no DC test sig and DC test sig
+    res11MonPartial <- dplyr::inner_join(res11noDCMonS,res11DCS,by="names")
+    res11MonPartial <- dplyr::anti_join(res11MonPartial,commonDEeup,by="names")
+      res11MonPartial <- dplyr::inner_join(genes,res11MonPartial,by=c("GENEID"="names"))
+    write.csv(res11MonPartial,file="Sample11PartialDCMon.csv")
+    res11TriPartial <- dplyr::inner_join(res11noDCTriS,res11DCS,by="names")
+    res11TriPartial <- dplyr::anti_join(res11TriPartial,commonDEeup,by="names")
+    res11TriPartial <- dplyr::inner_join(genes,res11TriPartial,by=c("GENEID"="names"))
+    write.csv(res11TriPartial,file="Sample11PartialDCTri.csv")
+    
+
+
+# can I make this into a function
+
+testForDCSig <- function(sample1, sample2) {
+  # first get the results for the given sample, and include the lfcThreshold -- 0 in this case as we are testing for DC 
+    # always testing against the ancestor so that can stay the same.
+  res11DC <- results(ddsNoAneuInNorm,contrast=c("condition",sample,"Holly_Anc"),lfcThreshold = 0,altHypothesis = "greaterAbs",test="Wald")
+  # next turn this dataset into a dataframe (from results object), and subset these results by p values greater than 0.1 (NOT SIGNIFICANT)
+  res11DCnS <- as.data.frame(subset(res11DC,padj>0.1))
+  # make the rownames (gene names) a new column called names 
+  res11DCnS <- cbind(names = rownames(res11DCnS), res11DCnS)
+  # do the same thing, subset the dataset but this time pull out p values > or = 0.1 (SIGNIFICANT)
+  res11DCS <- as.data.frame(subset(res11DC,padj<=0.1))
+  # once again make the rownames (gene names) a column called names 
+res11DCS <- cbind(names = rownames(res11DCS), res11DCS)
+# repeat the above, but this time testing for no DC in trisomics
+# lfcThreshold = 0.538 (log2(1.5)), once again always testing against the ancestor
+res11noDCTri <- results(ddsNoAneuInNorm,contrast=c("condition",sample,"Holly_Anc"),lfcThreshold = 0.538,altHypothesis = "greater",test="Wald")
+# subset into significant p values 
+res11noDCTriS <- as.data.frame(subset(res11noDCTri,padj<=0.1))
+# add gene names 
+res11noDCTriS <- cbind(names = rownames(res11noDCTriS), res11noDCTriS)
+# subset into non significant values 
+res11noDCTriNS <- as.data.frame(subset(res11noDCTri,padj>0.1))
+# add gene names
+res11noDCTriNS <- cbind(names = rownames(res11noDCTriNS), res11noDCTriNS)
+
+
+  chr.all <- inner_join(sample1, sample2, by="GENEID") 
+      # match the genes to the genes in genes table that includes chromosome number
+      matched <- intersect(chr.all$GENEID, genesNoAneu$GENEID)
+        # tell R which genes to keep from the chrI.tri dataframe
+        keepAll <- chr.all$GENEID %in% matched
+          # only keep those genes in the data frame 
+          chr.all <- chr.all[keepAll,]
+            # tell R which genes to keep from the genesNoAneu dataframe
+            keepGenAll <- genesNoAneu$GENEID %in% matched
+              # put those genes in a vector 
+              GenAll <- genesNoAneu[keepGenAll,]
+                # tell R to bind Gen chromosome column to chrI.tri data so we know what chromosome the genes are on 
+                chr.all <- cbind(GenAll$TXCHROM, chr.all)
+                return(chr.all)
+}
+
+    ddsNoAneuInNorm$condition
+
+res11DC <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0,altHypothesis = "greaterAbs",test="Wald")
+View(res11DC$padj)
+write.csv(res11DC,file="res11DC.csv")
+res11DCnS <- as.data.frame(subset(res11DC,padj>0.1))
+res11DCnS <- cbind(names = rownames(res11DCnS), res11DCnS)
+res11DCS <- as.data.frame(subset(res11DC,padj<=0.1))
+res11DCS <- cbind(names = rownames(res11DCS), res11DCS)
+
+res11noDCTri <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 0.538,altHypothesis = "greater",test="Wald")
+View(res11noDCTri$padj)
+write.csv(res11noDCTri,file="res11noDCTri.csv")
+res11noDCTriS <- as.data.frame(subset(res11noDCTri,padj<=0.1))
+res11noDCTriS <- cbind(names = rownames(res11noDCTriS), res11noDCTriS)
+res11noDCTriNS <- as.data.frame(subset(res11noDCTri,padj>0.1))
+res11noDCTriNS <- cbind(names = rownames(res11noDCTriNS), res11noDCTriNS)
+
+
+res11noDCMon <- results(ddsNoAneuInNorm,contrast=c("condition","Holly_11","Holly_Anc"),lfcThreshold = 1,altHypothesis = "less",test="Wald")
+View(res11noDCMon$padj)
+write.csv(res11noDCMon,file="res11noDCMon.csv")
+res11noDCMonS <- as.data.frame(subset(res11noDCMon,padj<=0.1))
+res11noDCMonS <- cbind(names = rownames(res11noDCMonS), res11noDCMonS)
+res11noDCMonNS <- as.data.frame(subset(res11noDCMon,padj>0.1))
+res11noDCMonNS <- cbind(names = rownames(res11noDCMonNS), res11noDCMonNS)
+
+
+# now for the intersections 
+# No DC:
+  # intersection of no DC test not sig and DC test sig 
+
+    res11MonNoDC <- dplyr::inner_join(res11noDCMonNS,res11DCnS,by="names")
+    res11MonNoDC <- dplyr::anti_join(res11MonNoDC, commonDEeup,by="names")
+    res11MonNoDC <- dplyr::inner_join(genes,res11MonNoDC,by=c("GENEID"="names"))
+    write.csv(res11MonNoDC,file="Sample11NoDCMon.csv")
+    res11TriNoDC <- dplyr::inner_join(res11noDCTriNS,res11DCnS,by="names")
+    res11TriNoDC <- dplyr::anti_join(res11TriNoDC,commonDEeup,by="names")
+      # add chromosome number
+      res11TriNoDC <- dplyr::inner_join(genes,res11TriNoDC,by=c("GENEID"="names"))
+          write.csv(res11TriNoDC,file="Sample11NoDCTri.csv")
+    
+# DC 
+    # intersection of no DC test sig and DC test not sig
+    res11MonDC <- dplyr::inner_join(res11noDCMonS,res11DCnS,by="names")
+    res11MonDC <- dplyr::anti_join(res11MonDC,commonDEeup,by="names")
+        res11MonDC <- dplyr::inner_join(genes,res11MonDC,by=c("GENEID"="names"))
+    write.csv(res11MonDC,file="Sample11DCMon.csv")
+    res11TriDC <- dplyr::inner_join(res11noDCTriS,res11DCnS,by="names")
+    res11TriDC <- dplyr::anti_join(res11TriDC,commonDEeup,by="names")
+    res11TriDC <- dplyr::inner_join(genes,res11TriDC,by=c("GENEID"="names"))
+    write.csv(res11TriDC,file="Sample11DCTri.csv")
+    View(res11MonDC)
+# partial?
+    # intersection of no DC test sig and DC test sig
+    res11MonPartial <- dplyr::inner_join(res11noDCMonS,res11DCS,by="names")
+    res11MonPartial <- dplyr::anti_join(res11MonPartial,commonDEeup,by="names")
+      res11MonPartial <- dplyr::inner_join(genes,res11MonPartial,by=c("GENEID"="names"))
+    write.csv(res11MonPartial,file="Sample11PartialDCMon.csv")
+    res11TriPartial <- dplyr::inner_join(res11noDCTriS,res11DCS,by="names")
+    res11TriPartial <- dplyr::anti_join(res11TriPartial,commonDEeup,by="names")
+    res11TriPartial <- dplyr::inner_join(genes,res11TriPartial,by=c("GENEID"="names"))
+    write.csv(res11TriPartial,file="Sample11PartialDCTri.csv")
+    
+```
+
 
 More information about extracting specific coefficients from a fitted
 *DESeqDataSet* object can be found in the help page `?results`.

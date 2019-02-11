@@ -229,6 +229,7 @@ write.csv(cpmMAOld,file="cpm_MAOld.csv")
 # use the ancestor as a reference 
 # get rid of all genes where the ancestor counts are <1 
 dim(x.GC)
+View(x.GC$counts)
 View(cpmGC)
 #make a separate data frame with just the ancestor replicates
 ancGC <- cpmGC[,46:48]
@@ -247,43 +248,44 @@ dim(x.GC)
 x.GC <- na.omit(x.GC)
 dim(x.GC)
 
-cpmMANew <- data.frame(names=row.names(cpmMANew),cpmMANew)
-cpmMANew.test <- merge(genesMANew,cpmMANew, by.x="GENEID", by.y="names")
-cpmMANew <- cpmMANew.test
-# table(rowSums(cpmMANew>0.0001)>=3)
-# table(rowSums(cpmMANew>99999)<=1 & rowSums(cpmMANew>0)>=3)
-# keep.exprsMANew <- rowSums(cpmMANew>99999)<=1 & rowSums(cpmMANew>0)>=3
-#keep.exprsGC.test <- rowSums(cpmGC>1.1)>=3
-keepTest <- cpmMANew$AncB>1 & cpmMANew$AncA>1 & cpmMANew$AncC>1
-summary(keepTest)
-#str(keep.exprsGC)
-#str(x.GC)
-# x.MANew <- x.MANew[keep.exprsMANew,keep.lib.sizes=FALSE]
-# cpmMANew2 <- cpm(x.MANew)
-x.MANew.test <- x.MANew[keepTest,keep.lib.sizes=FALSE]
-x.MANew.test$counts
-#x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
+dim(cpmMANew)
+View(cpmMANew)
+#make a separate data frame with just the ancestor replicates
+ancMANew <- cpmMANew[,25:27]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMANew>1)==3)
+keepMANewTest <- rowSums(ancMANew>1)==3
+cpmMANew
+# try it in the full count set 
+# make a test file first 
+x.MANew.str <- x.MANew[keepMANewTest,keep.lib.sizes=FALSE]
+View(x.MANew.str$counts)
+# test file was fine so go ahead and make it the real thing
+x.MANew <- x.MANew.str
 dim(x.MANew)
-#table(rowSums(x.GC.str$counts>0.0001))
-#make x.GC the filtered one 
+## get rid of any NAs
 x.MANew <- na.omit(x.MANew)
-
 dim(x.MANew)
 
-table(rowSums(cpmMAOld>0.0001)>=3)
-table(rowSums(cpmMAOld>99999)<=1 & rowSums(cpmMAOld>0)>=3)
-keep.exprsMAOld <- rowSums(cpmMAOld>99999)<=1 & rowSums(cpmMAOld>0)>=3
-#keep.exprsGC.test <- rowSums(cpmGC>1.1)>=3
-#str(keep.exprsGC)
-#str(x.GC)
-x.MAOld <- x.MAOld[keep.exprsMAOld,keep.lib.sizes=FALSE]
-#x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
+dim(cpmMAOld)
+View(cpmMAOld)
+#make a separate data frame with just the ancestor replicates
+ancMAOld <- cpmMAOld[,46:48]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAOld>1)==3)
+keepMAOldTest <- rowSums(ancMAOld>1)==3
+cpmMAOld
+# try it in the full count set 
+# make a test file first 
+x.MAOld.str <- x.MAOld[keepMAOldTest,keep.lib.sizes=FALSE]
+View(x.MAOld.str$counts)
+# test file was fine so go ahead and make it the real thing
+x.MAOld <- x.MAOld.str
 dim(x.MAOld)
-#table(rowSums(x.GC.str$counts>0.0001))
-#make x.GC the filtered one 
+## get rid of any NAs
 x.MAOld <- na.omit(x.MAOld)
-
 dim(x.MAOld)
+
 #table(rowSums(x.GC.test$counts<=0)==60)
 #table(rowSums(x.GC.test$counts>=1)==60)
 #table(rowSums(cpmGC.test>0.00001)>=60)
@@ -670,6 +672,7 @@ dim(meanGC)
 # because that would be 1 count per million
 # can't do anything with that! 
 meanGC2 <- subset(meanGC, meanGC[,19]>=1)
+View(meanGC2)
 # gets rid of 526 genes 
 # need to get rid of them in the cpm matrix as well 
 genesGC2 <- meanGC2$GENE
@@ -695,6 +698,7 @@ variGC <- as.data.frame(variGC)
 dim(variGC)
 #vari <- cbind(as.factor(genes$x.GC.genes.TXCHROM),vari)
 View(variGC)
+
 variGC <- cbind(lcpmGC$GENEID,lcpmGC$TXCHROM,variGC)
 colnames(variGC) <- colnames.G
 class(variGC[,3])
@@ -742,8 +746,8 @@ colnames(GCanc.stats) <- c("GENE","CHRM","mean","std","variance")
 
 
 
-k <- ggplot(GCanc.stats, aes(CHRM, mean))#ymin = mean-std, ymax = mean+std))
-print(k)
+# k <- ggplot(GCanc.stats, aes(CHRM, mean))#ymin = mean-std, ymax = mean+std))
+# print(k)
 
 dim(meanGC)
 dim(variGC)
@@ -779,7 +783,7 @@ write.csv(cvGCAnc, file="GCAncCV.csv")
 par(mar=c(1,1,1,1))
 
 #loop to plot mean-variance relationship for all lines
-lines.G
+# lines.G
 # cline.G <- c("NA",".GCAnc.",".11.",".18.",".1.",".21.",".2.",".31.",".3.",".49.",".4.",".59.",".5.",".61.",".66.",".68.",".6.", ".76.",".77.",".7.",".8.", ".9.")
 # i=3
 length(lines.G)

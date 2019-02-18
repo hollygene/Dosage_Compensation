@@ -47,8 +47,8 @@ library(apeglm)
 #source("https://bioconductor.org/biocLite.R")
  #       biocLite("parathyroidSE")
 #library("parathyroidSE")
-  #      source("https://bioconductor.org/biocLite.R")
-   #     biocLite("DESeq2")
+       source("https://bioconductor.org/biocLite.R")
+      biocLite("DESeq2")
 library(DESeq2)
 ```	
 
@@ -81,7 +81,55 @@ variable which points to the directory in which the *htseq-count*
 output files are located. 
 
 ```{r htseqDirI, eval=FALSE}
-directory <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
+directoryGC <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
+directoryGC.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes"
+######### each line individually with the ancestor
+directoryGCS1.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S1vsAnc"
+directoryGCS2.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S2vsAnc"
+directoryGCS3.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S3vsAnc"
+directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
+directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
+directoryGCS5.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S5vsAnc"
+directoryGCS7.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S7vsAnc"
+directoryGCS8.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S8vsAnc"
+directoryGCS9.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S9vsAnc"
+directoryGCS11.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S11vsAnc"
+directoryGCS18.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S18vsAnc"
+directoryGCS49.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S49vsAnc"
+directoryGCS59.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S59vsAnc"
+directoryGCS61.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S61vsAnc"
+directoryGCS76.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S76vsAnc"
+directoryGCS77.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S77vsAnc"
+#########################################################
+directoryMAold <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old"
+# MA old lines individually
+directoryMAoldS1 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S1vsAnc"
+directoryMAoldS2 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S2vsAnc"
+directoryMAoldS3 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S3vsAnc"
+directoryMAoldS4 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S4vsAnc"
+directoryMAoldS5 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S5vsAnc"
+directoryMAoldS6 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S6vsAnc"
+directoryMAoldS7 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S7vsAnc"
+directoryMAoldS8 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S8vsAnc"
+directoryMAoldS9 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S9vsAnc"
+directoryMAoldS11 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S11vsAnc"
+directoryMAoldS15 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S15vsAnc"
+directoryMAoldS28 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S28vsAnc"
+directoryMAoldS88 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S88vsAnc"
+directoryMAoldS108 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S108vsAnc"
+directoryMAoldS119 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S119vsAnc"
+########################################################
+directoryMAnew <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded"
+
+#### individual sample directories
+directoryMANewS29 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS29vsAnc"
+directoryMAnewS50 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS50vsAnc"
+directoryMAnewS112 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS112vsAnc"
+directoryMAnewS115 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS115vsAnc"
+directoryMAnewS117 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS117vsAnc"
+directoryMAnewS123 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS123vsAnc"
+directoryMAnewS141 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS141vsAnc"
+directoryMAnewS152 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS152vsAnc"
 
 ```
 
@@ -93,32 +141,766 @@ you might alternatively read in a phenotypic table
 using *read.table*.
 
 ```{r htseqInput}
-sampleFiles <- list.files(directory)
-sampleInfo <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
-sampleTable <- data.frame(sampleName = sampleInfo$sample,
-                          fileName = sampleInfo$filename,
-                          run = sampleInfo$seq_run,
-                          condition = sampleInfo$group)
+sampleFilesGC <- list.files(directoryGC)
+sampleInfoGC <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
+sampleTableGC <- data.frame(sampleName = sampleInfoGC$sample,
+                          fileName = sampleInfoGC$filename,
+                          run = sampleInfoGC$seq_run,
+                          condition = sampleInfoGC$group)
+### filtered genes
+sampleFilesGC.fil <- list.files(directoryGC.fil)
+sampleInfoGC <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
+sampleTableGC.fil <- data.frame(sampleName = sampleInfoGC$sample,
+                          fileName = sampleInfoGC$filename,
+                          run = sampleInfoGC$seq_run,
+                          condition = sampleInfoGC$group)
+#### each sample individually with the ancestor
+sampleFilesS1vsAncGC.fil <- list.files(directoryGCS1.fil)
+sampleInfoGCS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S1vsAnc.csv",header=TRUE)
+sampleTableGCS1.fil <- data.frame(sampleName = sampleInfoGCS1$sample,
+                          fileName = sampleInfoGCS1$filename,
+                          run = sampleInfoGCS1$seq_run,
+                          condition = sampleInfoGCS1$group)
 
+sampleFilesS2vsAncGC.fil <- list.files(directoryGCS2.fil)
+sampleInfoGCS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S2vsAnc.csv",header=TRUE)
+sampleTableGCS2.fil <- data.frame(sampleName = sampleInfoGCS2$sample,
+                          fileName = sampleInfoGCS2$filename,
+                          run = sampleInfoGCS2$seq_run,
+                          condition = sampleInfoGCS2$group)
 
+sampleFilesS3vsAncGC.fil <- list.files(directoryGCS3.fil)
+sampleInfoGCS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S3vsAnc.csv",header=TRUE)
+sampleTableGCS3.fil <- data.frame(sampleName = sampleInfoGCS3$sample,
+                          fileName = sampleInfoGCS3$filename,
+                          run = sampleInfoGCS3$seq_run,
+                          condition = sampleInfoGCS3$group)
+
+sampleFilesS4vsAncGC.fil <- list.files(directoryGCS4.fil)
+sampleInfoGCS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S4vsAnc.csv",header=TRUE)
+sampleTableGCS4.fil <- data.frame(sampleName = sampleInfoGCS4$sample,
+                          fileName = sampleInfoGCS4$filename,
+                          run = sampleInfoGCS4$seq_run,
+                          condition = sampleInfoGCS4$group)
+
+sampleFilesS5vsAncGC.fil <- list.files(directoryGCS5.fil)
+sampleInfoGCS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S5vsAnc.csv",header=TRUE)
+sampleTableGCS5.fil <- data.frame(sampleName = sampleInfoGCS5$sample,
+                          fileName = sampleInfoGCS5$filename,
+                          run = sampleInfoGCS5$seq_run,
+                          condition = sampleInfoGCS5$group)
+
+sampleFilesS7vsAncGC.fil <- list.files(directoryGCS7.fil)
+sampleInfoGCS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S7vsAnc.csv",header=TRUE)
+sampleTableGCS7.fil <- data.frame(sampleName = sampleInfoGCS7$sample,
+                          fileName = sampleInfoGCS7$filename,
+                          run = sampleInfoGCS7$seq_run,
+                          condition = sampleInfoGCS7$group)
+
+sampleFilesS8vsAncGC.fil <- list.files(directoryGCS8.fil)
+sampleInfoGCS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S8vsAnc.csv",header=TRUE)
+sampleTableGCS8.fil <- data.frame(sampleName = sampleInfoGCS8$sample,
+                          fileName = sampleInfoGCS8$filename,
+                          run = sampleInfoGCS8$seq_run,
+                          condition = sampleInfoGCS8$group)
+
+sampleFilesS9vsAncGC.fil <- list.files(directoryGCS9.fil)
+sampleInfoGCS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S9vsAnc.csv",header=TRUE)
+sampleTableGCS9.fil <- data.frame(sampleName = sampleInfoGCS9$sample,
+                          fileName = sampleInfoGCS9$filename,
+                          run = sampleInfoGCS9$seq_run,
+                          condition = sampleInfoGCS9$group)
+
+sampleFilesS11vsAncGC.fil <- list.files(directoryGCS11.fil)
+sampleInfoGCS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S11vsAnc.csv",header=TRUE)
+sampleTableGCS11.fil <- data.frame(sampleName = sampleInfoGCS11$sample,
+                          fileName = sampleInfoGCS11$filename,
+                          run = sampleInfoGCS11$seq_run,
+                          condition = sampleInfoGCS11$group)
+
+sampleFilesS18vsAncGC.fil <- list.files(directoryGCS18.fil)
+sampleInfoGCS18 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S18vsAnc.csv",header=TRUE)
+sampleTableGCS18.fil <- data.frame(sampleName = sampleInfoGCS18$sample,
+                          fileName = sampleInfoGCS18$filename,
+                          run = sampleInfoGCS18$seq_run,
+                          condition = sampleInfoGCS18$group)
+
+sampleFilesS49vsAncGC.fil <- list.files(directoryGCS49.fil)
+sampleInfoGCS49 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S49vsAnc.csv",header=TRUE)
+sampleTableGCS49.fil <- data.frame(sampleName = sampleInfoGCS49$sample,
+                          fileName = sampleInfoGCS49$filename,
+                          run = sampleInfoGCS49$seq_run,
+                          condition = sampleInfoGCS49$group)
+
+sampleFilesS59vsAncGC.fil <- list.files(directoryGCS59.fil)
+sampleInfoGCS59 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S59vsAnc.csv",header=TRUE)
+sampleTableGCS59.fil <- data.frame(sampleName = sampleInfoGCS59$sample,
+                          fileName = sampleInfoGCS59$filename,
+                          run = sampleInfoGCS59$seq_run,
+                          condition = sampleInfoGCS59$group)
+
+sampleFilesS61vsAncGC.fil <- list.files(directoryGCS61.fil)
+sampleInfoGCS61 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S61vsAnc.csv",header=TRUE)
+sampleTableGCS61.fil <- data.frame(sampleName = sampleInfoGCS61$sample,
+                          fileName = sampleInfoGCS61$filename,
+                          run = sampleInfoGCS61$seq_run,
+                          condition = sampleInfoGCS61$group)
+
+sampleFilesS76vsAncGC.fil <- list.files(directoryGCS76.fil)
+sampleInfoGCS76 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S76vsAnc.csv",header=TRUE)
+sampleTableGCS76.fil <- data.frame(sampleName = sampleInfoGCS76$sample,
+                          fileName = sampleInfoGCS76$filename,
+                          run = sampleInfoGCS76$seq_run,
+                          condition = sampleInfoGCS76$group)
+
+sampleFilesS77vsAncGC.fil <- list.files(directoryGCS77.fil)
+sampleInfoGCS77 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S77vaAnc.csv",header=TRUE)
+sampleTableGCS77.fil <- data.frame(sampleName = sampleInfoGCS77$sample,
+                          fileName = sampleInfoGCS77$filename,
+                          run = sampleInfoGCS77$seq_run,
+                          condition = sampleInfoGCS77$group)
+##############################################################################
+sampleFilesMAold <- list.files(directoryMAold)
+sampleInfoMAold <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_sample_data.csv",header=TRUE)
+sampleTableMAold <- data.frame(sampleName = sampleInfoMAold$sample,
+                          fileName = sampleInfoMAold$filename,
+                          condition = sampleInfoMAold$group)
+
+sampleFilesMAoldS1 <- list.files(directoryMAoldS1)
+sampleInfoMAoldS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S1vsAnc.csv",header=TRUE)
+sampleTableMAoldS1 <- data.frame(sampleName = sampleInfoMAoldS1$sample,
+                          fileName = sampleInfoMAoldS1$filename,
+                          condition = sampleInfoMAoldS1$group)
+
+sampleFilesMAoldS2 <- list.files(directoryMAoldS2)
+sampleInfoMAoldS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S2vsAnc.csv",header=TRUE)
+sampleTableMAoldS2 <- data.frame(sampleName = sampleInfoMAoldS2$sample,
+                          fileName = sampleInfoMAoldS2$filename,
+                          condition = sampleInfoMAoldS2$group)
+
+sampleFilesMAoldS3 <- list.files(directoryMAoldS3)
+sampleInfoMAoldS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S3vsAnc.csv",header=TRUE)
+sampleTableMAoldS3 <- data.frame(sampleName = sampleInfoMAoldS3$sample,
+                          fileName = sampleInfoMAoldS3$filename,
+                          condition = sampleInfoMAoldS3$group)
+
+sampleFilesMAoldS4 <- list.files(directoryMAoldS4)
+sampleInfoMAoldS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S4vsAnc.csv",header=TRUE)
+sampleTableMAoldS4 <- data.frame(sampleName = sampleInfoMAoldS4$sample,
+                          fileName = sampleInfoMAoldS4$filename,
+                          condition = sampleInfoMAoldS4$group)
+
+sampleFilesMAoldS5 <- list.files(directoryMAoldS5)
+sampleInfoMAoldS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S5vsAnc.csv",header=TRUE)
+sampleTableMAoldS5 <- data.frame(sampleName = sampleInfoMAoldS5$sample,
+                          fileName = sampleInfoMAoldS5$filename,
+                          condition = sampleInfoMAoldS5$group)
+
+sampleFilesMAoldS6 <- list.files(directoryMAoldS6)
+sampleInfoMAoldS6 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S6vsAnc.csv",header=TRUE)
+sampleTableMAoldS6 <- data.frame(sampleName = sampleInfoMAoldS6$sample,
+                          fileName = sampleInfoMAoldS6$filename,
+                          condition = sampleInfoMAoldS6$group)
+
+sampleFilesMAoldS7 <- list.files(directoryMAoldS7)
+sampleInfoMAoldS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S7vsAnc.csv",header=TRUE)
+sampleTableMAoldS7 <- data.frame(sampleName = sampleInfoMAoldS7$sample,
+                          fileName = sampleInfoMAoldS7$filename,
+                          condition = sampleInfoMAoldS7$group)
+
+sampleFilesMAoldS8 <- list.files(directoryMAoldS8)
+sampleInfoMAoldS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S8vsAnc.csv",header=TRUE)
+sampleTableMAoldS8 <- data.frame(sampleName = sampleInfoMAoldS8$sample,
+                          fileName = sampleInfoMAoldS8$filename,
+                          condition = sampleInfoMAoldS8$group)
+
+sampleFilesMAoldS9 <- list.files(directoryMAoldS9)
+sampleInfoMAoldS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S9vsAnc.csv",header=TRUE)
+sampleTableMAoldS9 <- data.frame(sampleName = sampleInfoMAoldS9$sample,
+                          fileName = sampleInfoMAoldS9$filename,
+                          condition = sampleInfoMAoldS9$group)
+
+sampleFilesMAoldS11 <- list.files(directoryMAoldS11)
+sampleInfoMAoldS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S11vsAnc.csv",header=TRUE)
+sampleTableMAoldS11 <- data.frame(sampleName = sampleInfoMAoldS11$sample,
+                          fileName = sampleInfoMAoldS11$filename,
+                          condition = sampleInfoMAoldS11$group)
+
+sampleFilesMAoldS15 <- list.files(directoryMAoldS15)
+sampleInfoMAoldS15 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S15vsAnc.csv",header=TRUE)
+sampleTableMAoldS15 <- data.frame(sampleName = sampleInfoMAoldS15$sample,
+                          fileName = sampleInfoMAoldS15$filename,
+                          condition = sampleInfoMAoldS15$group)
+
+sampleFilesMAoldS28 <- list.files(directoryMAoldS28)
+sampleInfoMAoldS28 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S28vsAnc.csv",header=TRUE)
+sampleTableMAoldS28 <- data.frame(sampleName = sampleInfoMAoldS28$sample,
+                          fileName = sampleInfoMAoldS28$filename,
+                          condition = sampleInfoMAoldS28$group)
+
+sampleFilesMAoldS88 <- list.files(directoryMAoldS88)
+sampleInfoMAoldS88 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S88vsAnc.csv",header=TRUE)
+sampleTableMAoldS88 <- data.frame(sampleName = sampleInfoMAoldS88$sample,
+                          fileName = sampleInfoMAoldS88$filename,
+                          condition = sampleInfoMAoldS88$group)
+
+sampleFilesMAoldS108 <- list.files(directoryMAoldS108)
+sampleInfoMAoldS108 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S108vsAnc.csv",header=TRUE)
+sampleTableMAoldS108 <- data.frame(sampleName = sampleInfoMAoldS108$sample,
+                          fileName = sampleInfoMAoldS108$filename,
+                          condition = sampleInfoMAoldS108$group)
+
+sampleFilesMAoldS119 <- list.files(directoryMAoldS119)
+sampleInfoMAoldS119 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S119vsAnc.csv",header=TRUE)
+sampleTableMAoldS119 <- data.frame(sampleName = sampleInfoMAoldS119$sample,
+                          fileName = sampleInfoMAoldS119$filename,
+                          condition = sampleInfoMAoldS119$group)
+###############################################################################
+sampleFilesMAnew <- list.files(directoryMAnew)
+sampleInfoMAnew <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_sample_data.csv",header=TRUE)
+sampleTableMAnew <- data.frame(sampleName = sampleInfoMAnew$sample,
+                          fileName = sampleInfoMAnew$filename,
+                          run = sampleInfoMAnew$seq_run,
+                          condition = sampleInfoMAnew$group)
+
+#### MA new individually 
+sampleFilesMAnewS29 <- list.files(directoryMANewS29)
+sampleInfoMAnewS29 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S29.csv",header=TRUE)
+sampleTableMAnewS29 <- data.frame(sampleName = sampleInfoMAnewS29$sample,
+                          fileName = sampleInfoMAnewS29$filename,
+                          condition = sampleInfoMAnewS29$group)
+
+sampleFilesMAnewS50 <- list.files(directoryMAnewS50)
+sampleInfoMAnewS50 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S50.csv",header=TRUE)
+sampleTableMAnewS50 <- data.frame(sampleName = sampleInfoMAnewS50$sample,
+                          fileName = sampleInfoMAnewS50$filename,
+                          condition = sampleInfoMAnewS50$group)
+
+sampleFilesMAnewS112 <- list.files(directoryMAnewS112)
+sampleInfoMAnewS112 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S112.csv",header=TRUE)
+sampleTableMAnewS112 <- data.frame(sampleName = sampleInfoMAnewS112$sample,
+                          fileName = sampleInfoMAnewS112$filename,
+                          condition = sampleInfoMAnewS112$group)
+
+sampleFilesMAnewS115 <- list.files(directoryMAnewS115)
+sampleInfoMAnewS115 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S115.csv",header=TRUE)
+sampleTableMAnewS115 <- data.frame(sampleName = sampleInfoMAnewS115$sample,
+                          fileName = sampleInfoMAnewS115$filename,
+                          condition = sampleInfoMAnewS115$group)
+
+sampleFilesMAnewS117 <- list.files(directoryMAnewS117)
+sampleInfoMAnewS117 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S117.csv",header=TRUE)
+sampleTableMAnewS117 <- data.frame(sampleName = sampleInfoMAnewS117$sample,
+                          fileName = sampleInfoMAnewS117$filename,
+                          condition = sampleInfoMAnewS117$group)
+
+sampleFilesMAnewS123 <- list.files(directoryMAnewS123)
+sampleInfoMAnewS123 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S123.csv",header=TRUE)
+sampleTableMAnewS123 <- data.frame(sampleName = sampleInfoMAnewS123$sample,
+                          fileName = sampleInfoMAnewS123$filename,
+                          condition = sampleInfoMAnewS123$group)
+
+sampleFilesMAnewS141 <- list.files(directoryMAnewS141)
+sampleInfoMAnewS141 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S141.csv",header=TRUE)
+sampleTableMAnewS141 <- data.frame(sampleName = sampleInfoMAnewS141$sample,
+                          fileName = sampleInfoMAnewS141$filename,
+                          condition = sampleInfoMAnewS141$group)
+
+sampleFilesMAnewS152 <- list.files(directoryMAnewS152)
+sampleInfoMAnewS152 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S152.csv",header=TRUE)
+sampleTableMAnewS152 <- data.frame(sampleName = sampleInfoMAnewS152$sample,
+                          fileName = sampleInfoMAnewS152$filename,
+                          condition = sampleInfoMAnewS152$group)
 ```
-
-
 
 Then we build the *DESeqDataSet* using the following function:
 
 ```{r hsteqDds}
 #library("DESeq2")
-sampleTable$run <- as.factor(sampleTable$run)
-sampleTable$sampleName <- as.factor(sampleTable$sampleName)
-sampleTable$condition <- as.factor(sampleTable$condition)
-ddsHTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
-                                       directory = directory,
+sampleTableGC$run <- as.factor(sampleTableGC$run)
+sampleTableGC$sampleName <- as.factor(sampleTableGC$sampleName)
+sampleTableGC$condition <- as.factor(sampleTableGC$condition)
+ddsHTSeqGC <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC,
+                                       directory = directoryGC,
                                        design= ~ condition + run)
 
-ddsHTSeq
+ddsHTSeqGC
 
-write.csv(counts(ddsHTSeq),file="counts.DEseq.csv")
+write.csv(counts(ddsHTSeqGC),file="counts.DEseqGC.csv")
+#filtered genes 
+sampleTableGC.fil$run <- as.factor(sampleTableGC.fil$run)
+sampleTableGC.fil$sampleName <- as.factor(sampleTableGC.fil$sampleName)
+sampleTableGC.fil$condition <- as.factor(sampleTableGC.fil$condition)
+ddsHTSeqGC.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC.fil,
+                                       directory = directoryGC.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGC.fil
+
+write.csv(counts(ddsHTSeqGC.fil),file="counts.DEseqGC.fil.csv")
+
+ddsHTSeqGC.fil
+colnames(ddsHTSeqGC.fil)
+
+is.list(test)
+as.list(test)
+ddsHTSeqGC.fil$condition
+
+subsetS11 <- which(ddsHTSeqGC.fil$condition=="Holly_11")
+subsetAnc <- which(ddsHTSeqGC.fil$condition=="Holly_Anc")
+subsetS11 <- c(subsetS11,subsetAnc)
+ddsHTSeqGCS11 <- ddsHTSeqGC.fil[,subsetS11]
+ddsHTSeqGCS11$condition
+ddsHTSeqGCS11$condition <- droplevels(ddsHTSeqGCS11$condition)
+ddsHTSeqGCS11$condition
+
+subsetS5 <- which(ddsHTSeqGC.fil$condition=="Holly_5")
+subsetAnc <- which(ddsHTSeqGC.fil$condition=="Holly_Anc")
+subsetS5 <- c(subsetS5,subsetAnc)
+ddsHTSeqGCS5 <- ddsHTSeqGC.fil[,subsetS5]
+ddsHTSeqGCS5$condition
+ddsHTSeqGCS5$condition <- droplevels(ddsHTSeqGCS5$condition)
+ddsHTSeqGCS5$condition
+
+subsetS8 <- which(ddsHTSeqGC.fil$condition=="Holly_8")
+subsetS8 <- c(subsetS8,subsetAnc)
+ddsHTSeqGCS8 <- ddsHTSeqGC.fil[,subsetS8]
+ddsHTSeqGCS8$condition
+ddsHTSeqGCS8$condition <- droplevels(ddsHTSeqGCS8$condition)
+ddsHTSeqGCS8$condition
+
+
+### without S5, S8, and S11
+subsetS1 <- which(ddsHTSeqGC.fil$condition=="Holly_1")
+subsetS2 <- which(ddsHTSeqGC.fil$condition=="Holly_2")
+subsetS3 <- which(ddsHTSeqGC.fil$condition=="Holly_3")
+subsetS4 <- which(ddsHTSeqGC.fil$condition=="Holly_4")
+subsetS7 <- which(ddsHTSeqGC.fil$condition=="Holly_7")
+subsetS18 <- which(ddsHTSeqGC.fil$condition=="Holly_18")
+subsetS49 <- which(ddsHTSeqGC.fil$condition=="Holly_49")
+subsetS59 <- which(ddsHTSeqGC.fil$condition=="Holly_59")
+subsetS61 <- which(ddsHTSeqGC.fil$condition=="Holly_61")
+subsetS76 <- which(ddsHTSeqGC.fil$condition=="Holly_76")
+subsetS77 <- which(ddsHTSeqGC.fil$condition=="Holly_77")
+subsetAll <- c(subsetS1,subsetS2,subsetS3,subsetS4,subsetS7,subsetS18,subsetS49,subsetS59,subsetS61,subsetS76,subsetS77,subsetAnc)
+ddsHTSeqGC.short <- ddsHTSeqGC.fil[,subsetAll]
+ddsHTSeqGC.short$condition
+ddsHTSeqGC.short$condition <- droplevels(ddsHTSeqGC.short$condition)
+ddsHTSeqGC.short$condition
+
+### make a DESeq dataset with each sample and the ancestor INDIVIDUALLY
+#filtered genes 
+sampleTableGCS1.fil$run <- as.factor(sampleTableGCS1.fil$run)
+sampleTableGCS1.fil$sampleName <- as.factor(sampleTableGCS1.fil$sampleName)
+sampleTableGCS1.fil$condition <- as.factor(sampleTableGCS1.fil$condition)
+ddsHTSeqGCS1.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS1.fil,
+                                       directory = directoryGCS1.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS1.fil
+sampleTableGCS2.fil$run <- as.factor(sampleTableGCS2.fil$run)
+sampleTableGCS2.fil$sampleName <- as.factor(sampleTableGCS2.fil$sampleName)
+sampleTableGCS2.fil$condition <- as.factor(sampleTableGCS2.fil$condition)
+ddsHTSeqGCS2.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS2.fil,
+                                       directory = directoryGCS2.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS2.fil
+sampleTableGCS3.fil$run <- as.factor(sampleTableGCS3.fil$run)
+sampleTableGCS3.fil$sampleName <- as.factor(sampleTableGCS3.fil$sampleName)
+sampleTableGCS3.fil$condition <- as.factor(sampleTableGCS3.fil$condition)
+ddsHTSeqGCS3.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS3.fil,
+                                       directory = directoryGCS3.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS3.fil
+sampleTableGCS4.fil$run <- as.factor(sampleTableGCS4.fil$run)
+sampleTableGCS4.fil$sampleName <- as.factor(sampleTableGCS4.fil$sampleName)
+sampleTableGCS4.fil$condition <- as.factor(sampleTableGCS4.fil$condition)
+ddsHTSeqGCS4.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS4.fil,
+                                       directory = directoryGCS4.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS4.fil
+# sampleTableGCS5.fil$run <- as.factor(sampleTableGCS5.fil$run)
+# sampleTableGCS5.fil$sampleName <- as.factor(sampleTableGCS5.fil$sampleName)
+# sampleTableGCS5.fil$condition <- as.factor(sampleTableGCS5.fil$condition)
+# ddsHTSeqGCS5.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS5.fil,
+#                                        directory = directoryGCS5.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS5.fil
+sampleTableGCS7.fil$run <- as.factor(sampleTableGCS7.fil$run)
+sampleTableGCS7.fil$sampleName <- as.factor(sampleTableGCS7.fil$sampleName)
+sampleTableGCS7.fil$condition <- as.factor(sampleTableGCS7.fil$condition)
+ddsHTSeqGCS7.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS7.fil,
+                                       directory = directoryGCS7.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS7.fil
+sampleTableGCS8.fil$run <- as.factor(sampleTableGCS8.fil$run)
+sampleTableGCS8.fil$sampleName <- as.factor(sampleTableGCS8.fil$sampleName)
+sampleTableGCS8.fil$condition <- as.factor(sampleTableGCS8.fil$condition)
+ddsHTSeqGCS8.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS8.fil,
+                                       directory = directoryGCS8.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS8.fil
+sampleTableGCS9.fil$run <- as.factor(sampleTableGCS9.fil$run)
+sampleTableGCS9.fil$sampleName <- as.factor(sampleTableGCS9.fil$sampleName)
+sampleTableGCS9.fil$condition <- as.factor(sampleTableGCS9.fil$condition)
+ddsHTSeqGCS9.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS9.fil,
+                                       directory = directoryGCS9.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS9.fil
+sampleTableGCS11.fil$run <- as.factor(sampleTableGCS11.fil$run)
+sampleTableGCS11.fil$sampleName <- as.factor(sampleTableGCS11.fil$sampleName)
+sampleTableGCS11.fil$condition <- as.factor(sampleTableGCS11.fil$condition)
+ddsHTSeqGCS11.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS11.fil,
+                                       directory = directoryGCS11.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS11.fil
+sampleTableGCS18.fil$run <- as.factor(sampleTableGCS18.fil$run)
+sampleTableGCS18.fil$sampleName <- as.factor(sampleTableGCS18.fil$sampleName)
+sampleTableGCS18.fil$condition <- as.factor(sampleTableGCS18.fil$condition)
+ddsHTSeqGCS18.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS18.fil,
+                                       directory = directoryGCS18.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS18.fil
+sampleTableGCS49.fil$run <- as.factor(sampleTableGCS49.fil$run)
+sampleTableGCS49.fil$sampleName <- as.factor(sampleTableGCS49.fil$sampleName)
+sampleTableGCS49.fil$condition <- as.factor(sampleTableGCS49.fil$condition)
+ddsHTSeqGCS49.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS49.fil,
+                                       directory = directoryGCS49.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS49.fil
+sampleTableGCS59.fil$run <- as.factor(sampleTableGCS59.fil$run)
+sampleTableGCS59.fil$sampleName <- as.factor(sampleTableGCS59.fil$sampleName)
+sampleTableGCS59.fil$condition <- as.factor(sampleTableGCS59.fil$condition)
+ddsHTSeqGCS59.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS59.fil,
+                                       directory = directoryGCS59.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS59.fil
+sampleTableGCS61.fil$run <- as.factor(sampleTableGCS61.fil$run)
+sampleTableGCS61.fil$sampleName <- as.factor(sampleTableGCS61.fil$sampleName)
+sampleTableGCS61.fil$condition <- as.factor(sampleTableGCS61.fil$condition)
+ddsHTSeqGCS61.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS61.fil,
+                                       directory = directoryGCS61.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS61.fil
+sampleTableGCS76.fil$run <- as.factor(sampleTableGCS76.fil$run)
+sampleTableGCS76.fil$sampleName <- as.factor(sampleTableGCS76.fil$sampleName)
+sampleTableGCS76.fil$condition <- as.factor(sampleTableGCS76.fil$condition)
+ddsHTSeqGCS76.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS76.fil,
+                                       directory = directoryGCS76.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS76.fil
+sampleTableGCS77.fil$run <- as.factor(sampleTableGCS77.fil$run)
+sampleTableGCS77.fil$sampleName <- as.factor(sampleTableGCS77.fil$sampleName)
+sampleTableGCS77.fil$condition <- as.factor(sampleTableGCS77.fil$condition)
+ddsHTSeqGCS77.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS77.fil,
+                                       directory = directoryGCS77.fil,
+                                       design= ~ condition + run)
+
+ddsHTSeqGCS77.fil
+# write.csv(counts(ddsHTSeqGC.fil),file="counts.DEseqGC.fil.csv")
+
+
+##### PCA analysis of samples
+## transformation of count data 
+vsdGC.fil <- vst(ddsHTSeqGC.fil,blind=FALSE)
+rldGC.fil <- rlog(ddsHTSeqGC.fil,blind=FALSE)
+head(assay(vsdGC.fil),3)
+plotPCA(vsdGC.fil, intgroup=c("condition"))
+pcaDataGC.fil <- plotPCA(vsdGC.fil,intgroup=c("condition"),returnData=TRUE)
+percentVar <- round(100 * attr(pcaDataGC.fil,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataGC.fil,aes(PC1,PC2,shape=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  scale_fill_hue(l=80) +
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
+  coord_fixed()
+
+  ### pca by sequencing run
+  colData(ddsHTSeqGC)
+plotPCA(vsdGC.fil, intgroup=c("run"))
+pcaDataGC.fil <- plotPCA(vsdGC.fil,intgroup=c("run"),returnData=TRUE)
+percentVar <- round(100 * attr(pcaDataGC.fil,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataGC.fil,aes(PC1,PC2,color=run)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  scale_fill_hue(l=80) 
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
+  # coord_fixed()
+  
+  ## pca on shorter data
+  vsdGC.short <- vst(ddsHTSeqGC.short,blind=FALSE)
+rldGC.short <- rlog(ddsHTSeqGC.short,blind=FALSE)
+head(assay(vsdGC.short),3)
+plotPCA(vsdGC.short, intgroup=c("condition"))
+pcaDataGC.short <- plotPCA(vsdGC.short,intgroup=c("condition"),returnData=TRUE)
+percentVar <- round(100 * attr(pcaDataGC.short,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataGC.short,aes(PC1,PC2,shape=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  scale_fill_hue(l=80) +
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22))
+  coord_fixed()
+############################################################
+sampleTableMAold$sampleName <- as.factor(sampleTableMAold$sampleName)
+sampleTableMAold$condition <- as.factor(sampleTableMAold$condition)
+ddsHTSeqMAold <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAold,
+                                       directory = directoryMAold,
+                                       design= ~ condition)
+
+ddsHTSeqMAold
+
+write.csv(counts(ddsHTSeqMAold),file="counts.DEseqMAold.csv")
+##### PCA analysis of samples
+## transformation of count data 
+vsdMA_old <- vst(ddsHTSeqMAold,blind=FALSE)
+rldMA_old <- rlog(ddsHTSeqMAold,blind=FALSE)
+head(assay(vsdMA_old),3)
+plotPCA(vsdMA_old, intgroup=c("condition"))
+pcaDataMA_old <- plotPCA(vsdMA_old,intgroup=c("condition"),returnData=TRUE)
+percentVarMAold <- round(100 * attr(pcaDataMA_old,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataMA_old,aes(PC1,PC2,shape=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVarMAold[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVarMAold[2],"% variance")) +
+  scale_fill_hue(l=80) +
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
+  coord_fixed()
+  
+#### MA old samples individually
+sampleTableMAoldS1$sampleName <- as.factor(sampleTableMAoldS1$sampleName)
+sampleTableMAoldS1$condition <- as.factor(sampleTableMAoldS1$condition)
+ddsHTSeqMAoldS1 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS1,
+                                       directory = directoryMAoldS1,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS1
+
+sampleTableMAoldS2$sampleName <- as.factor(sampleTableMAoldS2$sampleName)
+sampleTableMAoldS2$condition <- as.factor(sampleTableMAoldS2$condition)
+ddsHTSeqMAoldS2 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS2,
+                                       directory = directoryMAoldS2,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS2
+
+sampleTableMAoldS3$sampleName <- as.factor(sampleTableMAoldS3$sampleName)
+sampleTableMAoldS3$condition <- as.factor(sampleTableMAoldS3$condition)
+ddsHTSeqMAoldS3 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS3,
+                                       directory = directoryMAoldS3,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS3
+
+sampleTableMAoldS4$sampleName <- as.factor(sampleTableMAoldS4$sampleName)
+sampleTableMAoldS4$condition <- as.factor(sampleTableMAoldS4$condition)
+ddsHTSeqMAoldS4 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS4,
+                                       directory = directoryMAoldS4,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS4
+
+sampleTableMAoldS5$sampleName <- as.factor(sampleTableMAoldS5$sampleName)
+sampleTableMAoldS5$condition <- as.factor(sampleTableMAoldS5$condition)
+ddsHTSeqMAoldS5 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS5,
+                                       directory = directoryMAoldS5,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS5
+
+sampleTableMAoldS6$sampleName <- as.factor(sampleTableMAoldS6$sampleName)
+sampleTableMAoldS6$condition <- as.factor(sampleTableMAoldS6$condition)
+ddsHTSeqMAoldS6 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS6,
+                                       directory = directoryMAoldS6,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS6
+
+sampleTableMAoldS7$sampleName <- as.factor(sampleTableMAoldS7$sampleName)
+sampleTableMAoldS7$condition <- as.factor(sampleTableMAoldS7$condition)
+ddsHTSeqMAoldS7 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS7,
+                                       directory = directoryMAoldS7,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS7
+
+sampleTableMAoldS8$sampleName <- as.factor(sampleTableMAoldS8$sampleName)
+sampleTableMAoldS8$condition <- as.factor(sampleTableMAoldS8$condition)
+ddsHTSeqMAoldS8 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS8,
+                                       directory = directoryMAoldS8,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS8
+
+sampleTableMAoldS9$sampleName <- as.factor(sampleTableMAoldS9$sampleName)
+sampleTableMAoldS9$condition <- as.factor(sampleTableMAoldS9$condition)
+ddsHTSeqMAoldS9 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS9,
+                                       directory = directoryMAoldS9,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS9
+
+sampleTableMAoldS11$sampleName <- as.factor(sampleTableMAoldS11$sampleName)
+sampleTableMAoldS11$condition <- as.factor(sampleTableMAoldS11$condition)
+ddsHTSeqMAoldS11 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS11,
+                                       directory = directoryMAoldS11,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS11
+
+sampleTableMAoldS15$sampleName <- as.factor(sampleTableMAoldS15$sampleName)
+sampleTableMAoldS15$condition <- as.factor(sampleTableMAoldS15$condition)
+ddsHTSeqMAoldS15 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS15,
+                                       directory = directoryMAoldS15,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS15
+
+sampleTableMAoldS28$sampleName <- as.factor(sampleTableMAoldS28$sampleName)
+sampleTableMAoldS28$condition <- as.factor(sampleTableMAoldS28$condition)
+ddsHTSeqMAoldS28 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS28,
+                                       directory = directoryMAoldS28,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS28
+
+sampleTableMAoldS88$sampleName <- as.factor(sampleTableMAoldS88$sampleName)
+sampleTableMAoldS88$condition <- as.factor(sampleTableMAoldS88$condition)
+ddsHTSeqMAoldS88 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS88,
+                                       directory = directoryMAoldS88,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS88
+
+sampleTableMAoldS108$sampleName <- as.factor(sampleTableMAoldS108$sampleName)
+sampleTableMAoldS108$condition <- as.factor(sampleTableMAoldS108$condition)
+ddsHTSeqMAoldS108 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS108,
+                                       directory = directoryMAoldS108,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS108
+
+sampleTableMAoldS119$sampleName <- as.factor(sampleTableMAoldS119$sampleName)
+sampleTableMAoldS119$condition <- as.factor(sampleTableMAoldS119$condition)
+ddsHTSeqMAoldS119 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS119,
+                                       directory = directoryMAoldS119,
+                                       design= ~ condition)
+
+ddsHTSeqMAoldS119
+
+############################################################
+sampleTableMAnew$sampleName <- as.factor(sampleTableMAnew$sampleName)
+sampleTableMAnew$condition <- as.factor(sampleTableMAnew$condition)
+sampleTableMAnew$run <- as.factor(sampleTableMAnew$run)
+ddsHTSeqMAnew <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnew,
+                                       directory = directoryMAnew,
+                                       design= ~ condition + run)
+
+ddsHTSeqMAnew
+counts(ddsHTSeqMAnew)
+write.csv(counts(ddsHTSeqMAnew),file="counts.DEseqMAnew.csv")
+
+
+#### PCA 
+vsdMAnew <- vst(ddsHTSeqMAnew,blind=FALSE)
+rldMAnew <- rlog(ddsHTSeqMAnew,blind=FALSE)
+head(assay(vsdMAnew),3)
+DESeq2::plotPCA(vsdMAnew, intgroup=c("condition"))
+pcaDataMAnew <- DESeq2::plotPCA(vsdMAnew,intgroup=c("condition"),returnData=TRUE)
+percentVarMAnew <- round(100 * attr(pcaDataMAnew,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataMAnew,aes(PC1,PC2,shape=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVarMAnew[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVarMAnew[2],"% variance")) +
+  scale_fill_hue(l=80) +
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15))
+
+# by sequencing run
+colData(ddsHTSeqMAnew)
+DESeq2::plotPCA(vsdMAnew, intgroup=c("run"))
+pcaDataMAnew <- DESeq2::plotPCA(vsdMAnew,intgroup=c("run"),returnData=TRUE)
+percentVarMAnew <- round(100 * attr(pcaDataMAnew,"percentVar"))
+library(ggplot2)
+ggplot(pcaDataMAnew,aes(PC1,PC2,color=run)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVarMAnew[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVarMAnew[2],"% variance")) +
+  scale_fill_hue(l=80) 
+
+  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15))
+
+#find the loadings for PCA
+# pcaTest <- prcomp(pcaDataMAnew)
+# DESeq2:::plotPCA.DESeqTransform
+
+#### subset the DESeq dataset into individual samples
+sampleTableMAnewS29$sampleName <- as.factor(sampleTableMAnewS29$sampleName)
+sampleTableMAnewS29$condition <- as.factor(sampleTableMAnewS29$condition)
+ddsHTSeqMAnewS29 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS29,
+                                       directory = directoryMANewS29,
+                                       design= ~ condition)
+
+sampleTableMAnewS50$sampleName <- as.factor(sampleTableMAnewS50$sampleName)
+sampleTableMAnewS50$condition <- as.factor(sampleTableMAnewS50$condition)
+ddsHTSeqMAnewS50 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS50,
+                                       directory = directoryMAnewS50,
+                                       design= ~ condition)
+
+sampleTableMAnewS112$sampleName <- as.factor(sampleTableMAnewS112$sampleName)
+sampleTableMAnewS112$condition <- as.factor(sampleTableMAnewS112$condition)
+ddsHTSeqMAnewS112 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS112,
+                                       directory = directoryMAnewS112,
+                                       design= ~ condition)
+
+sampleTableMAnewS115$sampleName <- as.factor(sampleTableMAnewS115$sampleName)
+sampleTableMAnewS115$condition <- as.factor(sampleTableMAnewS115$condition)
+ddsHTSeqMAnewS115 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS115,
+                                       directory = directoryMAnewS115,
+                                       design= ~ condition)
+
+sampleTableMAnewS117$sampleName <- as.factor(sampleTableMAnewS117$sampleName)
+sampleTableMAnewS117$condition <- as.factor(sampleTableMAnewS117$condition)
+ddsHTSeqMAnewS117 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS117,
+                                       directory = directoryMAnewS117,
+                                       design= ~ condition)
+
+sampleTableMAnewS123$sampleName <- as.factor(sampleTableMAnewS123$sampleName)
+sampleTableMAnewS123$condition <- as.factor(sampleTableMAnewS123$condition)
+ddsHTSeqMAnewS123 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS123,
+                                       directory = directoryMAnewS123,
+                                       design= ~ condition)
+
+sampleTableMAnewS141$sampleName <- as.factor(sampleTableMAnewS141$sampleName)
+sampleTableMAnewS141$condition <- as.factor(sampleTableMAnewS141$condition)
+ddsHTSeqMAnewS141 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS141,
+                                       directory = directoryMAnewS141,
+                                       design= ~ condition)
+
+sampleTableMAnewS152$sampleName <- as.factor(sampleTableMAnewS152$sampleName)
+sampleTableMAnewS152$condition <- as.factor(sampleTableMAnewS152$condition)
+ddsHTSeqMAnewS152 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS152,
+                                       directory = directoryMAnewS152,
+                                       design= ~ condition)
 
 ```
 ### Note on factor levels 
@@ -135,7 +917,30 @@ of variables in the design before running the DESeq2 analysis, not
 during or afterward.
 
 ```{r relevel}
-ddsHTSeq$condition <- relevel(ddsHTSeq$condition, ref = "Holly_Anc")
+ddsHTSeqGC$condition <- relevel(ddsHTSeqGC$condition, ref = "Holly_Anc")
+#filtered genes
+ddsHTSeqGC.fil$condition <- relevel(ddsHTSeqGC.fil$condition, ref = "Holly_Anc")
+## individual samples
+ddsHTSeqGCS1.fil$condition <- relevel(ddsHTSeqGCS1.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS2.fil$condition <- relevel(ddsHTSeqGCS2.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS3.fil$condition <- relevel(ddsHTSeqGCS3.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS4.fil$condition <- relevel(ddsHTSeqGCS4.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS5.fil$condition <- relevel(ddsHTSeqGCS5.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS7.fil$condition <- relevel(ddsHTSeqGCS7.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS8.fil$condition <- relevel(ddsHTSeqGCS8.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS9.fil$condition <- relevel(ddsHTSeqGCS9.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS11.fil$condition <- relevel(ddsHTSeqGCS11.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS18.fil$condition <- relevel(ddsHTSeqGCS18.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS49.fil$condition <- relevel(ddsHTSeqGCS49.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS59.fil$condition <- relevel(ddsHTSeqGCS59.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS61.fil$condition <- relevel(ddsHTSeqGCS61.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS76.fil$condition <- relevel(ddsHTSeqGCS76.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGCS77.fil$condition <- relevel(ddsHTSeqGCS77.fil$condition, ref = "Holly_Anc")
+ddsHTSeqGC.short$condition <- relevel(ddsHTSeqGC.short$condition, ref="Holly_Anc")
+###############################################################################
+ddsHTSeqMAold$condition <- relevel(ddsHTSeqMAold$condition, ref = "SCA")
+###############################################################################
+ddsHTSeqMAnew$condition <- relevel(ddsHTSeqMAnew$condition, ref = "Anc")
 
 ``` 
 
@@ -153,9 +958,456 @@ perform a minimal pre-filtering to keep only rows that have at least
 mean of normalized counts within the *results* function.
 
 ```{r prefilter}
-keep <- rowSums(counts(ddsHTSeq)) >= 20
-ddsHTSeq <- ddsHTSeq[keep,]
-ddsHTSeq
+keepGC <- rowSums(counts(ddsHTSeqGC)) >= 20
+ddsHTSeqGC <- ddsHTSeqGC[keepGC,]
+ddsHTSeqGC
+counts(ddsHTSeqGC)
+dim(counts(ddsHTSeqGC))
+
+#make a separate data frame with just the ancestor replicates
+ancGC <-  counts(ddsHTSeqGC)[,46:48]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancGC>10)==3)
+keepGC <- rowSums(ancGC>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqGCtest <- ddsHTSeqGC
+ddsHTSeqGCtest <- ddsHTSeqGCtest[keepGC,]
+ddsHTSeqGCtest
+counts(ddsHTSeqGCtest)
+dim(counts(ddsHTSeqGCtest))
+View(counts(ddsHTSeqGCtest))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqGC <- ddsHTSeqGCtest
+## get rid of any NAs
+ddsHTSeqGC <- na.omit(ddsHTSeqGC)
+dim(ddsHTSeqGC)
+
+## with filtered genes
+# shouldn't get rid of any more data, or at least not much 
+keepGC.fil <- rowSums(counts(ddsHTSeqGC.fil)) >= 20
+ddsHTSeqGC.fil <- ddsHTSeqGC.fil[keepGC.fil,]
+ddsHTSeqGC.fil
+counts(ddsHTSeqGC.fil)
+dim(counts(ddsHTSeqGC.fil))
+
+#make a separate data frame with just the ancestor replicates
+ancGC.fil <-  counts(ddsHTSeqGC.fil)[,46:48]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancGC.fil>10)==3)
+keepGC.fil <- rowSums(ancGC.fil>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqGCtest.fil <- ddsHTSeqGC.fil
+ddsHTSeqGCtest.fil <- ddsHTSeqGCtest.fil[keepGC.fil,]
+ddsHTSeqGCtest.fil
+counts(ddsHTSeqGCtest.fil)
+dim(counts(ddsHTSeqGCtest.fil))
+View(counts(ddsHTSeqGCtest.fil))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqGC.fil <- ddsHTSeqGCtest.fil
+## get rid of any NAs
+ddsHTSeqGC.fil <- na.omit(ddsHTSeqGC.fil)
+dim(ddsHTSeqGC.fil)
+
+#make a separate data frame with just the ancestor replicates
+colnames(ddsHTSeqGC.short)
+ancGC.short <-  counts(ddsHTSeqGC.short)[,34:36]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancGC.short>10)==3)
+keepGC.short <- rowSums(ancGC.short>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqGCtest.short <- ddsHTSeqGC.short
+ddsHTSeqGCtest.short <- ddsHTSeqGCtest.short[keepGC.short,]
+ddsHTSeqGCtest.short
+counts(ddsHTSeqGCtest.short)
+dim(counts(ddsHTSeqGCtest.short))
+View(counts(ddsHTSeqGCtest.short))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqGC.short <- ddsHTSeqGCtest.short
+## get rid of any NAs
+ddsHTSeqGC.short <- na.omit(ddsHTSeqGC.short)
+dim(ddsHTSeqGC.short)
+
+###############################################################################
+keepMAold <- rowSums(counts(ddsHTSeqMAold)) >= 20
+ddsHTSeqMAold <- ddsHTSeqMAold[keepMAold,]
+ddsHTSeqMAold
+counts(ddsHTSeqMAold)
+dim(counts(ddsHTSeqMAold))
+
+#make a separate data frame with just the ancestor replicates
+ancMAold <-  counts(ddsHTSeqMAold)[,46:48]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqMAoldtest <- ddsHTSeqMAold
+ddsHTSeqMAoldtest <- ddsHTSeqMAoldtest[keepMAold,]
+ddsHTSeqMAoldtest
+counts(ddsHTSeqMAoldtest)
+dim(counts(ddsHTSeqMAoldtest))
+View(counts(ddsHTSeqMAoldtest))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqMAold <- ddsHTSeqMAoldtest
+## get rid of any NAs
+ddsHTSeqMAold <- na.omit(ddsHTSeqMAold)
+dim(ddsHTSeqMAold)
+
+#### individual lines
+#####################################################
+keepMAold <- rowSums(counts(ddsHTSeqMAold)) >= 20
+ddsHTSeqMAold <- ddsHTSeqMAold[keepMAold,]
+ddsHTSeqMAold
+counts(ddsHTSeqMAold)
+dim(counts(ddsHTSeqMAold))
+
+#make a separate data frame with just the ancestor replicates
+ancMAold <-  counts(ddsHTSeqMAold)[,46:48]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqMAoldtest <- ddsHTSeqMAold
+ddsHTSeqMAoldtest <- ddsHTSeqMAoldtest[keepMAold,]
+ddsHTSeqMAoldtest
+counts(ddsHTSeqMAoldtest)
+dim(counts(ddsHTSeqMAoldtest))
+# View(counts(ddsHTSeqMAoldtest))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqMAold <- ddsHTSeqMAoldtest
+## get rid of any NAs
+ddsHTSeqMAold <- na.omit(ddsHTSeqMAold)
+dim(ddsHTSeqMAold)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS1)) >= 20
+ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
+ddsHTSeqMAoldS1
+counts(ddsHTSeqMAoldS1)
+dim(counts(ddsHTSeqMAoldS1))
+# View(ddsHTSeqMAoldS1)
+ancMAold <-  counts(ddsHTSeqMAoldS1)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
+dim(ddsHTSeqMAoldS1)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS2)) >= 20
+ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
+ddsHTSeqMAoldS2
+counts(ddsHTSeqMAoldS2)
+dim(counts(ddsHTSeqMAoldS2))
+# View(ddsHTSeqMAoldS2)
+ancMAold <-  counts(ddsHTSeqMAoldS2)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
+dim(ddsHTSeqMAoldS2)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS3)) >= 20
+ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
+ddsHTSeqMAoldS3
+counts(ddsHTSeqMAoldS3)
+dim(counts(ddsHTSeqMAoldS3))
+View(ddsHTSeqMAoldS3)
+ancMAold <-  counts(ddsHTSeqMAoldS3)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
+dim(ddsHTSeqMAoldS3)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS4)) >= 20
+ddsHTSeqMAoldS4 <- ddsHTSeqMAoldS4[keepMAold,]
+ddsHTSeqMAoldS4
+counts(ddsHTSeqMAoldS4)
+dim(counts(ddsHTSeqMAoldS4))
+# View(ddsHTSeqMAoldS4)
+ancMAold <-  counts(ddsHTSeqMAoldS4)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS4 <- ddsHTSeqMAoldS4[keepMAold,]
+dim(ddsHTSeqMAoldS4)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS5)) >= 20
+ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
+ddsHTSeqMAoldS5
+counts(ddsHTSeqMAoldS5)
+dim(counts(ddsHTSeqMAoldS5))
+# View(ddsHTSeqMAoldS5)
+ancMAold <-  counts(ddsHTSeqMAoldS5)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
+dim(ddsHTSeqMAoldS5)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS6)) >= 20
+ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
+ddsHTSeqMAoldS6
+counts(ddsHTSeqMAoldS6)
+dim(counts(ddsHTSeqMAoldS6))
+# View(ddsHTSeqMAoldS6)
+ancMAold <-  counts(ddsHTSeqMAoldS6)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
+dim(ddsHTSeqMAoldS6)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS7)) >= 20
+ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
+ddsHTSeqMAoldS7
+counts(ddsHTSeqMAoldS7)
+dim(counts(ddsHTSeqMAoldS7))
+# View(ddsHTSeqMAoldS7)
+ancMAold <-  counts(ddsHTSeqMAoldS7)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
+dim(ddsHTSeqMAoldS7)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS8)) >= 20
+ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
+ddsHTSeqMAoldS8
+counts(ddsHTSeqMAoldS8)
+dim(counts(ddsHTSeqMAoldS8))
+# View(ddsHTSeqMAoldS8)
+ancMAold <-  counts(ddsHTSeqMAoldS8)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
+dim(ddsHTSeqMAoldS8)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS9)) >= 20
+ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
+ddsHTSeqMAoldS9
+counts(ddsHTSeqMAoldS9)
+dim(counts(ddsHTSeqMAoldS9))
+# View(ddsHTSeqMAoldS9)
+ancMAold <-  counts(ddsHTSeqMAoldS9)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
+dim(ddsHTSeqMAoldS9)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS11)) >= 20
+ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
+ddsHTSeqMAoldS11
+counts(ddsHTSeqMAoldS11)
+dim(counts(ddsHTSeqMAoldS11))
+# View(ddsHTSeqMAoldS11)
+ancMAold <-  counts(ddsHTSeqMAoldS11)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
+dim(ddsHTSeqMAoldS11)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS15)) >= 20
+ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
+ddsHTSeqMAoldS15
+counts(ddsHTSeqMAoldS15)
+dim(counts(ddsHTSeqMAoldS15))
+# View(ddsHTSeqMAoldS15)
+ancMAold <-  counts(ddsHTSeqMAoldS15)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
+dim(ddsHTSeqMAoldS15)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS28)) >= 20
+ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
+ddsHTSeqMAoldS28
+counts(ddsHTSeqMAoldS28)
+dim(counts(ddsHTSeqMAoldS28))
+# View(ddsHTSeqMAoldS28)
+ancMAold <-  counts(ddsHTSeqMAoldS28)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
+dim(ddsHTSeqMAoldS28)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS88)) >= 20
+ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
+ddsHTSeqMAoldS88
+counts(ddsHTSeqMAoldS88)
+dim(counts(ddsHTSeqMAoldS88))
+# View(ddsHTSeqMAoldS88)
+ancMAold <-  counts(ddsHTSeqMAoldS88)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
+dim(ddsHTSeqMAoldS88)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS108)) >= 20
+ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
+ddsHTSeqMAoldS108
+counts(ddsHTSeqMAoldS108)
+dim(counts(ddsHTSeqMAoldS108))
+# View(ddsHTSeqMAoldS108)
+ancMAold <-  counts(ddsHTSeqMAoldS108)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
+dim(ddsHTSeqMAoldS108)
+
+keepMAold <- rowSums(counts(ddsHTSeqMAoldS119)) >= 20
+ddsHTSeqMAoldS119 <- ddsHTSeqMAoldS119[keepMAold,]
+ddsHTSeqMAoldS119
+counts(ddsHTSeqMAoldS119)
+dim(counts(ddsHTSeqMAoldS119))
+# View(ddsHTSeqMAoldS119)
+ancMAold <-  counts(ddsHTSeqMAoldS119)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAold>10)==3)
+keepMAold <- rowSums(ancMAold>10)==3
+ddsHTSeqMAoldS119 <- ddsHTSeqMAoldS119[keepMAold,]
+dim(ddsHTSeqMAoldS119)
+
+###############################################################################
+keepMAnew <- rowSums(counts(ddsHTSeqMAnew)) >= 20
+ddsHTSeqMAnew <- ddsHTSeqMAnew[keepMAnew,]
+ddsHTSeqMAnew
+counts(ddsHTSeqMAnew)
+dim(counts(ddsHTSeqMAnew))
+
+#make a separate data frame with just the ancestor replicates
+ancMAnew <-  counts(ddsHTSeqMAnew)[,25:27]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+# try it in the full count set 
+# make a test file first 
+ddsHTSeqMAnewtest <- ddsHTSeqMAnew
+ddsHTSeqMAnewtest <- ddsHTSeqMAnewtest[keepMAnew,]
+ddsHTSeqMAnewtest
+counts(ddsHTSeqMAnewtest)
+dim(counts(ddsHTSeqMAnewtest))
+View(counts(ddsHTSeqMAnewtest))
+# test file was fine so go ahead and make it the real thing
+ddsHTSeqMAnew <- ddsHTSeqMAnewtest
+## get rid of any NAs
+ddsHTSeqMAnew <- na.omit(ddsHTSeqMAnew)
+dim(ddsHTSeqMAnew)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS29)) >= 20
+ddsHTSeqMAnewS29 <- ddsHTSeqMAnewS29[keepMAnew,]
+ddsHTSeqMAnewS29
+counts(ddsHTSeqMAnewS29)
+dim(counts(ddsHTSeqMAnewS29))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS29)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS29 <- ddsHTSeqMAnewS29[keepMAnew,]
+dim(ddsHTSeqMAnewS29)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS50)) >= 20
+ddsHTSeqMAnewS50 <- ddsHTSeqMAnewS50[keepMAnew,]
+ddsHTSeqMAnewS50
+counts(ddsHTSeqMAnewS50)
+dim(counts(ddsHTSeqMAnewS50))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS50)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS50 <- ddsHTSeqMAnewS50[keepMAnew,]
+dim(ddsHTSeqMAnewS50)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS112)) >= 20
+ddsHTSeqMAnewS112 <- ddsHTSeqMAnewS112[keepMAnew,]
+ddsHTSeqMAnewS112
+counts(ddsHTSeqMAnewS112)
+dim(counts(ddsHTSeqMAnewS112))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS112)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS112 <- ddsHTSeqMAnewS112[keepMAnew,]
+dim(ddsHTSeqMAnewS112)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS115)) >= 20
+ddsHTSeqMAnewS115 <- ddsHTSeqMAnewS115[keepMAnew,]
+ddsHTSeqMAnewS115
+counts(ddsHTSeqMAnewS115)
+dim(counts(ddsHTSeqMAnewS115))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS115)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS115 <- ddsHTSeqMAnewS115[keepMAnew,]
+dim(ddsHTSeqMAnewS115)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS117)) >= 20
+ddsHTSeqMAnewS117 <- ddsHTSeqMAnewS117[keepMAnew,]
+ddsHTSeqMAnewS117
+counts(ddsHTSeqMAnewS117)
+dim(counts(ddsHTSeqMAnewS117))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS117)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS117 <- ddsHTSeqMAnewS117[keepMAnew,]
+dim(ddsHTSeqMAnewS117)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS123)) >= 20
+ddsHTSeqMAnewS123 <- ddsHTSeqMAnewS123[keepMAnew,]
+ddsHTSeqMAnewS123
+counts(ddsHTSeqMAnewS123)
+dim(counts(ddsHTSeqMAnewS123))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS123)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS123 <- ddsHTSeqMAnewS123[keepMAnew,]
+dim(ddsHTSeqMAnewS123)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS141)) >= 20
+ddsHTSeqMAnewS141 <- ddsHTSeqMAnewS141[keepMAnew,]
+ddsHTSeqMAnewS141
+counts(ddsHTSeqMAnewS141)
+dim(counts(ddsHTSeqMAnewS141))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS141)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS141 <- ddsHTSeqMAnewS141[keepMAnew,]
+dim(ddsHTSeqMAnewS141)
+
+keepMAnew <- rowSums(counts(ddsHTSeqMAnewS152)) >= 20
+ddsHTSeqMAnewS152 <- ddsHTSeqMAnewS152[keepMAnew,]
+ddsHTSeqMAnewS152
+counts(ddsHTSeqMAnewS152)
+dim(counts(ddsHTSeqMAnewS152))
+# View(ddsHTSeqMAoldS119)
+ancMAnew <-  counts(ddsHTSeqMAnewS152)[,4:6]
+#subset it based on cpm > 1 in all 3 replicates
+table(rowSums(ancMAnew>10)==3)
+keepMAnew <- rowSums(ancMAnew>10)==3
+ddsHTSeqMAnewS152 <- ddsHTSeqMAnewS152[keepMAnew,]
+dim(ddsHTSeqMAnewS152)
+
 
 ```
 
@@ -433,70 +1685,1347 @@ for (i in 3:23) {
 
 ```
 
-
 ```{r full dataset, include=TRUE}
 #####################################################
 #default 
- geneID <- rownames(ddsHTSeq)
-# library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
-# txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
-# genes <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
-# #remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
-# genes <- na.omit(genes)
-# genes <- as.data.frame(genes)
-# remove1 <- "chrM"
-# genes <- genes[-(grep(paste0(remove1,"$"),genes$TXCHROM,perl=TRUE)),]
-# all(rownames(ddsHTSeq) == genes$GENEID)
-# #need to remove the ones in rownames of dds that don't match genes$GENEID
-# matchedS1 <- intersect(rownames(ddsHTSeq), genes$GENEID)
-# keep3 <- rownames(ddsHTSeq) %in% matchedS1
-# ddsHTSeq <- ddsHTSeq[keep3,]
-# length(ddsHTSeq)
-# all(rownames(ddsHTSeq) == genes$GENEID)
-# mcols(ddsHTSeq) <- cbind(mcols(ddsHTSeq), genes)
-# ddsDef <- DESeq(ddsHTSeq)
-# attr(dispersionFunction(ddsDef),"dispPriorVar")
-# norm.factors.with.aneu <- as.data.frame(sizeFactors(ddsDef))
-# dispersions.with.aneu <- dispersions(ddsDef)
+## add annotations
+geneIDgC <- rownames(ddsHTSeqGC)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesGC <- ensembldb::select(txdb, keys=geneIDgC, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGC <- na.omit(genesGC)
+genesGC <- as.data.frame(genesGC)
+remove1 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGC) == genesGC$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS1 <- intersect(rownames(ddsHTSeqGC), genesGC$GENEID)
+keep3 <- rownames(ddsHTSeqGC) %in% matchedS1
+ddsHTSeqGC <- ddsHTSeqGC[keep3,]
+length(ddsHTSeqGC)
+all(rownames(ddsHTSeqGC) == genesGC$GENEID)
+mcols(ddsHTSeqGC) <- cbind(mcols(ddsHTSeqGC), genesGC)
+#### filtered genes
+#default 
+## add annotations
+geneIDgC.fil <- rownames(ddsHTSeqGC.fil)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesGC.fil <- ensembldb::select(txdb, keys=geneIDgC.fil, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGC.fil <- na.omit(genesGC.fil)
+genesGC.fil <- as.data.frame(genesGC.fil)
+remove1 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGC.fil) == genesGC.fil$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS1.fil <- intersect(rownames(ddsHTSeqGC.fil), genesGC.fil$GENEID)
+keep3.fil <- rownames(ddsHTSeqGC.fil) %in% matchedS1.fil
+ddsHTSeqGC.fil <- ddsHTSeqGC.fil[keep3.fil,]
+length(ddsHTSeqGC.fil)
+all(rownames(ddsHTSeqGC.fil) == genesGC.fil$GENEID)
+mcols(ddsHTSeqGC.fil) <- cbind(mcols(ddsHTSeqGC.fil), genesGC.fil)
 
-#aneuploid chromosomes removed
-# allGenes <- as.data.frame(mcols(ddsHTSeq))
-# View(allGenes)
-ddsNoAneuInNorm <- estimateSizeFactors(ddsHTSeq, controlGenes=c(106:537,538:701,702:1498,1796:1924,3382:3717,4239:4723))
-geneID <- rownames(ddsNoAneuInNorm)
+
+geneIDgC.short <- rownames(ddsHTSeqGC.short)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesGC.short <- ensembldb::select(txdb, keys=geneIDgC.short, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGC.short <- na.omit(genesGC.short)
+genesGC.short <- as.data.frame(genesGC.short)
+remove1 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGC.short) == genesGC.short$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS1.short <- intersect(rownames(ddsHTSeqGC.short), genesGC.short$GENEID)
+keep3.short <- rownames(ddsHTSeqGC.short) %in% matchedS1.short
+ddsHTSeqGC.short <- ddsHTSeqGC.short[keep3.short,]
+length(ddsHTSeqGC.short)
+all(rownames(ddsHTSeqGC.short) == genesGC.short$GENEID)
+mcols(ddsHTSeqGC.short) <- cbind(mcols(ddsHTSeqGC.short), genesGC.short)
+
+
+######### individual samples
+## add annotations
+geneIDgCS1 <- rownames(ddsHTSeqGCS1.fil)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesGCS1 <- ensembldb::select(txdb, keys=geneIDgCS1, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGCS1 <- na.omit(genesGCS1)
+genesGCS1 <- as.data.frame(genesGCS1)
+remove1 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGCS1.fil) == genesGCS1$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS1 <- intersect(rownames(ddsHTSeqGCS1.fil), genesGCS1$GENEID)
+keep3S1 <- rownames(ddsHTSeqGCS1.fil) %in% matchedS1
+ddsHTSeqGCS1.fil <- ddsHTSeqGCS1.fil[keep3S1,]
+length(ddsHTSeqGCS1.fil)
+all(rownames(ddsHTSeqGCS1.fil) == genesGCS1$GENEID)
+mcols(ddsHTSeqGCS1.fil) <- cbind(mcols(ddsHTSeqGCS1.fil), genesGCS1)
+geneIDgCS2 <- rownames(ddsHTSeqGCS2.fil)
+genesGCS2 <- ensembldb::select(txdb, keys=geneIDgCS2, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGCS2 <- na.omit(genesGCS2)
+genesGCS2 <- as.data.frame(genesGCS2)
+remove2 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGCS2.fil) == genesGCS2$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqGCS2.fil), genesGCS2$GENEID)
+keep3S2 <- rownames(ddsHTSeqGCS2.fil) %in% matchedS2
+ddsHTSeqGCS2.fil <- ddsHTSeqGCS2.fil[keep3S2,]
+length(ddsHTSeqGCS2.fil)
+all(rownames(ddsHTSeqGCS2.fil) == genesGCS2$GENEID)
+mcols(ddsHTSeqGCS2.fil) <- cbind(mcols(ddsHTSeqGCS2.fil), genesGCS2)
+all(rownames(ddsHTSeqGCS3.fil) == genesGCS2$GENEID)
+mcols(ddsHTSeqGCS3.fil) <- cbind(mcols(ddsHTSeqGCS3.fil), genesGCS2)
+mcols(ddsHTSeqGCS4.fil) <- cbind(mcols(ddsHTSeqGCS4.fil), genesGCS2)
+# mcols(ddsHTSeqGCS2.fil) <- cbind(mcols(ddsHTSeqGCS2.fil), genesGCS2)
+mcols(ddsHTSeqGCS7.fil) <- cbind(mcols(ddsHTSeqGCS7.fil), genesGCS2)
+mcols(ddsHTSeqGCS8.fil) <- cbind(mcols(ddsHTSeqGCS8.fil), genesGCS2)
+mcols(ddsHTSeqGCS9.fil) <- cbind(mcols(ddsHTSeqGCS9.fil), genesGCS2)
+mcols(ddsHTSeqGCS11.fil) <- cbind(mcols(ddsHTSeqGCS11.fil), genesGCS2)
+mcols(ddsHTSeqGCS18.fil) <- cbind(mcols(ddsHTSeqGCS18.fil), genesGCS2)
+mcols(ddsHTSeqGCS49.fil) <- cbind(mcols(ddsHTSeqGCS49.fil), genesGCS2)
+mcols(ddsHTSeqGCS59.fil) <- cbind(mcols(ddsHTSeqGCS59.fil), genesGCS2)
+mcols(ddsHTSeqGCS61.fil) <- cbind(mcols(ddsHTSeqGCS61.fil), genesGCS2)
+mcols(ddsHTSeqGCS76.fil) <- cbind(mcols(ddsHTSeqGCS76.fil), genesGCS2)
+mcols(ddsHTSeqGCS77.fil) <- cbind(mcols(ddsHTSeqGCS77.fil), genesGCS2)
+
+#### filtered genes
+#default 
+## add annotations
+geneIDgC.fil <- rownames(ddsHTSeqGC.fil)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesGC.fil <- ensembldb::select(txdb, keys=geneIDgC.fil, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesGC.fil <- na.omit(genesGC.fil)
+genesGC.fil <- as.data.frame(genesGC.fil)
+remove1 <- "chrM"
+# genesGC <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqGC.fil) == genesGC.fil$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS1.fil <- intersect(rownames(ddsHTSeqGC.fil), genesGC.fil$GENEID)
+keep3.fil <- rownames(ddsHTSeqGC.fil) %in% matchedS1.fil
+ddsHTSeqGC.fil <- ddsHTSeqGC.fil[keep3.fil,]
+length(ddsHTSeqGC.fil)
+all(rownames(ddsHTSeqGC.fil) == genesGC.fil$GENEID)
+mcols(ddsHTSeqGC.fil) <- cbind(mcols(ddsHTSeqGC.fil), genesGC.fil)
+#####################################################
+#default 
+## add annotations
+geneIDMAold <- rownames(ddsHTSeqMAold)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAold <- ensembldb::select(txdb, keys=geneIDMAold, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAold <- na.omit(genesMAold)
+genesMAold <- as.data.frame(genesMAold)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAold) == genesMAold$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAold), genesMAold$GENEID)
+keep4 <- rownames(ddsHTSeqMAold) %in% matchedS2
+ddsHTSeqMAold <- ddsHTSeqMAold[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAold) == genesMAold$GENEID)
+mcols(ddsHTSeqMAold) <- cbind(mcols(ddsHTSeqMAold), genesMAold)
+
+###### individual samples
+geneIDMAoldS1 <- rownames(ddsHTSeqMAoldS1)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS1 <- ensembldb::select(txdb, keys=geneIDMAoldS1, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS1 <- na.omit(genesMAoldS1)
+genesMAoldS1 <- as.data.frame(genesMAoldS1)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS1) == genesMAoldS1$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS1), genesMAoldS1$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS1) %in% matchedS2
+ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS1) == genesMAoldS1$GENEID)
+mcols(ddsHTSeqMAoldS1) <- cbind(mcols(ddsHTSeqMAoldS1), genesMAoldS1)
+
+geneIDMAoldS2 <- rownames(ddsHTSeqMAoldS2)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS2 <- ensembldb::select(txdb, keys=geneIDMAoldS2, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS2 <- na.omit(genesMAoldS2)
+genesMAoldS2 <- as.data.frame(genesMAoldS2)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS2) == genesMAoldS2$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS2), genesMAoldS2$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS2) %in% matchedS2
+ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS2) == genesMAoldS2$GENEID)
+mcols(ddsHTSeqMAoldS2) <- cbind(mcols(ddsHTSeqMAoldS2), genesMAoldS2)
+
+geneIDMAoldS3 <- rownames(ddsHTSeqMAoldS3)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS3 <- ensembldb::select(txdb, keys=geneIDMAoldS3, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS3 <- na.omit(genesMAoldS3)
+genesMAoldS3 <- as.data.frame(genesMAoldS3)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS3) == genesMAoldS3$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS3), genesMAoldS3$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS3) %in% matchedS2
+ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS3) == genesMAoldS3$GENEID)
+mcols(ddsHTSeqMAoldS3) <- cbind(mcols(ddsHTSeqMAoldS3), genesMAoldS3)
+
+geneIDMAoldS4 <- rownames(ddsHTSeqMAoldS4)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS4 <- ensembldb::select(txdb, keys=geneIDMAoldS4, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS4 <- na.omit(genesMAoldS4)
+genesMAoldS4 <- as.data.frame(genesMAoldS4)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS4) == genesMAoldS4$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS4), genesMAoldS4$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS4) %in% matchedS2
+ddsHTSeqMAoldS4 <- ddsHTSeqMAoldS4[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS4) == genesMAoldS4$GENEID)
+mcols(ddsHTSeqMAoldS4) <- cbind(mcols(ddsHTSeqMAoldS4), genesMAoldS4)
+
+geneIDMAoldS5 <- rownames(ddsHTSeqMAoldS5)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS5 <- ensembldb::select(txdb, keys=geneIDMAoldS5, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS5 <- na.omit(genesMAoldS5)
+genesMAoldS5 <- as.data.frame(genesMAoldS5)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS5) == genesMAoldS5$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS5), genesMAoldS5$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS5) %in% matchedS2
+ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS5) == genesMAoldS5$GENEID)
+mcols(ddsHTSeqMAoldS5) <- cbind(mcols(ddsHTSeqMAoldS5), genesMAoldS5)
+
+geneIDMAoldS6 <- rownames(ddsHTSeqMAoldS6)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS6 <- ensembldb::select(txdb, keys=geneIDMAoldS6, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS6 <- na.omit(genesMAoldS6)
+genesMAoldS6 <- as.data.frame(genesMAoldS6)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS6) == genesMAoldS6$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS6), genesMAoldS6$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS6) %in% matchedS2
+ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS6) == genesMAoldS6$GENEID)
+mcols(ddsHTSeqMAoldS6) <- cbind(mcols(ddsHTSeqMAoldS6), genesMAoldS6)
+
+geneIDMAoldS7 <- rownames(ddsHTSeqMAoldS7)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS7 <- ensembldb::select(txdb, keys=geneIDMAoldS7, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS7 <- na.omit(genesMAoldS7)
+genesMAoldS7 <- as.data.frame(genesMAoldS7)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS7) == genesMAoldS7$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS7), genesMAoldS7$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS7) %in% matchedS2
+ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS7) == genesMAoldS7$GENEID)
+mcols(ddsHTSeqMAoldS7) <- cbind(mcols(ddsHTSeqMAoldS7), genesMAoldS7)
+
+geneIDMAoldS8 <- rownames(ddsHTSeqMAoldS8)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS8 <- ensembldb::select(txdb, keys=geneIDMAoldS8, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS8 <- na.omit(genesMAoldS8)
+genesMAoldS8 <- as.data.frame(genesMAoldS8)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS8) == genesMAoldS8$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS8), genesMAoldS8$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS8) %in% matchedS2
+ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS8) == genesMAoldS8$GENEID)
+mcols(ddsHTSeqMAoldS8) <- cbind(mcols(ddsHTSeqMAoldS8), genesMAoldS8)
+
+geneIDMAoldS9 <- rownames(ddsHTSeqMAoldS9)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS9 <- ensembldb::select(txdb, keys=geneIDMAoldS9, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS9 <- na.omit(genesMAoldS9)
+genesMAoldS9 <- as.data.frame(genesMAoldS9)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS9) == genesMAoldS9$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS9), genesMAoldS9$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS9) %in% matchedS2
+ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS9) == genesMAoldS9$GENEID)
+mcols(ddsHTSeqMAoldS9) <- cbind(mcols(ddsHTSeqMAoldS9), genesMAoldS9)
+
+geneIDMAoldS11 <- rownames(ddsHTSeqMAoldS11)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS11 <- ensembldb::select(txdb, keys=geneIDMAoldS11, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS11 <- na.omit(genesMAoldS11)
+genesMAoldS11 <- as.data.frame(genesMAoldS11)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS11) == genesMAoldS11$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS11), genesMAoldS11$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS11) %in% matchedS2
+ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS11) == genesMAoldS11$GENEID)
+mcols(ddsHTSeqMAoldS11) <- cbind(mcols(ddsHTSeqMAoldS11), genesMAoldS11)
+
+geneIDMAoldS15 <- rownames(ddsHTSeqMAoldS15)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS15 <- ensembldb::select(txdb, keys=geneIDMAoldS15, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS15 <- na.omit(genesMAoldS15)
+genesMAoldS15 <- as.data.frame(genesMAoldS15)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS15) == genesMAoldS15$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS15), genesMAoldS15$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS15) %in% matchedS2
+ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS15) == genesMAoldS15$GENEID)
+mcols(ddsHTSeqMAoldS15) <- cbind(mcols(ddsHTSeqMAoldS15), genesMAoldS15)
+
+geneIDMAoldS28 <- rownames(ddsHTSeqMAoldS28)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS28 <- ensembldb::select(txdb, keys=geneIDMAoldS28, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS28 <- na.omit(genesMAoldS28)
+genesMAoldS28 <- as.data.frame(genesMAoldS28)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS28) == genesMAoldS28$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS28), genesMAoldS28$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS28) %in% matchedS2
+ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS28) == genesMAoldS28$GENEID)
+mcols(ddsHTSeqMAoldS28) <- cbind(mcols(ddsHTSeqMAoldS28), genesMAoldS28)
+
+geneIDMAoldS88 <- rownames(ddsHTSeqMAoldS88)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS88 <- ensembldb::select(txdb, keys=geneIDMAoldS88, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS88 <- na.omit(genesMAoldS88)
+genesMAoldS88 <- as.data.frame(genesMAoldS88)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS88) == genesMAoldS88$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS88), genesMAoldS88$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS88) %in% matchedS2
+ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS88) == genesMAoldS88$GENEID)
+mcols(ddsHTSeqMAoldS88) <- cbind(mcols(ddsHTSeqMAoldS88), genesMAoldS88)
+
+geneIDMAoldS108 <- rownames(ddsHTSeqMAoldS108)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS108 <- ensembldb::select(txdb, keys=geneIDMAoldS108, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS108 <- na.omit(genesMAoldS108)
+genesMAoldS108 <- as.data.frame(genesMAoldS108)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS108) == genesMAoldS108$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS108), genesMAoldS108$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS108) %in% matchedS2
+ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS108) == genesMAoldS108$GENEID)
+mcols(ddsHTSeqMAoldS108) <- cbind(mcols(ddsHTSeqMAoldS108), genesMAoldS108)
+
+geneIDMAoldS119 <- rownames(ddsHTSeqMAoldS119)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAoldS119 <- ensembldb::select(txdb, keys=geneIDMAoldS119, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAoldS119 <- na.omit(genesMAoldS119)
+genesMAoldS119 <- as.data.frame(genesMAoldS119)
+remove1 <- "chrM"
+# genesMAold <- genesMAold[-(grep(paste0(remove1,"$"),genesMAold$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAoldS119) == genesMAoldS119$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAoldS119), genesMAoldS119$GENEID)
+keep4 <- rownames(ddsHTSeqMAoldS119) %in% matchedS2
+ddsHTSeqMAoldS119 <- ddsHTSeqMAoldS119[keep4,]
+# length(ddsHTSeqMAold)
+all(rownames(ddsHTSeqMAoldS119) == genesMAoldS119$GENEID)
+mcols(ddsHTSeqMAoldS119) <- cbind(mcols(ddsHTSeqMAoldS119), genesMAoldS119)
+
+
+
+
+
+#####################################################
+#default 
+## add annotations
+geneIDMAnew <- rownames(ddsHTSeqMAnew)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnew <- ensembldb::select(txdb, keys=geneIDMAnew, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnew <- na.omit(genesMAnew)
+genesMAnew <- as.data.frame(genesMAnew)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnew) == genesMAnew$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedMAnew <- intersect(rownames(ddsHTSeqMAnew), genesMAnew$GENEID)
+keepMAnew<- rownames(ddsHTSeqMAnew) %in% matchedMAnew
+ddsHTSeqMAnew <- ddsHTSeqMAnew[keepMAnew,]
+length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnew) == genesMAnew$GENEID)
+mcols(ddsHTSeqMAnew) <- cbind(mcols(ddsHTSeqMAnew), genesMAnew)
+
+
+#### individual samples
+geneIDMAnewS29 <- rownames(ddsHTSeqMAnewS29)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS29 <- ensembldb::select(txdb, keys=geneIDMAnewS29, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS29 <- na.omit(genesMAnewS29)
+genesMAnewS29 <- as.data.frame(genesMAnewS29)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS29) == genesMAnewS29$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS29), genesMAnewS29$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS29) %in% matchedS2
+ddsHTSeqMAnewS29 <- ddsHTSeqMAnewS29[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS29) == genesMAnewS29$GENEID)
+mcols(ddsHTSeqMAnewS29) <- cbind(mcols(ddsHTSeqMAnewS29), genesMAnewS29)
+
+geneIDMAnewS50 <- rownames(ddsHTSeqMAnewS50)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS50 <- ensembldb::select(txdb, keys=geneIDMAnewS50, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS50 <- na.omit(genesMAnewS50)
+genesMAnewS50 <- as.data.frame(genesMAnewS50)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS50) == genesMAnewS50$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS50), genesMAnewS50$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS50) %in% matchedS2
+ddsHTSeqMAnewS50 <- ddsHTSeqMAnewS50[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS50) == genesMAnewS50$GENEID)
+mcols(ddsHTSeqMAnewS50) <- cbind(mcols(ddsHTSeqMAnewS50), genesMAnewS50)
+
+geneIDMAnewS112 <- rownames(ddsHTSeqMAnewS112)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS112 <- ensembldb::select(txdb, keys=geneIDMAnewS112, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS112 <- na.omit(genesMAnewS112)
+genesMAnewS112 <- as.data.frame(genesMAnewS112)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS112) == genesMAnewS112$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS112), genesMAnewS112$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS112) %in% matchedS2
+ddsHTSeqMAnewS112 <- ddsHTSeqMAnewS112[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS112) == genesMAnewS112$GENEID)
+mcols(ddsHTSeqMAnewS112) <- cbind(mcols(ddsHTSeqMAnewS112), genesMAnewS112)
+
+geneIDMAnewS115 <- rownames(ddsHTSeqMAnewS115)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS115 <- ensembldb::select(txdb, keys=geneIDMAnewS115, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS115 <- na.omit(genesMAnewS115)
+genesMAnewS115 <- as.data.frame(genesMAnewS115)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS115) == genesMAnewS115$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS115), genesMAnewS115$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS115) %in% matchedS2
+ddsHTSeqMAnewS115 <- ddsHTSeqMAnewS115[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS115) == genesMAnewS115$GENEID)
+mcols(ddsHTSeqMAnewS115) <- cbind(mcols(ddsHTSeqMAnewS115), genesMAnewS115)
+
+geneIDMAnewS117 <- rownames(ddsHTSeqMAnewS117)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS117 <- ensembldb::select(txdb, keys=geneIDMAnewS117, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS117 <- na.omit(genesMAnewS117)
+genesMAnewS117 <- as.data.frame(genesMAnewS117)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS117) == genesMAnewS117$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS117), genesMAnewS117$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS117) %in% matchedS2
+ddsHTSeqMAnewS117 <- ddsHTSeqMAnewS117[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS117) == genesMAnewS117$GENEID)
+mcols(ddsHTSeqMAnewS117) <- cbind(mcols(ddsHTSeqMAnewS117), genesMAnewS117)
+
+geneIDMAnewS123 <- rownames(ddsHTSeqMAnewS123)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS123 <- ensembldb::select(txdb, keys=geneIDMAnewS123, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS123 <- na.omit(genesMAnewS123)
+genesMAnewS123 <- as.data.frame(genesMAnewS123)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS123) == genesMAnewS123$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS123), genesMAnewS123$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS123) %in% matchedS2
+ddsHTSeqMAnewS123 <- ddsHTSeqMAnewS123[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS123) == genesMAnewS123$GENEID)
+mcols(ddsHTSeqMAnewS123) <- cbind(mcols(ddsHTSeqMAnewS123), genesMAnewS123)
+
+geneIDMAnewS141 <- rownames(ddsHTSeqMAnewS141)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS141 <- ensembldb::select(txdb, keys=geneIDMAnewS141, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS141 <- na.omit(genesMAnewS141)
+genesMAnewS141 <- as.data.frame(genesMAnewS141)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS141) == genesMAnewS141$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS141), genesMAnewS141$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS141) %in% matchedS2
+ddsHTSeqMAnewS141 <- ddsHTSeqMAnewS141[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS141) == genesMAnewS141$GENEID)
+mcols(ddsHTSeqMAnewS141) <- cbind(mcols(ddsHTSeqMAnewS141), genesMAnewS141)
+
+geneIDMAnewS152 <- rownames(ddsHTSeqMAnewS152)
+#library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+#txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene
+genesMAnewS152 <- ensembldb::select(txdb, keys=geneIDMAnewS152, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesMAnewS152 <- na.omit(genesMAnewS152)
+genesMAnewS152 <- as.data.frame(genesMAnewS152)
+remove1 <- "chrM"
+# genesMAnew <- genesMAnew[-(grep(paste0(remove1,"$"),genesMAnew$TXCHROM,perl=TRUE)),]
+all(rownames(ddsHTSeqMAnewS152) == genesMAnewS152$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedS2 <- intersect(rownames(ddsHTSeqMAnewS152), genesMAnewS152$GENEID)
+keep4 <- rownames(ddsHTSeqMAnewS152) %in% matchedS2
+ddsHTSeqMAnewS152 <- ddsHTSeqMAnewS152[keep4,]
+# length(ddsHTSeqMAnew)
+all(rownames(ddsHTSeqMAnewS152) == genesMAnewS152$GENEID)
+mcols(ddsHTSeqMAnewS152) <- cbind(mcols(ddsHTSeqMAnewS152), genesMAnewS152)
+
+#################################################
+#default DESeq run
+ddsDefGC <- DESeq(ddsHTSeqGC)
+ddsDefGC
+attr(dispersionFunction(ddsDefGC),"dispPriorVar")
+norm.factors.with.aneuGC <- as.data.frame(sizeFactors(ddsDefGC))
+dispersions.with.aneuGC <- dispersions(ddsDefGC)
+## with filtered genes 
+#default DESeq run
+ddsDefGC.fil <- DESeq(ddsHTSeqGC.fil)
+ddsDefGC.fil
+attr(dispersionFunction(ddsDefGC.fil),"dispPriorVar")
+norm.factors.with.aneuGC.fil <- as.data.frame(sizeFactors(ddsDefGC.fil))
+dispersions.with.aneuGC.fil <- dispersions(ddsDefGC.fil)
+
+
+ddsDefGC.short <- DESeq(ddsHTSeqGC.short)
+
+## with filtered genes 
+#default DESeq run
+# with each sample individually
+ddsDefGCS1.fil <- DESeq(ddsHTSeqGCS1.fil)
+ddsDefGCS1.fil
+ddsDefGCS2.fil <- DESeq(ddsHTSeqGCS2.fil)
+ddsDefGCS2.fil
+ddsDefGCS3.fil <- DESeq(ddsHTSeqGCS3.fil)
+ddsDefGCS3.fil
+ddsDefGCS4.fil <- DESeq(ddsHTSeqGCS4.fil)
+ddsDefGCS4.fil
+ddsDefGCS7.fil <- DESeq(ddsHTSeqGCS7.fil)
+ddsDefGCS7.fil
+ddsDefGCS8.fil <- DESeq(ddsHTSeqGCS8.fil)
+ddsDefGCS8.fil
+ddsDefGCS9.fil <- DESeq(ddsHTSeqGCS9.fil)
+ddsDefGCS9.fil
+ddsDefGCS11.fil <- DESeq(ddsHTSeqGCS11.fil)
+ddsDefGCS11.fil
+ddsDefGCS18.fil <- DESeq(ddsHTSeqGCS18.fil)
+ddsDefGCS18.fil
+ddsDefGCS49.fil <- DESeq(ddsHTSeqGCS49.fil)
+ddsDefGCS49.fil
+ddsDefGCS59.fil <- DESeq(ddsHTSeqGCS59.fil)
+ddsDefGCS59.fil
+ddsDefGCS61.fil <- DESeq(ddsHTSeqGCS61.fil)
+ddsDefGCS61.fil
+ddsDefGCS76.fil <- DESeq(ddsHTSeqGCS76.fil)
+ddsDefGCS76.fil
+ddsDefGCS77.fil <- DESeq(ddsHTSeqGCS77.fil)
+ddsDefGCS77.fil
+#################################################
+#default DESeq run
+ddsDefMAold <- DESeq(ddsHTSeqMAold)
+ddsDefMAold
+attr(dispersionFunction(ddsDefMAold),"dispPriorVar")
+norm.factors.with.aneuMAold <- as.data.frame(sizeFactors(ddsDefMAold))
+dispersions.with.aneuMAold <- dispersions(ddsDefMAold)
+
+### individual lines 
+ddsDefMAoldS1 <- DESeq(ddsHTSeqMAoldS1)
+ddsDefMAoldS1
+ddsDefMAoldS2 <- DESeq(ddsHTSeqMAoldS2)
+ddsDefMAoldS2
+ddsDefMAoldS3 <- DESeq(ddsHTSeqMAoldS3)
+ddsDefMAoldS3
+ddsDefMAoldS4 <- DESeq(ddsHTSeqMAoldS4)
+ddsDefMAoldS4
+ddsDefMAoldS5 <- DESeq(ddsHTSeqMAoldS5)
+ddsDefMAoldS5
+ddsDefMAoldS6 <- DESeq(ddsHTSeqMAoldS6)
+ddsDefMAoldS6
+ddsDefMAoldS7 <- DESeq(ddsHTSeqMAoldS7)
+ddsDefMAoldS7
+ddsDefMAoldS8 <- DESeq(ddsHTSeqMAoldS8)
+ddsDefMAoldS8
+ddsDefMAoldS9 <- DESeq(ddsHTSeqMAoldS9)
+ddsDefMAoldS9
+ddsDefMAoldS11 <- DESeq(ddsHTSeqMAoldS11)
+ddsDefMAoldS11
+ddsDefMAoldS15 <- DESeq(ddsHTSeqMAoldS15)
+ddsDefMAoldS15
+ddsDefMAoldS28 <- DESeq(ddsHTSeqMAoldS28)
+ddsDefMAoldS28
+ddsDefMAoldS88 <- DESeq(ddsHTSeqMAoldS88)
+ddsDefMAoldS88
+ddsDefMAoldS108 <- DESeq(ddsHTSeqMAoldS108)
+ddsDefMAoldS108
+ddsDefMAoldS119 <- DESeq(ddsHTSeqMAoldS119)
+ddsDefMAoldS119
+#################################################
+#default DESeq run
+ddsDefMAnew <- DESeq(ddsHTSeqMAnew)
+ddsDefMAnew
+attr(dispersionFunction(ddsDefMAnew),"dispPriorVar")
+norm.factors.with.aneuMAnew <- as.data.frame(sizeFactors(ddsDefMAnew))
+dispersions.with.aneuMAnew <- dispersions(ddsDefMAnew)
+
+
+##### individual samples
+ddsDefMAnewS29 <- DESeq(ddsHTSeqMAnewS29)
+ddsDefMAnewS50 <- DESeq(ddsHTSeqMAnewS50)
+ddsDefMAnewS112 <- DESeq(ddsHTSeqMAnewS112)
+ddsDefMAnewS115 <- DESeq(ddsHTSeqMAnewS115)
+ddsDefMAnewS117 <- DESeq(ddsHTSeqMAnewS117)
+ddsDefMAnewS123 <- DESeq(ddsHTSeqMAnewS123)
+ddsDefMAnewS141 <- DESeq(ddsHTSeqMAnewS141)
+ddsDefMAnewS152 <- DESeq(ddsHTSeqMAnewS152)
+
+#######################################################
+#### results with aneuploid chromosomes included ######
+resultsNames(ddsDefGC)
+resultsS1GC <- results(ddsDefGC,contrast=c("condition","Holly_1","Holly_Anc"))
+resultsS1GC
+sigGenesGC1 <- rownames(subset(resultsS1GC,padj<0.1))
+summary(resultsS1GC)
+
+resultsNames(ddsDefGC.short)
+resultsS1GC.sh <- results(ddsDefGC.short,contrast=c("condition","Holly_1","Holly_Anc"))
+resultsS1GC.sh
+# sigGenesGC1 <- rownames(subset(resultsS1GC,padj<0.1))
+summary(resultsS1GC.sh)
+
+resultsNames(ddsDefGC.short)
+resultsS2GC.sh <- results(ddsDefGC.short,contrast=c("condition","Holly_2","Holly_Anc"))
+# resultsS2GC.sh
+# sigGenesGC1 <- rownames(subset(resultsS1GC,padj<0.1))
+summary(resultsS2GC.sh)
+
+resultsS2GC <- results(ddsDefGC,contrast=c("condition","Holly_2","Holly_Anc"))
+resultsS2GC
+sigGenesGC2 <- rownames(subset(resultsS2GC,padj<0.1))
+summary(resultsS2GC)
+
+resultsS3GC <- results(ddsDefGC,contrast=c("condition","Holly_3","Holly_Anc"))
+resultsS3GC
+sigGenesGC3 <- rownames(subset(resultsS3GC,padj<0.1))
+summary(resultsS3GC)
+
+resultsS5GC <- results(ddsDefGC,contrast=c("condition","Holly_5","Holly_Anc"))
+resultsS5GC
+sigGenesGC5 <- rownames(subset(resultsS5GC,padj<0.1))
+summary(resultsS5GC)
+
+resultsS9GC <- results(ddsDefGC,contrast=c("condition","Holly_9","Holly_Anc"))
+resultsS9GC
+sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS9GC)
+
+  resultsS1GCDat <- as.data.frame(resultsS1GC)
+    resultsS2GCDat <- as.data.frame(resultsS2GC)
+      resultsS3GCDat <- as.data.frame(resultsS3GC)
+        resultsS5GCDat <- as.data.frame(resultsS5GC)
+          resultsS9GCDat <- as.data.frame(resultsS9GC)
+          
+  # add gene names as first column ( which is currently rownames)
+  resS1GCDat <- cbind(GENEID = rownames(resultsS1GCDat), resultsS1GCDat)
+  resS2GCDat <- cbind(GENEID = rownames(resultsS2GCDat), resultsS2GCDat)
+  resS3GCDat <- cbind(GENEID = rownames(resultsS3GCDat), resultsS3GCDat)
+  resS5GCDat <- cbind(GENEID = rownames(resultsS5GCDat), resultsS5GCDat)
+  resS9GCDat <- cbind(GENEID = rownames(resultsS9GCDat), resultsS9GCDat)
+  
+  # need to make a column identifying the sample 
+    resS1GCDat$Sample <- "1"
+    resS2GCDat$Sample <- "2"
+    resS3GCDat$Sample <- "3"
+    resS5GCDat$Sample <- "5"
+    resS9GCDat$Sample <- "9"
+    
+## with filtered genes #################
+    #### results with aneuploid chromosomes included ######
+resultsNames(ddsDefGC.fil)
+resultsS1GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_1","Holly_Anc"))
+resultsS1GC.fil
+# sigGenesGC1 <- rownames(subset(resultsS1GC,padj<0.1))
+summary(resultsS1GC.fil)
+pdf("resultsS1GC.filMAplot.pdf")
+plotMA(resultsS1GC.fil,ylim=c(-2,2))
+dev.off()
+
+resultsS2GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_2","Holly_Anc"))
+resultsS2GC.fil
+# sigGenesGC2 <- rownames(subset(resultsS2GC,padj<0.1))
+summary(resultsS2GC.fil)
+pdf("resultsS2GC.filMAplot.pdf")
+plotMA(resultsS2GC.fil,ylim=c(-2,2))
+dev.off()
+
+resultsS3GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_3","Holly_Anc"))
+resultsS3GC.fil
+# sigGenesGC3 <- rownames(subset(resultsS3GC,padj<0.1))
+summary(resultsS3GC.fil)
+pdf("resultsS3GC.filMAplot.pdf")
+plotMA(resultsS3GC.fil,ylim=c(-2,2))
+dev.off()
+
+resultsS5GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_5","Holly_Anc"))
+resultsS5GC.fil
+# sigGenesGC5 <- rownames(subset(resultsS5GC,padj<0.1))
+summary(resultsS5GC.fil)
+pdf("resultsS5GC.filMAplot.pdf")
+plotMA(resultsS5GC.fil)#,ylim=c(-2,2))
+dev.off()
+
+resultsS9GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_9","Holly_Anc"))
+resultsS9GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS9GC.fil)
+
+resultsS4GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_4","Holly_Anc"))
+resultsS4GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS4GC.fil)
+
+resultsS7GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_7","Holly_Anc"))
+resultsS7GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS7GC.fil)
+
+resultsS8GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_8","Holly_Anc"))
+resultsS8GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS8GC.fil)
+
+resultsS11GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_11","Holly_Anc"))
+resultsS11GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS11GC.fil)
+
+resultsS18GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_18","Holly_Anc"))
+resultsS18GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS18GC.fil)
+
+resultsS49GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_49","Holly_Anc"))
+resultsS49GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS49GC.fil)
+
+resultsS59GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_59","Holly_Anc"))
+resultsS59GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS59GC.fil)
+
+resultsS61GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_61","Holly_Anc"))
+resultsS61GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS61GC.fil)
+
+resultsS76GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_76","Holly_Anc"))
+resultsS76GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS76GC.fil)
+
+resultsS77GC.fil <- results(ddsDefGC.fil,contrast=c("condition","Holly_77","Holly_Anc"))
+resultsS77GC.fil
+# sigGenesGC9 <- rownames(subset(resultsS9GC,padj<0.1))
+summary(resultsS77GC.fil)
+
+# with individual samples
+resultsS1GC <- results(ddsDefGCS1.fil,contrast=c("condition","Holly_1","Holly_Anc"))
+summary(resultsS1GC)
+# alpha set to 0.05, does it make a huge difference?
+resultsS1GC <- results(ddsDefGCS1.fil,contrast=c("condition","Holly_1","Holly_Anc"),alpha = 0.05)
+summary(resultsS1GC)
+resultsS2GC <- results(ddsDefGCS2.fil,contrast=c("condition","Holly_2","Holly_Anc"))
+summary(resultsS2GC)
+resultsS2GC <- results(ddsDefGCS2.fil,contrast=c("condition","Holly_2","Holly_Anc"),alpha=0.05)
+summary(resultsS2GC)
+resultsS3GC <- results(ddsDefGCS3.fil,contrast=c("condition","Holly_3","Holly_Anc"),alpha=0.05)
+summary(resultsS3GC)
+resultsS4GC <- results(ddsDefGCS4.fil,contrast=c("condition","Holly_4","Holly_Anc"),alpha=0.05)
+summary(resultsS4GC)
+resultsS7GC <- results(ddsDefGCS7.fil,contrast=c("condition","Holly_7","Holly_Anc"),alpha=0.05)
+summary(resultsS7GC)
+resultsS8GC <- results(ddsDefGCS8.fil,contrast=c("condition","Holly_8","Holly_Anc"),alpha=0.05)
+summary(resultsS8GC)
+resultsS9GC <- results(ddsDefGCS9.fil,contrast=c("condition","Holly_9","Holly_Anc"),alpha=0.05)#,independentFiltering = FALSE)
+summary(resultsS9GC)
+resultsS11GC <- results(ddsDefGCS11.fil,contrast=c("condition","Holly_11","Holly_Anc"),alpha=0.05)
+summary(resultsS11GC)
+resultsS18GC <- results(ddsDefGCS18.fil,contrast=c("condition","Holly_18","Holly_Anc"),alpha=0.05)
+summary(resultsS18GC)
+resultsS49GC <- results(ddsDefGCS49.fil,contrast=c("condition","Holly_49","Holly_Anc"),alpha=0.05)
+summary(resultsS49GC)
+resultsS59GC <- results(ddsDefGCS59.fil,contrast=c("condition","Holly_59","Holly_Anc"),alpha=0.05)#,independentFiltering = FALSE)
+summary(resultsS59GC)
+resultsS61GC <- results(ddsDefGCS61.fil,contrast=c("condition","Holly_61","Holly_Anc"),alpha=0.05)
+summary(resultsS61GC)
+resultsS76GC <- results(ddsDefGCS76.fil,contrast=c("condition","Holly_76","Holly_Anc"),alpha=0.05)
+summary(resultsS76GC)
+resultsS77GC <- results(ddsDefGCS77.fil,contrast=c("condition","Holly_77","Holly_Anc"),alpha=0.05)
+summary(resultsS77GC)
+
+# put all sample expression data in the same data frame 
+euploidGCSamples <- rbind(resS1GCDat, resS2GCDat, resS3GCDat, resS5GCDat, resS9GCDat)
+dim(euploidGCSamples)
+View(euploidGCSamples)
+  # # # add chromosome numbers to this file
+      match <- intersect(euploidGCSamples$GENEID, genesGC$GENEID)
+      length(match)
+  # #   # tell R which genes to keep 
+      rm(keep)
+      keep <- euploidGCSamples$GENEID %in% match
+      length(keep)
+      View(keep)
+      View(euploidGCSamples$GENEID)
+# #   # subset list of genes in analysis to include only the ones matching those found in          sample file 
+    genesGCeu <- genesGC[keep,]
+# #   # add the correct chromosomes in 
+    length(genesGCeu)
+    length(euploidGCSamples)
+    dim(genesGCeu)
+    dim(euploidGCSamples)
+    euploidGCSamples <- cbind(genesGCeu$GENEID, genesGCeu$TXCHROM, euploidGCSamples)
+    # chr1.all <- subset(euploidGCSamplesDE, euploidGCSamplesDE$`genesNoAneu$GENEID`=="chrI")
+    sample1GC <- subset(euploidGCSamples, Sample==1)
+    View(sample1GC)
+    # sample7 <- subset(allSamplesExpr, Sample==7)
+# # first need to filter allSamplesExpr based on p-adj level 
+    euploidGCSamplesDiffExpr <- subset(euploidGCSamples, padj<0.1)
+    
+    genesS1GCDE <- subset(euploidGCSamplesDiffExpr, Sample=="1")
+    genesS2GCDE <- subset(euploidGCSamplesDiffExpr, Sample=="2")
+    genesS3GCDE <- subset(euploidGCSamplesDiffExpr, Sample=="3")
+    genesS5GCDE <- subset(euploidGCSamplesDiffExpr, Sample=="5")
+    genesS9GCDE <- subset(euploidGCSamplesDiffExpr, Sample=="9")
+
+    library(VennDiagram)
+venn.plot <- venn.diagram(
+	x = list(
+		A = genesS1GCDE$GENEID,
+		B = genesS2GCDE$GENEID,
+		C = genesS3GCDE$GENEID,
+		D = genesS5GCDE$GENEID,
+		E = genesS9GCDE$GENEID
+		),
+	filename = NULL, #"euploid_commonDE.tiff"
+	col = "black",
+	fill = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),
+	alpha = 0.50,
+	cex = c(1.5, 1.5, 1.5, 1.5, 1.5, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8,
+	 1, 0.8, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 1, 1, 1, 1, 1.5),
+	cat.col = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),
+	cat.cex = 1.5,
+	cat.fontface = "bold",
+	margin = 0.05
+	)
+pdf("euploidGC_commonDE.pdf")
+grid.draw(venn.plot)
+
+eupGCLinesDE <- list(genesS1GCDE, genesS2GCDE, genesS3GCDE, genesS5GCDE, genesS9GCDE)
+# want to get list of common DE genes in all the euploid lines
+commonDEGCeup <- Reduce(intersect, Map("[[", eupGCLinesDE, "GENEID"))
+#Reduc
+commonDEGCeup <- as.vector(commonDEGCeup)
+commonDEGCeup <- as.data.frame(commonDEGCeup)
+colnames(commonDEGCeup) <- c("names")
+write.csv(commonDEGCeup, file="commonDEeup.csv")
+
+
+#######################################################
+#### results with aneuploid chromosomes included ######
+########## MA old ######################################
+resultsNames(ddsDefMAold)
+resultsS1MAold <- results(ddsDefMAold,contrast=c("condition","SC001","SCA"))
+class(resultsS1MAold)
+sigGenesMAold1 <- rownames(subset(resultsS1MAold,padj<0.1))
+summary(resultsS1MAold)
+
+resultsS2MAold <- results(ddsDefMAold,contrast=c("condition","SC002","SCA"))
+resultsS2MAold
+sigGenesMAold2 <- rownames(subset(resultsS2MAold,padj<0.1))
+summary(resultsS2MAold)
+
+resultsS3MAold <- results(ddsDefMAold,contrast=c("condition","SC003","SCA"))
+resultsS3MAold
+sigGenesMAold3 <- rownames(subset(resultsS3MAold,padj<0.1))
+summary(resultsS3MAold)
+
+resultsS4MAold <- results(ddsDefMAold,contrast=c("condition","SC004","SCA"))
+resultsS4MAold
+sigGenesMAold4 <- rownames(subset(resultsS4MAold,padj<0.1))
+summary(resultsS4MAold)
+
+resultsS5MAold <- results(ddsDefMAold,contrast=c("condition","SC005","SCA"))
+resultsS5MAold
+sigGenesMAold5 <- rownames(subset(resultsS5MAold,padj<0.1))
+summary(resultsS5MAold)
+
+resultsS6MAold <- results(ddsDefMAold,contrast=c("condition","SC006","SCA"))
+resultsS6MAold
+sigGenesMAold6 <- rownames(subset(resultsS6MAold,padj<0.1))
+summary(resultsS6MAold)
+
+resultsS7MAold <- results(ddsDefMAold,contrast=c("condition","SC007","SCA"))
+resultsS7MAold
+sigGenesMAold7 <- rownames(subset(resultsS7MAold,padj<0.1))
+summary(resultsS7MAold)
+
+resultsS8MAold <- results(ddsDefMAold,contrast=c("condition","SC008","SCA"))
+resultsS8MAold
+sigGenesMAold8 <- rownames(subset(resultsS8MAold,padj<0.1))
+summary(resultsS8MAold)
+
+# resultsS9MAold <- results(ddsDefMAold,contrast=c("condition","SC009","SCA"))
+# resultsS9MAold
+# sigGenesMAold9 <- rownames(subset(resultsS9MAold,padj<0.1))
+# summary(resultsS9MAold)
+
+resultsS11MAold <- results(ddsDefMAold,contrast=c("condition","SC011","SCA"))
+resultsS11MAold
+sigGenesMAold11 <- rownames(subset(resultsS11MAold,padj<0.1))
+summary(resultsS11MAold)
+
+resultsS15MAold <- results(ddsDefMAold,contrast=c("condition","SC015","SCA"))
+resultsS15MAold
+sigGenesMAold15 <- rownames(subset(resultsS15MAold,padj<0.1))
+summary(resultsS15MAold)
+
+resultsS88MAold <- results(ddsDefMAold,contrast=c("condition","SC088","SCA"))
+resultsS88MAold
+sigGenesMAold88 <- rownames(subset(resultsS88MAold,padj<0.1))
+summary(resultsS88MAold)
+
+resultsS108MAold <- results(ddsDefMAold,contrast=c("condition","SC108","SCA"))
+resultsS108MAold
+sigGenesMAold108 <- rownames(subset(resultsS108MAold,padj<0.1))
+summary(resultsS108MAold)
+
+resultsS119MAold <- results(ddsDefMAold,contrast=c("condition","SC119","SCA"))
+resultsS119MAold
+sigGenesMAold119 <- rownames(subset(resultsS119MAold,padj<0.1))
+summary(resultsS119MAold)
+
+resultsS28MAold <- results(ddsDefMAold,contrast=c("condition","SC028","SCA"))
+resultsS28MAold
+sigGenesMAold28 <- rownames(subset(resultsS28MAold,padj<0.1))
+summary(resultsS28MAold)
+
+  resultsS1MAoldDat <- as.data.frame(resultsS1MAold)
+    resultsS2MAoldDat <- as.data.frame(resultsS2MAold)
+      resultsS3MAoldDat <- as.data.frame(resultsS3MAold)
+      resultsS4MAoldDat <- as.data.frame(resultsS4MAold)
+        resultsS5MAoldDat <- as.data.frame(resultsS5MAold)
+        resultsS6MAoldDat <- as.data.frame(resultsS6MAold)
+        resultsS7MAoldDat <- as.data.frame(resultsS7MAold)
+        resultsS8MAoldDat <- as.data.frame(resultsS8MAold)
+          # resultsS9MAoldDat <- as.data.frame(resultsS9MAold)
+           resultsS28MAoldDat <- as.data.frame(resultsS28MAold)
+          
+  # add gene names as first column ( which is currently rownames)
+  resS1MAoldDat <- cbind(GENEID = rownames(resultsS1MAoldDat), resultsS1MAoldDat)
+  write.csv(resS1MAoldDat, file="resS1MAoldDat.csv")
+  resS2MAoldDat <- cbind(GENEID = rownames(resultsS2MAoldDat), resultsS2MAoldDat)
+  write.csv(resS2MAoldDat, file="resS2MAoldDat.csv")
+  resS3MAoldDat <- cbind(GENEID = rownames(resultsS3MAoldDat), resultsS3MAoldDat)
+  write.csv(resS3MAoldDat, file="resS3MAoldDat.csv")
+  resS4MAoldDat <- cbind(GENEID = rownames(resultsS4MAoldDat), resultsS4MAoldDat)
+  write.csv(resS4MAoldDat, file="resS4MAoldDat.csv")
+  resS5MAoldDat <- cbind(GENEID = rownames(resultsS5MAoldDat), resultsS5MAoldDat)
+  write.csv(resS5MAoldDat, file="resS5MAoldDat.csv")
+  resS6MAoldDat <- cbind(GENEID = rownames(resultsS6MAoldDat), resultsS6MAoldDat)
+  write.csv(resS6MAoldDat, file="resS6MAoldDat.csv")
+  resS7MAoldDat <- cbind(GENEID = rownames(resultsS7MAoldDat), resultsS7MAoldDat)
+  write.csv(resS7MAoldDat, file="resS7MAoldDat.csv")
+  resS8MAoldDat <- cbind(GENEID = rownames(resultsS8MAoldDat), resultsS8MAoldDat)
+  write.csv(resS8MAoldDat, file="resS8MAoldDat.csv")
+  # resS9MAoldDat <- cbind(GENEID = rownames(resultsS9MAoldDat), resultsS9MAoldDat)
+    resS28MAoldDat <- cbind(GENEID = rownames(resultsS28MAoldDat), resultsS28MAoldDat)
+    write.csv(resS28MAoldDat, file="resS28MAoldDat.csv")
+  
+  # need to make a column identifying the sample 
+    resS1MAoldDat$Sample <- "1"
+    resS2MAoldDat$Sample <- "2"
+    resS3MAoldDat$Sample <- "3"
+    resS4MAoldDat$Sample <- "4"
+    resS5MAoldDat$Sample <- "5"
+    resS6MAoldDat$Sample <- "6"
+    resS7MAoldDat$Sample <- "7"
+    resS8MAoldDat$Sample <- "8"
+    # resS9MAoldDat$Sample <- "9"
+    resS28MAoldDat$Sample <- "28"
+    
+    
+# put all sample expression data in the same data frame 
+    
+euploidMAoldSamples <- rbind(resS1MAoldDat, resS2MAoldDat, resS3MAoldDat, resS4MAoldDat, resS5MAoldDat,resS6MAoldDat,resS7MAoldDat, resS8MAoldDat, resS28MAoldDat)
+
+
+dim(euploidMAoldSamples)
+
+View(euploidMAoldSamples)
+  # # # add chromosome numbers to this file
+      match <- intersect(euploidMAoldSamples$GENEID, genesMAold$GENEID)
+      length(match)
+  # #   # tell R which genes to keep 
+      rm(keep)
+      keep <- euploidMAoldSamples$GENEID %in% match
+      length(keep)
+      View(keep)
+      View(euploidMAoldSamples$GENEID)
+# #   # subset list of genes in analysis to include only the ones matching those found in          sample file 
+    genesMAoldeu <- genesMAold[keep,]
+# #   # add the correct chromosomes in 
+    length(genesMAoldeu)
+    length(euploidMAoldSamples)
+    dim(genesMAoldeu)
+    dim(euploidMAoldSamples)
+    
+    
+    euploidMAoldSamples <- cbind(genesMAoldeu$GENEID, genesMAoldeu$TXCHROM, euploidMAoldSamples)
+    class(euploidMAoldSamples)
+    class(euploidGCSamples)
+    # chr1.all <- subset(euploidMAoldSamplesDE, euploidMAoldSamplesDE$`genesNoAneu$GENEID`=="chrI")
+    sample1MAold <- subset(euploidMAoldSamples, Sample==1)
+    View(sample1MAold)
+    # sample7 <- subset(allSamplesExpr, Sample==7)
+# # first need to filter allSamplesExpr based on p-adj level 
+    euploidMAoldSamplesDiffExpr <- subset(euploidMAoldSamples, padj<0.1)
+    
+    
+    genesS1MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="1")
+    genesS2MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="2")
+    genesS3MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="3")
+    genesS4MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="4")
+    genesS5MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="5")
+    genesS6MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="6")
+    genesS7MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="7")
+    genesS8MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="8")
+    # line 9 is potentially aneuploid
+    # genesS9MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="9")
+    # line 28 is euploid
+    genesS28MAoldDE <- subset(euploidMAoldSamplesDiffExpr, Sample=="28")
+    View(genesS28MAoldDE)
+#     library(VennDiagram)
+# venn.plot <- venn.diagram(
+# 	x = list(
+# 		A = genesS1GCDE$GENEID,
+# 		B = genesS2GCDE$GENEID,
+# 		C = genesS3GCDE$GENEID,
+# 		D = genesS5GCDE$GENEID,
+# 		E = genesS9GCDE$GENEID
+# 		),
+# 	filename = NULL, #"euploid_commonDE.tiff"
+# 	col = "black",
+# 	fill = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),
+# 	alpha = 0.50,
+# 	cex = c(1.5, 1.5, 1.5, 1.5, 1.5, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8,
+# 	 1, 0.8, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 1, 1, 1, 1, 1.5),
+# 	cat.col = c("dodgerblue", "goldenrod1", "darkorange1", "seagreen3", "orchid3"),
+# 	cat.cex = 1.5,
+# 	cat.fontface = "bold",
+# 	margin = 0.05
+# 	)
+# pdf("euploidGC_commonDE.pdf")
+# grid.draw(venn.plot)
+
+eupMAoldLinesDE <- list(genesS1MAoldDE, genesS2MAoldDE, genesS3MAoldDE, genesS4MAoldDE,genesS5MAoldDE,genesS6MAoldDE,genesS7MAoldDE,genesS8MAoldDE, genesS28MAoldDE)
+# want to get list of common DE genes in all the euploid lines
+# class(eupMAoldLines)
+class(eupMAoldLinesDE)
+commonDEMAoldeup <- Reduce(intersect, Map("[[", eupMAoldLinesDE, "GENEID"))
+#Reduc
+commonDEMAoldeup <- as.data.frame(commonDEMAoldeup)
+colnames(commonDEMAoldeup) <- c("names")
+write.csv(commonDEMAoldeup, file="commonDEeupMAold.csv")
+
+###### individual samples 
+resultsNames(ddsDefMAoldS1)
+resultsS1MAold <- results(ddsDefMAoldS1,contrast=c("condition","SC001","SCA"))
+class(resultsS1MAold)
+summary(resultsS1MAold)
+
+resultsNames(ddsDefMAoldS2)
+resultsS2MAold <- results(ddsDefMAoldS2,contrast=c("condition","SC002","SCA"))
+class(resultsS2MAold)
+summary(resultsS2MAold)
+
+resultsNames(ddsDefMAoldS3)
+resultsS3MAold <- results(ddsDefMAoldS3,contrast=c("condition","SC003","SCA"))
+class(resultsS3MAold)
+summary(resultsS3MAold)
+
+resultsNames(ddsDefMAoldS4)
+resultsS4MAold <- results(ddsDefMAoldS4,contrast=c("condition","SC004","SCA"))
+class(resultsS4MAold)
+summary(resultsS4MAold)
+
+resultsNames(ddsDefMAoldS5)
+resultsS5MAold <- results(ddsDefMAoldS5,contrast=c("condition","SC005","SCA"))
+class(resultsS5MAold)
+summary(resultsS5MAold)
+
+resultsNames(ddsDefMAoldS6)
+resultsS6MAold <- results(ddsDefMAoldS6,contrast=c("condition","SC006","SCA"))
+class(resultsS6MAold)
+summary(resultsS6MAold)
+
+resultsNames(ddsDefMAoldS7)
+resultsS7MAold <- results(ddsDefMAoldS7,contrast=c("condition","SC007","SCA"))
+class(resultsS7MAold)
+summary(resultsS7MAold)
+
+resultsNames(ddsDefMAoldS8)
+resultsS8MAold <- results(ddsDefMAoldS8,contrast=c("condition","SC008","SCA"))
+class(resultsS8MAold)
+summary(resultsS8MAold)
+
+resultsNames(ddsDefMAoldS9)
+resultsS9MAold <- results(ddsDefMAoldS9,contrast=c("condition","SC009","SCA"))
+class(resultsS9MAold)
+summary(resultsS9MAold)
+
+resultsNames(ddsDefMAoldS11)
+resultsS11MAold <- results(ddsDefMAoldS11,contrast=c("condition","SC011","SCA"))
+class(resultsS11MAold)
+summary(resultsS11MAold)
+
+resultsNames(ddsDefMAoldS15)
+resultsS15MAold <- results(ddsDefMAoldS15,contrast=c("condition","SC015","SCA"))
+class(resultsS15MAold)
+summary(resultsS15MAold)
+
+resultsNames(ddsDefMAoldS28)
+resultsS28MAold <- results(ddsDefMAoldS28,contrast=c("condition","SC028","SCA"))
+class(resultsS28MAold)
+summary(resultsS28MAold)
+
+resultsNames(ddsDefMAoldS88)
+resultsS88MAold <- results(ddsDefMAoldS88,contrast=c("condition","SC088","SCA"))
+class(resultsS88MAold)
+summary(resultsS88MAold)
+
+resultsNames(ddsDefMAoldS108)
+resultsS108MAold <- results(ddsDefMAoldS108,contrast=c("condition","SC108","SCA"))
+class(resultsS108MAold)
+summary(resultsS108MAold)
+
+resultsNames(ddsDefMAoldS119)
+resultsS119MAold <- results(ddsDefMAoldS119,contrast=c("condition","SC119","SCA"))
+class(resultsS119MAold)
+summary(resultsS119MAold)
+
+
+################################################################################
+
+#aneuploid chromosomes removed from normalization
+allGenesGC <- as.data.frame(mcols(ddsHTSeqGC))
+View(allGenesGC)
+ddsGCNoAneuInNorm <- estimateSizeFactors(ddsHTSeqGC, controlGenes=c(85:481,482:629,630:1373,1647:1761,3090:3403,3881:4340))
+genesGCnoAn <- rownames(ddsGCNoAneuInNorm)
 library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
 txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
-genesNoAneu <- ensembldb::select(txdb, keys=geneID, columnns="GENEID","TXCHROM" , keytype="GENEID")
+genesNoAneuGC <- ensembldb::select(txdb, keys=genesGCnoAn, columnns="GENEID","TXCHROM" , keytype="GENEID")
 #remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
-genesNoAneu <- na.omit(genesNoAneu)
-genesNoAneu <- as.data.frame(genesNoAneu)
+genesNoAneuGC <- na.omit(genesNoAneuGC)
+genesNoAneuGC <- as.data.frame(genesNoAneuGC)
 # remove1 <- "chrM"
 # genesNoAneu <- genesNoAneu[-(grep(paste0(remove1,"$"),genesNoAneu$TXCHROM,perl=TRUE)),]
-ddsNoAneuInNorm <- estimateDispersions(ddsNoAneuInNorm)
-attr(dispersionFunction(ddsNoAneuInNorm),"dispPriorVar")
-ddsNoAneuInNorm <- nbinomWaldTest(ddsNoAneuInNorm,useT=TRUE,df=(nrow(ddsNoAneuInNorm)))
-norm.factors.no.aneu <- as.data.frame(sizeFactors(ddsNoAneuInNorm))
-design(ddsNoAneuInNorm)
-dispersions.no.aneu <- dispersions(ddsNoAneuInNorm)
+ddsGCNoAneuInNorm <- estimateDispersions(ddsGCNoAneuInNorm)
+attr(dispersionFunction(ddsGCNoAneuInNorm),"dispPriorVar")
+ddsGCNoAneuInNorm <- nbinomWaldTest(ddsGCNoAneuInNorm,useT=TRUE,df=(nrow(ddsGCNoAneuInNorm)))
+norm.factors.no.aneuGC <- as.data.frame(sizeFactors(ddsGCNoAneuInNorm))
+design(ddsGCNoAneuInNorm)
+dispersions.no.aneuGC <- dispersions(ddsGCNoAneuInNorm)
 #add annotation to DESeq2 data set
-all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+all(rownames(ddsGCNoAneuInNorm) == genesNoAneuGC$GENEID)
 #need to remove the ones in rownames of dds that don't match genes$GENEID
-matchedNoAneu <- intersect(rownames(ddsNoAneuInNorm), genesNoAneu$GENEID)
-keep3 <- rownames(ddsNoAneuInNorm) %in% matchedNoAneu
-ddsNoAneuInNorm <- ddsNoAneuInNorm[keep3,]
-length(ddsNoAneuInNorm)
-all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
-mcols(ddsNoAneuInNorm)
+matchedNoAneuGC <- intersect(rownames(ddsGCNoAneuInNorm), genesNoAneuGC$GENEID)
+keep3 <- rownames(ddsGCNoAneuInNorm) %in% matchedNoAneuGC
+ddsGCNoAneuInNorm <- ddsGCNoAneuInNorm[keep3,]
+length(ddsGCNoAneuInNorm)
+all(rownames(ddsGCNoAneuInNorm) == genesNoAneuGC$GENEID)
+mcols(ddsGCNoAneuInNorm)
 #then check again
-all(rownames(ddsNoAneuInNorm) == genesNoAneu$GENEID)
+all(rownames(ddsGCNoAneuInNorm) == genesNoAneuGC$GENEID)
 #nrow(ddsNoAneuInNorm)
 #nrow(genesNoAneu)
 #mcols(ddsNoAneuInNorm) <- cbind(mcols(ddsNoAneuInNorm), genesNoAneu)
 #mcols(ddsNoAneuInNorm)
 #write.csv(counts(dds), file="counts.Rsubread.csv")
 #mcols(dds)
-write.csv(genes,file="gene_anno.csv")
-write.csv(counts(ddsHTSeq),file="counts.filtered.csv")
+# write.csv(genes,file="gene_anno.csv")
+# write.csv(counts(ddsHTSeq),file="counts.filtered.csv")
+
+############################################################################
+#aneuploid chromosomes removed
+allGenesMAold <- as.data.frame(mcols(ddsHTSeqMAold))
+View(allGenesMAold)
+ddsMAoldNoAneuInNorm <- estimateSizeFactors(ddsHTSeqMAold, controlGenes=c(1:2268,2740:5667))
+genesMAoldnoAn <- rownames(ddsMAoldNoAneuInNorm)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+genesNoAneuMAold <- ensembldb::select(txdb, keys=genesMAoldnoAn, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesNoAneuMAold <- na.omit(genesNoAneuMAold)
+genesNoAneuMAold <- as.data.frame(genesNoAneuMAold)
+# remove1 <- "chrM"
+# genesNoAneu <- genesNoAneu[-(grep(paste0(remove1,"$"),genesNoAneu$TXCHROM,perl=TRUE)),]
+ddsMAoldNoAneuInNorm <- estimateDispersions(ddsMAoldNoAneuInNorm)
+attr(dispersionFunction(ddsMAoldNoAneuInNorm),"dispPriorVar")
+ddsMAoldNoAneuInNorm <- nbinomWaldTest(ddsMAoldNoAneuInNorm,useT=TRUE,df=(nrow(ddsMAoldNoAneuInNorm)))
+norm.factors.no.aneuMAold <- as.data.frame(sizeFactors(ddsMAoldNoAneuInNorm))
+design(ddsMAoldNoAneuInNorm)
+dispersions.no.aneuMAold <- dispersions(ddsMAoldNoAneuInNorm)
+#add annotation to DESeq2 data set
+all(rownames(ddsMAoldNoAneuInNorm) == genesNoAneuMAold$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedNoAneuMAold <- intersect(rownames(ddsMAoldNoAneuInNorm), genesNoAneuMAold$GENEID)
+keep3 <- rownames(ddsMAoldNoAneuInNorm) %in% matchedNoAneuMAold
+ddsMAoldNoAneuInNorm <- ddsMAoldNoAneuInNorm[keep3,]
+length(ddsMAoldNoAneuInNorm)
+all(rownames(ddsMAoldNoAneuInNorm) == genesNoAneuMAold$GENEID)
+mcols(ddsMAoldNoAneuInNorm)
+#then check again
+all(rownames(ddsMAoldNoAneuInNorm) == genesNoAneuMAold$GENEID)
+
+############################################################################
+#aneuploid chromosomes removed
+allGenesMAnew <- as.data.frame(mcols(ddsHTSeqMAnew))
+View(allGenesMAnew)
+ddsMAnewNoAneuInNorm <- estimateSizeFactors(ddsHTSeqMAnew, controlGenes=c(89:485,638:1385,1657:1769,2549:3412,3886:4337,4723:5237))
+genesMAnewnoAn <- rownames(ddsMAnewNoAneuInNorm)
+library(TxDb.Scerevisiae.UCSC.sacCer2.sgdGene)
+txdb <- TxDb.Scerevisiae.UCSC.sacCer2.sgdGene 
+genesNoAneuMAnew <- ensembldb::select(txdb, keys=genesMAnewnoAn, columnns="GENEID","TXCHROM" , keytype="GENEID")
+#remove the chromosomes that I don't want (i.e. anything that is NA for TXCHROM)
+genesNoAneuMAnew <- na.omit(genesNoAneuMAnew)
+genesNoAneuMAnew <- as.data.frame(genesNoAneuMAnew)
+# remove1 <- "chrM"
+# genesNoAneu <- genesNoAneu[-(grep(paste0(remove1,"$"),genesNoAneu$TXCHROM,perl=TRUE)),]
+ddsMAnewNoAneuInNorm <- estimateDispersions(ddsMAnewNoAneuInNorm)
+attr(dispersionFunction(ddsMAnewNoAneuInNorm),"dispPriorVar")
+ddsMAnewNoAneuInNorm <- nbinomWaldTest(ddsMAnewNoAneuInNorm,useT=TRUE,df=(nrow(ddsMAnewNoAneuInNorm)))
+norm.factors.no.aneuMAnew <- as.data.frame(sizeFactors(ddsMAnewNoAneuInNorm))
+design(ddsMAnewNoAneuInNorm)
+dispersions.no.aneuMAnew <- dispersions(ddsMAnewNoAneuInNorm)
+#add annotation to DESeq2 data set
+all(rownames(ddsMAnewNoAneuInNorm) == genesNoAneuMAnew$GENEID)
+#need to remove the ones in rownames of dds that don't match genes$GENEID
+matchedNoAneuMAnew <- intersect(rownames(ddsMAnewNoAneuInNorm), genesNoAneuMAnew$GENEID)
+keep3 <- rownames(ddsMAnewNoAneuInNorm) %in% matchedNoAneuMAnew
+ddsMAnewNoAneuInNorm <- ddsMAnewNoAneuInNorm[keep3,]
+length(ddsMAnewNoAneuInNorm)
+all(rownames(ddsMAnewNoAneuInNorm) == genesNoAneuMAnew$GENEID)
+mcols(ddsMAnewNoAneuInNorm)
+#then check again
+all(rownames(ddsMAnewNoAneuInNorm) == genesNoAneuMAnew$GENEID)
 
 ``` 
 
@@ -507,69 +3036,179 @@ commands:
 ```{r results, eval=TRUE}
 ###########################################
 #without aneuploid chromosomes
-res <- results(ddsNoAneuInNorm)
-res
-resultsNames(ddsNoAneuInNorm)
+resGC <- results(ddsGCNoAneuInNorm)
+resGC
+resultsNames(ddsGCNoAneuInNorm)
 #euploid line
-res2 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_2","Holly_Anc"))
-summary(res2)
-sigGenes2 <- rownames(subset(res2,padj<0.1))
+resGC2 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(resGC2)
+sigGenesGC2 <- rownames(subset(resGC2,padj<0.1))
 #aneuploid line 
-resultsNames(ddsNoAneuInNorm)
-res7 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
-summary(res7)
-sigGenes7 <- rownames(subset(res7,padj<0.1))
-avgRatio7 <- mean(res7$log2FoldChange)
-avgRatio7
-res18 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_18","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res18)
-sigGenes18 <- rownames(subset(res18,padj<0.1))
-avgRatio18 <- mean(res18$log2FoldChange)
-res11 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res11)
-sigGenes11 <- rownames(subset(res11,padj<0.1))
-res1 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_1","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res1)
-avgRatio11 <- mean(res11$log2FoldChange)
-sigGenes1 <- rownames(subset(res1,padj<0.1))
-res3 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res3)
-sigGenes3 <- rownames(subset(res3,padj<0.1))
-res4 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res4)
-sigGenes4 <- rownames(subset(res4,padj<0.1))
-res49 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res49)
-sigGenes49 <- rownames(subset(res49,padj<0.1))
-res59 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res59)
-sigGenes59 <- rownames(subset(res59,padj<0.1))
-res61 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res61)
-sigGenes61 <- rownames(subset(res61,padj<0.1))
-res8 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res8)
-sigGenes8 <- rownames(subset(res8,padj<0.1))
-res9 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res9)
-sigGenes9 <- rownames(subset(res9,padj<0.1))
+resultsNames(ddsGCNoAneuInNorm)
+resGC7 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"))#,cooksCutoff=FALSE)
+summary(resGC7)
+# testing with no indepdent filtering - does it change the results 
+resGC7.test <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"), independentFiltering = FALSE)#,cooksCutoff=FALSE)
+summary(resGC7.test) # no difference
+# what about without cooksCutoff
+resGC7.test2 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_7","Holly_Anc"), independentFiltering = FALSE ,cooksCutoff=FALSE)
+summary(resGC7.test2) # no difference
+
+sigGenesGC7 <- rownames(subset(resGC7,padj<0.1))
+avgRatioGC7 <- mean(resGC7$log2FoldChange)
+avgRatioGC7
+resGC18 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_18","Holly_Anc"), independentFiltering=FALSE) #, cooksCutoff = FALSE)
+summary(resGC18)
+sigGenesGC18 <- rownames(subset(resGC18,padj<0.1))
+avgRatioGC18 <- mean(resGC18$log2FoldChange)
+resGC11 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_11","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC11)
+sigGenesGC11 <- rownames(subset(resGC11,padj<0.1))
+resGC1 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_1","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC1)
+avgRatioGC11 <- mean(resGC11$log2FoldChange)
+sigGenesGC1 <- rownames(subset(resGC1,padj<0.1))
+resGC3 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_3","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC3)
+sigGenesGC3 <- rownames(subset(resGC3,padj<0.1))
+resGC4 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_4","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC4)
+sigGenesGC4 <- rownames(subset(resGC4,padj<0.1))
+resGC49 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_49","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC49)
+sigGenesGC49 <- rownames(subset(resGC49,padj<0.1))
+resGC59 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_59","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC59)
+sigGenesGC59 <- rownames(subset(resGC59,padj<0.1))
+resGC61 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_61","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC61)
+sigGenesGC61 <- rownames(subset(resGC61,padj<0.1))
+resGC8 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_8","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC8)
+sigGenesGC8 <- rownames(subset(resGC8,padj<0.1))
+resGC9 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_9","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC9)
+sigGenesGC9 <- rownames(subset(resGC9,padj<0.1))
 #res69 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_69","Holly_Anc"))#, cooksCutoff = FALSE)
 #summary(res69)
-res76 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res76)
-sigGenes76 <- rownames(subset(res76,padj<0.1))
-res77 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res77)
-sigGenes77 <- rownames(subset(res77,padj<0.1))
+resGC76 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_76","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC76)
+sigGenesGC76 <- rownames(subset(resGC76,padj<0.1))
+resGC77 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_77","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC77)
+sigGenesGC77 <- rownames(subset(resGC77,padj<0.1))
 
-res5 <- results(ddsNoAneuInNorm, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
-summary(res5)
-sigGenes5 <- rownames(subset(res5,padj<0.1))
+resGC5 <- results(ddsGCNoAneuInNorm, contrast=c("condition","Holly_5","Holly_Anc"))#, cooksCutoff = FALSE)
+summary(resGC5)
+sigGenesGC5 <- rownames(subset(resGC5,padj<0.1))
+
+###########################################
+#with aneuploid chromosomes
+resDefGC <- results(ddsDefGC)
+resDefGC
+resultsNames(ddsDefGC)
+#euploid line
+resDefGC1 <- results(ddsDefGC, contrast=c("condition","Holly_1","Holly_Anc"))
+summary(resDefGC1)
+resDefGC2 <- results(ddsDefGC, contrast=c("condition","Holly_2","Holly_Anc"))
+summary(resDefGC2)
+resDefGC3 <- results(ddsDefGC, contrast=c("condition","Holly_3","Holly_Anc"))
+summary(resDefGC3)
+resDefGC4 <- results(ddsDefGC, contrast=c("condition","Holly_4","Holly_Anc"))
+summary(resDefGC4)
+resDefGC7 <- results(ddsDefGC, contrast=c("condition","Holly_7","Holly_Anc"))
+summary(resDefGC7)
 
 
+###########################################
+#without aneuploid chromosomes
+resMAold <- results(ddsMAoldNoAneuInNorm)
+resMAold
+resultsNames(ddsMAoldNoAneuInNorm)
+#euploid line
+resMAold1 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC001","SCA"))
+summary(resMAold1)
+resMAold2 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC002","SCA"))
+summary(resMAold2)
+resMAold3 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC003","SCA"))
+summary(resMAold3)
+resMAold4 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC004","SCA"))
+summary(resMAold4)
+resMAold5 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC005","SCA"))
+summary(resMAold5)
+resMAold6 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC006","SCA"))
+summary(resMAold6)
+resMAold7 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC007","SCA"))
+summary(resMAold7)
+resMAold8 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC008","SCA"))
+summary(resMAold8)
+resMAold9 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC009","SCA"))
+summary(resMAold9)
+resMAold11 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC011","SCA"))
+summary(resMAold11)
+resMAold15 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC015","SCA"))
+summary(resMAold15)
+resMAold28 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC028","SCA"))
+summary(resMAold28)
+resMAold88 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC088","SCA"))
+summary(resMAold88)
+resMAold108 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC108","SCA"))
+summary(resMAold108)
+resMAold119 <- results(ddsMAoldNoAneuInNorm, contrast=c("condition","SC119","SCA"))
+summary(resMAold119)
+
+#############################################
+### MA New no aneuploid chromosomes in normalization ####################
+
+resMAnew <- results(ddsMAnewNoAneuInNorm)
+resMAnew
+resultsNames(ddsMAnewNoAneuInNorm)
+#euploid line
+resMAnew29 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","29","Anc"))
+summary(resMAnew29)
+resMAnew50 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","50","Anc"))
+summary(resMAnew50)
+resMAnew112 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","112","Anc"))
+summary(resMAnew112)
+resMAnew115 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","115","Anc"))
+summary(resMAnew115)
+resMAnew117 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","117","Anc"))
+summary(resMAnew117)
+resMAnew123 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","123","Anc"))
+summary(resMAnew123)
+resMAnew141 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","141","Anc"))
+summary(resMAnew141)
+resMAnew152 <- results(ddsMAnewNoAneuInNorm, contrast=c("condition","152","Anc"))
+summary(resMAnew152)
 
 
+### DESeq ran on samples individually
+resMAnewS29 <- results(ddsDefMAnewS29)
+resultsNames(ddsDefMAnewS29)
+#euploid line
+resMAnew29 <- results(ddsDefMAnewS29, contrast=c("condition","29","Anc"))
+summary(resMAnew29)
 
+resMAnew50 <- results(ddsDefMAnewS50, contrast=c("condition","50","Anc"))
+summary(resMAnew50)
+
+resMAnew112 <- results(ddsDefMAnewS112, contrast=c("condition","112","Anc"))
+summary(resMAnew112)
+
+resMAnew115 <- results(ddsDefMAnewS115, contrast=c("condition","115","Anc"))
+summary(resMAnew115)
+
+resMAnew117 <- results(ddsDefMAnewS117, contrast=c("condition","117","Anc"))
+summary(resMAnew117)
+
+resMAnew123 <- results(ddsDefMAnewS123, contrast=c("condition","123","Anc"))
+summary(resMAnew123)
+
+resMAnew141 <- results(ddsDefMAnewS141, contrast=c("condition","141","Anc"))
+summary(resMAnew141)
+
+resMAnew152 <- results(ddsDefMAnewS152, contrast=c("condition","152","Anc"))
+summary(resMAnew152)
 ```
 
 ```{r common sig genes, include=TRUE}
@@ -3561,6 +6200,7 @@ effect of experimental covariates and batch effects.
 
 ```{r figPCA}
 plotPCA(vsd, intgroup=c("condition"))
+plotPCA(ddsHTSeqGC.fil,intgroup=c("condition"))
 ```
 
 It is also possible to customize the PCA plot using the

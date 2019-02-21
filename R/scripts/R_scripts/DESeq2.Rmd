@@ -81,55 +81,55 @@ variable which points to the directory in which the *htseq-count*
 output files are located. 
 
 ```{r htseqDirI, eval=FALSE}
-directoryGC <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
-directoryGC.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes"
+# directoryGC <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded"
+directoryGC <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/FINAL_DATA_TO_USE_GC"
 ######### each line individually with the ancestor
-directoryGCS1.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S1vsAnc"
-directoryGCS2.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S2vsAnc"
-directoryGCS3.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S3vsAnc"
-directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
-directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
-directoryGCS5.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S5vsAnc"
-directoryGCS7.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S7vsAnc"
-directoryGCS8.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S8vsAnc"
-directoryGCS9.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S9vsAnc"
-directoryGCS11.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S11vsAnc"
-directoryGCS18.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S18vsAnc"
-directoryGCS49.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S49vsAnc"
-directoryGCS59.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S59vsAnc"
-directoryGCS61.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S61vsAnc"
-directoryGCS76.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S76vsAnc"
-directoryGCS77.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S77vsAnc"
+# directoryGCS1.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S1vsAnc"
+# directoryGCS2.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S2vsAnc"
+# directoryGCS3.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S3vsAnc"
+# directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
+# directoryGCS4.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S4vsAnc"
+# directoryGCS5.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S5vsAnc"
+# directoryGCS7.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S7vsAnc"
+# directoryGCS8.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S8vsAnc"
+# directoryGCS9.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S9vsAnc"
+# directoryGCS11.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S11vsAnc"
+# directoryGCS18.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S18vsAnc"
+# directoryGCS49.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S49vsAnc"
+# directoryGCS59.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S59vsAnc"
+# directoryGCS61.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S61vsAnc"
+# directoryGCS76.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S76vsAnc"
+# directoryGCS77.fil <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded/filtered_genes/S77vsAnc"
 #########################################################
 directoryMAold <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old"
-# MA old lines individually
-directoryMAoldS1 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S1vsAnc"
-directoryMAoldS2 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S2vsAnc"
-directoryMAoldS3 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S3vsAnc"
-directoryMAoldS4 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S4vsAnc"
-directoryMAoldS5 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S5vsAnc"
-directoryMAoldS6 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S6vsAnc"
-directoryMAoldS7 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S7vsAnc"
-directoryMAoldS8 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S8vsAnc"
-directoryMAoldS9 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S9vsAnc"
-directoryMAoldS11 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S11vsAnc"
-directoryMAoldS15 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S15vsAnc"
-directoryMAoldS28 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S28vsAnc"
-directoryMAoldS88 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S88vsAnc"
-directoryMAoldS108 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S108vsAnc"
-directoryMAoldS119 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S119vsAnc"
+# # MA old lines individually
+# directoryMAoldS1 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S1vsAnc"
+# directoryMAoldS2 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S2vsAnc"
+# directoryMAoldS3 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S3vsAnc"
+# directoryMAoldS4 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S4vsAnc"
+# directoryMAoldS5 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S5vsAnc"
+# directoryMAoldS6 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S6vsAnc"
+# directoryMAoldS7 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S7vsAnc"
+# directoryMAoldS8 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S8vsAnc"
+# directoryMAoldS9 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S9vsAnc"
+# directoryMAoldS11 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S11vsAnc"
+# directoryMAoldS15 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S15vsAnc"
+# directoryMAoldS28 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S28vsAnc"
+# directoryMAoldS88 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S88vsAnc"
+# directoryMAoldS108 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S108vsAnc"
+# directoryMAoldS119 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_old/S119vsAnc"
 ########################################################
 directoryMAnew <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded"
 
 #### individual sample directories
-directoryMANewS29 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS29vsAnc"
-directoryMAnewS50 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS50vsAnc"
-directoryMAnewS112 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS112vsAnc"
-directoryMAnewS115 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS115vsAnc"
-directoryMAnewS117 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS117vsAnc"
-directoryMAnewS123 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS123vsAnc"
-directoryMAnewS141 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS141vsAnc"
-directoryMAnewS152 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS152vsAnc"
+# directoryMANewS29 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS29vsAnc"
+# directoryMAnewS50 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS50vsAnc"
+# directoryMAnewS112 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS112vsAnc"
+# directoryMAnewS115 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS115vsAnc"
+# directoryMAnewS117 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS117vsAnc"
+# directoryMAnewS123 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS123vsAnc"
+# directoryMAnewS141 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS141vsAnc"
+# directoryMAnewS152 <- "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded/MANewS152vsAnc"
 
 ```
 
@@ -141,124 +141,124 @@ you might alternatively read in a phenotypic table
 using *read.table*.
 
 ```{r htseqInput}
-sampleFilesGC <- list.files(directoryGC)
-sampleInfoGC <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
-sampleTableGC <- data.frame(sampleName = sampleInfoGC$sample,
-                          fileName = sampleInfoGC$filename,
-                          run = sampleInfoGC$seq_run,
-                          condition = sampleInfoGC$group)
-### filtered genes
+# sampleFilesGC <- list.files(directoryGC.fil)
+# sampleInfoGC <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_GC.csv",header=TRUE)
+# sampleTableGC <- data.frame(sampleName = sampleInfoGC$sample,
+#                           fileName = sampleInfoGC$filename,
+#                           run = sampleInfoGC$seq_run,
+#                           condition = sampleInfoGC$group)
+## filtered genes
 sampleFilesGC.fil <- list.files(directoryGC.fil)
 sampleInfoGC <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/sample_data_shrt.csv",header=TRUE)
 sampleTableGC.fil <- data.frame(sampleName = sampleInfoGC$sample,
                           fileName = sampleInfoGC$filename,
                           run = sampleInfoGC$seq_run,
                           condition = sampleInfoGC$group)
-#### each sample individually with the ancestor
-sampleFilesS1vsAncGC.fil <- list.files(directoryGCS1.fil)
-sampleInfoGCS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S1vsAnc.csv",header=TRUE)
-sampleTableGCS1.fil <- data.frame(sampleName = sampleInfoGCS1$sample,
-                          fileName = sampleInfoGCS1$filename,
-                          run = sampleInfoGCS1$seq_run,
-                          condition = sampleInfoGCS1$group)
-
-sampleFilesS2vsAncGC.fil <- list.files(directoryGCS2.fil)
-sampleInfoGCS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S2vsAnc.csv",header=TRUE)
-sampleTableGCS2.fil <- data.frame(sampleName = sampleInfoGCS2$sample,
-                          fileName = sampleInfoGCS2$filename,
-                          run = sampleInfoGCS2$seq_run,
-                          condition = sampleInfoGCS2$group)
-
-sampleFilesS3vsAncGC.fil <- list.files(directoryGCS3.fil)
-sampleInfoGCS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S3vsAnc.csv",header=TRUE)
-sampleTableGCS3.fil <- data.frame(sampleName = sampleInfoGCS3$sample,
-                          fileName = sampleInfoGCS3$filename,
-                          run = sampleInfoGCS3$seq_run,
-                          condition = sampleInfoGCS3$group)
-
-sampleFilesS4vsAncGC.fil <- list.files(directoryGCS4.fil)
-sampleInfoGCS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S4vsAnc.csv",header=TRUE)
-sampleTableGCS4.fil <- data.frame(sampleName = sampleInfoGCS4$sample,
-                          fileName = sampleInfoGCS4$filename,
-                          run = sampleInfoGCS4$seq_run,
-                          condition = sampleInfoGCS4$group)
-
-sampleFilesS5vsAncGC.fil <- list.files(directoryGCS5.fil)
-sampleInfoGCS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S5vsAnc.csv",header=TRUE)
-sampleTableGCS5.fil <- data.frame(sampleName = sampleInfoGCS5$sample,
-                          fileName = sampleInfoGCS5$filename,
-                          run = sampleInfoGCS5$seq_run,
-                          condition = sampleInfoGCS5$group)
-
-sampleFilesS7vsAncGC.fil <- list.files(directoryGCS7.fil)
-sampleInfoGCS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S7vsAnc.csv",header=TRUE)
-sampleTableGCS7.fil <- data.frame(sampleName = sampleInfoGCS7$sample,
-                          fileName = sampleInfoGCS7$filename,
-                          run = sampleInfoGCS7$seq_run,
-                          condition = sampleInfoGCS7$group)
-
-sampleFilesS8vsAncGC.fil <- list.files(directoryGCS8.fil)
-sampleInfoGCS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S8vsAnc.csv",header=TRUE)
-sampleTableGCS8.fil <- data.frame(sampleName = sampleInfoGCS8$sample,
-                          fileName = sampleInfoGCS8$filename,
-                          run = sampleInfoGCS8$seq_run,
-                          condition = sampleInfoGCS8$group)
-
-sampleFilesS9vsAncGC.fil <- list.files(directoryGCS9.fil)
-sampleInfoGCS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S9vsAnc.csv",header=TRUE)
-sampleTableGCS9.fil <- data.frame(sampleName = sampleInfoGCS9$sample,
-                          fileName = sampleInfoGCS9$filename,
-                          run = sampleInfoGCS9$seq_run,
-                          condition = sampleInfoGCS9$group)
-
-sampleFilesS11vsAncGC.fil <- list.files(directoryGCS11.fil)
-sampleInfoGCS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S11vsAnc.csv",header=TRUE)
-sampleTableGCS11.fil <- data.frame(sampleName = sampleInfoGCS11$sample,
-                          fileName = sampleInfoGCS11$filename,
-                          run = sampleInfoGCS11$seq_run,
-                          condition = sampleInfoGCS11$group)
-
-sampleFilesS18vsAncGC.fil <- list.files(directoryGCS18.fil)
-sampleInfoGCS18 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S18vsAnc.csv",header=TRUE)
-sampleTableGCS18.fil <- data.frame(sampleName = sampleInfoGCS18$sample,
-                          fileName = sampleInfoGCS18$filename,
-                          run = sampleInfoGCS18$seq_run,
-                          condition = sampleInfoGCS18$group)
-
-sampleFilesS49vsAncGC.fil <- list.files(directoryGCS49.fil)
-sampleInfoGCS49 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S49vsAnc.csv",header=TRUE)
-sampleTableGCS49.fil <- data.frame(sampleName = sampleInfoGCS49$sample,
-                          fileName = sampleInfoGCS49$filename,
-                          run = sampleInfoGCS49$seq_run,
-                          condition = sampleInfoGCS49$group)
-
-sampleFilesS59vsAncGC.fil <- list.files(directoryGCS59.fil)
-sampleInfoGCS59 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S59vsAnc.csv",header=TRUE)
-sampleTableGCS59.fil <- data.frame(sampleName = sampleInfoGCS59$sample,
-                          fileName = sampleInfoGCS59$filename,
-                          run = sampleInfoGCS59$seq_run,
-                          condition = sampleInfoGCS59$group)
-
-sampleFilesS61vsAncGC.fil <- list.files(directoryGCS61.fil)
-sampleInfoGCS61 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S61vsAnc.csv",header=TRUE)
-sampleTableGCS61.fil <- data.frame(sampleName = sampleInfoGCS61$sample,
-                          fileName = sampleInfoGCS61$filename,
-                          run = sampleInfoGCS61$seq_run,
-                          condition = sampleInfoGCS61$group)
-
-sampleFilesS76vsAncGC.fil <- list.files(directoryGCS76.fil)
-sampleInfoGCS76 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S76vsAnc.csv",header=TRUE)
-sampleTableGCS76.fil <- data.frame(sampleName = sampleInfoGCS76$sample,
-                          fileName = sampleInfoGCS76$filename,
-                          run = sampleInfoGCS76$seq_run,
-                          condition = sampleInfoGCS76$group)
-
-sampleFilesS77vsAncGC.fil <- list.files(directoryGCS77.fil)
-sampleInfoGCS77 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S77vaAnc.csv",header=TRUE)
-sampleTableGCS77.fil <- data.frame(sampleName = sampleInfoGCS77$sample,
-                          fileName = sampleInfoGCS77$filename,
-                          run = sampleInfoGCS77$seq_run,
-                          condition = sampleInfoGCS77$group)
+# #### each sample individually with the ancestor
+# sampleFilesS1vsAncGC.fil <- list.files(directoryGCS1.fil)
+# sampleInfoGCS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S1vsAnc.csv",header=TRUE)
+# sampleTableGCS1.fil <- data.frame(sampleName = sampleInfoGCS1$sample,
+#                           fileName = sampleInfoGCS1$filename,
+#                           run = sampleInfoGCS1$seq_run,
+#                           condition = sampleInfoGCS1$group)
+# 
+# sampleFilesS2vsAncGC.fil <- list.files(directoryGCS2.fil)
+# sampleInfoGCS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S2vsAnc.csv",header=TRUE)
+# sampleTableGCS2.fil <- data.frame(sampleName = sampleInfoGCS2$sample,
+#                           fileName = sampleInfoGCS2$filename,
+#                           run = sampleInfoGCS2$seq_run,
+#                           condition = sampleInfoGCS2$group)
+# 
+# sampleFilesS3vsAncGC.fil <- list.files(directoryGCS3.fil)
+# sampleInfoGCS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S3vsAnc.csv",header=TRUE)
+# sampleTableGCS3.fil <- data.frame(sampleName = sampleInfoGCS3$sample,
+#                           fileName = sampleInfoGCS3$filename,
+#                           run = sampleInfoGCS3$seq_run,
+#                           condition = sampleInfoGCS3$group)
+# 
+# sampleFilesS4vsAncGC.fil <- list.files(directoryGCS4.fil)
+# sampleInfoGCS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S4vsAnc.csv",header=TRUE)
+# sampleTableGCS4.fil <- data.frame(sampleName = sampleInfoGCS4$sample,
+#                           fileName = sampleInfoGCS4$filename,
+#                           run = sampleInfoGCS4$seq_run,
+#                           condition = sampleInfoGCS4$group)
+# 
+# sampleFilesS5vsAncGC.fil <- list.files(directoryGCS5.fil)
+# sampleInfoGCS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S5vsAnc.csv",header=TRUE)
+# sampleTableGCS5.fil <- data.frame(sampleName = sampleInfoGCS5$sample,
+#                           fileName = sampleInfoGCS5$filename,
+#                           run = sampleInfoGCS5$seq_run,
+#                           condition = sampleInfoGCS5$group)
+# 
+# sampleFilesS7vsAncGC.fil <- list.files(directoryGCS7.fil)
+# sampleInfoGCS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S7vsAnc.csv",header=TRUE)
+# sampleTableGCS7.fil <- data.frame(sampleName = sampleInfoGCS7$sample,
+#                           fileName = sampleInfoGCS7$filename,
+#                           run = sampleInfoGCS7$seq_run,
+#                           condition = sampleInfoGCS7$group)
+# 
+# sampleFilesS8vsAncGC.fil <- list.files(directoryGCS8.fil)
+# sampleInfoGCS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S8vsAnc.csv",header=TRUE)
+# sampleTableGCS8.fil <- data.frame(sampleName = sampleInfoGCS8$sample,
+#                           fileName = sampleInfoGCS8$filename,
+#                           run = sampleInfoGCS8$seq_run,
+#                           condition = sampleInfoGCS8$group)
+# 
+# sampleFilesS9vsAncGC.fil <- list.files(directoryGCS9.fil)
+# sampleInfoGCS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S9vsAnc.csv",header=TRUE)
+# sampleTableGCS9.fil <- data.frame(sampleName = sampleInfoGCS9$sample,
+#                           fileName = sampleInfoGCS9$filename,
+#                           run = sampleInfoGCS9$seq_run,
+#                           condition = sampleInfoGCS9$group)
+# 
+# sampleFilesS11vsAncGC.fil <- list.files(directoryGCS11.fil)
+# sampleInfoGCS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S11vsAnc.csv",header=TRUE)
+# sampleTableGCS11.fil <- data.frame(sampleName = sampleInfoGCS11$sample,
+#                           fileName = sampleInfoGCS11$filename,
+#                           run = sampleInfoGCS11$seq_run,
+#                           condition = sampleInfoGCS11$group)
+# 
+# sampleFilesS18vsAncGC.fil <- list.files(directoryGCS18.fil)
+# sampleInfoGCS18 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S18vsAnc.csv",header=TRUE)
+# sampleTableGCS18.fil <- data.frame(sampleName = sampleInfoGCS18$sample,
+#                           fileName = sampleInfoGCS18$filename,
+#                           run = sampleInfoGCS18$seq_run,
+#                           condition = sampleInfoGCS18$group)
+# 
+# sampleFilesS49vsAncGC.fil <- list.files(directoryGCS49.fil)
+# sampleInfoGCS49 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S49vsAnc.csv",header=TRUE)
+# sampleTableGCS49.fil <- data.frame(sampleName = sampleInfoGCS49$sample,
+#                           fileName = sampleInfoGCS49$filename,
+#                           run = sampleInfoGCS49$seq_run,
+#                           condition = sampleInfoGCS49$group)
+# 
+# sampleFilesS59vsAncGC.fil <- list.files(directoryGCS59.fil)
+# sampleInfoGCS59 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S59vsAnc.csv",header=TRUE)
+# sampleTableGCS59.fil <- data.frame(sampleName = sampleInfoGCS59$sample,
+#                           fileName = sampleInfoGCS59$filename,
+#                           run = sampleInfoGCS59$seq_run,
+#                           condition = sampleInfoGCS59$group)
+# 
+# sampleFilesS61vsAncGC.fil <- list.files(directoryGCS61.fil)
+# sampleInfoGCS61 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S61vsAnc.csv",header=TRUE)
+# sampleTableGCS61.fil <- data.frame(sampleName = sampleInfoGCS61$sample,
+#                           fileName = sampleInfoGCS61$filename,
+#                           run = sampleInfoGCS61$seq_run,
+#                           condition = sampleInfoGCS61$group)
+# 
+# sampleFilesS76vsAncGC.fil <- list.files(directoryGCS76.fil)
+# sampleInfoGCS76 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S76vsAnc.csv",header=TRUE)
+# sampleTableGCS76.fil <- data.frame(sampleName = sampleInfoGCS76$sample,
+#                           fileName = sampleInfoGCS76$filename,
+#                           run = sampleInfoGCS76$seq_run,
+#                           condition = sampleInfoGCS76$group)
+# 
+# sampleFilesS77vsAncGC.fil <- list.files(directoryGCS77.fil)
+# sampleInfoGCS77 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/GC_data_S77vaAnc.csv",header=TRUE)
+# sampleTableGCS77.fil <- data.frame(sampleName = sampleInfoGCS77$sample,
+#                           fileName = sampleInfoGCS77$filename,
+#                           run = sampleInfoGCS77$seq_run,
+#                           condition = sampleInfoGCS77$group)
 ##############################################################################
 sampleFilesMAold <- list.files(directoryMAold)
 sampleInfoMAold <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_sample_data.csv",header=TRUE)
@@ -266,95 +266,95 @@ sampleTableMAold <- data.frame(sampleName = sampleInfoMAold$sample,
                           fileName = sampleInfoMAold$filename,
                           condition = sampleInfoMAold$group)
 
-sampleFilesMAoldS1 <- list.files(directoryMAoldS1)
-sampleInfoMAoldS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S1vsAnc.csv",header=TRUE)
-sampleTableMAoldS1 <- data.frame(sampleName = sampleInfoMAoldS1$sample,
-                          fileName = sampleInfoMAoldS1$filename,
-                          condition = sampleInfoMAoldS1$group)
-
-sampleFilesMAoldS2 <- list.files(directoryMAoldS2)
-sampleInfoMAoldS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S2vsAnc.csv",header=TRUE)
-sampleTableMAoldS2 <- data.frame(sampleName = sampleInfoMAoldS2$sample,
-                          fileName = sampleInfoMAoldS2$filename,
-                          condition = sampleInfoMAoldS2$group)
-
-sampleFilesMAoldS3 <- list.files(directoryMAoldS3)
-sampleInfoMAoldS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S3vsAnc.csv",header=TRUE)
-sampleTableMAoldS3 <- data.frame(sampleName = sampleInfoMAoldS3$sample,
-                          fileName = sampleInfoMAoldS3$filename,
-                          condition = sampleInfoMAoldS3$group)
-
-sampleFilesMAoldS4 <- list.files(directoryMAoldS4)
-sampleInfoMAoldS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S4vsAnc.csv",header=TRUE)
-sampleTableMAoldS4 <- data.frame(sampleName = sampleInfoMAoldS4$sample,
-                          fileName = sampleInfoMAoldS4$filename,
-                          condition = sampleInfoMAoldS4$group)
-
-sampleFilesMAoldS5 <- list.files(directoryMAoldS5)
-sampleInfoMAoldS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S5vsAnc.csv",header=TRUE)
-sampleTableMAoldS5 <- data.frame(sampleName = sampleInfoMAoldS5$sample,
-                          fileName = sampleInfoMAoldS5$filename,
-                          condition = sampleInfoMAoldS5$group)
-
-sampleFilesMAoldS6 <- list.files(directoryMAoldS6)
-sampleInfoMAoldS6 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S6vsAnc.csv",header=TRUE)
-sampleTableMAoldS6 <- data.frame(sampleName = sampleInfoMAoldS6$sample,
-                          fileName = sampleInfoMAoldS6$filename,
-                          condition = sampleInfoMAoldS6$group)
-
-sampleFilesMAoldS7 <- list.files(directoryMAoldS7)
-sampleInfoMAoldS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S7vsAnc.csv",header=TRUE)
-sampleTableMAoldS7 <- data.frame(sampleName = sampleInfoMAoldS7$sample,
-                          fileName = sampleInfoMAoldS7$filename,
-                          condition = sampleInfoMAoldS7$group)
-
-sampleFilesMAoldS8 <- list.files(directoryMAoldS8)
-sampleInfoMAoldS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S8vsAnc.csv",header=TRUE)
-sampleTableMAoldS8 <- data.frame(sampleName = sampleInfoMAoldS8$sample,
-                          fileName = sampleInfoMAoldS8$filename,
-                          condition = sampleInfoMAoldS8$group)
-
-sampleFilesMAoldS9 <- list.files(directoryMAoldS9)
-sampleInfoMAoldS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S9vsAnc.csv",header=TRUE)
-sampleTableMAoldS9 <- data.frame(sampleName = sampleInfoMAoldS9$sample,
-                          fileName = sampleInfoMAoldS9$filename,
-                          condition = sampleInfoMAoldS9$group)
-
-sampleFilesMAoldS11 <- list.files(directoryMAoldS11)
-sampleInfoMAoldS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S11vsAnc.csv",header=TRUE)
-sampleTableMAoldS11 <- data.frame(sampleName = sampleInfoMAoldS11$sample,
-                          fileName = sampleInfoMAoldS11$filename,
-                          condition = sampleInfoMAoldS11$group)
-
-sampleFilesMAoldS15 <- list.files(directoryMAoldS15)
-sampleInfoMAoldS15 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S15vsAnc.csv",header=TRUE)
-sampleTableMAoldS15 <- data.frame(sampleName = sampleInfoMAoldS15$sample,
-                          fileName = sampleInfoMAoldS15$filename,
-                          condition = sampleInfoMAoldS15$group)
-
-sampleFilesMAoldS28 <- list.files(directoryMAoldS28)
-sampleInfoMAoldS28 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S28vsAnc.csv",header=TRUE)
-sampleTableMAoldS28 <- data.frame(sampleName = sampleInfoMAoldS28$sample,
-                          fileName = sampleInfoMAoldS28$filename,
-                          condition = sampleInfoMAoldS28$group)
-
-sampleFilesMAoldS88 <- list.files(directoryMAoldS88)
-sampleInfoMAoldS88 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S88vsAnc.csv",header=TRUE)
-sampleTableMAoldS88 <- data.frame(sampleName = sampleInfoMAoldS88$sample,
-                          fileName = sampleInfoMAoldS88$filename,
-                          condition = sampleInfoMAoldS88$group)
-
-sampleFilesMAoldS108 <- list.files(directoryMAoldS108)
-sampleInfoMAoldS108 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S108vsAnc.csv",header=TRUE)
-sampleTableMAoldS108 <- data.frame(sampleName = sampleInfoMAoldS108$sample,
-                          fileName = sampleInfoMAoldS108$filename,
-                          condition = sampleInfoMAoldS108$group)
-
-sampleFilesMAoldS119 <- list.files(directoryMAoldS119)
-sampleInfoMAoldS119 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S119vsAnc.csv",header=TRUE)
-sampleTableMAoldS119 <- data.frame(sampleName = sampleInfoMAoldS119$sample,
-                          fileName = sampleInfoMAoldS119$filename,
-                          condition = sampleInfoMAoldS119$group)
+# sampleFilesMAoldS1 <- list.files(directoryMAoldS1)
+# sampleInfoMAoldS1 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S1vsAnc.csv",header=TRUE)
+# sampleTableMAoldS1 <- data.frame(sampleName = sampleInfoMAoldS1$sample,
+#                           fileName = sampleInfoMAoldS1$filename,
+#                           condition = sampleInfoMAoldS1$group)
+# 
+# sampleFilesMAoldS2 <- list.files(directoryMAoldS2)
+# sampleInfoMAoldS2 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S2vsAnc.csv",header=TRUE)
+# sampleTableMAoldS2 <- data.frame(sampleName = sampleInfoMAoldS2$sample,
+#                           fileName = sampleInfoMAoldS2$filename,
+#                           condition = sampleInfoMAoldS2$group)
+# 
+# sampleFilesMAoldS3 <- list.files(directoryMAoldS3)
+# sampleInfoMAoldS3 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S3vsAnc.csv",header=TRUE)
+# sampleTableMAoldS3 <- data.frame(sampleName = sampleInfoMAoldS3$sample,
+#                           fileName = sampleInfoMAoldS3$filename,
+#                           condition = sampleInfoMAoldS3$group)
+# 
+# sampleFilesMAoldS4 <- list.files(directoryMAoldS4)
+# sampleInfoMAoldS4 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S4vsAnc.csv",header=TRUE)
+# sampleTableMAoldS4 <- data.frame(sampleName = sampleInfoMAoldS4$sample,
+#                           fileName = sampleInfoMAoldS4$filename,
+#                           condition = sampleInfoMAoldS4$group)
+# 
+# sampleFilesMAoldS5 <- list.files(directoryMAoldS5)
+# sampleInfoMAoldS5 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S5vsAnc.csv",header=TRUE)
+# sampleTableMAoldS5 <- data.frame(sampleName = sampleInfoMAoldS5$sample,
+#                           fileName = sampleInfoMAoldS5$filename,
+#                           condition = sampleInfoMAoldS5$group)
+# 
+# sampleFilesMAoldS6 <- list.files(directoryMAoldS6)
+# sampleInfoMAoldS6 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S6vsAnc.csv",header=TRUE)
+# sampleTableMAoldS6 <- data.frame(sampleName = sampleInfoMAoldS6$sample,
+#                           fileName = sampleInfoMAoldS6$filename,
+#                           condition = sampleInfoMAoldS6$group)
+# 
+# sampleFilesMAoldS7 <- list.files(directoryMAoldS7)
+# sampleInfoMAoldS7 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S7vsAnc.csv",header=TRUE)
+# sampleTableMAoldS7 <- data.frame(sampleName = sampleInfoMAoldS7$sample,
+#                           fileName = sampleInfoMAoldS7$filename,
+#                           condition = sampleInfoMAoldS7$group)
+# 
+# sampleFilesMAoldS8 <- list.files(directoryMAoldS8)
+# sampleInfoMAoldS8 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S8vsAnc.csv",header=TRUE)
+# sampleTableMAoldS8 <- data.frame(sampleName = sampleInfoMAoldS8$sample,
+#                           fileName = sampleInfoMAoldS8$filename,
+#                           condition = sampleInfoMAoldS8$group)
+# 
+# sampleFilesMAoldS9 <- list.files(directoryMAoldS9)
+# sampleInfoMAoldS9 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S9vsAnc.csv",header=TRUE)
+# sampleTableMAoldS9 <- data.frame(sampleName = sampleInfoMAoldS9$sample,
+#                           fileName = sampleInfoMAoldS9$filename,
+#                           condition = sampleInfoMAoldS9$group)
+# 
+# sampleFilesMAoldS11 <- list.files(directoryMAoldS11)
+# sampleInfoMAoldS11 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S11vsAnc.csv",header=TRUE)
+# sampleTableMAoldS11 <- data.frame(sampleName = sampleInfoMAoldS11$sample,
+#                           fileName = sampleInfoMAoldS11$filename,
+#                           condition = sampleInfoMAoldS11$group)
+# 
+# sampleFilesMAoldS15 <- list.files(directoryMAoldS15)
+# sampleInfoMAoldS15 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S15vsAnc.csv",header=TRUE)
+# sampleTableMAoldS15 <- data.frame(sampleName = sampleInfoMAoldS15$sample,
+#                           fileName = sampleInfoMAoldS15$filename,
+#                           condition = sampleInfoMAoldS15$group)
+# 
+# sampleFilesMAoldS28 <- list.files(directoryMAoldS28)
+# sampleInfoMAoldS28 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S28vsAnc.csv",header=TRUE)
+# sampleTableMAoldS28 <- data.frame(sampleName = sampleInfoMAoldS28$sample,
+#                           fileName = sampleInfoMAoldS28$filename,
+#                           condition = sampleInfoMAoldS28$group)
+# 
+# sampleFilesMAoldS88 <- list.files(directoryMAoldS88)
+# sampleInfoMAoldS88 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S88vsAnc.csv",header=TRUE)
+# sampleTableMAoldS88 <- data.frame(sampleName = sampleInfoMAoldS88$sample,
+#                           fileName = sampleInfoMAoldS88$filename,
+#                           condition = sampleInfoMAoldS88$group)
+# 
+# sampleFilesMAoldS108 <- list.files(directoryMAoldS108)
+# sampleInfoMAoldS108 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S108vsAnc.csv",header=TRUE)
+# sampleTableMAoldS108 <- data.frame(sampleName = sampleInfoMAoldS108$sample,
+#                           fileName = sampleInfoMAoldS108$filename,
+#                           condition = sampleInfoMAoldS108$group)
+# 
+# sampleFilesMAoldS119 <- list.files(directoryMAoldS119)
+# sampleInfoMAoldS119 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_old_data_S119vsAnc.csv",header=TRUE)
+# sampleTableMAoldS119 <- data.frame(sampleName = sampleInfoMAoldS119$sample,
+#                           fileName = sampleInfoMAoldS119$filename,
+#                           condition = sampleInfoMAoldS119$group)
 ###############################################################################
 sampleFilesMAnew <- list.files(directoryMAnew)
 sampleInfoMAnew <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_sample_data.csv",header=TRUE)
@@ -364,53 +364,53 @@ sampleTableMAnew <- data.frame(sampleName = sampleInfoMAnew$sample,
                           condition = sampleInfoMAnew$group)
 
 #### MA new individually 
-sampleFilesMAnewS29 <- list.files(directoryMANewS29)
-sampleInfoMAnewS29 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S29.csv",header=TRUE)
-sampleTableMAnewS29 <- data.frame(sampleName = sampleInfoMAnewS29$sample,
-                          fileName = sampleInfoMAnewS29$filename,
-                          condition = sampleInfoMAnewS29$group)
-
-sampleFilesMAnewS50 <- list.files(directoryMAnewS50)
-sampleInfoMAnewS50 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S50.csv",header=TRUE)
-sampleTableMAnewS50 <- data.frame(sampleName = sampleInfoMAnewS50$sample,
-                          fileName = sampleInfoMAnewS50$filename,
-                          condition = sampleInfoMAnewS50$group)
-
-sampleFilesMAnewS112 <- list.files(directoryMAnewS112)
-sampleInfoMAnewS112 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S112.csv",header=TRUE)
-sampleTableMAnewS112 <- data.frame(sampleName = sampleInfoMAnewS112$sample,
-                          fileName = sampleInfoMAnewS112$filename,
-                          condition = sampleInfoMAnewS112$group)
-
-sampleFilesMAnewS115 <- list.files(directoryMAnewS115)
-sampleInfoMAnewS115 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S115.csv",header=TRUE)
-sampleTableMAnewS115 <- data.frame(sampleName = sampleInfoMAnewS115$sample,
-                          fileName = sampleInfoMAnewS115$filename,
-                          condition = sampleInfoMAnewS115$group)
-
-sampleFilesMAnewS117 <- list.files(directoryMAnewS117)
-sampleInfoMAnewS117 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S117.csv",header=TRUE)
-sampleTableMAnewS117 <- data.frame(sampleName = sampleInfoMAnewS117$sample,
-                          fileName = sampleInfoMAnewS117$filename,
-                          condition = sampleInfoMAnewS117$group)
-
-sampleFilesMAnewS123 <- list.files(directoryMAnewS123)
-sampleInfoMAnewS123 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S123.csv",header=TRUE)
-sampleTableMAnewS123 <- data.frame(sampleName = sampleInfoMAnewS123$sample,
-                          fileName = sampleInfoMAnewS123$filename,
-                          condition = sampleInfoMAnewS123$group)
-
-sampleFilesMAnewS141 <- list.files(directoryMAnewS141)
-sampleInfoMAnewS141 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S141.csv",header=TRUE)
-sampleTableMAnewS141 <- data.frame(sampleName = sampleInfoMAnewS141$sample,
-                          fileName = sampleInfoMAnewS141$filename,
-                          condition = sampleInfoMAnewS141$group)
-
-sampleFilesMAnewS152 <- list.files(directoryMAnewS152)
-sampleInfoMAnewS152 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S152.csv",header=TRUE)
-sampleTableMAnewS152 <- data.frame(sampleName = sampleInfoMAnewS152$sample,
-                          fileName = sampleInfoMAnewS152$filename,
-                          condition = sampleInfoMAnewS152$group)
+# sampleFilesMAnewS29 <- list.files(directoryMANewS29)
+# sampleInfoMAnewS29 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S29.csv",header=TRUE)
+# sampleTableMAnewS29 <- data.frame(sampleName = sampleInfoMAnewS29$sample,
+#                           fileName = sampleInfoMAnewS29$filename,
+#                           condition = sampleInfoMAnewS29$group)
+# 
+# sampleFilesMAnewS50 <- list.files(directoryMAnewS50)
+# sampleInfoMAnewS50 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S50.csv",header=TRUE)
+# sampleTableMAnewS50 <- data.frame(sampleName = sampleInfoMAnewS50$sample,
+#                           fileName = sampleInfoMAnewS50$filename,
+#                           condition = sampleInfoMAnewS50$group)
+# 
+# sampleFilesMAnewS112 <- list.files(directoryMAnewS112)
+# sampleInfoMAnewS112 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S112.csv",header=TRUE)
+# sampleTableMAnewS112 <- data.frame(sampleName = sampleInfoMAnewS112$sample,
+#                           fileName = sampleInfoMAnewS112$filename,
+#                           condition = sampleInfoMAnewS112$group)
+# 
+# sampleFilesMAnewS115 <- list.files(directoryMAnewS115)
+# sampleInfoMAnewS115 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S115.csv",header=TRUE)
+# sampleTableMAnewS115 <- data.frame(sampleName = sampleInfoMAnewS115$sample,
+#                           fileName = sampleInfoMAnewS115$filename,
+#                           condition = sampleInfoMAnewS115$group)
+# 
+# sampleFilesMAnewS117 <- list.files(directoryMAnewS117)
+# sampleInfoMAnewS117 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S117.csv",header=TRUE)
+# sampleTableMAnewS117 <- data.frame(sampleName = sampleInfoMAnewS117$sample,
+#                           fileName = sampleInfoMAnewS117$filename,
+#                           condition = sampleInfoMAnewS117$group)
+# 
+# sampleFilesMAnewS123 <- list.files(directoryMAnewS123)
+# sampleInfoMAnewS123 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S123.csv",header=TRUE)
+# sampleTableMAnewS123 <- data.frame(sampleName = sampleInfoMAnewS123$sample,
+#                           fileName = sampleInfoMAnewS123$filename,
+#                           condition = sampleInfoMAnewS123$group)
+# 
+# sampleFilesMAnewS141 <- list.files(directoryMAnewS141)
+# sampleInfoMAnewS141 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S141.csv",header=TRUE)
+# sampleTableMAnewS141 <- data.frame(sampleName = sampleInfoMAnewS141$sample,
+#                           fileName = sampleInfoMAnewS141$filename,
+#                           condition = sampleInfoMAnewS141$group)
+# 
+# sampleFilesMAnewS152 <- list.files(directoryMAnewS152)
+# sampleInfoMAnewS152 <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Paper_Results/MA_new_data_S152.csv",header=TRUE)
+# sampleTableMAnewS152 <- data.frame(sampleName = sampleInfoMAnewS152$sample,
+#                           fileName = sampleInfoMAnewS152$filename,
+#                           condition = sampleInfoMAnewS152$group)
 ```
 
 Then we build the *DESeqDataSet* using the following function:
@@ -420,108 +420,147 @@ Then we build the *DESeqDataSet* using the following function:
 sampleTableGC$run <- as.factor(sampleTableGC$run)
 sampleTableGC$sampleName <- as.factor(sampleTableGC$sampleName)
 sampleTableGC$condition <- as.factor(sampleTableGC$condition)
-ddsHTSeqGC <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC,
-                                       directory = directoryGC,
+#sampleTableGC$ploidy <- as.factor(sampleTableGC$ploidy)
+ddsHTSeqGC <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC.fil,
+                                       directory = directoryGC.fil,
                                        design= ~ condition + run)
 
 ddsHTSeqGC
 
-write.csv(counts(ddsHTSeqGC),file="counts.DEseqGC.csv")
-#filtered genes 
-sampleTableGC.fil$run <- as.factor(sampleTableGC.fil$run)
-sampleTableGC.fil$sampleName <- as.factor(sampleTableGC.fil$sampleName)
-sampleTableGC.fil$condition <- as.factor(sampleTableGC.fil$condition)
-ddsHTSeqGC.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC.fil,
-                                       directory = directoryGC.fil,
-                                       design= ~ condition + run)
+write.csv(counts(ddsHTSeqGC),file="counts.DEseqGC.fil.csv")
 
-ddsHTSeqGC.fil
+##### PCA analysis of samples
+## transformation of count data 
+vsdGC <- vst(ddsHTSeqGC,blind=FALSE)
+rldGC <- rlog(ddsHTSeqGC,blind=FALSE)
 
-write.csv(counts(ddsHTSeqGC.fil),file="counts.DEseqGC.fil.csv")
+ddsHTSeqGC$condition
+levels(ddsHTSeqGC$condition)
+head(assay(vsdGC),3)
+plotPCA(vsdGC, intgroup=c("condition"))
+pcaDataGC <- plotPCA(vsdGC,intgroup=c("condition"),returnData=TRUE)
+percentVar <- round(100 * attr(pcaDataGC,"percentVar"))
+library(ggplot2)
+pdf("PCA_GC.pdf")
+ggplot(pcaDataGC,aes(PC1,PC2,shape=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  scale_fill_hue(l=80)+
+  scale_shape_manual(values=c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19))
+  # coord_fixed()
+dev.off()
 
-ddsHTSeqGC.fil
-colnames(ddsHTSeqGC.fil)
+## pca by sequencing run
+colData(ddsHTSeqGC)
+plotPCA(vsdGC, intgroup=c("run"))
+pcaDataGC.run <- plotPCA(vsdGC,intgroup=c("run"),returnData=TRUE)
+percentVar <- round(100 * attr(pcaDataGC.run,"percentVar"))
+library(ggplot2)
+pdf("PCA_GC_by_run.pdf")
+ggplot(pcaDataGC.run,aes(PC1,PC2,shape=run)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance"))
+  # coord_fixed()
+  dev.off()
 
-is.list(test)
-as.list(test)
-ddsHTSeqGC.fil$condition
 
-subsetS11 <- which(ddsHTSeqGC.fil$condition=="Holly_11")
-subsetAnc <- which(ddsHTSeqGC.fil$condition=="Holly_Anc")
-subsetS11 <- c(subsetS11,subsetAnc)
-ddsHTSeqGCS11 <- ddsHTSeqGC.fil[,subsetS11]
-ddsHTSeqGCS11$condition
-ddsHTSeqGCS11$condition <- droplevels(ddsHTSeqGCS11$condition)
-ddsHTSeqGCS11$condition
-
-subsetS5 <- which(ddsHTSeqGC.fil$condition=="Holly_5")
-subsetAnc <- which(ddsHTSeqGC.fil$condition=="Holly_Anc")
+subsetS5 <- which(ddsHTSeqGC$condition=="Holly_5")
+subsetAnc <- which(ddsHTSeqGC$condition=="Holly_Anc")
 subsetS5 <- c(subsetS5,subsetAnc)
-ddsHTSeqGCS5 <- ddsHTSeqGC.fil[,subsetS5]
+ddsHTSeqGCS5 <- ddsHTSeqGC[,subsetS5]
 ddsHTSeqGCS5$condition
 ddsHTSeqGCS5$condition <- droplevels(ddsHTSeqGCS5$condition)
 ddsHTSeqGCS5$condition
 
-subsetS8 <- which(ddsHTSeqGC.fil$condition=="Holly_8")
+subsetS8 <- which(ddsHTSeqGC$condition=="Holly_8")
 subsetS8 <- c(subsetS8,subsetAnc)
-ddsHTSeqGCS8 <- ddsHTSeqGC.fil[,subsetS8]
+ddsHTSeqGCS8 <- ddsHTSeqGC[,subsetS8]
 ddsHTSeqGCS8$condition
 ddsHTSeqGCS8$condition <- droplevels(ddsHTSeqGCS8$condition)
 ddsHTSeqGCS8$condition
 
 
 ### without S5, S8, and S11
-subsetS1 <- which(ddsHTSeqGC.fil$condition=="Holly_1")
-subsetS2 <- which(ddsHTSeqGC.fil$condition=="Holly_2")
-subsetS3 <- which(ddsHTSeqGC.fil$condition=="Holly_3")
-subsetS4 <- which(ddsHTSeqGC.fil$condition=="Holly_4")
-subsetS7 <- which(ddsHTSeqGC.fil$condition=="Holly_7")
-subsetS18 <- which(ddsHTSeqGC.fil$condition=="Holly_18")
-subsetS49 <- which(ddsHTSeqGC.fil$condition=="Holly_49")
-subsetS59 <- which(ddsHTSeqGC.fil$condition=="Holly_59")
-subsetS61 <- which(ddsHTSeqGC.fil$condition=="Holly_61")
-subsetS76 <- which(ddsHTSeqGC.fil$condition=="Holly_76")
-subsetS77 <- which(ddsHTSeqGC.fil$condition=="Holly_77")
+subsetS1 <- which(ddsHTSeqGC$condition=="Holly_1")
+subsetS2 <- which(ddsHTSeqGC$condition=="Holly_2")
+subsetS3 <- which(ddsHTSeqGC$condition=="Holly_3")
+subsetS4 <- which(ddsHTSeqGC$condition=="Holly_4")
+subsetS7 <- which(ddsHTSeqGC$condition=="Holly_7")
+subsetS18 <- which(ddsHTSeqGC$condition=="Holly_18")
+subsetS49 <- which(ddsHTSeqGC$condition=="Holly_49")
+subsetS59 <- which(ddsHTSeqGC$condition=="Holly_59")
+subsetS61 <- which(ddsHTSeqGC$condition=="Holly_61")
+subsetS76 <- which(ddsHTSeqGC$condition=="Holly_76")
+subsetS77 <- which(ddsHTSeqGC$condition=="Holly_77")
 subsetAll <- c(subsetS1,subsetS2,subsetS3,subsetS4,subsetS7,subsetS18,subsetS49,subsetS59,subsetS61,subsetS76,subsetS77,subsetAnc)
-ddsHTSeqGC.short <- ddsHTSeqGC.fil[,subsetAll]
+ddsHTSeqGC.short <- ddsHTSeqGC[,subsetAll]
 ddsHTSeqGC.short$condition
 ddsHTSeqGC.short$condition <- droplevels(ddsHTSeqGC.short$condition)
 ddsHTSeqGC.short$condition
 
+#filtered genes 
+# sampleTableGC.fil$run <- as.factor(sampleTableGC.fil$run)
+# sampleTableGC.fil$sampleName <- as.factor(sampleTableGC.fil$sampleName)
+# sampleTableGC.fil$condition <- as.factor(sampleTableGC.fil$condition)
+# ddsHTSeqGC.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGC.fil,
+#                                        directory = directoryGC.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGC.fil
+# 
+# write.csv(counts(ddsHTSeqGC.fil),file="counts.DEseqGC.fil.csv")
+# 
+# ddsHTSeqGC.fil
+# colnames(ddsHTSeqGC.fil)
+
+# is.list(test)
+# as.list(test)
+# ddsHTSeqGC.fil$condition
+# 
+# subsetS11 <- which(ddsHTSeqGC.fil$condition=="Holly_11")
+# subsetAnc <- which(ddsHTSeqGC.fil$condition=="Holly_Anc")
+# subsetS11 <- c(subsetS11,subsetAnc)
+# ddsHTSeqGCS11 <- ddsHTSeqGC.fil[,subsetS11]
+# ddsHTSeqGCS11$condition
+# ddsHTSeqGCS11$condition <- droplevels(ddsHTSeqGCS11$condition)
+# ddsHTSeqGCS11$condition
+
 ### make a DESeq dataset with each sample and the ancestor INDIVIDUALLY
 #filtered genes 
-sampleTableGCS1.fil$run <- as.factor(sampleTableGCS1.fil$run)
-sampleTableGCS1.fil$sampleName <- as.factor(sampleTableGCS1.fil$sampleName)
-sampleTableGCS1.fil$condition <- as.factor(sampleTableGCS1.fil$condition)
-ddsHTSeqGCS1.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS1.fil,
-                                       directory = directoryGCS1.fil,
-                                       design= ~ condition + run)
+# sampleTableGCS1.fil$run <- as.factor(sampleTableGCS1.fil$run)
+# sampleTableGCS1.fil$sampleName <- as.factor(sampleTableGCS1.fil$sampleName)
+# sampleTableGCS1.fil$condition <- as.factor(sampleTableGCS1.fil$condition)
+# ddsHTSeqGCS1.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS1.fil,
+#                                        directory = directoryGCS1.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS1.fil
+# sampleTableGCS2.fil$run <- as.factor(sampleTableGCS2.fil$run)
+# sampleTableGCS2.fil$sampleName <- as.factor(sampleTableGCS2.fil$sampleName)
+# sampleTableGCS2.fil$condition <- as.factor(sampleTableGCS2.fil$condition)
+# ddsHTSeqGCS2.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS2.fil,
+#                                        directory = directoryGCS2.fil,
+#                                        design= ~ condition + run)
 
-ddsHTSeqGCS1.fil
-sampleTableGCS2.fil$run <- as.factor(sampleTableGCS2.fil$run)
-sampleTableGCS2.fil$sampleName <- as.factor(sampleTableGCS2.fil$sampleName)
-sampleTableGCS2.fil$condition <- as.factor(sampleTableGCS2.fil$condition)
-ddsHTSeqGCS2.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS2.fil,
-                                       directory = directoryGCS2.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS2.fil
-sampleTableGCS3.fil$run <- as.factor(sampleTableGCS3.fil$run)
-sampleTableGCS3.fil$sampleName <- as.factor(sampleTableGCS3.fil$sampleName)
-sampleTableGCS3.fil$condition <- as.factor(sampleTableGCS3.fil$condition)
-ddsHTSeqGCS3.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS3.fil,
-                                       directory = directoryGCS3.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS3.fil
-sampleTableGCS4.fil$run <- as.factor(sampleTableGCS4.fil$run)
-sampleTableGCS4.fil$sampleName <- as.factor(sampleTableGCS4.fil$sampleName)
-sampleTableGCS4.fil$condition <- as.factor(sampleTableGCS4.fil$condition)
-ddsHTSeqGCS4.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS4.fil,
-                                       directory = directoryGCS4.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS4.fil
+# ddsHTSeqGCS2.fil
+# sampleTableGCS3.fil$run <- as.factor(sampleTableGCS3.fil$run)
+# sampleTableGCS3.fil$sampleName <- as.factor(sampleTableGCS3.fil$sampleName)
+# sampleTableGCS3.fil$condition <- as.factor(sampleTableGCS3.fil$condition)
+# ddsHTSeqGCS3.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS3.fil,
+#                                        directory = directoryGCS3.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS3.fil
+# sampleTableGCS4.fil$run <- as.factor(sampleTableGCS4.fil$run)
+# sampleTableGCS4.fil$sampleName <- as.factor(sampleTableGCS4.fil$sampleName)
+# sampleTableGCS4.fil$condition <- as.factor(sampleTableGCS4.fil$condition)
+# ddsHTSeqGCS4.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS4.fil,
+#                                        directory = directoryGCS4.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS4.fil
 # sampleTableGCS5.fil$run <- as.factor(sampleTableGCS5.fil$run)
 # sampleTableGCS5.fil$sampleName <- as.factor(sampleTableGCS5.fil$sampleName)
 # sampleTableGCS5.fil$condition <- as.factor(sampleTableGCS5.fil$condition)
@@ -530,122 +569,93 @@ ddsHTSeqGCS4.fil
 #                                        design= ~ condition + run)
 # 
 # ddsHTSeqGCS5.fil
-sampleTableGCS7.fil$run <- as.factor(sampleTableGCS7.fil$run)
-sampleTableGCS7.fil$sampleName <- as.factor(sampleTableGCS7.fil$sampleName)
-sampleTableGCS7.fil$condition <- as.factor(sampleTableGCS7.fil$condition)
-ddsHTSeqGCS7.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS7.fil,
-                                       directory = directoryGCS7.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS7.fil
-sampleTableGCS8.fil$run <- as.factor(sampleTableGCS8.fil$run)
-sampleTableGCS8.fil$sampleName <- as.factor(sampleTableGCS8.fil$sampleName)
-sampleTableGCS8.fil$condition <- as.factor(sampleTableGCS8.fil$condition)
-ddsHTSeqGCS8.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS8.fil,
-                                       directory = directoryGCS8.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS8.fil
-sampleTableGCS9.fil$run <- as.factor(sampleTableGCS9.fil$run)
-sampleTableGCS9.fil$sampleName <- as.factor(sampleTableGCS9.fil$sampleName)
-sampleTableGCS9.fil$condition <- as.factor(sampleTableGCS9.fil$condition)
-ddsHTSeqGCS9.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS9.fil,
-                                       directory = directoryGCS9.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS9.fil
-sampleTableGCS11.fil$run <- as.factor(sampleTableGCS11.fil$run)
-sampleTableGCS11.fil$sampleName <- as.factor(sampleTableGCS11.fil$sampleName)
-sampleTableGCS11.fil$condition <- as.factor(sampleTableGCS11.fil$condition)
-ddsHTSeqGCS11.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS11.fil,
-                                       directory = directoryGCS11.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS11.fil
-sampleTableGCS18.fil$run <- as.factor(sampleTableGCS18.fil$run)
-sampleTableGCS18.fil$sampleName <- as.factor(sampleTableGCS18.fil$sampleName)
-sampleTableGCS18.fil$condition <- as.factor(sampleTableGCS18.fil$condition)
-ddsHTSeqGCS18.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS18.fil,
-                                       directory = directoryGCS18.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS18.fil
-sampleTableGCS49.fil$run <- as.factor(sampleTableGCS49.fil$run)
-sampleTableGCS49.fil$sampleName <- as.factor(sampleTableGCS49.fil$sampleName)
-sampleTableGCS49.fil$condition <- as.factor(sampleTableGCS49.fil$condition)
-ddsHTSeqGCS49.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS49.fil,
-                                       directory = directoryGCS49.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS49.fil
-sampleTableGCS59.fil$run <- as.factor(sampleTableGCS59.fil$run)
-sampleTableGCS59.fil$sampleName <- as.factor(sampleTableGCS59.fil$sampleName)
-sampleTableGCS59.fil$condition <- as.factor(sampleTableGCS59.fil$condition)
-ddsHTSeqGCS59.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS59.fil,
-                                       directory = directoryGCS59.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS59.fil
-sampleTableGCS61.fil$run <- as.factor(sampleTableGCS61.fil$run)
-sampleTableGCS61.fil$sampleName <- as.factor(sampleTableGCS61.fil$sampleName)
-sampleTableGCS61.fil$condition <- as.factor(sampleTableGCS61.fil$condition)
-ddsHTSeqGCS61.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS61.fil,
-                                       directory = directoryGCS61.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS61.fil
-sampleTableGCS76.fil$run <- as.factor(sampleTableGCS76.fil$run)
-sampleTableGCS76.fil$sampleName <- as.factor(sampleTableGCS76.fil$sampleName)
-sampleTableGCS76.fil$condition <- as.factor(sampleTableGCS76.fil$condition)
-ddsHTSeqGCS76.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS76.fil,
-                                       directory = directoryGCS76.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS76.fil
-sampleTableGCS77.fil$run <- as.factor(sampleTableGCS77.fil$run)
-sampleTableGCS77.fil$sampleName <- as.factor(sampleTableGCS77.fil$sampleName)
-sampleTableGCS77.fil$condition <- as.factor(sampleTableGCS77.fil$condition)
-ddsHTSeqGCS77.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS77.fil,
-                                       directory = directoryGCS77.fil,
-                                       design= ~ condition + run)
-
-ddsHTSeqGCS77.fil
+# sampleTableGCS7.fil$run <- as.factor(sampleTableGCS7.fil$run)
+# sampleTableGCS7.fil$sampleName <- as.factor(sampleTableGCS7.fil$sampleName)
+# sampleTableGCS7.fil$condition <- as.factor(sampleTableGCS7.fil$condition)
+# ddsHTSeqGCS7.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS7.fil,
+#                                        directory = directoryGCS7.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS7.fil
+# sampleTableGCS8.fil$run <- as.factor(sampleTableGCS8.fil$run)
+# sampleTableGCS8.fil$sampleName <- as.factor(sampleTableGCS8.fil$sampleName)
+# sampleTableGCS8.fil$condition <- as.factor(sampleTableGCS8.fil$condition)
+# ddsHTSeqGCS8.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS8.fil,
+#                                        directory = directoryGCS8.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS8.fil
+# sampleTableGCS9.fil$run <- as.factor(sampleTableGCS9.fil$run)
+# sampleTableGCS9.fil$sampleName <- as.factor(sampleTableGCS9.fil$sampleName)
+# sampleTableGCS9.fil$condition <- as.factor(sampleTableGCS9.fil$condition)
+# ddsHTSeqGCS9.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS9.fil,
+#                                        directory = directoryGCS9.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS9.fil
+# sampleTableGCS11.fil$run <- as.factor(sampleTableGCS11.fil$run)
+# sampleTableGCS11.fil$sampleName <- as.factor(sampleTableGCS11.fil$sampleName)
+# sampleTableGCS11.fil$condition <- as.factor(sampleTableGCS11.fil$condition)
+# ddsHTSeqGCS11.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS11.fil,
+#                                        directory = directoryGCS11.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS11.fil
+# sampleTableGCS18.fil$run <- as.factor(sampleTableGCS18.fil$run)
+# sampleTableGCS18.fil$sampleName <- as.factor(sampleTableGCS18.fil$sampleName)
+# sampleTableGCS18.fil$condition <- as.factor(sampleTableGCS18.fil$condition)
+# ddsHTSeqGCS18.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS18.fil,
+#                                        directory = directoryGCS18.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS18.fil
+# sampleTableGCS49.fil$run <- as.factor(sampleTableGCS49.fil$run)
+# sampleTableGCS49.fil$sampleName <- as.factor(sampleTableGCS49.fil$sampleName)
+# sampleTableGCS49.fil$condition <- as.factor(sampleTableGCS49.fil$condition)
+# ddsHTSeqGCS49.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS49.fil,
+#                                        directory = directoryGCS49.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS49.fil
+# sampleTableGCS59.fil$run <- as.factor(sampleTableGCS59.fil$run)
+# sampleTableGCS59.fil$sampleName <- as.factor(sampleTableGCS59.fil$sampleName)
+# sampleTableGCS59.fil$condition <- as.factor(sampleTableGCS59.fil$condition)
+# ddsHTSeqGCS59.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS59.fil,
+#                                        directory = directoryGCS59.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS59.fil
+# sampleTableGCS61.fil$run <- as.factor(sampleTableGCS61.fil$run)
+# sampleTableGCS61.fil$sampleName <- as.factor(sampleTableGCS61.fil$sampleName)
+# sampleTableGCS61.fil$condition <- as.factor(sampleTableGCS61.fil$condition)
+# ddsHTSeqGCS61.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS61.fil,
+#                                        directory = directoryGCS61.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS61.fil
+# sampleTableGCS76.fil$run <- as.factor(sampleTableGCS76.fil$run)
+# sampleTableGCS76.fil$sampleName <- as.factor(sampleTableGCS76.fil$sampleName)
+# sampleTableGCS76.fil$condition <- as.factor(sampleTableGCS76.fil$condition)
+# ddsHTSeqGCS76.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS76.fil,
+#                                        directory = directoryGCS76.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS76.fil
+# sampleTableGCS77.fil$run <- as.factor(sampleTableGCS77.fil$run)
+# sampleTableGCS77.fil$sampleName <- as.factor(sampleTableGCS77.fil$sampleName)
+# sampleTableGCS77.fil$condition <- as.factor(sampleTableGCS77.fil$condition)
+# ddsHTSeqGCS77.fil <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableGCS77.fil,
+#                                        directory = directoryGCS77.fil,
+#                                        design= ~ condition + run)
+# 
+# ddsHTSeqGCS77.fil
 # write.csv(counts(ddsHTSeqGC.fil),file="counts.DEseqGC.fil.csv")
 
 
-##### PCA analysis of samples
-## transformation of count data 
-vsdGC.fil <- vst(ddsHTSeqGC.fil,blind=FALSE)
-rldGC.fil <- rlog(ddsHTSeqGC.fil,blind=FALSE)
-head(assay(vsdGC.fil),3)
-plotPCA(vsdGC.fil, intgroup=c("condition"))
-pcaDataGC.fil <- plotPCA(vsdGC.fil,intgroup=c("condition"),returnData=TRUE)
-percentVar <- round(100 * attr(pcaDataGC.fil,"percentVar"))
-library(ggplot2)
-ggplot(pcaDataGC.fil,aes(PC1,PC2,shape=condition)) +
-  geom_point(size=3) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  scale_fill_hue(l=80) +
-  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
-  coord_fixed()
 
-  ### pca by sequencing run
-  colData(ddsHTSeqGC)
-plotPCA(vsdGC.fil, intgroup=c("run"))
-pcaDataGC.fil <- plotPCA(vsdGC.fil,intgroup=c("run"),returnData=TRUE)
-percentVar <- round(100 * attr(pcaDataGC.fil,"percentVar"))
-library(ggplot2)
-ggplot(pcaDataGC.fil,aes(PC1,PC2,color=run)) +
-  geom_point(size=3) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  scale_fill_hue(l=80) 
-  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
-  # coord_fixed()
   
   ## pca on shorter data
-  vsdGC.short <- vst(ddsHTSeqGC.short,blind=FALSE)
+vsdGC.short <- vst(ddsHTSeqGC.short,blind=FALSE)
 rldGC.short <- rlog(ddsHTSeqGC.short,blind=FALSE)
 head(assay(vsdGC.short),3)
 plotPCA(vsdGC.short, intgroup=c("condition"))
@@ -660,6 +670,7 @@ ggplot(pcaDataGC.short,aes(PC1,PC2,shape=condition)) +
   scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22))
   coord_fixed()
 ############################################################
+  #### MA Old Samples ####
 sampleTableMAold$sampleName <- as.factor(sampleTableMAold$sampleName)
 sampleTableMAold$condition <- as.factor(sampleTableMAold$condition)
 ddsHTSeqMAold <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAold,
@@ -677,135 +688,171 @@ head(assay(vsdMA_old),3)
 plotPCA(vsdMA_old, intgroup=c("condition"))
 pcaDataMA_old <- plotPCA(vsdMA_old,intgroup=c("condition"),returnData=TRUE)
 percentVarMAold <- round(100 * attr(pcaDataMA_old,"percentVar"))
-library(ggplot2)
+# library(ggplot2)
+pdf("MA_old_PCA_Line.pdf")
 ggplot(pcaDataMA_old,aes(PC1,PC2,shape=condition)) +
   geom_point(size=3) +
   xlab(paste0("PC1: ",percentVarMAold[1],"% variance")) +
   ylab(paste0("PC2: ",percentVarMAold[2],"% variance")) +
   scale_fill_hue(l=80) +
   scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15,16,17,6,22,9,12,10))
-  coord_fixed()
+#  coord_fixed()
+  dev.off()
+  
+  
+subsetMAoldS4 <- which(ddsHTSeqMAold$condition=="SC004")
+subsetMAoldAnc <- which(ddsHTSeqMAold$condition=="SCA")
+subsetMAoldS4 <- c(subsetMAoldS4,subsetMAoldAnc)
+ddsHTSeqMAoldS4 <- ddsHTSeqMAold[,subsetMAoldS4]
+ddsHTSeqMAoldS4$condition
+ddsHTSeqMAoldS4$condition <- droplevels(ddsHTSeqMAoldS4$condition)
+ddsHTSeqMAoldS4$condition  
+
+
+subsetMAoldS108 <- which(ddsHTSeqMAold$condition=="SC108")
+subsetMAoldS108 <- c(subsetMAoldS108,subsetMAoldAnc)
+ddsHTSeqMAoldS108 <- ddsHTSeqMAold[,subsetMAoldS108]
+ddsHTSeqMAoldS108$condition
+ddsHTSeqMAoldS108$condition <- droplevels(ddsHTSeqMAoldS108$condition)
+ddsHTSeqMAoldS108$condition  
+
+subsetMAoldS1 <- which(ddsHTSeqMAold$condition=="SC001")
+subsetMAoldS2 <- which(ddsHTSeqMAold$condition=="SC002")
+subsetMAoldS3 <- which(ddsHTSeqMAold$condition=="SC003")
+subsetMAoldS5 <- which(ddsHTSeqMAold$condition=="SC005")
+subsetMAoldS6 <- which(ddsHTSeqMAold$condition=="SC006")
+subsetMAoldS7 <- which(ddsHTSeqMAold$condition=="SC007")
+subsetMAoldS8 <- which(ddsHTSeqMAold$condition=="SC008")
+subsetMAoldS9 <- which(ddsHTSeqMAold$condition=="SC009")
+subsetMAoldS11 <- which(ddsHTSeqMAold$condition=="SC011")
+subsetMAoldS15 <- which(ddsHTSeqMAold$condition=="SC015")
+subsetMAoldS28 <- which(ddsHTSeqMAold$condition=="SC028")
+subsetMAoldS88 <- which(ddsHTSeqMAold.short$condition=="SC088")
+subsetMAoldS119 <- which(ddsHTSeqMAold$condition=="SC119")
+
+subsetMAoldAll <- c(subsetMAoldS1,subsetMAoldS2,subsetMAoldS3,subsetMAoldS5,subsetMAoldS6,subsetMAoldS7,subsetMAoldS8,subsetMAoldS9,subsetMAoldS11,subsetMAoldS11,subsetMAoldS15,subsetMAoldS28,subsetMAoldS88,subsetMAoldS119,subsetMAoldAnc)
+ddsHTSeqMAold.short <- ddsHTSeqMAold[,subsetMAoldAll]
   
 #### MA old samples individually
-sampleTableMAoldS1$sampleName <- as.factor(sampleTableMAoldS1$sampleName)
-sampleTableMAoldS1$condition <- as.factor(sampleTableMAoldS1$condition)
-ddsHTSeqMAoldS1 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS1,
-                                       directory = directoryMAoldS1,
-                                       design= ~ condition)
+# sampleTableMAoldS1$sampleName <- as.factor(sampleTableMAoldS1$sampleName)
+# sampleTableMAoldS1$condition <- as.factor(sampleTableMAoldS1$condition)
+# ddsHTSeqMAoldS1 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS1,
+#                                        directory = directoryMAoldS1,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS1
+# 
+# sampleTableMAoldS2$sampleName <- as.factor(sampleTableMAoldS2$sampleName)
+# sampleTableMAoldS2$condition <- as.factor(sampleTableMAoldS2$condition)
+# ddsHTSeqMAoldS2 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS2,
+#                                        directory = directoryMAoldS2,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS2
+# 
+# sampleTableMAoldS3$sampleName <- as.factor(sampleTableMAoldS3$sampleName)
+# sampleTableMAoldS3$condition <- as.factor(sampleTableMAoldS3$condition)
+# ddsHTSeqMAoldS3 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS3,
+#                                        directory = directoryMAoldS3,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS3
+# 
+# sampleTableMAoldS4$sampleName <- as.factor(sampleTableMAoldS4$sampleName)
+# sampleTableMAoldS4$condition <- as.factor(sampleTableMAoldS4$condition)
+# ddsHTSeqMAoldS4 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS4,
+#                                        directory = directoryMAoldS4,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS4
 
-ddsHTSeqMAoldS1
+# sampleTableMAoldS5$sampleName <- as.factor(sampleTableMAoldS5$sampleName)
+# sampleTableMAoldS5$condition <- as.factor(sampleTableMAoldS5$condition)
+# ddsHTSeqMAoldS5 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS5,
+#                                        directory = directoryMAoldS5,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS5
+# 
+# sampleTableMAoldS6$sampleName <- as.factor(sampleTableMAoldS6$sampleName)
+# sampleTableMAoldS6$condition <- as.factor(sampleTableMAoldS6$condition)
+# ddsHTSeqMAoldS6 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS6,
+#                                        directory = directoryMAoldS6,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS6
 
-sampleTableMAoldS2$sampleName <- as.factor(sampleTableMAoldS2$sampleName)
-sampleTableMAoldS2$condition <- as.factor(sampleTableMAoldS2$condition)
-ddsHTSeqMAoldS2 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS2,
-                                       directory = directoryMAoldS2,
-                                       design= ~ condition)
+# sampleTableMAoldS7$sampleName <- as.factor(sampleTableMAoldS7$sampleName)
+# sampleTableMAoldS7$condition <- as.factor(sampleTableMAoldS7$condition)
+# ddsHTSeqMAoldS7 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS7,
+#                                        directory = directoryMAoldS7,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS7
+# 
+# sampleTableMAoldS8$sampleName <- as.factor(sampleTableMAoldS8$sampleName)
+# sampleTableMAoldS8$condition <- as.factor(sampleTableMAoldS8$condition)
+# ddsHTSeqMAoldS8 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS8,
+#                                        directory = directoryMAoldS8,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS8
+# 
+# sampleTableMAoldS9$sampleName <- as.factor(sampleTableMAoldS9$sampleName)
+# sampleTableMAoldS9$condition <- as.factor(sampleTableMAoldS9$condition)
+# ddsHTSeqMAoldS9 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS9,
+#                                        directory = directoryMAoldS9,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS9
 
-ddsHTSeqMAoldS2
+# sampleTableMAoldS11$sampleName <- as.factor(sampleTableMAoldS11$sampleName)
+# sampleTableMAoldS11$condition <- as.factor(sampleTableMAoldS11$condition)
+# ddsHTSeqMAoldS11 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS11,
+#                                        directory = directoryMAoldS11,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS11
+# 
+# sampleTableMAoldS15$sampleName <- as.factor(sampleTableMAoldS15$sampleName)
+# sampleTableMAoldS15$condition <- as.factor(sampleTableMAoldS15$condition)
+# ddsHTSeqMAoldS15 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS15,
+#                                        directory = directoryMAoldS15,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS15
+# 
+# sampleTableMAoldS28$sampleName <- as.factor(sampleTableMAoldS28$sampleName)
+# sampleTableMAoldS28$condition <- as.factor(sampleTableMAoldS28$condition)
+# ddsHTSeqMAoldS28 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS28,
+#                                        directory = directoryMAoldS28,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS28
 
-sampleTableMAoldS3$sampleName <- as.factor(sampleTableMAoldS3$sampleName)
-sampleTableMAoldS3$condition <- as.factor(sampleTableMAoldS3$condition)
-ddsHTSeqMAoldS3 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS3,
-                                       directory = directoryMAoldS3,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS3
-
-sampleTableMAoldS4$sampleName <- as.factor(sampleTableMAoldS4$sampleName)
-sampleTableMAoldS4$condition <- as.factor(sampleTableMAoldS4$condition)
-ddsHTSeqMAoldS4 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS4,
-                                       directory = directoryMAoldS4,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS4
-
-sampleTableMAoldS5$sampleName <- as.factor(sampleTableMAoldS5$sampleName)
-sampleTableMAoldS5$condition <- as.factor(sampleTableMAoldS5$condition)
-ddsHTSeqMAoldS5 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS5,
-                                       directory = directoryMAoldS5,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS5
-
-sampleTableMAoldS6$sampleName <- as.factor(sampleTableMAoldS6$sampleName)
-sampleTableMAoldS6$condition <- as.factor(sampleTableMAoldS6$condition)
-ddsHTSeqMAoldS6 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS6,
-                                       directory = directoryMAoldS6,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS6
-
-sampleTableMAoldS7$sampleName <- as.factor(sampleTableMAoldS7$sampleName)
-sampleTableMAoldS7$condition <- as.factor(sampleTableMAoldS7$condition)
-ddsHTSeqMAoldS7 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS7,
-                                       directory = directoryMAoldS7,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS7
-
-sampleTableMAoldS8$sampleName <- as.factor(sampleTableMAoldS8$sampleName)
-sampleTableMAoldS8$condition <- as.factor(sampleTableMAoldS8$condition)
-ddsHTSeqMAoldS8 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS8,
-                                       directory = directoryMAoldS8,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS8
-
-sampleTableMAoldS9$sampleName <- as.factor(sampleTableMAoldS9$sampleName)
-sampleTableMAoldS9$condition <- as.factor(sampleTableMAoldS9$condition)
-ddsHTSeqMAoldS9 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS9,
-                                       directory = directoryMAoldS9,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS9
-
-sampleTableMAoldS11$sampleName <- as.factor(sampleTableMAoldS11$sampleName)
-sampleTableMAoldS11$condition <- as.factor(sampleTableMAoldS11$condition)
-ddsHTSeqMAoldS11 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS11,
-                                       directory = directoryMAoldS11,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS11
-
-sampleTableMAoldS15$sampleName <- as.factor(sampleTableMAoldS15$sampleName)
-sampleTableMAoldS15$condition <- as.factor(sampleTableMAoldS15$condition)
-ddsHTSeqMAoldS15 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS15,
-                                       directory = directoryMAoldS15,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS15
-
-sampleTableMAoldS28$sampleName <- as.factor(sampleTableMAoldS28$sampleName)
-sampleTableMAoldS28$condition <- as.factor(sampleTableMAoldS28$condition)
-ddsHTSeqMAoldS28 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS28,
-                                       directory = directoryMAoldS28,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS28
-
-sampleTableMAoldS88$sampleName <- as.factor(sampleTableMAoldS88$sampleName)
-sampleTableMAoldS88$condition <- as.factor(sampleTableMAoldS88$condition)
-ddsHTSeqMAoldS88 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS88,
-                                       directory = directoryMAoldS88,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS88
-
-sampleTableMAoldS108$sampleName <- as.factor(sampleTableMAoldS108$sampleName)
-sampleTableMAoldS108$condition <- as.factor(sampleTableMAoldS108$condition)
-ddsHTSeqMAoldS108 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS108,
-                                       directory = directoryMAoldS108,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS108
-
-sampleTableMAoldS119$sampleName <- as.factor(sampleTableMAoldS119$sampleName)
-sampleTableMAoldS119$condition <- as.factor(sampleTableMAoldS119$condition)
-ddsHTSeqMAoldS119 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS119,
-                                       directory = directoryMAoldS119,
-                                       design= ~ condition)
-
-ddsHTSeqMAoldS119
+# sampleTableMAoldS88$sampleName <- as.factor(sampleTableMAoldS88$sampleName)
+# sampleTableMAoldS88$condition <- as.factor(sampleTableMAoldS88$condition)
+# ddsHTSeqMAoldS88 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS88,
+#                                        directory = directoryMAoldS88,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS88
+# 
+# sampleTableMAoldS108$sampleName <- as.factor(sampleTableMAoldS108$sampleName)
+# sampleTableMAoldS108$condition <- as.factor(sampleTableMAoldS108$condition)
+# ddsHTSeqMAoldS108 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS108,
+#                                        directory = directoryMAoldS108,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS108
+# 
+# sampleTableMAoldS119$sampleName <- as.factor(sampleTableMAoldS119$sampleName)
+# sampleTableMAoldS119$condition <- as.factor(sampleTableMAoldS119$condition)
+# ddsHTSeqMAoldS119 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAoldS119,
+#                                        directory = directoryMAoldS119,
+#                                        design= ~ condition)
+# 
+# ddsHTSeqMAoldS119
 
 ############################################################
 sampleTableMAnew$sampleName <- as.factor(sampleTableMAnew$sampleName)
@@ -827,80 +874,109 @@ head(assay(vsdMAnew),3)
 DESeq2::plotPCA(vsdMAnew, intgroup=c("condition"))
 pcaDataMAnew <- DESeq2::plotPCA(vsdMAnew,intgroup=c("condition"),returnData=TRUE)
 percentVarMAnew <- round(100 * attr(pcaDataMAnew,"percentVar"))
-library(ggplot2)
+# library(ggplot2)
+pdf("MA_new_PCA_Line.pdf")
 ggplot(pcaDataMAnew,aes(PC1,PC2,shape=condition)) +
   geom_point(size=3) +
   xlab(paste0("PC1: ",percentVarMAnew[1],"% variance")) +
   ylab(paste0("PC2: ",percentVarMAnew[2],"% variance")) +
   scale_fill_hue(l=80) +
   scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15))
+dev.off()
 
 # by sequencing run
 colData(ddsHTSeqMAnew)
 DESeq2::plotPCA(vsdMAnew, intgroup=c("run"))
 pcaDataMAnew <- DESeq2::plotPCA(vsdMAnew,intgroup=c("run"),returnData=TRUE)
 percentVarMAnew <- round(100 * attr(pcaDataMAnew,"percentVar"))
-library(ggplot2)
+# library(ggplot2)
+pdf("MA_new_PCA_SeqRun.pdf")
 ggplot(pcaDataMAnew,aes(PC1,PC2,color=run)) +
   geom_point(size=3) +
   xlab(paste0("PC1: ",percentVarMAnew[1],"% variance")) +
   ylab(paste0("PC2: ",percentVarMAnew[2],"% variance")) +
   scale_fill_hue(l=80) 
+dev.off()
+  # scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15))
+  
+subsetMAnewS29 <- which(ddsHTSeqMAnew$condition=="29")
+subsetMAnewAnc <- which(ddsHTSeqMAnew$condition=="Anc")
+subsetMAnewS29 <- c(subsetMAnewS29,subsetMAnewAnc)
+ddsHTSeqMAnewS29 <- ddsHTSeqMAnew[,subsetMAnewS29]
+ddsHTSeqMAnewS29$condition
+ddsHTSeqMAnewS29$condition <- droplevels(ddsHTSeqMAnewS29$condition)
+ddsHTSeqMAnewS29$condition  
+  
+subsetMAnewS141 <- which(ddsHTSeqMAnew$condition=="141")
+subsetMAnewS141 <- c(subsetMAnewS141,subsetMAnewAnc)
+ddsHTSeqMAnewS141 <- ddsHTSeqMAnew[,subsetMAnewS141]
+ddsHTSeqMAnewS141$condition
+ddsHTSeqMAnewS141$condition <- droplevels(ddsHTSeqMAnewS141$condition)
+ddsHTSeqMAnewS141$condition  
 
-  scale_shape_manual(values=c(0,1,2,3,4,7,8,11,15))
 
+subsetMAnewS50 <- which(ddsHTSeqMAnew$condition=="50")
+subsetMAnewS112 <- which(ddsHTSeqMAnew$condition=="112")
+subsetMAnewS115 <- which(ddsHTSeqMAnew$condition=="115")
+subsetMAnewS117 <- which(ddsHTSeqMAnew$condition=="117")
+subsetMAnewS123 <- which(ddsHTSeqMAnew$condition=="123")
+subsetMAnewS152 <- which(ddsHTSeqMAnew$condition=="152")
+
+subsetMAnewAll <- c(subsetMAnewS50,subsetMAnewS112,subsetMAnewS115, subsetMAnewS117,subsetMAnewS123,subsetMAnewS152,subsetMAnewAnc)
+
+ddsHTSeqMAnew.short <- ddsHTSeqMAnew[,subsetMAnewAll]
 #find the loadings for PCA
 # pcaTest <- prcomp(pcaDataMAnew)
 # DESeq2:::plotPCA.DESeqTransform
 
 #### subset the DESeq dataset into individual samples
-sampleTableMAnewS29$sampleName <- as.factor(sampleTableMAnewS29$sampleName)
-sampleTableMAnewS29$condition <- as.factor(sampleTableMAnewS29$condition)
-ddsHTSeqMAnewS29 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS29,
-                                       directory = directoryMANewS29,
-                                       design= ~ condition)
+# sampleTableMAnewS29$sampleName <- as.factor(sampleTableMAnewS29$sampleName)
+# sampleTableMAnewS29$condition <- as.factor(sampleTableMAnewS29$condition)
+# ddsHTSeqMAnewS29 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS29,
+#                                        directory = directoryMANewS29,
+#                                        design= ~ condition)
+# 
+# sampleTableMAnewS50$sampleName <- as.factor(sampleTableMAnewS50$sampleName)
+# sampleTableMAnewS50$condition <- as.factor(sampleTableMAnewS50$condition)
+# ddsHTSeqMAnewS50 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS50,
+#                                        directory = directoryMAnewS50,
+#                                        design= ~ condition)
+# 
+# sampleTableMAnewS112$sampleName <- as.factor(sampleTableMAnewS112$sampleName)
+# sampleTableMAnewS112$condition <- as.factor(sampleTableMAnewS112$condition)
+# ddsHTSeqMAnewS112 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS112,
+#                                        directory = directoryMAnewS112,
+#                                        design= ~ condition)
 
-sampleTableMAnewS50$sampleName <- as.factor(sampleTableMAnewS50$sampleName)
-sampleTableMAnewS50$condition <- as.factor(sampleTableMAnewS50$condition)
-ddsHTSeqMAnewS50 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS50,
-                                       directory = directoryMAnewS50,
-                                       design= ~ condition)
+# sampleTableMAnewS115$sampleName <- as.factor(sampleTableMAnewS115$sampleName)
+# sampleTableMAnewS115$condition <- as.factor(sampleTableMAnewS115$condition)
+# ddsHTSeqMAnewS115 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS115,
+#                                        directory = directoryMAnewS115,
+#                                        design= ~ condition)
+# 
+# sampleTableMAnewS117$sampleName <- as.factor(sampleTableMAnewS117$sampleName)
+# sampleTableMAnewS117$condition <- as.factor(sampleTableMAnewS117$condition)
+# ddsHTSeqMAnewS117 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS117,
+#                                        directory = directoryMAnewS117,
+#                                        design= ~ condition)
+# 
+# sampleTableMAnewS123$sampleName <- as.factor(sampleTableMAnewS123$sampleName)
+# sampleTableMAnewS123$condition <- as.factor(sampleTableMAnewS123$condition)
+# ddsHTSeqMAnewS123 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS123,
+#                                        directory = directoryMAnewS123,
+#                                        design= ~ condition)
 
-sampleTableMAnewS112$sampleName <- as.factor(sampleTableMAnewS112$sampleName)
-sampleTableMAnewS112$condition <- as.factor(sampleTableMAnewS112$condition)
-ddsHTSeqMAnewS112 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS112,
-                                       directory = directoryMAnewS112,
-                                       design= ~ condition)
-
-sampleTableMAnewS115$sampleName <- as.factor(sampleTableMAnewS115$sampleName)
-sampleTableMAnewS115$condition <- as.factor(sampleTableMAnewS115$condition)
-ddsHTSeqMAnewS115 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS115,
-                                       directory = directoryMAnewS115,
-                                       design= ~ condition)
-
-sampleTableMAnewS117$sampleName <- as.factor(sampleTableMAnewS117$sampleName)
-sampleTableMAnewS117$condition <- as.factor(sampleTableMAnewS117$condition)
-ddsHTSeqMAnewS117 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS117,
-                                       directory = directoryMAnewS117,
-                                       design= ~ condition)
-
-sampleTableMAnewS123$sampleName <- as.factor(sampleTableMAnewS123$sampleName)
-sampleTableMAnewS123$condition <- as.factor(sampleTableMAnewS123$condition)
-ddsHTSeqMAnewS123 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS123,
-                                       directory = directoryMAnewS123,
-                                       design= ~ condition)
-
-sampleTableMAnewS141$sampleName <- as.factor(sampleTableMAnewS141$sampleName)
-sampleTableMAnewS141$condition <- as.factor(sampleTableMAnewS141$condition)
-ddsHTSeqMAnewS141 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS141,
-                                       directory = directoryMAnewS141,
-                                       design= ~ condition)
-
-sampleTableMAnewS152$sampleName <- as.factor(sampleTableMAnewS152$sampleName)
-sampleTableMAnewS152$condition <- as.factor(sampleTableMAnewS152$condition)
-ddsHTSeqMAnewS152 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS152,
-                                       directory = directoryMAnewS152,
-                                       design= ~ condition)
+# sampleTableMAnewS141$sampleName <- as.factor(sampleTableMAnewS141$sampleName)
+# sampleTableMAnewS141$condition <- as.factor(sampleTableMAnewS141$condition)
+# ddsHTSeqMAnewS141 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS141,
+#                                        directory = directoryMAnewS141,
+#                                        design= ~ condition)
+# 
+# sampleTableMAnewS152$sampleName <- as.factor(sampleTableMAnewS152$sampleName)
+# sampleTableMAnewS152$condition <- as.factor(sampleTableMAnewS152$condition)
+# ddsHTSeqMAnewS152 <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTableMAnewS152,
+#                                        directory = directoryMAnewS152,
+#                                        design= ~ condition)
 
 ```
 ### Note on factor levels 
@@ -918,29 +994,34 @@ during or afterward.
 
 ```{r relevel}
 ddsHTSeqGC$condition <- relevel(ddsHTSeqGC$condition, ref = "Holly_Anc")
+ddsHTSeqGC.short$condition <- relevel(ddsHTSeqGC.short$condition,ref="Holly_Anc")
+
 #filtered genes
-ddsHTSeqGC.fil$condition <- relevel(ddsHTSeqGC.fil$condition, ref = "Holly_Anc")
-## individual samples
-ddsHTSeqGCS1.fil$condition <- relevel(ddsHTSeqGCS1.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS2.fil$condition <- relevel(ddsHTSeqGCS2.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS3.fil$condition <- relevel(ddsHTSeqGCS3.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS4.fil$condition <- relevel(ddsHTSeqGCS4.fil$condition, ref = "Holly_Anc")
-# ddsHTSeqGCS5.fil$condition <- relevel(ddsHTSeqGCS5.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS7.fil$condition <- relevel(ddsHTSeqGCS7.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS8.fil$condition <- relevel(ddsHTSeqGCS8.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS9.fil$condition <- relevel(ddsHTSeqGCS9.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS11.fil$condition <- relevel(ddsHTSeqGCS11.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS18.fil$condition <- relevel(ddsHTSeqGCS18.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS49.fil$condition <- relevel(ddsHTSeqGCS49.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS59.fil$condition <- relevel(ddsHTSeqGCS59.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS61.fil$condition <- relevel(ddsHTSeqGCS61.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS76.fil$condition <- relevel(ddsHTSeqGCS76.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGCS77.fil$condition <- relevel(ddsHTSeqGCS77.fil$condition, ref = "Holly_Anc")
-ddsHTSeqGC.short$condition <- relevel(ddsHTSeqGC.short$condition, ref="Holly_Anc")
+# ddsHTSeqGC.fil$condition <- relevel(ddsHTSeqGC.fil$condition, ref = "Holly_Anc")
+# ## individual samples
+# ddsHTSeqGCS1.fil$condition <- relevel(ddsHTSeqGCS1.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS2.fil$condition <- relevel(ddsHTSeqGCS2.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS3.fil$condition <- relevel(ddsHTSeqGCS3.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS4.fil$condition <- relevel(ddsHTSeqGCS4.fil$condition, ref = "Holly_Anc")
+# # ddsHTSeqGCS5.fil$condition <- relevel(ddsHTSeqGCS5.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS7.fil$condition <- relevel(ddsHTSeqGCS7.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS8.fil$condition <- relevel(ddsHTSeqGCS8.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS9.fil$condition <- relevel(ddsHTSeqGCS9.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS11.fil$condition <- relevel(ddsHTSeqGCS11.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS18.fil$condition <- relevel(ddsHTSeqGCS18.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS49.fil$condition <- relevel(ddsHTSeqGCS49.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS59.fil$condition <- relevel(ddsHTSeqGCS59.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS61.fil$condition <- relevel(ddsHTSeqGCS61.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS76.fil$condition <- relevel(ddsHTSeqGCS76.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGCS77.fil$condition <- relevel(ddsHTSeqGCS77.fil$condition, ref = "Holly_Anc")
+# ddsHTSeqGC.short$condition <- relevel(ddsHTSeqGC.short$condition, ref="Holly_Anc")
 ###############################################################################
 ddsHTSeqMAold$condition <- relevel(ddsHTSeqMAold$condition, ref = "SCA")
+ddsHTSeqMAold.short$condition <- relevel(ddsHTSeqMAold.short$condition, ref = "SCA")
+
 ###############################################################################
 ddsHTSeqMAnew$condition <- relevel(ddsHTSeqMAnew$condition, ref = "Anc")
+ddsHTSeqMAnew.short$condition <- relevel(ddsHTSeqMAnew.short$condition, ref = "Anc")
 
 ``` 
 
@@ -958,103 +1039,103 @@ perform a minimal pre-filtering to keep only rows that have at least
 mean of normalized counts within the *results* function.
 
 ```{r prefilter}
-keepGC <- rowSums(counts(ddsHTSeqGC)) >= 20
-ddsHTSeqGC <- ddsHTSeqGC[keepGC,]
-ddsHTSeqGC
-counts(ddsHTSeqGC)
-dim(counts(ddsHTSeqGC))
+keepGC <- rowSums(counts(ddsHTSeqGC.short)) >= 20
+ddsHTSeqGC.short <- ddsHTSeqGC.short[keepGC,]
+ddsHTSeqGC.short
+counts(ddsHTSeqGC.short)
+dim(counts(ddsHTSeqGC.short))
 
 #make a separate data frame with just the ancestor replicates
-ancGC <-  counts(ddsHTSeqGC)[,46:48]
+ancGC <-  counts(ddsHTSeqGC.short)[,34:36]
 #subset it based on cpm > 1 in all 3 replicates
 table(rowSums(ancGC>10)==3)
 keepGC <- rowSums(ancGC>10)==3
 # try it in the full count set 
 # make a test file first 
-ddsHTSeqGCtest <- ddsHTSeqGC
+ddsHTSeqGCtest <- ddsHTSeqGC.short
 ddsHTSeqGCtest <- ddsHTSeqGCtest[keepGC,]
 ddsHTSeqGCtest
 counts(ddsHTSeqGCtest)
 dim(counts(ddsHTSeqGCtest))
 View(counts(ddsHTSeqGCtest))
 # test file was fine so go ahead and make it the real thing
-ddsHTSeqGC <- ddsHTSeqGCtest
-## get rid of any NAs
-ddsHTSeqGC <- na.omit(ddsHTSeqGC)
-dim(ddsHTSeqGC)
-
-## with filtered genes
-# shouldn't get rid of any more data, or at least not much 
-keepGC.fil <- rowSums(counts(ddsHTSeqGC.fil)) >= 20
-ddsHTSeqGC.fil <- ddsHTSeqGC.fil[keepGC.fil,]
-ddsHTSeqGC.fil
-counts(ddsHTSeqGC.fil)
-dim(counts(ddsHTSeqGC.fil))
-
-#make a separate data frame with just the ancestor replicates
-ancGC.fil <-  counts(ddsHTSeqGC.fil)[,46:48]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancGC.fil>10)==3)
-keepGC.fil <- rowSums(ancGC.fil>10)==3
-# try it in the full count set 
-# make a test file first 
-ddsHTSeqGCtest.fil <- ddsHTSeqGC.fil
-ddsHTSeqGCtest.fil <- ddsHTSeqGCtest.fil[keepGC.fil,]
-ddsHTSeqGCtest.fil
-counts(ddsHTSeqGCtest.fil)
-dim(counts(ddsHTSeqGCtest.fil))
-View(counts(ddsHTSeqGCtest.fil))
-# test file was fine so go ahead and make it the real thing
-ddsHTSeqGC.fil <- ddsHTSeqGCtest.fil
-## get rid of any NAs
-ddsHTSeqGC.fil <- na.omit(ddsHTSeqGC.fil)
-dim(ddsHTSeqGC.fil)
-
-#make a separate data frame with just the ancestor replicates
-colnames(ddsHTSeqGC.short)
-ancGC.short <-  counts(ddsHTSeqGC.short)[,34:36]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancGC.short>10)==3)
-keepGC.short <- rowSums(ancGC.short>10)==3
-# try it in the full count set 
-# make a test file first 
-ddsHTSeqGCtest.short <- ddsHTSeqGC.short
-ddsHTSeqGCtest.short <- ddsHTSeqGCtest.short[keepGC.short,]
-ddsHTSeqGCtest.short
-counts(ddsHTSeqGCtest.short)
-dim(counts(ddsHTSeqGCtest.short))
-View(counts(ddsHTSeqGCtest.short))
-# test file was fine so go ahead and make it the real thing
-ddsHTSeqGC.short <- ddsHTSeqGCtest.short
+ddsHTSeqGC.short <- ddsHTSeqGCtest
 ## get rid of any NAs
 ddsHTSeqGC.short <- na.omit(ddsHTSeqGC.short)
 dim(ddsHTSeqGC.short)
 
-###############################################################################
-keepMAold <- rowSums(counts(ddsHTSeqMAold)) >= 20
-ddsHTSeqMAold <- ddsHTSeqMAold[keepMAold,]
-ddsHTSeqMAold
-counts(ddsHTSeqMAold)
-dim(counts(ddsHTSeqMAold))
+## with filtered genes
+# shouldn't get rid of any more data, or at least not much 
+# keepGC.fil <- rowSums(counts(ddsHTSeqGC.fil)) >= 20
+# ddsHTSeqGC.fil <- ddsHTSeqGC.fil[keepGC.fil,]
+# ddsHTSeqGC.fil
+# counts(ddsHTSeqGC.fil)
+# dim(counts(ddsHTSeqGC.fil))
+# 
+# #make a separate data frame with just the ancestor replicates
+# ancGC.fil <-  counts(ddsHTSeqGC.fil)[,46:48]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancGC.fil>10)==3)
+# keepGC.fil <- rowSums(ancGC.fil>10)==3
+# # try it in the full count set 
+# # make a test file first 
+# ddsHTSeqGCtest.fil <- ddsHTSeqGC.fil
+# ddsHTSeqGCtest.fil <- ddsHTSeqGCtest.fil[keepGC.fil,]
+# ddsHTSeqGCtest.fil
+# counts(ddsHTSeqGCtest.fil)
+# dim(counts(ddsHTSeqGCtest.fil))
+# View(counts(ddsHTSeqGCtest.fil))
+# # test file was fine so go ahead and make it the real thing
+# ddsHTSeqGC.fil <- ddsHTSeqGCtest.fil
+# ## get rid of any NAs
+# ddsHTSeqGC.fil <- na.omit(ddsHTSeqGC.fil)
+# dim(ddsHTSeqGC.fil)
 
 #make a separate data frame with just the ancestor replicates
-ancMAold <-  counts(ddsHTSeqMAold)[,46:48]
+# colnames(ddsHTSeqGC.short)
+# ancGC.short <-  counts(ddsHTSeqGC.short)[,34:36]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancGC.short>10)==3)
+# keepGC.short <- rowSums(ancGC.short>10)==3
+# # try it in the full count set 
+# # make a test file first 
+# ddsHTSeqGCtest.short <- ddsHTSeqGC.short
+# ddsHTSeqGCtest.short <- ddsHTSeqGCtest.short[keepGC.short,]
+# ddsHTSeqGCtest.short
+# counts(ddsHTSeqGCtest.short)
+# dim(counts(ddsHTSeqGCtest.short))
+# View(counts(ddsHTSeqGCtest.short))
+# # test file was fine so go ahead and make it the real thing
+# ddsHTSeqGC.short <- ddsHTSeqGCtest.short
+# ## get rid of any NAs
+# ddsHTSeqGC.short <- na.omit(ddsHTSeqGC.short)
+# dim(ddsHTSeqGC.short)
+
+###############################################################################
+keepMAold <- rowSums(counts(ddsHTSeqMAold.short)) >= 20
+ddsHTSeqMAold.short <- ddsHTSeqMAold.short[keepMAold,]
+ddsHTSeqMAold.short
+counts(ddsHTSeqMAold.short)
+dim(counts(ddsHTSeqMAold.short))
+
+#make a separate data frame with just the ancestor replicates
+ancMAold <-  counts(ddsHTSeqMAold.short)[,40:42]
 #subset it based on cpm > 1 in all 3 replicates
 table(rowSums(ancMAold>10)==3)
 keepMAold <- rowSums(ancMAold>10)==3
 # try it in the full count set 
 # make a test file first 
-ddsHTSeqMAoldtest <- ddsHTSeqMAold
+ddsHTSeqMAoldtest <- ddsHTSeqMAold.short
 ddsHTSeqMAoldtest <- ddsHTSeqMAoldtest[keepMAold,]
 ddsHTSeqMAoldtest
 counts(ddsHTSeqMAoldtest)
 dim(counts(ddsHTSeqMAoldtest))
 View(counts(ddsHTSeqMAoldtest))
 # test file was fine so go ahead and make it the real thing
-ddsHTSeqMAold <- ddsHTSeqMAoldtest
+ddsHTSeqMAold.short <- ddsHTSeqMAoldtest
 ## get rid of any NAs
-ddsHTSeqMAold <- na.omit(ddsHTSeqMAold)
-dim(ddsHTSeqMAold)
+ddsHTSeqMAold.short <- na.omit(ddsHTSeqMAold.short)
+dim(ddsHTSeqMAold.short)
 
 #### individual lines
 #####################################################
@@ -1083,44 +1164,44 @@ ddsHTSeqMAold <- ddsHTSeqMAoldtest
 ddsHTSeqMAold <- na.omit(ddsHTSeqMAold)
 dim(ddsHTSeqMAold)
 
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS1)) >= 20
-ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
-ddsHTSeqMAoldS1
-counts(ddsHTSeqMAoldS1)
-dim(counts(ddsHTSeqMAoldS1))
-# View(ddsHTSeqMAoldS1)
-ancMAold <-  counts(ddsHTSeqMAoldS1)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
-dim(ddsHTSeqMAoldS1)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS2)) >= 20
-ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
-ddsHTSeqMAoldS2
-counts(ddsHTSeqMAoldS2)
-dim(counts(ddsHTSeqMAoldS2))
-# View(ddsHTSeqMAoldS2)
-ancMAold <-  counts(ddsHTSeqMAoldS2)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
-dim(ddsHTSeqMAoldS2)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS3)) >= 20
-ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
-ddsHTSeqMAoldS3
-counts(ddsHTSeqMAoldS3)
-dim(counts(ddsHTSeqMAoldS3))
-View(ddsHTSeqMAoldS3)
-ancMAold <-  counts(ddsHTSeqMAoldS3)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
-dim(ddsHTSeqMAoldS3)
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS1)) >= 20
+# ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
+# ddsHTSeqMAoldS1
+# counts(ddsHTSeqMAoldS1)
+# dim(counts(ddsHTSeqMAoldS1))
+# # View(ddsHTSeqMAoldS1)
+# ancMAold <-  counts(ddsHTSeqMAoldS1)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS1 <- ddsHTSeqMAoldS1[keepMAold,]
+# dim(ddsHTSeqMAoldS1)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS2)) >= 20
+# ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
+# ddsHTSeqMAoldS2
+# counts(ddsHTSeqMAoldS2)
+# dim(counts(ddsHTSeqMAoldS2))
+# # View(ddsHTSeqMAoldS2)
+# ancMAold <-  counts(ddsHTSeqMAoldS2)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS2 <- ddsHTSeqMAoldS2[keepMAold,]
+# dim(ddsHTSeqMAoldS2)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS3)) >= 20
+# ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
+# ddsHTSeqMAoldS3
+# counts(ddsHTSeqMAoldS3)
+# dim(counts(ddsHTSeqMAoldS3))
+# View(ddsHTSeqMAoldS3)
+# ancMAold <-  counts(ddsHTSeqMAoldS3)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS3 <- ddsHTSeqMAoldS3[keepMAold,]
+# dim(ddsHTSeqMAoldS3)
 
 keepMAold <- rowSums(counts(ddsHTSeqMAoldS4)) >= 20
 ddsHTSeqMAoldS4 <- ddsHTSeqMAoldS4[keepMAold,]
@@ -1135,135 +1216,135 @@ keepMAold <- rowSums(ancMAold>10)==3
 ddsHTSeqMAoldS4 <- ddsHTSeqMAoldS4[keepMAold,]
 dim(ddsHTSeqMAoldS4)
 
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS5)) >= 20
-ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
-ddsHTSeqMAoldS5
-counts(ddsHTSeqMAoldS5)
-dim(counts(ddsHTSeqMAoldS5))
-# View(ddsHTSeqMAoldS5)
-ancMAold <-  counts(ddsHTSeqMAoldS5)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
-dim(ddsHTSeqMAoldS5)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS6)) >= 20
-ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
-ddsHTSeqMAoldS6
-counts(ddsHTSeqMAoldS6)
-dim(counts(ddsHTSeqMAoldS6))
-# View(ddsHTSeqMAoldS6)
-ancMAold <-  counts(ddsHTSeqMAoldS6)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
-dim(ddsHTSeqMAoldS6)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS7)) >= 20
-ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
-ddsHTSeqMAoldS7
-counts(ddsHTSeqMAoldS7)
-dim(counts(ddsHTSeqMAoldS7))
-# View(ddsHTSeqMAoldS7)
-ancMAold <-  counts(ddsHTSeqMAoldS7)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
-dim(ddsHTSeqMAoldS7)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS8)) >= 20
-ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
-ddsHTSeqMAoldS8
-counts(ddsHTSeqMAoldS8)
-dim(counts(ddsHTSeqMAoldS8))
-# View(ddsHTSeqMAoldS8)
-ancMAold <-  counts(ddsHTSeqMAoldS8)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
-dim(ddsHTSeqMAoldS8)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS9)) >= 20
-ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
-ddsHTSeqMAoldS9
-counts(ddsHTSeqMAoldS9)
-dim(counts(ddsHTSeqMAoldS9))
-# View(ddsHTSeqMAoldS9)
-ancMAold <-  counts(ddsHTSeqMAoldS9)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
-dim(ddsHTSeqMAoldS9)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS11)) >= 20
-ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
-ddsHTSeqMAoldS11
-counts(ddsHTSeqMAoldS11)
-dim(counts(ddsHTSeqMAoldS11))
-# View(ddsHTSeqMAoldS11)
-ancMAold <-  counts(ddsHTSeqMAoldS11)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
-dim(ddsHTSeqMAoldS11)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS15)) >= 20
-ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
-ddsHTSeqMAoldS15
-counts(ddsHTSeqMAoldS15)
-dim(counts(ddsHTSeqMAoldS15))
-# View(ddsHTSeqMAoldS15)
-ancMAold <-  counts(ddsHTSeqMAoldS15)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
-dim(ddsHTSeqMAoldS15)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS28)) >= 20
-ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
-ddsHTSeqMAoldS28
-counts(ddsHTSeqMAoldS28)
-dim(counts(ddsHTSeqMAoldS28))
-# View(ddsHTSeqMAoldS28)
-ancMAold <-  counts(ddsHTSeqMAoldS28)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
-dim(ddsHTSeqMAoldS28)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS88)) >= 20
-ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
-ddsHTSeqMAoldS88
-counts(ddsHTSeqMAoldS88)
-dim(counts(ddsHTSeqMAoldS88))
-# View(ddsHTSeqMAoldS88)
-ancMAold <-  counts(ddsHTSeqMAoldS88)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
-dim(ddsHTSeqMAoldS88)
-
-keepMAold <- rowSums(counts(ddsHTSeqMAoldS108)) >= 20
-ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
-ddsHTSeqMAoldS108
-counts(ddsHTSeqMAoldS108)
-dim(counts(ddsHTSeqMAoldS108))
-# View(ddsHTSeqMAoldS108)
-ancMAold <-  counts(ddsHTSeqMAoldS108)[,4:6]
-#subset it based on cpm > 1 in all 3 replicates
-table(rowSums(ancMAold>10)==3)
-keepMAold <- rowSums(ancMAold>10)==3
-ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
-dim(ddsHTSeqMAoldS108)
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS5)) >= 20
+# ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
+# ddsHTSeqMAoldS5
+# counts(ddsHTSeqMAoldS5)
+# dim(counts(ddsHTSeqMAoldS5))
+# # View(ddsHTSeqMAoldS5)
+# ancMAold <-  counts(ddsHTSeqMAoldS5)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS5 <- ddsHTSeqMAoldS5[keepMAold,]
+# dim(ddsHTSeqMAoldS5)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS6)) >= 20
+# ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
+# ddsHTSeqMAoldS6
+# counts(ddsHTSeqMAoldS6)
+# dim(counts(ddsHTSeqMAoldS6))
+# # View(ddsHTSeqMAoldS6)
+# ancMAold <-  counts(ddsHTSeqMAoldS6)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS6 <- ddsHTSeqMAoldS6[keepMAold,]
+# dim(ddsHTSeqMAoldS6)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS7)) >= 20
+# ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
+# ddsHTSeqMAoldS7
+# counts(ddsHTSeqMAoldS7)
+# dim(counts(ddsHTSeqMAoldS7))
+# # View(ddsHTSeqMAoldS7)
+# ancMAold <-  counts(ddsHTSeqMAoldS7)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS7 <- ddsHTSeqMAoldS7[keepMAold,]
+# dim(ddsHTSeqMAoldS7)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS8)) >= 20
+# ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
+# ddsHTSeqMAoldS8
+# counts(ddsHTSeqMAoldS8)
+# dim(counts(ddsHTSeqMAoldS8))
+# # View(ddsHTSeqMAoldS8)
+# ancMAold <-  counts(ddsHTSeqMAoldS8)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS8 <- ddsHTSeqMAoldS8[keepMAold,]
+# dim(ddsHTSeqMAoldS8)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS9)) >= 20
+# ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
+# ddsHTSeqMAoldS9
+# counts(ddsHTSeqMAoldS9)
+# dim(counts(ddsHTSeqMAoldS9))
+# # View(ddsHTSeqMAoldS9)
+# ancMAold <-  counts(ddsHTSeqMAoldS9)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS9 <- ddsHTSeqMAoldS9[keepMAold,]
+# dim(ddsHTSeqMAoldS9)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS11)) >= 20
+# ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
+# ddsHTSeqMAoldS11
+# counts(ddsHTSeqMAoldS11)
+# dim(counts(ddsHTSeqMAoldS11))
+# # View(ddsHTSeqMAoldS11)
+# ancMAold <-  counts(ddsHTSeqMAoldS11)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS11 <- ddsHTSeqMAoldS11[keepMAold,]
+# dim(ddsHTSeqMAoldS11)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS15)) >= 20
+# ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
+# ddsHTSeqMAoldS15
+# counts(ddsHTSeqMAoldS15)
+# dim(counts(ddsHTSeqMAoldS15))
+# # View(ddsHTSeqMAoldS15)
+# ancMAold <-  counts(ddsHTSeqMAoldS15)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS15 <- ddsHTSeqMAoldS15[keepMAold,]
+# dim(ddsHTSeqMAoldS15)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS28)) >= 20
+# ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
+# ddsHTSeqMAoldS28
+# counts(ddsHTSeqMAoldS28)
+# dim(counts(ddsHTSeqMAoldS28))
+# # View(ddsHTSeqMAoldS28)
+# ancMAold <-  counts(ddsHTSeqMAoldS28)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS28 <- ddsHTSeqMAoldS28[keepMAold,]
+# dim(ddsHTSeqMAoldS28)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS88)) >= 20
+# ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
+# ddsHTSeqMAoldS88
+# counts(ddsHTSeqMAoldS88)
+# dim(counts(ddsHTSeqMAoldS88))
+# # View(ddsHTSeqMAoldS88)
+# ancMAold <-  counts(ddsHTSeqMAoldS88)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS88 <- ddsHTSeqMAoldS88[keepMAold,]
+# dim(ddsHTSeqMAoldS88)
+# 
+# keepMAold <- rowSums(counts(ddsHTSeqMAoldS108)) >= 20
+# ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
+# ddsHTSeqMAoldS108
+# counts(ddsHTSeqMAoldS108)
+# dim(counts(ddsHTSeqMAoldS108))
+# # View(ddsHTSeqMAoldS108)
+# ancMAold <-  counts(ddsHTSeqMAoldS108)[,4:6]
+# #subset it based on cpm > 1 in all 3 replicates
+# table(rowSums(ancMAold>10)==3)
+# keepMAold <- rowSums(ancMAold>10)==3
+# ddsHTSeqMAoldS108 <- ddsHTSeqMAoldS108[keepMAold,]
+# dim(ddsHTSeqMAoldS108)
 
 keepMAold <- rowSums(counts(ddsHTSeqMAoldS119)) >= 20
 ddsHTSeqMAoldS119 <- ddsHTSeqMAoldS119[keepMAold,]

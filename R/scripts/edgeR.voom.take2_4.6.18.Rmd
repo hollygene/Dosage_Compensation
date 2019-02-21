@@ -199,20 +199,22 @@ x.MAOld$genes$tx_len
 cpmGC <- cpm(x.GC,normalized.lib.sizes = FALSE, prior.count = 0.5)
 lcpmGC <- cpm(x.GC,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
 # rpkmGC <- rpkm(x.GC,x.GC$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
-write.csv(cpmGC,file="cpm.csv")
+write.csv(cpmGC,file="cpmGC.csv")
+write.csv(lcpmGC,file="lcpmGC.csv")
 # write.csv(rpkmGC,file="rpkm.csv")
 
 cpmMANew <- cpm(x.MANew,normalized.lib.sizes = FALSE, prior.count = 0.5)
 lcpmMANew <- cpm(x.MANew,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
 # rpkmMA <- rpkm(x.MA,x.MA$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
 write.csv(cpmMANew,file="cpm_MANew.csv")
+write.csv(lcpmMANew,file="lcpm_MANew.csv")
 # write.csv(rpkmMA,file="rpkm_MAold.csv")
 
 cpmMAOld <- cpm(x.MAOld,normalized.lib.sizes = FALSE, prior.count = 0.5)
 lcpmMAOld <- cpm(x.MAOld,normalized.lib.sizes = FALSE, prior.count = 0.5, log=TRUE)
 # rpkmMA <- rpkm(x.MA,x.MA$genes$tx_len, normalized.lib.sizes = FALSE, prior.count = 0.5)
 write.csv(cpmMAOld,file="cpm_MAOld.csv")
-
+write.csv(lcpmMAOld,file="lcpm.MAOld.csv")
 #cpmGC.test <- cpm(x.GC.test)
 #cpmGC$chrm <- x.GC$genes$TXCHROM
 #cpmMA <- cpm(x.MA)
@@ -242,11 +244,12 @@ cpmGC
 x.GC.str <- x.GC[keepGCTest,keep.lib.sizes=FALSE]
 View(x.GC.str$counts)
 # test file was fine so go ahead and make it the real thing
-x.GC <- x.GC.str
-dim(x.GC)
+# x.GC <- x.GC.str
+# dim(x.GC)
 ## get rid of any NAs
-x.GC <- na.omit(x.GC)
-dim(x.GC)
+x.GC.str <- na.omit(x.GC.str)
+dim(x.GC.str)
+write.csv(x.GC.str$counts,file="countsAncGr1.GC.csv")
 
 dim(cpmMANew)
 View(cpmMANew)
@@ -261,11 +264,12 @@ cpmMANew
 x.MANew.str <- x.MANew[keepMANewTest,keep.lib.sizes=FALSE]
 View(x.MANew.str$counts)
 # test file was fine so go ahead and make it the real thing
-x.MANew <- x.MANew.str
-dim(x.MANew)
+# x.MANew <- x.MANew.str
+# dim(x.MANew)
 ## get rid of any NAs
-x.MANew <- na.omit(x.MANew)
-dim(x.MANew)
+x.MANew.str <- na.omit(x.MANew.str)
+# dim(x.MANew)
+write.csv(x.MANew.str$counts,file="countsAncGr1.MANew.csv")
 
 dim(cpmMAOld)
 View(cpmMAOld)
@@ -280,11 +284,12 @@ cpmMAOld
 x.MAOld.str <- x.MAOld[keepMAOldTest,keep.lib.sizes=FALSE]
 View(x.MAOld.str$counts)
 # test file was fine so go ahead and make it the real thing
-x.MAOld <- x.MAOld.str
-dim(x.MAOld)
+# x.MAOld <- x.MAOld.str
+# dim(x.MAOld)
 ## get rid of any NAs
-x.MAOld <- na.omit(x.MAOld)
-dim(x.MAOld)
+x.MAOld.str <- na.omit(x.MAOld.str)
+# dim(x.MAOld)
+write.csv(x.MAOld.str$counts,file="countsAncGr1.MAOld.csv")
 
 #table(rowSums(x.GC.test$counts<=0)==60)
 #table(rowSums(x.GC.test$counts>=1)==60)
@@ -461,27 +466,28 @@ legend("topright",samplenamesMAOld, text.col=colMAOld,bty="n",cex=0.4,ncol=4)
 ############################################################################################
 #normalization
 #x.normGC.test <- calcNormFactors(x.GC.test, method="TMM")
+# x.normGC <- calcNormFactors(x.GC.str)
 #x.normGC.test$samples
 #x.normGC.test
-x.GC.TMM <- calcNormFactors(x.GC,method="TMM")
-View(x.GC.TMM$samples)
+x.GC.str.TMM <- calcNormFactors(x.GC.str,method="TMM")
+# View(x.GC.TMM$samples)
 
 #x.MA.TMM <- calcNormFactors(x.MA,method="TMM",refColumn = 47,doWeighting = FALSE)
 #View(x.MA.TMM$samples)
 #what if i don't normalize it 
-x.GC.none <- calcNormFactors(x.GC,method="none")
+# x.GC.none <- calcNormFactors(x.GC,method="none")
 #x.GC.RLE <- calcNormFactors(x.GC,method="RLE")
 #x.GC.UQ <- calcNormFactors(x.GC,method="upperquartile")
 #View(x.GC$counts)
 #View(x.GC.test$samples)
 #x.GC.test <- calcNormFactors(x.GC.test,method="TMM")
-x.normMANew <- calcNormFactors(x.MANew, method="TMM")
-x.normMANew$samples
-x.normMANew
+x.norm.str.MANew <- calcNormFactors(x.MANew.str, method="TMM")
+# x.normMANew$samples
+# x.normMANew
 
-x.normMAOld <- calcNormFactors(x.MAOld, method="TMM")
-x.normMAOld$samples
-x.normMAOld
+x.norm.str.MAOld <- calcNormFactors(x.MAOld.str, method="TMM")
+# x.normMAOld$samples
+# x.normMAOld
 #this part is not necessary 
 #visually see the data normalized by screwing with the data artificially to make it look a lot different
 #x3 <- x.norm
@@ -539,65 +545,72 @@ title(main="B. Example: normalized data", ylab="Log-cpm")
 
 ```{r look at variance, include=FALSE}
 #calculating variance for each gene in each sample group
-lcpmGC <- cpm(x.GC,log=TRUE)
-cpmGC <- cpm(x.GC)
+lcpmGC.str <- cpm(x.GC.str,log=TRUE)
+cpmGC.str <- cpm(x.GC.str)
 
-lcpmGC <- data.frame(names=row.names(lcpmGC),lcpmGC)
-cpmGC <- data.frame(names=row.names(cpmGC),cpmGC)
+lcpmGC.str <- data.frame(names=row.names(lcpmGC.str),lcpmGC.str)
+cpmGC.str <- data.frame(names=row.names(cpmGC.str),cpmGC.str)
 
-lcpmMANew <- cpm(x.MANew,log=TRUE)
-cpmMANew <- cpm(x.MANew)
-colnames(lcpmMANew) <- samplenames.MANew
-colnames(cpmMANew) <- samplenames.MANew
-View(lcpmMANew)
-lcpmMANew <- data.frame(names=row.names(lcpmMANew),lcpmMANew)
-cpmMANew <- data.frame(names=row.names(cpmMANew),cpmMANew)
+lcpmMANew.str <- cpm(x.MANew.str,log=TRUE)
+cpmMANew.str <- cpm(x.MANew.str)
+colnames(lcpmMANew.str) <- samplenames.MANew
+colnames(cpmMANew.str) <- samplenames.MANew
+View(lcpmMANew.str)
+lcpmMANew.str <- data.frame(names=row.names(lcpmMANew.str),lcpmMANew.str)
+cpmMANew.str <- data.frame(names=row.names(cpmMANew.str),cpmMANew.str)
 
-lcpmMAOld <- cpm(x.MAOld,log=TRUE)
-cpmMAOld <- cpm(x.MAOld)
-colnames(lcpmMAOld) <- samplenamesMAOld
-colnames(cpmMAOld) <- samplenamesMAOld
-lcpmMAOld <- data.frame(names=row.names(lcpmMAOld),lcpmMAOld)
-cpmMAOld <- data.frame(names=row.names(cpmMAOld),cpmMAOld)
+lcpmMAOld.str <- cpm(x.MAOld.str,log=TRUE)
+cpmMAOld.str <- cpm(x.MAOld.str)
+colnames(lcpmMAOld.str) <- samplenamesMAOld
+colnames(cpmMAOld.str) <- samplenamesMAOld
+lcpmMAOld.str <- data.frame(names=row.names(lcpmMAOld.str),lcpmMAOld.str)
+cpmMAOld.str <- data.frame(names=row.names(cpmMAOld.str),cpmMAOld.str)
 
-rownames(lcpmGC) <- c()
-rownames(cpmGC) <- c()
-rownames(lcpmMANew) <- c()
-rownames(lcpmMAOld) <- c()
+rownames(lcpmGC.str) <- c()
+rownames(cpmGC.str) <- c()
+rownames(lcpmMANew.str) <- c()
+rownames(lcpmMAOld.str) <- c()
 
 
 remove <- c("__no_feature", "__ambiguous","__alignment_not_unique","__too_low_aQual","__not_aligned")
 genesGC <- genesGC[setdiff(rownames(genesGC),remove),]
-removegenes <- c("YPL241C","YPL163C")
-genesGC <- genesGC[setdiff(rownames(genesGC),removegenes),]
+# removegenes <- c("YPL241C","YPL163C")
+# genesGC <- genesGC[setdiff(rownames(genesGC),removegenes),]
 #genes$x.GC.genes.GENEID <- droplevels(genes$x.GC.genes.GENEID)
 genesMANew <- genesMANew[setdiff(rownames(genesMANew),remove),]
-genesMANew <- genesMANew[setdiff(rownames(genesMANew),removegenes),]
+# genesMANew <- genesMANew[setdiff(rownames(genesMANew),removegenes),]
 
-genesMAOld <- genesMAOld[setdiff(rownames(genesMAOld),removegenes),]
+# genesMAOld <- genesMAOld[setdiff(rownames(genesMAOld),removegenes),]
 genesMAOld <- genesMAOld[setdiff(rownames(genesMAOld),remove),]
 
 
 
 #remove NAs from data
 
-lcpmGC.test <- merge(genesGC,lcpmGC, by.x="GENEID", by.y="names")
-lcpmGC <- lcpmGC.test
-lcpmMANew.test <- merge(genesMANew,lcpmMANew, by.x="GENEID", by.y="names")
-lcpmMANew <- lcpmMANew.test
-lcpmMAOld.test <- merge(genesMAOld,lcpmMAOld, by.x="GENEID", by.y="names")
-lcpmMAOld <- lcpmMAOld.test
+lcpmGC.test <- merge(genesGC,lcpmGC.str, by.x="GENEID", by.y="names")
+# lcpmGC <- lcpmGC.test
+lcpmMANew.test <- merge(genesMANew,lcpmMANew.str, by.x="GENEID", by.y="names")
+# lcpmMANew <- lcpmMANew.test
+lcpmMAOld.test <- merge(genesMAOld,lcpmMAOld.str, by.x="GENEID", by.y="names")
+# lcpmMAOld <- lcpmMAOld.test
 
 
-cpmGC.test <- merge(genesGC,cpmGC, by.x="GENEID", by.y="names")
-cpmGC <- cpmGC.test
-write.csv(cpmGC,file="cpm_normGC.csv")
-cpmMANew.test <- merge(genesMANew,cpmMANew, by.x="GENEID", by.y="names")
-cpmMANew <- cpmMANew.test
-write.csv(cpmMANew,file="cpm_normMANew.csv")
-cpmMAOld.test <- merge(genesMAOld,cpmMAOld, by.x="GENEID", by.y="names")
-cpmMAOld <- cpmMAOld.test
-write.csv(cpmMAOld,file="cpm_normMAOld.csv")
+cpmGC.test <- merge(genesGC,cpmGC.str, by.x="GENEID", by.y="names")
+# cpmGC <- cpmGC.test
+write.csv(cpmGC.test,file="cpm_normGC.str.csv")
+genesGC.fil <- cpmGC.test$GENEID
+write.csv(genesGC.fil,file="genesGC.fil.csv")
+cpmMANew.test <- merge(genesMANew,cpmMANew.str, by.x="GENEID", by.y="names")
+# cpmMANew <- cpmMANew.test
+write.csv(cpmMANew.test,file="cpm_normMANew.str.csv")
+# write.csv(cpmMANew,file="cpm_normMANew.csv")
+genesMANew.fil <- cpmMANew.test$GENEID
+write.csv(genesMANew.fil,file="genesMANew.fil.csv")
+cpmMAOld.test <- merge(genesMAOld,cpmMAOld.str, by.x="GENEID", by.y="names")
+# cpmMAOld <- cpmMAOld.test
+write.csv(cpmMAOld.str,file="cpm_normMAOld.str.csv")
+genesMAOld.fil <- cpmMAOld.test$GENEID
+write.csv(genesMAOld.fil,file="genesMAOld.fil.csv")
 
 nchrm <- nlevels(lcpmGC$TXCHROM)
 lcpmGC$TXCHROM
@@ -702,6 +715,7 @@ View(variGC)
 variGC <- cbind(lcpmGC$GENEID,lcpmGC$TXCHROM,variGC)
 colnames(variGC) <- colnames.G
 class(variGC[,3])
+write.csv(variGC,file="varianceGC.csv")
 # vari$GENEID <- droplevels(vari$GENEID)
 # rownames(vari) <- vari$GENE
 # variGC2 <- subset(variGC, vari[,19]>=0.0001) # & vari[,3:23]>=0.0001)
@@ -790,7 +804,7 @@ length(lines.G)
 length(meanGC)
 rm(i)
 for (i in 3:19) {
-  pdf(paste("Mean-Variance Relationship",lines.G[i],".pdf",sep=""))
+  pdf(paste("Mean-Variance Relationship",lines.G[i],"_GC.pdf",sep=""))
   print(ggplot () + geom_point(aes(x=meanGC[,i],y=variGC[,i],col=factor(meanGC[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",lines.G[i]), y="variance",x="mean"))
   dev.off()
 }
@@ -800,7 +814,7 @@ for (i in 3:19) {
 # par(mfrow=c(1,1))
 
 for (i in 3:19) {
-  pdf(paste("Dist_Variance",i,".pdf",sep=""))
+  pdf(paste("Dist_Variance",i,"_GC.pdf",sep=""))
   plot(density(variGC[,i]),col=colGC[i],lwd=2,las=2,main="",xlab="")
   title(main=paste("Distribution of Variance",lines.G[i]),xlab="var of lcpm")
   abline(v=0,lty=3)
@@ -835,6 +849,7 @@ View(variMANew)
 variMANew <- cbind(lcpmMANew$GENEID,lcpmMANew$TXCHROM,variMANew)
 colnames(variMANew) <- colnames.MANew
 class(variMANew[,3])
+write.csv(variMANew,file="varianceMANew.csv")
 
 ###### mean ##########
 #################################################################
@@ -913,7 +928,7 @@ length(lines.MANew)
 length(meanMANew)
 rm(i)
 for (i in 3:11) {
-  pdf(paste("Mean-Variance Relationship",lines.MANew[i],".pdf",sep=""))
+  pdf(paste("Mean-Variance Relationship",lines.MANew[i],"_MANew.pdf",sep=""))
   print(ggplot () + geom_point(aes(x=meanMANew[,i],y=variMANew[,i],col=factor(meanMANew[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",lines.MANew[i]), y="variance",x="mean"))
   dev.off()
 }
@@ -923,7 +938,7 @@ for (i in 3:11) {
 # par(mfrow=c(1,1))
 
 for (i in 3:11) {
-  pdf(paste("Dist_Variance_MANew",i,".pdf",sep=""))
+  pdf(paste("Dist_Variance_MANew",i,"_MANew.pdf",sep=""))
   plot(density(variMANew[,i]),col=colMANew[i],lwd=2,las=2,main="",xlab="")
   title(main=paste("Distribution of Variance",lines.MANew[i]),xlab="var of lcpm")
   abline(v=0,lty=3)
@@ -955,6 +970,7 @@ View(variMAOld)
 variMAOld <- cbind(lcpmMAOld$GENEID,lcpmMAOld$TXCHROM,variMAOld)
 colnames(variMAOld) <- colnames.MAOld
 class(variMAOld[,3])
+write.csv(variMAOld,file="varianceMAOld.csv")
 
 
 
@@ -972,6 +988,7 @@ for (i in 1:length(lines.MAOld)) {
 meanMAOld <- as.data.frame(meanMAOld)
 meanMAOld <- cbind(lcpmMAOld$GENEID,lcpmMAOld$TXCHROM,meanMAOld)
 colnames(meanMAOld) <- colnames.MAOld
+write.csv(meanMAOld,file="meanMAold.csv")
 
 
 stdMAOld <- matrix(data=NA,nrow=nrow(lcpmMAOld),ncol=length(lines.MAOld))
@@ -1034,7 +1051,7 @@ length(lines.MAOld)
 length(meanMAOld)
 rm(i)
 for (i in 3:18) {
-  pdf(paste("Mean-Variance Relationship",lines.MAOld[i],".pdf",sep=""))
+  pdf(paste("Mean-Variance Relationship",lines.MAOld[i],"_MAOld.pdf",sep=""))
   print(ggplot () + geom_point(aes(x=meanMAOld[,i],y=variMAOld[,i],col=factor(meanMAOld[,2]))) + scale_y_log10() + labs(title=paste("Mean-Variance Relationship Line",lines.MAOld[i]), y="variance",x="mean"))
   dev.off()
 }
@@ -1044,7 +1061,7 @@ for (i in 3:18) {
 # par(mfrow=c(1,1))
 
 for (i in 3:18) {
-  pdf(paste("Dist_Variance",i,".pdf",sep=""))
+  pdf(paste("Dist_Variance",i,"_MAOld.pdf",sep=""))
   plot(density(variMAOld[,i]),col=colMAOld[i],lwd=2,las=2,main="",xlab="")
   title(main=paste("Distribution of Variance",lines.MAOld[i]),xlab="var of lcpm")
   abline(v=0,lty=3)

@@ -23,30 +23,29 @@ GC_trimmed_dir="/scratch/hcm14449/DC_Feb2019/GC/trim"
 # trying to rename files so that I can eventually run a loop with cuffdiff
 # rename 'GC' A *.fq
 
+# script is functional
+# for file in $data_dir/*.sam
+#
+# do
+#
+# FBASE=$(basename $file .sam)
+# BASE=${FBASE%.sam}
+#
+# samtools view -b -t /scratch/hcm14449/TE_MA_Paradoxus/Practice/files/ref_genome/SCerevisiae.RefGenome.fa \
+# $data_dir/${BASE}.sam > $data_dir/${BASE}.bam
+#
+# done
 
-# data_dir="/scratch/hcm14449/TE_MA_Paradoxus/Practice/files/samples"
-#
-# for file in `ls -d -1 $data_dir/*_R1.fastq`
-#  do
-#  sample_name=$(basename "$file" _R1.fastq)
-#  fq1=$file
-#  fq2=$(echo ${file}|sed -E "s/_R1/_R2/g")
-#
-#  bwa mem /scratch/hcm14449/TE_MA_Paradoxus/Practice/files/ref_genome/SCerevisiae.RefGenome.fa \
-# "${fq1}" "${fq2}" > "${fq1}".sam
-#
-#  done
-#
 module load ${fastqc_module}
 
-for file in `$GC_data_dir/*.fastq`
+for file in $GC_data_dir/*.fastq
 
 do
 
-FBASE=$(basename "$file" .fastq)
+FBASE=$(basename $file .fastq)
 BASE=${FBASE%.fastq}
 
-fastqc ${BASE}.fastq -o ${GC_fastQC_dir}
+fastqc $GC_data_dir/${BASE}.fastq -o ${GC_fastQC_dir}
 
 done
 

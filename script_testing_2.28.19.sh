@@ -12,7 +12,7 @@ THREADS=4
 fastqc_module="FastQC/0.11.8-Java-1.8.0_144"
 trimgalore_module="Trim_Galore/0.4.5-foss-2016b"
 ######### GC LINES ##############
-GC_data_dir="/project/dwhlab/Holly/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/fastqsGC/"
+GC_data_dir="/project/dwhlab/Holly/SC_RNAseq/RNA_seq/November_2017_Assembly/GC/fastqsGC"
 mkdir /scratch/hcm14449/DC_Feb2019/GC/fastqsGC/fastQC
 GC_fastQC_dir= "/scratch/hcm14449/DC_Feb2019/GC/fastqsGC/fastQC"
 ref_genome="/project/dwhlab/Holly/SC_RNAseq/RNA_seq/November_2017_Assembly/SCerRefGenome/genome.fa"
@@ -25,7 +25,7 @@ GC_trimmed_dir="/scratch/hcm14449/DC_Feb2019/GC/trim"
 
 module load ${fastqc_module}
 
-for file in ${GC_data_dir}*.fastq
+for file in $GC_data_dir/*.fastq
 
 do
 

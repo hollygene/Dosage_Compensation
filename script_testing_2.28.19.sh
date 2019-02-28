@@ -20,22 +20,6 @@ GC_trimmed_dir="/scratch/hcm14449/DC_Feb2019/GC/trim"
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
 
-# trying to rename files so that I can eventually run a loop with cuffdiff
-# rename 'GC' A *.fq
-
-# script is functional
-# for file in $data_dir/*.sam
-#
-# do
-#
-# FBASE=$(basename $file .sam)
-# BASE=${FBASE%.sam}
-#
-# samtools view -b -t /scratch/hcm14449/TE_MA_Paradoxus/Practice/files/ref_genome/SCerevisiae.RefGenome.fa \
-# $data_dir/${BASE}.sam > $data_dir/${BASE}.bam
-#
-# done
-
 module load ${fastqc_module}
 
 for file in $GC_data_dir/*.fastq
@@ -50,3 +34,21 @@ fastqc $GC_data_dir/${BASE}.fastq -o $GC_fastQC_dir
 done
 
 module unload ${fastqc_module}
+
+#### trimgalore
+
+mkdir ${GC_trimmed_dir}
+module load ${trimgalore_module}
+
+for file in $GC_data_dir/*.fastq
+
+do
+
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
+
+trim_galore --phred33 -q 20 -o $GC_trimmed_dir ${BASE}.fastq
+
+done
+
+module unload ${trimgalore_module}

@@ -19,21 +19,22 @@ GC_fastQC_dir= "/scratch/hcm14449/DC_Feb2019/GC/fastqsGC/fastQC"
 GC_trimmed_dir="/scratch/hcm14449/DC_Feb2019/GC/trim"
 
 #run FASTQC on samples to make sure things look good and I don't need to remove any adapters or anything
+cd ${basedir}
 
-module load ${fastqc_module}
-
-for file in $GC_data_dir/*.fastq
-
-do
-
-FBASE=$(basename $file .fastq)
-BASE=${FBASE%.fastq}
-
-fastqc $GC_data_dir/${BASE}.fastq -o $GC_fastQC_dir
-
-done
-
-module unload ${fastqc_module}
+# module load ${fastqc_module}
+#
+# for file in $GC_data_dir/*.fastq
+#
+# do
+#
+# FBASE=$(basename $file .fastq)
+# BASE=${FBASE%.fastq}
+#
+# fastqc $GC_data_dir/${BASE}.fastq -o $GC_fastQC_dir
+#
+# done
+#
+# module unload ${fastqc_module}
 
 #### trimgalore
 

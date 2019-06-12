@@ -41,15 +41,19 @@ library(knitr)
 knitr::opts_chunk$set(tidy=FALSE, cache=TRUE,
                       dev="png",
                       message=FALSE, error=FALSE, warning=TRUE)
-#source("https://bioconductor.org/biocLite.R")
-#        biocLite("apeglm")
+source("https://bioconductor.org/biocLite.R")
+       biocLite("apeglm")
 library(apeglm)
 #source("https://bioconductor.org/biocLite.R")
  #       biocLite("parathyroidSE")
 #library("parathyroidSE")
-       source("https://bioconductor.org/biocLite.R")
-      biocLite("DESeq2")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
 library(DESeq2)
+      
+
 ```	
 
 # Standard workflow

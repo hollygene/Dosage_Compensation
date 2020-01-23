@@ -53,3 +53,17 @@ trim_galore --phred33 -q 20 -o $GC_trimmed_dir ${BASE}.fastq
 done
 
 module unload ${trimgalore_module}
+
+### run fastQC on trimmed samples again
+module load FastQC/0.11.8-Java-1.8.0_144
+
+for file in /scratch/hcm14449/DC_Feb2019/GC/trim/*.fq
+
+do
+
+FBASE=$(basename $file .fq)
+BASE=${FBASE%.fq}
+
+fastqc /scratch/hcm14449/DC_Feb2019/GC/trim/${BASE}.fq -o /scratch/hcm14449/DC_Feb2019/GC/trim
+
+done

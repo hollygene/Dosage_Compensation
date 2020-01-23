@@ -314,20 +314,20 @@ done < /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_new/trimmed
 #trying trimgalore since trimmomatic didnt seem to work
 #mkdir /lustre1/hcm14449/SC_RNAseq/RNA_seq/November_2017_Assembly/MA_old/trimmed
 
-#module load trimgalore/0.4.4
+module load trimgalore/0.4.4
 
-#for file in ./*.fastq
+for file in ./*.fastq
 
-#do
+do
 
-#FBASE=$(basename $file .fastq)
-#BASE=${FBASE%.fastq}
+FBASE=$(basename $file .fastq)
+BASE=${FBASE%.fastq}
 
-#trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
+trim_galore --phred33 -q 20 -o trimmed ${BASE}.fastq
 
-#done
+done
 
-#module unload trimgalore/0.4.4
+module unload trimgalore/0.4.4
 
 
 #module load tophat/2.1.1

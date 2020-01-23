@@ -37,7 +37,7 @@ files.MAOld
 files.MANew <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/MA_new/exons_unstranded",pattern = "*.txt", full.names = TRUE)
 files.MANew
 
-files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/GC/exons_unstranded",pattern = "*.txt", full.names = TRUE)
+files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/HTseq_update_May2018/FINAL_DATA_TO_USE_GC",pattern = "*.txt", full.names = TRUE)
 files.GC
 #files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
 #files.MA
@@ -57,9 +57,9 @@ dim(x.GC)
 #organize sample information
 #change sample names so they are simpler
 x.GC$samples
-samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","2A","2B","2C","3A","3B","3C","4A","49A","49B","49C","4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","7A","76A","76B","76C","77A","77B","77C","7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
+samplenamesGC <- c("1A","11A","11B","11C","18A","18B","18C","1B","1C","2A","2B","2C", "31A","31B","31C", "3A","3B","3C","49A","49B","49C","4A", "4B","4C","59A","59B","59C","5A","5B","5C","61A","61B","61C","69A","69B","69C","6A","6B","6C", "76A","76B","76C","77A","77B","77C","7A", "7B","7C","8A","8B","8C","9A","9B","9C","GCAncA","GCAncB","GCAncC")
 
-group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","2","2","2","3","3","3","4","49","49","49","4","4","59","59","59","5","5","5","61","61","61","7","76","76","76","77","77","77","7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
+group.GC <- as.factor(c("1","11","11","11","18","18","18","1","1","2","2","2","31","31","31", "3","3","3","49","49","49","4","4","4","59","59","59","5","5","5","61","61","61","69","69","69","6","6","6", "76","76","76","77","77","77","7", "7","7","8","8","8","9","9","9","GCAnc","GCAnc","GCAnc"))
 
 # run.GC <-  c("3","3","1","2","3","3","2","1","2","3","2","1","1","2","3","1","2","1","1","2","3","3","1","2","1","2","1","1","2","1","1","3","3","1","2","3","2","2","1","2","1","1","2","3","2","1","2","2","1","2","1","2","3","1","2","1","1","2","2","2","2")
 length(samplenamesGC)
@@ -130,10 +130,10 @@ genesMAOld <- genesMAOld[!duplicated(genesMAOld$GENEID),]
 remove1 <- "chrM"
 remove2 <- c("21S_rRNA","RPR1","")
 #genesGC.test <- genesGC[-(grep(paste0(remove,"$"),genesGC$TXCHROM,perl=TRUE)),]
-genesGC.test <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
-genesGC.test <- na.omit(genesGC.test)
-genesGC.test
-genesGC <- genesGC.test
+# genesGC.test <- genesGC[-(grep(paste0(remove1,"$"),genesGC$TXCHROM,perl=TRUE)),]
+# genesGC.test <- na.omit(genesGC.test)
+# genesGC.test
+# genesGC <- genesGC.test
 
 genesMANew.test <- genesMANew[-(grep(paste0(remove1,"$"),genesMANew$TXCHROM,perl=TRUE)),]
 genesMAOld.test <- genesMAOld[-(grep(paste0(remove1,"$"),genesMAOld$TXCHROM,perl=TRUE)),]
@@ -232,9 +232,9 @@ write.csv(lcpmMAOld,file="lcpm.MAOld.csv")
 # get rid of all genes where the ancestor counts are <1 
 dim(x.GC)
 View(x.GC$counts)
-View(cpmGC)
+dim(cpmGC)
 #make a separate data frame with just the ancestor replicates
-ancGC <- cpmGC[,46:48]
+ancGC <- cpmGC[,55:57]
 #subset it based on cpm > 1 in all 3 replicates
 table(rowSums(ancGC>1)==3)
 keepGCTest <- rowSums(ancGC>1)==3
@@ -249,7 +249,7 @@ View(x.GC.str$counts)
 ## get rid of any NAs
 x.GC.str <- na.omit(x.GC.str)
 dim(x.GC.str)
-write.csv(x.GC.str$counts,file="countsAncGr1.GC.csv")
+# write.csv(x.GC.str$counts,file="countsAncGr1.GC.csv")
 
 dim(cpmMANew)
 View(cpmMANew)
@@ -469,14 +469,14 @@ legend("topright",samplenamesMAOld, text.col=colMAOld,bty="n",cex=0.4,ncol=4)
 # x.normGC <- calcNormFactors(x.GC.str)
 #x.normGC.test$samples
 #x.normGC.test
-x.GC.str.TMM <- calcNormFactors(x.GC.str,method="TMM")
+x.GC.TMM <- calcNormFactors(x.GC.str,method="TMM")
 # View(x.GC.TMM$samples)
 
 #x.MA.TMM <- calcNormFactors(x.MA,method="TMM",refColumn = 47,doWeighting = FALSE)
 #View(x.MA.TMM$samples)
 #what if i don't normalize it 
 # x.GC.none <- calcNormFactors(x.GC,method="none")
-#x.GC.RLE <- calcNormFactors(x.GC,method="RLE")
+x.GC.RLE <- calcNormFactors(x.GC.str,method="RLE")
 #x.GC.UQ <- calcNormFactors(x.GC,method="upperquartile")
 #View(x.GC$counts)
 #View(x.GC.test$samples)
@@ -1131,7 +1131,7 @@ glMDSPlot(cpmGCfil, labels=paste(group.GC),groups=x.GC$samples[,c(3)], launch=TR
 ```{r edgeR exact tests, include = TRUE}
 # all of these are the line compared to its respective ancestor
 #GC lines
-levels(x.GC$samples$group)
+levels(x.GC.TMM$samples$group)
 #estimate dispersion
 designGC <- model.matrix(~group.GC)
 designGC
@@ -1139,7 +1139,7 @@ designGC
 #x.GC.test$samples$group
 
 #default
-x.GC <- estimateDisp(x.GC,verbose=FALSE,design=designGC)
+x.GC <- estimateDisp(x.GC.TMM,verbose=FALSE,design=designGC)
 # x.GC <- estimateDisp(x.GC.TMM,verbose=FALSE,design=NULL)
 x.GC$common.dispersion
 # x.GC.des$common.dispersion
@@ -1163,7 +1163,7 @@ summary(dtGC.11)
 #View(l11)
 
 #line 21
-et18 <- exactTest(x.GC.des, pair=c("GCAnc","18"))
+et18 <- exactTest(x.GC, pair=c("GCAnc","18"))
 top.test18 <- topTags(et18,n=200,adjust.method = "BH")
 View(top.test18)
 test18.test <- decideTests(et18, adjust.method = "BH")
@@ -1171,37 +1171,37 @@ summary(test18.test)
 
 
 #line 21
-et21.test1 <- exactTest(x.GC.des, pair=c("GCAnc","21"))
-top.test21.1 <- topTags(et21.test1,n=200,adjust.method = "BH")
-View(top.test21.1)
-
-test21.test1 <- decideTests(et21.test1, adjust.method = "BH")
-summary(test21.test1)
-View(test21.test1)
+# et21.test1 <- exactTest(x.GC.des, pair=c("GCAnc","21"))
+# top.test21.1 <- topTags(et21.test1,n=200,adjust.method = "BH")
+# View(top.test21.1)
+# 
+# test21.test1 <- decideTests(et21.test1, adjust.method = "BH")
+# summary(test21.test1)
+# View(test21.test1)
 
 #line 18 
-et18.test <- exactTest(x.GC, pair=c("GCAnc","7"),dispersion = "auto")
-top.test18 <- topTags(et18.test,n=200,adjust.method = "BH")
-View(top.test18)
-
-test18.test <- decideTests(et18.test, adjust.method = "BH")
-summary(test18.test)
-View(test18.test)
+# et18.test <- exactTest(x.GC, pair=c("GCAnc","7"),dispersion = "auto")
+# top.test18 <- topTags(et18.test,n=200,adjust.method = "BH")
+# View(top.test18)
+# 
+# test18.test <- decideTests(et18.test, adjust.method = "BH")
+# summary(test18.test)
+# View(test18.test)
 
 #line 18
-et18.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".18."),dispersion = "auto")
-top.test18.1 <- topTags(et18.test1,n=200,adjust.method = "BH")
-View(top.test18.1)
-
-test18.test1 <- decideTests(et18.test1, adjust.method = "BH")
-summary(test18.test1)
-View(test18.test1)
+# et18.test1 <- exactTest(x.GC.test.1, pair=c(".GCAnc.",".18."),dispersion = "auto")
+# top.test18.1 <- topTags(et18.test1,n=200,adjust.method = "BH")
+# View(top.test18.1)
+# 
+# test18.test1 <- decideTests(et18.test1, adjust.method = "BH")
+# summary(test18.test1)
+# View(test18.test1)
 
 #line 4
 View(et4.test$table)
-et4.test <- exactTest(x.GC.des, pair=c("GCAnc","66"))
+et4.test <- exactTest(x.GC, pair=c("GCAnc","4"))
 top.test4 <- topTags(et4.test,n=200,adjust.method = "BH")
-View(top.test4)
+View(top.test4$table)
 
 View(x.GC.des$counts)
 
@@ -1638,7 +1638,7 @@ group.GC
 contr.matrix <- makeContrasts(
   X11vsGCA = group.GC11-group.GCGCAnc,
   X18vsGCA = group.GC18-group.GCGCAnc,
-  X21vsGCA = group.GC21-group.GCGCAnc,
+  # X21vsGCA = group.GC21-group.GCGCAnc,
   X4vsGCA = group.GC4-group.GCGCAnc,
   X49vsGCA = group.GC49-group.GCGCAnc,
   X59vsGCA = group.GC59-group.GCGCAnc,
@@ -1653,8 +1653,8 @@ contr.matrix <- makeContrasts(
   X31vsGCA = group.GC31-group.GCGCAnc,
   X5vsGCA = group.GC5-group.GCGCAnc,
   X6vsGCA = group.GC6-group.GCGCAnc,
-  X66vsGCA = group.GC66-group.GCGCAnc,
-  X68vsGCA = group.GC68-group.GCGCAnc,
+  # X66vsGCA = group.GC66-group.GCGCAnc,
+  X69vsGCA = group.GC69-group.GCGCAnc,
   X9vsGCA = group.GC9-group.GCGCAnc,
   levels=colnames(design)
 )

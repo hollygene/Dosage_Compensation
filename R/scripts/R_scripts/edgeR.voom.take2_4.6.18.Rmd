@@ -32,16 +32,20 @@ files.GC <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compen
 files.GC
 #files.MA <- list.files(path="/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Indiv_Genes/HTseq/4_3_18/MA",pattern = "*.txt", full.names = TRUE)
 #files.MA
+
 #load in data from files using readDGE from edgeR
 #getting out just the EntrezID and read count, neglecting genelength
 x.GC <- readDGE(files.GC,columns=c(1,2))
 #x.MA <- readDGE(files.MA,columns=c(1,2))
+
 #check the parameters
 class(x.GC)
 #class(x.MA)
+
 #and dimensions
 dim(x.GC)
 #dim(x.MA)
+
 #organize sample information
 #change sample names so they are simpler
 files.GC
@@ -49,6 +53,7 @@ samplenames.GC <- tools::file_path_sans_ext(list.files(path="/Users/hollymcquear
 samplenames.GC
 #samplenames.GC <- c("G11B","G11C","G18B","G18C","G1B","G1C","G11A","G21C","G2A","G2B","G2C","G31B","G31C","G3A","G3B","G3C","G49B","G49C","G4B","G4C","G59B","G59C","G5A","G5B","G5C","G61B","G61C","G66C","G69B","G69C","G6A","G6B","G6C","G76B","G76C","G77B","G77C","G7B","G7C","G8B","G8C","G9A","G9B","G9C","GAB","GAC","G66B","G18A","G21A","G31A","G4A","G49A","G61A","G7A","G8A")
 #length(samplenames.GC)
+
 #put filenames into DGEList as column names 
 colnames(x.GC) <-samplenames.GC
 colnames(x.GC) <- lines.G
@@ -80,6 +85,7 @@ x.GC$samples$group <- group.GC
 #ploidy <- as.factor(rep(c("tri","eu","tri","dbl","eu","tri","dbl","tri","eu","tri","mon","eu","eu","eu","tri","eu","eu","tri","eu","tri","seg","eu","eu","tri","tri","eu","eu","eu","eu","eu"),c(2,3,3,2,3,3,3,3,3,2,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3)))
 #x$samples$ploidy <- ploidy
 #x.MA$samples
+
 #organize the gene annotations
 #install mus.musuclus package
 #source("https://bioconductor.org/biocLite.R")
@@ -146,6 +152,7 @@ x.GC$genes <- genesGC
 x.GC
 #x.MA$genes <- genesMA
 #x.MA
+
 #need to remove the columns at the bottom that say no feature, alignment not unique, or ambiguous 
 #myData <- x[-c("__no_feature", "__ambiguous", "__alignment_not_unique"), ]
 #newdata <- x(!(x$counts %in% c("__no_feature", "__ambiguous", "__alignment_not_unique"))
@@ -188,16 +195,19 @@ x.GC
 #genes <- select(yeast, keys=geneid, columns="SGD","ENSEMBL","GENENAME",keytype="GENENAME")
 #dim(genes)
 #head(genes)
+
 #get rid of any duplicate genes (mapping to different chromosomes)
 #data frame of gene annotations is added back to the DGEList
 #x$genes <- genes
 #x
 #########################################################
 #data pre-processing
+
 #get counts per million
 cpmGC <- cpm(x.GC)
 #cpmGC$chrm <- x.GC$genes$TXCHROM
 #cpmMA <- cpm(x.MA)
+
 #get log counts per million
 lcpmGC <- cpm(x.GC,log=TRUE)
 #lcpmGC$chrm <- x.GC$genes$TXCHROM
@@ -205,12 +215,14 @@ lcpmGC <- cpm(x.GC,log=TRUE)
 #lcpmMA
 ############################################################################
 #do the same thing but be more stringent
+
 ###USE THIS ONE!! 
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
 dim(x.GC)
 table(rowSums(x.GC$counts<=0)==60)
 table(rowSums(x.GC$counts>=1)==60)
 table(rowSums(cpmGC>0.00001)>=60)
+
 #only keep genes that are expressed in at least one group (group size=3 in this case)
 table(rowSums(cpmGC>0.0001)>=2)
 keep.exprsGC <- rowSums(cpmGC>1)>=2
@@ -221,11 +233,14 @@ x.GC.str <- x.GC[keep.exprsGC,keep.lib.sizes=FALSE]
 #x.GC.test <- x.GC[keep.exprsGC.test,keep.lib.sizes=FALSE]
 dim(x.GC.str)
 #table(rowSums(x.GC.str$counts>0.0001))
+
 #make x.GC the filtered one 
 x.GC <- x.GC.str
+
 #remove genes that are lowly expressed in all samples (ie not expressed in any)
 #dim(x.MA)
 #table(rowSums(x.MA$counts==0)==64)
+
 #only keep genes that are expressed in at least one group (group size=3 in this case)
 #table(rowSums(cpmMA>1)>=3)
 #keep.exprsMA <- rowSums(cpmMA>1)>=3
@@ -299,6 +314,7 @@ x.GC <- calcNormFactors(x.GC,method="TMM")
 #x.normMA <- calcNormFactors(x.MA, method="TMM")
 #x.normMA$samples
 #x.normMA
+
 #this part is not necessary 
 #visually see the data normalized by screwing with the data artificially to make it look a lot different
 #x3 <- x.norm
@@ -443,6 +459,7 @@ View(lcpmGC)
 #  cols <- matrix(apply(cols,1,var))
 
 rm(i)
+
 #testing to make sure this is doing what I want it to do: find the variance between replicates, not across all lines
 #lineEl <- matrix(data=NA,ncol=3,nrow=length(lcpmGC))
 #lineEl.ind <- grep(as.character(lines.GC[1]),names)
@@ -635,6 +652,7 @@ for (i in 1:21) {
 #make colnames into the proper column names
 colnames(v) <-  c("11","18","1","21","2","31","3","49","4","59","5","61","66","68","6","76","77","7","8","9","A")
 str(v)
+
 # all on the same graph 
 {
 pdf("Dis_variance.pdf")
@@ -667,6 +685,7 @@ legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 #length(v)
 #length(var2)
 #length((apply(lcpmGC[,grep((2),colnames(lcpmGC))],1,var)))
+
 #histogram of distribution of variance
 #hist(var2)
 #for (i in 2:(lines.GC)) {
@@ -676,6 +695,7 @@ legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 #var <- as.matrix(apply(cpmGC[,grep((1),colnames(cpmGC))],1,var),byrow=FALSE)
 #  test.out <- cbind(L11=var, "l"(i)=(apply(cpmGC[,grep((i),colnames(cpmGC))],1,var)))
 #  return(test.out)
+
 #remove unwanted rows from cpmGC data frame
 #attempt at aggregate
 #by = list()
@@ -708,6 +728,7 @@ legend("topright",samplenames.GC, text.col=colGC,bty="n",cex=0.4,ncol=4)
 #l1_var
 #l1_mean <- apply(cpmGC[,1:3],1,mean)
 #l1_mean
+
 #correlation of mean and variance
 #cor(l1_mean,l1_var,method="spearman")
 #plot(log2(l1_mean),log2(l1_var),pch=".")

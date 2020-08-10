@@ -1,0 +1,4 @@
+1	cellular process (GO:0009987)	2	20.0%	25.0%
+2	metabolic process (GO:0008152)	4	40.0%	50.0%
+3	biological regulation (GO:0065007)	1	10.0%	12.5%
+4	localization (GO:0051179)	1	10.0%	12.5%

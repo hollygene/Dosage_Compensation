@@ -1,0 +1,7 @@
+1	reproduction (GO:0000003)	2	3.5%	3.5%
+2	response to stimulus (GO:0050896)	2	3.5%	3.5%
+3	cellular process (GO:0009987)	17	29.8%	29.8%
+4	metabolic process (GO:0008152)	26	45.6%	45.6%
+5	biological regulation (GO:0065007)	3	5.3%	5.3%
+6	cellular component organization or biogenesis (GO:0071840)	3	5.3%	5.3%
+7	localization (GO:0051179)	4	7.0%	7.0%

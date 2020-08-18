@@ -20,6 +20,53 @@ library(apeglm)
 library(DESeq2)
 ```
 
+```{r graphs, eval=TRUE,include=TRUE,echo=FALSE}
+library(ggplot2)
+
+size_v_numAneus <- read.delim("/Users/hollymcqueary/Dropbox/McQueary/DosageCompensationG3/size_vs_numAneus.txt")
+
+View(size_v_numAneus)
+
+## Heterozygous Ancestor
+sizeNumAneus <- ggplot(size_v_numAneus,aes(x=length,y=X.eventsGC))
+sizeNumAneus + geom_point(color="turquoise") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="turquoise") + labs(y="Aneuploidy Events", x="Chromosome Length", title="Heterozygous Ancestor") 
+
+library(ggpmisc)
+my.formula <- y ~ x
+p <- ggplot(size_v_numAneus,aes(x=length,y=X.eventsGC))
+p2 <- p + geom_point(color="turquoise") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="turquoise",formula=my.formula) + stat_poly_eq(formula = my.formula, 
+                aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+                parse = TRUE) + labs(y="Aneuploidy Events", x="Chromosome Length", title="Heterozygous Ancestor") 
+
+pdf("het_anc_size_v_aneus.pdf")
+p2
+dev.off()
+  
+
+## Homozygous Ancestor
+sizeNumAneus1 <- ggplot(size_v_numAneus,aes(x=length,y=X.eventsMA))
+sizeNumAneus1 + geom_point(color="deeppink1") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="deeppink1") + labs(y="Aneuploidy Events", x="Chromosome Length", title="Homozygous Ancestor") 
+
+library(ggpmisc)
+my.formula <- y ~ x
+p1 <- ggplot(size_v_numAneus,aes(x=length,y=X.eventsMA))
+p3 <- p + geom_point(color="deeppink1") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="deeppink1",formula=my.formula) + stat_poly_eq(formula = my.formula, 
+                aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+                parse = TRUE) + labs(y="Aneuploidy Events", x="Chromosome Length", title="Homozygous Ancestor") 
+
+pdf("hom_anc_size_v_aneus.pdf")
+p3
+dev.off()
+
+
+
+
+
+
+```
+
+
+
 ```{r htseqDirI, eval=TRUE,include=FALSE,echo=FALSE}
 directoryGC_All <- "/Users/hollymcqueary/Dropbox/DosageCompensation/Indiv_Genes/HTseq/HTseq_update_May2018/FINAL_DATA_TO_USE_GC"
 

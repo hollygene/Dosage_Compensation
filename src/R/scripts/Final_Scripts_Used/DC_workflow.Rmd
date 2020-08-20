@@ -2523,11 +2523,11 @@ colors <- c("1" = "blue", "2" = "gray", "2.5" = "pink", "3" = "red", "4" = "dark
 
 myTitleTheme <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (10)))
 
-myXaxisTheme <- theme(axis.text.x = element_text(family = "Helvetica", size = (7),angle = 90, hjust = 1))
+myXaxisTheme <- theme(axis.text.x = element_text(family = "Helvetica", face="bold", size = (8),angle = 45, hjust = 1))
 
 myXlabelTheme <- theme(axis.title.x.bottom = element_text(family = "Helvetica", size = (8)))
 
-myYaxisTheme <- theme(axis.text.y = element_text(family = "Helvetica", size = (7)))
+myYaxisTheme <- theme(axis.text.y = element_text(family = "Helvetica", face="bold", size = (9)))
 
 myYlabelTheme <- theme(axis.title.y.left = element_text(family = "Helvetica", size = (8)))
 
@@ -2969,7 +2969,6 @@ prow2 <- plot_grid(
   p7 + theme(legend.position="none"),
   p8 + theme(legend.position="none"),
   align = 'hv',
-  scale = 1,
   nrow = 2,
   ncol = 2
 )  
@@ -2980,7 +2979,6 @@ prow3 <- plot_grid(
   p11 + theme(legend.position="none"),
   p12 + theme(legend.position="none"),
   align = 'hv',
-  scale = 1,
   nrow = 2,
   ncol = 2
 )  
@@ -2990,7 +2988,6 @@ prow4 <- plot_grid(
   p15 + theme(legend.position="none"),
   p16 + theme(legend.position="none"),
   align = 'hv',
-  scale = 1,
   nrow = 2,
   ncol = 2
 ) 
@@ -3025,19 +3022,19 @@ legend <- get_legend(
 
 plot_grid(prow, legend, rel_widths = c(3, .4))
 
-pdf("chr1_4_DC.pdf",height = 8, width = 8, useDingbats = FALSE)
+pdf("chr1_4_DC.pdf",height = 12, width = 12, useDingbats = FALSE)
 plot_grid(prow, legend,rel_widths = c(3, .4))
 dev.off()
 
-pdf("chr5_8_DC.pdf",height = 8, width = 8, useDingbats = FALSE)
+pdf("chr5_8_DC.pdf",height = 12, width = 12, useDingbats = FALSE)
 plot_grid(prow2, legend,rel_widths = c(3, .4))
 dev.off()
 
-pdf("chr9_12_DC.pdf",height = 8, width = 8, useDingbats = FALSE)
+pdf("chr9_12_DC.pdf",height = 12, width = 12, useDingbats = FALSE)
 plot_grid(prow3, legend,rel_widths = c(3, .4))
 dev.off()
 
-pdf("chr13_16_DC.pdf",height = 8, width = 8, useDingbats = FALSE)
+pdf("chr13_16_DC.pdf",height = 12, width = 12, useDingbats = FALSE)
 plot_grid(prow4, legend,rel_widths = c(3, .4))
 dev.off()
           # , common.legend = TRUE, legend = "bottom")

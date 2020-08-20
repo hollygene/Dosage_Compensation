@@ -42,26 +42,26 @@ Load data into matrices
 
 ```{r load in data,make matrices, include=TRUE,echo=FALSE}
 
-sc_counts <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Chrom_wide_Analyses/Cuffnorm_Output/CuffnormJune19/genes_fpkm_table.csv",header=T,stringsAsFactors = FALSE)
+sc_counts <- read.csv("/Users/hollymcqueary/Dropbox/Github/Dosage_Compensation/data/Cuffnorm_Output/CuffnormJune19/genes_fpkm_table.csv",header=T,stringsAsFactors = FALSE)
 
 MA_anc <- sc_counts[,122:124]
 plot(MA_anc$MA_Anc_1,MA_anc$MA_Anc_0)
 plot(MA_anc$MA_Anc_1,MA_anc$MA_Anc_2)
 plot(MA_anc$MA_Anc_0,MA_anc$MA_Anc_2)
 
-gene_attr <- read.csv("/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/Chrom_wide_Analyses/Cuffnorm_Output/CuffnormJune19/genes_attr_table.csv",stringsAsFactors = FALSE)
+gene_attr <- read.csv("/Users/hollymcqueary/Dropbox/Github/Dosage_Compensation/data/Cuffnorm_Output/CuffnormJune19/genes_attr_table.csv",stringsAsFactors = FALSE)
 
 class(sc_counts)
 str(sc_counts)
-View(sc_counts)
-View(gene_attr)
+# View(sc_counts)
+# View(gene_attr)
 str(gene_attr)
 # colnames(sc_counts)[1] <- "chr"; colnames(sc_counts)[2] <- "tracking_id"
 # colnames(gene_attr)[1] <- "tracking_id" ; colnames(gene_attr)[7] <- "locus"
 
 myvars <- c("tracking_id","locus")
 loci <- gene_attr[myvars]
-View(loci)
+# View(loci)
 dim(loci)
 sc_loci <- sc_counts[,1]
 # View(sc_loci)
@@ -76,7 +76,7 @@ dim(sc_counts)
 loci <- as.data.frame(loci)
 # colnames(loci) <- "tracking_id"
 sc_counts.gen <- merge(sc_counts, loci, by.x="tracking_id",by.y="tracking_id")
-View(sc_counts.gen)
+# View(sc_counts.gen)
 sc_counts.gen <- sc_counts.gen[,c(which(colnames(sc_counts.gen)=="locus"),which(colnames(sc_counts.gen)!="locus"))]
 str(sc_counts.gen)
 sc_counts.z <- sc_counts.gen
@@ -109,23 +109,23 @@ sc_counts.3 <- sc_counts.2[!noSn,]
 noT <- grepl("t", sc_counts.3$tracking_id)
 sc_counts.4 <- sc_counts.3[!noT,]
 sc_counts.final <- sc_counts.4
-View(sc_counts.final)
+# View(sc_counts.final)
 #######################################################
-write.csv(sc_counts.final,file="sc_counts.final.csv")
+# write.csv(sc_counts.final,file="sc_counts.final.csv")
 #final matrix for ancestor and descendans
 colnames(sc_counts.final)
 sc_ancGC <- sc_counts.final[,c(1,2,120:122)]
-View(sc_ancGC)
+# View(sc_ancGC)
 sc_ancMAnew <- sc_counts.final[,c(1,2,124:125)]
-View(sc_ancMAnew)
+# View(sc_ancMAnew)
 sc_ancMAold <- sc_counts.final[,c(1:5)]
-View(sc_ancMAold)
+# View(sc_ancMAold)
 #average for each GC line
 #going to analyze 21 and 59 separately since I need to remove the replicates that don't match to them and I don't know what they are yet. 
 #this one is for line 11 to have the replicate that originally belonged to line 21 
 sc_des.GC <- sc_counts.final[,c(1:2,60:62,69:71,72:74,78:80,81:83,84:86,87:89,93:95,96:98,99:101,102:104,105:107,108:110,111:113,114:116,117:119)]
 str(sc_des.GC)
-View(sc_des.GC)
+# View(sc_des.GC)
 sc_des.GC$locus[sc_des.GC$locus == "I"] = 1
 sc_des.GC$locus[sc_des.GC$locus == "II"] = 2
 sc_des.GC$locus[sc_des.GC$locus == "III"] = 3
@@ -147,7 +147,7 @@ sc_des.GC$locus[sc_des.GC$locus == "XVI"] = 16
 # new$MY_NEW_COLUMN <-as.numeric(as.character(new[,2]))
 # sc_des.GC$locus <- as.numeric(as.character(sc_des.GC[,2]))
 # as.numeric(levels(sc_des.GC$locus)[sc_des.GC$locus])
-View(sc_des.GC)
+# View(sc_des.GC)
 str(sc_des.GC)
 colnames(sc_des.GC)
 sc_des.MA_old <- sc_counts.final[,c(1:2,6:8,9:11,12:14,15:17,18:20,21:23,24:26,27:29,30:32,33:35,36:38,39:41,42:44,45:47,48:50)]
@@ -170,7 +170,7 @@ sc_des.MA_old$locus[sc_des.MA_old$locus == "XVI"] = 16
 
 # sc_des.MA_old <- within(sc_des.MA_old, locus <- factor(locus, labels = c(1,2,3,4,9,5,6,7,8,10,11,12,13,14,15,16)))
 # as.integer(sc_des.MA_old$locus)
-View(sc_des.MA_old)
+# View(sc_des.MA_old)
 colnames(sc_des.MA_old)
 sc_des.MAnew<- sc_counts.final[,c(1:2,75:77,90:92,51:53,54:56,57:59,63:65,66:68)]
 sc_des.MAnew$locus[sc_des.MAnew$locus == "I"] = 1
@@ -191,7 +191,7 @@ sc_des.MAnew$locus[sc_des.MAnew$locus == "XV"] = 15
 sc_des.MAnew$locus[sc_des.MAnew$locus == "XVI"] = 16
 # sc_des.MAnew <- within(sc_des.MAnew, locus <- factor(locus, labels = c(1,2,3,4,9,5,6,7,8,10,11,12,13,14,15,16)))
 # as.numeric(sc_des.MAnew$locus)
-View(sc_des.MAnew)
+# View(sc_des.MAnew)
 #View(sc_des.GC)
 #View(sc_des.GC.r)
 #for lines 21 and 59 
@@ -222,7 +222,7 @@ View(sc_des.MAnew)
 #str(sc_des.GC.r1)
 
 sc_des.MA <- sc_counts.final[,c(1:11,15:23,33:35,51:53)] #average for each MA line
-write.csv(sc_des.MA,file="sc_des.MA.csv")
+# write.csv(sc_des.MA,file="sc_des.MA.csv")
 # colnames(sc_des.MA)
 # colnames(sc_counts.final)
 # sc_des.MA_old <- sc_counts.final[,c(1:2,93:140)]
@@ -308,19 +308,19 @@ dev.off()
 ## 152 and 1 
 
 line1.152 <- sc_counts.final[,c(1:2,6:8,66:68)]
-View(line1.152)
+# View(line1.152)
 # subset into chr 1 and chr 7
 l1.152.1 <- line1.152[ which(line1.152$locus=='I'),]
-View(l1.152.1)
+# View(l1.152.1)
 l1.152.1$average1 <- rowMeans(l1.152.1[,3:5])
 l1.152.1$average152 <- rowMeans(l1.152.1[,6:8])
 var.dfI <- cbind(l1.152.1$average1,l1.152.1$average152)
-View(var.dfI)
+# View(var.dfI)
 colnames(var.dfI) <- c("L1","L152")
 library(reshape2)
 var.dfI <- melt(var.dfI)
 colnames(var.dfI) <- c("na","line","fpkm")
-View(var.dfI)
+# View(var.dfI)
 str(var.dfI)
 var.dfI$line <- as.character(var.dfI$line)
 library(car)
@@ -447,10 +447,6 @@ levene77.3
 levene8.5 <- varianceLevenesTest2Chr("X8","X5","GC_Anc","GC_Anc", "XVI","XVI")
 levene8.5
 
-logMat.GC
-logMat.MA.old
-logMat
-
 ```
 
 Automated functions to make matrices and perform computations on the data in them 
@@ -550,8 +546,6 @@ getChrmRatio.GC <- function(line, chr){ #input line as "XXX", chr as a number
 
 y.MAnew=NULL
 rep.MAnew <- c("112","115","117","123","152","29","50")
-#View(rep.MA)
-# chrom=c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI")
 for(line in rep.MAnew){
   for(chr in 1:16){
     y.MAnew <- c(y.MAnew,median(getChrmRatio.MAnew(line,chr)[,3],na.rm=T))
@@ -562,7 +556,6 @@ ratMatMed.MA <- matrix(y.MAnew,nrow=16,ncol=7)
 colnames(ratMatMed.MA) <- rep.MAnew
 ratMatMed.MA <- cbind(c(1:16),ratMatMed.MA)
 colnames(ratMatMed.MA)[1] <- "chr"
-View(ratMatMed.MA)
 #remove the ratios that are about 1
 ratMatMedRed.MA <- ratMatMed.MA
 ratMatMedRed.MA[ratMatMedRed.MA<1.35] <- NA
@@ -607,7 +600,7 @@ for(line in rep.GC){
 View(y.GC)
 
 ratMatMed.GC <- matrix(y.GC,nrow=16,ncol=16)
-View(ratMatMed.GC)
+# View(ratMatMed.GC)
 colnames(ratMatMed.GC) <- rep.GC
 ratMatMed.GC <- cbind(c(1:16),ratMatMed.GC)
 colnames(ratMatMed.GC)[1] <- "chr"
@@ -743,7 +736,6 @@ getFPKMRatio.GC <- function(line) { #line must be a 3 digit character
 
 Functions for graphs of log2 ratio per chromosome in boxplot format 
 ```{r graph:line log2 ratio per chr,echo=FALSE, include = TRUE}
-View(logMat.GC)
 
 ######################################################################################
 #do this for the ancestor too since I have no idea if it is actually euploid...what if it isn't???
@@ -757,8 +749,6 @@ X112.sd <- subset(logMatsd2.MAnew, select=c("X112"))
 X112.all <- cbind(chrms,X112,X112.sd)
 #change the column names appropriately
 colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
-
-# boxplot(X112,main="MA Line 112", col="mediumvioletred", xlab="Chromosome", ylab="log2(foldchange)")
 
 #plots the chromosomes with error bars for each one 
 {pdf("X112_chroms.pdf")
@@ -779,69 +769,6 @@ axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()
 }
 
-
-
-#how to make a graph of the chromosomes and their respective error bars 
-#changes the margins to the standard margin width
-# setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/January2018_Final_Graphs"
-# par(mar=c(5, 4, 4, 2) + 0.1)
-# par(mfrow=c(1,1))
-# #line 112
-# X112 <- subset(logMat.MA, select=c("X112"))
-# #get the standard deviations for each chromosome for line 112 only
-# X112.sd <- subset(logMatsd2.MA, select=c("X112"))
-# #merge the stdev with the mean and the chromosome number
-# X112.all <- cbind(chrms,X112,X112.sd)
-# #change the column names appropriately
-# colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
-
-#plots the chromosomes with error bars for each one 
-# {pdf("X112_chroms.pdf")
-# with (
-#   data = X112.all
-#   , expr = errbar(main="MA Line 112",chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
-#                   ylim=c(-2,2))
-# )
-# 
-# #adds a title to the graph
-# title(main="Lab Line 112")
-# abline(h=0,lty=2)
-# abline(h=0.585,lty=3)
-# abline(h=-1,lty=3)
-# ##makes it so that the x-axis is all of the chromosomes and none are missing 
-# labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-# axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-# dev.off()
-# }
-#myLines.MA <- c("X112","X115","X117","X123","X141","X152","X29","X50")
-#list_of_titles.MA <- c("Sample112","Sample115","Sample117","Sample123","Sample141","Sample152")
-
-#myLines <- c("1","2","3","4","5","6","7","8","9","11","18","21","29","31","49","50","59","61","66","69","76","77","112","115","117","123","141","152")
-#list_of_titles <- c("Sample1","Sample2","Sample3","Sample4","Sample5","Sample6","Sample7","Sample8",
-            #        "Sample9","Sample11","Sample18","Sample21","Sample29","Sample31","Sample49","Sample50",
-             #       "Sample59","Sample61","Sample66","Sample69","Sample76","Sample77","Sample112","Sample115",
-              #      "Sample117","Sample123","Sample141","Sample152")
-
-#setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
-
-#for (i in myLines.MA) {
- # pdf(paste("Log2RatioPerLine_",list_of_titles.MA[i],".pdf",sep=""))
-  #sample <- subset(logMat.MA, select=c(myLines.MA[i]))
-  #sampleSD <- subset(logMatsd2.MA, select=c(myLines.MA[i]))
-  #sampleAll <- cbind(chrms,sample,sampleSD)
-  #colnames(sampleAll)[1] <- "chr"; colnames(sampleAll)[2] <- "mean";colnames(sampleAll)[3] <- "sd"
-  #with (
-  #     data = sampleAll
-   #    , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col =       "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n")
-#)
-#adds a title to the graph
-#title(main=list_of_titles.MA[i])
-#abline(h=0,lty=3)
-##makes it so that the x-axis is all of the chromosomes and none are missing 
-#labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-#axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
- # dev.off()
-#}
 
 par(mar=c(5, 4, 4, 2) + 0.1)
 #get the standard deviations for each chromosome for line 112 only
@@ -1348,31 +1275,7 @@ title(main="Lab Line 123")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
-#line 141
-# X141 <- subset(logMat.MA, select=c("X141"))
-# X141.sd <- subset(logMatsd2.MA, select=c("X141"))
-#merge the stdev with the mean and the chromosome number
-# X141.all <- cbind(chrms,X141,X141.sd)
-#change the column names appropriately
-# colnames(X141.all)[1] <- "chr"; colnames(X141.all)[2] <- "mean";colnames(X141.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
-# {pdf("X141_chroms.pdf")
-# with (
-#   data = X141.all
-#   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
-#                   ylim=c(-2,2))
-# )
-# 
-# #adds a line at y=0 
-# abline(h=0,lty=2)
-# abline(h=0.585,lty=3)
-# abline(h=-1,lty=3)
-# #adds a title to the graph
-# title(main="Lab Line 141")
-# ##makes it so that the x-axis is all of the chromosomes and none are missing 
-# labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-# axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-# dev.off()}
+
 
 #line 152
 X152 <- subset(logMat.MAnew, select=c("X152"))
@@ -1452,31 +1355,6 @@ labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
 
-#line 21
-# X21 <- subset(logMat.GC.r1, select=c("X21"))
-# X21.sd <- subset(logMatsd2.GC.r1, select=c("X21"))
-# #merge the stdev with the mean and the chromosome number
-# X21.all <- cbind(chrms,X21,X21.sd)
-# #change the column names appropriately
-# colnames(X21.all)[1] <- "chr"; colnames(X21.all)[2] <- "mean";colnames(X21.all)[3] <- "sd"
-# #plots the chromosomes with error bars for each one 
-# {pdf("X21_chroms.pdf")
-# with (
-#   data = X21.all
-#   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
-#                   ylim=c(-2,2))
-# )
-# 
-# #adds a line at y=0 
-# abline(h=0,lty=2)
-# abline(h=0.585,lty=3)
-# abline(h=-1,lty=3)
-# #adds a title to the graph
-# title(main="Hybrid Line 21")
-# ##makes it so that the x-axis is all of the chromosomes and none are missing 
-# labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-# axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-# dev.off()}
 
 #line 29
 X29 <- subset(logMat.MAnew, select=c("X29"))
@@ -1530,31 +1408,6 @@ labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
 
-#line 31
-# X31 <- subset(logMat.GC, select=c("X31"))
-# X31.sd <- subset(logMatsd2.GC, select=c("X31"))
-# #merge the stdev with the mean and the chromosome number
-# X31.all <- cbind(chrms,X31,X31.sd)
-# #change the column names appropriately
-# colnames(X31.all)[1] <- "chr"; colnames(X31.all)[2] <- "mean";colnames(X31.all)[3] <- "sd"
-# #plots the chromosomes with error bars for each one 
-# {pdf("X31_chroms.pdf")
-# with (
-#   data = X31.all
-#   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
-#                   ylim=c(-2,2))
-# )
-# 
-# #adds a line at y=0 
-# abline(h=0,lty=2)
-# abline(h=0.585,lty=3)
-# abline(h=-1,lty=3)
-# #adds a title to the graph
-# title(main="Hybrid Line 31")
-# ##makes it so that the x-axis is all of the chromosomes and none are missing 
-# labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-# axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-# dev.off()}
 
 #line 3
 X3 <- subset(logMat.GC, select=c("X3"))
@@ -1738,30 +1591,6 @@ labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
 
-#line 66
-# X66 <- subset(logMat.GC.r1, select=c("X66"))
-# X66.sd <- subset(logMatsd2.GC.r1, select=c("X66"))
-# #merge the stdev with the mean and the chromosome number
-# X66.all <- cbind(chrms,X66,X66.sd)
-# #change the column names appropriately
-# colnames(X66.all)[1] <- "chr"; colnames(X66.all)[2] <- "mean";colnames(X66.all)[3] <- "sd"
-# #plots the chromosomes with error bars for each one 
-# {pdf("X66_chroms.pdf")
-# with (
-#   data = X66.all
-#   , expr = errbar(chr, mean, mean+sd, mean-sd, add=F, pch=16, cap=.015, errbar.col = "mediumvioletred",col="mediumvioletred",xlab="Chromosome",ylab="log2(fold change)",cex.axis=1,las=3,xaxt="n",
-#                   ylim=c(-2,2))
-# )
-# #adds a line at y=0 
-# abline(h=0,lty=2)
-# abline(h=0.585,lty=3)
-# abline(h=-1,lty=3)
-# #adds a title to the graph
-# title(main="Hybrid Line 66")
-# ##makes it so that the x-axis is all of the chromosomes and none are missing 
-# labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
-# axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
-# dev.off()}
 
 #line 69
 X69 <- subset(logMat.GC, select=c("X69"))
@@ -1917,7 +1746,6 @@ dev.off()}
 
 Codes to get ratio files for each individual line and chromosome
 ```{r getRatioFiles, echo=FALSE,include=TRUE}
-# setwd = "/Users/hollymcqueary/Dropbox/McQueary/Dosage-Compensation/November2017/R_graphs"
 
 l002.1 <- getChrmRatio.GC("2",1)
 l003.1 <- getChrmRatio.GC("3",1)
@@ -1927,149 +1755,79 @@ l009.1 <- getChrmRatio.GC("9",1)
 l011.1 <- getChrmRatio.GC("11",1)
 l018.1 <- getChrmRatio.GC("18",1)
 l001.1 <- getChrmRatio.GC("1",1)
-# l021.1 <- getChrmRatio.GC.r1("21",1)
-# l031.1 <- getChrmRatio.GC("31",1)
 l049.1 <- getChrmRatio.GC("49",1)
 l004.1 <- getChrmRatio.GC("4",1)
 l059.1 <- getChrmRatio.GC("59",1)
 l061.1 <- getChrmRatio.GC("61",1)
-# l066.1 <- getChrmRatio.GC.r1("66",1)
 l069.1 <- getChrmRatio.GC("69",1)
 l076.1 <- getChrmRatio.GC("76",1)
 l077.1 <- getChrmRatio.GC("77",1)
 l007.1 <- getChrmRatio.GC("7",1)
 
-#chr1Files <- c("l002.1","l003.1","l004.1","l005.1","l006.1","l007.1","l008.1","l009.1","l011.1","l018.1","l021.1","l031.1","l049.1","l059.1","l061.1","l066.1","l069.1","l076.1","l077.1")
-
-#i=1
-#for (i in 1:length(chr1Files)) {
-#nam <- paste("red",i,sep="")
-#assign(nam, i[which(i[,3]>0.1),])
-#}
 
 l001.1.old <- getChrmRatio.MA.old("001",1)
-l001.1.old.red <- l001.1.old[which(l001.1.old[,3]>0.1),]
 l002.1.old <- getChrmRatio.MA.old("002",1)
-l002.1.old.old.red <- l002.1.old[which(l002.1[,3]>0.1),]
 l003.1.old <- getChrmRatio.MA.old("003",1)
-l003.1.old.red <- l003.1.old[which(l003.1.old[,3]>0.1),]
 l004.1.old <- getChrmRatio.MA.old("004",1)
-l004.1.old.red <- l004.1.old[which(l004.1.old[,3]>0.1),]
 l005.1.old <- getChrmRatio.MA.old("005",1)
-l005.1.old.red <- l005.1.old[which(l005.1.old[,3]>0.1),]
 l006.1.old <- getChrmRatio.MA.old("006",1)
-l006.1.old.red <- l006.1.old[which(l006.1.old[,3]>0.1),]
 l007.1.old <- getChrmRatio.MA.old("007",1)
-l007.1.old.red <- l007.1.old[which(l007.1.old[,3]>0.1),]
 l008.1.old <- getChrmRatio.MA.old("008",1)
-l008.1.old.red <- l008.1.old[which(l008.1.old[,3]>0.1),]
 l009.1.old <- getChrmRatio.MA.old("009",1)
-l009.1.old.red <- l009.1.old[which(l009.1.old[,3]>0.1),]
 l011.1.old <- getChrmRatio.MA.old("011",1)
-l011.1.old.red <- l011.1.old[which(l011.1.old[,3]>0.1),]
 l015.1.old <- getChrmRatio.MA.old("015",1)
-l015.1.old.red <- l015.1.old[which(l015.1.old[,3]>0.1),]
 l028.1.old <- getChrmRatio.MA.old("028",1)
-l028.1.old.red <- l028.1.old[which(l028.1.old[,3]>0.1),]
 l088.1.old <- getChrmRatio.MA.old("088",1)
-l088.1.old.red <- l088.1.old[which(l088.1.old[,3]>0.1),]
 l108.1.old <- getChrmRatio.MA.old("108",1)
-l108.1.old.red <- l108.1.old[which(l108.1.old[,3]>0.1),]
 l119.1.old <- getChrmRatio.MA.old("119",1)
-l119.1.old.red <- l119.1.old[which(l119.1.old[,3]>0.1),]
 
 l001.2.old <- getChrmRatio.MA.old("001",2)
-l001.2.old.red <- l001.2.old[which(l001.2.old[,3]>0.1),]
 l002.2.old <- getChrmRatio.MA.old("002",2)
-l002.2.old.red <- l002.2.old[which(l002.2.old[,3]>0.1),]
 l003.2.old <- getChrmRatio.MA.old("003",2)
-l003.2.old.red <- l003.2.old[which(l003.2.old[,3]>0.1),]
 l004.2.old <- getChrmRatio.MA.old("004",2)
-l004.2.old.red <- l004.2.old[which(l004.2.old[,3]>0.1),]
 l005.2.old <- getChrmRatio.MA.old("005",2)
-l005.2.old.red <- l005.2.old[which(l005.2.old[,3]>0.1),]
 l006.2.old <- getChrmRatio.MA.old("006",2)
-l006.2.old.red <- l006.2.old[which(l006.2.old[,3]>0.1),]
 l007.2.old <- getChrmRatio.MA.old("007",2)
-l007.2.red <- l007.2.old[which(l007.2.old[,3]>0.1),]
 l008.2.old <- getChrmRatio.MA.old("008",2)
-l008.2.old.red <- l008.2.old[which(l008.2.old[,3]>0.1),]
 l009.2.old <- getChrmRatio.MA.old("009",2)
-l009.2.old.red <- l009.2.old[which(l009.2.old[,3]>0.1),]
 l011.2.old <- getChrmRatio.MA.old("011",2)
-l011.2.old.red <- l011.2.old[which(l011.2.old[,3]>0.1),]
 l015.2.old <- getChrmRatio.MA.old("015",2)
-l015.2.old.red <- l015.2.old[which(l015.2.old[,3]>0.1),]
 l028.2.old <- getChrmRatio.MA.old("028",2)
-l028.2.old.red <- l028.2.old[which(l028.2.old[,3]>0.1),]
 l088.2.old <- getChrmRatio.MA.old("088",2)
-l088.2.old.red <- l088.2.old[which(l088.2.old[,3]>0.1),]
 l108.2.old <- getChrmRatio.MA.old("108",2)
-l108.2.old.red <- l108.2.old[which(l108.2.old[,3]>0.1),]
 l119.2.old <- getChrmRatio.MA.old("119",2)
-l119.2.old.red <- l119.2.old[which(l119.2.old[,3]>0.1),]
 
 l001.3.old <- getChrmRatio.MA.old("001",3)
-l001.3.old.red <- l001.3.old[which(l001.3.old[,3]>0.1),]
 l002.3.old <- getChrmRatio.MA.old("002",3)
-l002.3.old.red <- l002.3.old[which(l002.3.old[,3]>0.1),]
 l003.3.old <- getChrmRatio.MA.old("003",3)
-l003.3.old.red <- l003.3.old[which(l003.3.old[,3]>0.1),]
 l004.3.old <- getChrmRatio.MA.old("004",3)
-l004.3.old.red <- l004.3.old[which(l004.3.old[,3]>0.1),]
 l005.3.old <- getChrmRatio.MA.old("005",3)
-l005.3.old.red <- l005.3.old[which(l005.3.old[,3]>0.1),]
 l006.3.old <- getChrmRatio.MA.old("006",3)
-l006.3.old.red <- l006.3.old[which(l006.3.old[,3]>0.1),]
 l007.3.old <- getChrmRatio.MA.old("007",3)
-l007.3.old.red <- l007.3.old[which(l007.3.old[,3]>0.1),]
 l008.3.old <- getChrmRatio.MA.old("008",3)
-l008.3.old.red <- l008.3.old[which(l008.3.old[,3]>0.1),]
 l009.3.old <- getChrmRatio.MA.old("009",3)
-l009.3.old.red <- l009.3.old[which(l009.3.old[,3]>0.1),]
 l011.3.old <- getChrmRatio.MA.old("011",3)
-l011.3.old.red <- l011.3.old[which(l011.3.old[,3]>0.1),]
 l015.3.old <- getChrmRatio.MA.old("015",3)
-l015.3.old.red <- l015.3.old[which(l015.3.old[,3]>0.1),]
 l028.3.old <- getChrmRatio.MA.old("028",3)
-l028.3.old.red <- l028.3.old[which(l028.3.old[,3]>0.1),]
 l088.3.old <- getChrmRatio.MA.old("088",3)
-l088.3.old.red <- l088.3.old[which(l088.3.old[,3]>0.1),]
 l108.3.old <- getChrmRatio.MA.old("108",3)
-l108.3.old.red <- l108.3.old[which(l108.3.old[,3]>0.1),]
 l119.3.old <- getChrmRatio.MA.old("119",3)
-l119.3.old.red <- l119.3.old[which(l119.3.old[,3]>0.1),]
 
 l001.4.old <- getChrmRatio.MA.old("001",4)
-l001.4.old.red <- l001.4.old[which(l001.4.old[,3]>0.1),]
 l002.4.old <- getChrmRatio.MA.old("002",4)
-l002.4.old.red <- l002.4.old[which(l002.4.old[,3]>0.1),]
 l003.4.old <- getChrmRatio.MA.old("003",4)
-l003.4.old.red <- l003.4.old[which(l003.4.old[,3]>0.1),]
 l004.4.old <- getChrmRatio.MA.old("004",4)
-l004.4.old.red <- l004.4.old[which(l004.4.old[,3]>0.1),]
 l005.4.old <- getChrmRatio.MA.old("005",4)
-l005.4.old.red <- l005.4.old[which(l005.4.old[,3]>0.1),]
 l006.4.old <- getChrmRatio.MA.old("006",4)
-l006.4.old.red <- l006.4.old[which(l006.4.old[,3]>0.1),]
 l007.4.old <- getChrmRatio.MA.old("007",4)
-l007.4.old.red <- l007.4.old[which(l007.4.old[,3]>0.1),]
 l008.4.old <- getChrmRatio.MA.old("008",4)
-l008.4.old.red <- l008.4.old[which(l008.4.old[,3]>0.1),]
 l009.4.old <- getChrmRatio.MA.old("009",4)
-l009.4.old.red <- l009.4.old[which(l009.4.old[,3]>0.1),]
 l011.4.old <- getChrmRatio.MA.old("011",4)
-l011.4.old.red <- l011.4.old[which(l011.4.old[,3]>0.1),]
 l015.4.old <- getChrmRatio.MA.old("015",4)
-l015.4.old.red <- l015.4.old[which(l015.4.old[,3]>0.1),]
 l028.4.old <- getChrmRatio.MA.old("028",4)
-l028.4.old.red <- l028.4.old[which(l028.4.old[,3]>0.1),]
 l088.4.old <- getChrmRatio.MA.old("088",4)
-l088.4.old.red <- l088.4.old[which(l088.4.old[,3]>0.1),]
 l108.4.old <- getChrmRatio.MA.old("108",4)
-l108.4.old.red <- l108.4.old[which(l108.4.old[,3]>0.1),]
 l119.4.old <- getChrmRatio.MA.old("119",4)
-l119.4.old.red <- l119.4.old[which(l119.4.old[,3]>0.1),]
 
 l001.5.old <- getChrmRatio.MA.old("001",5)
 l002.5.old <- getChrmRatio.MA.old("002",5)
@@ -2086,21 +1844,7 @@ l028.5.old <- getChrmRatio.MA.old("028",5)
 l088.5.old <- getChrmRatio.MA.old("088",5)
 l108.5.old <- getChrmRatio.MA.old("108",5)
 l119.5.old <- getChrmRatio.MA.old("119",5)
-# l001.5.old.red <- l001.5[which(l002.5[,3]>0.1),]
-# l002.5.old.red <- l002.5[which(l002.5[,3]>0.1),]
-# l003.5.old.red <- l003.5[which(l003.5[,3]>0.1),]
-# l004.5.old.red <- l004.5[which(l004.5[,3]>0.1),]
-# l005.5.old.red <- l005.5[which(l005.5[,3]>0.1),]
-# l006.5.old.red <- l006.5[which(l006.5[,3]>0.1),]
-# l007.5.old.red <- l007.5[which(l007.5[,3]>0.1),]
-# l008.5.old.red <- l008.5[which(l008.5[,3]>0.1),]
-# l009.5.old.red <- l009.5[which(l009.5[,3]>0.1),]
-# l011.5.old.red <- l011.5[which(l011.5[,3]>0.1),]
-# l015.5.old.red <- l015.5[which(l015.5[,3]>0.1),]
-# l028.5.old.red <- l028.5[which(l028.5[,3]>0.1),]
-# l088.5.old.red <- l088.5[which(l088.5[,3]>0.1),]
-# l108.5.old.red <- l108.5[which(l108.5[,3]>0.1),]
-# l119.5.old.red <- l119.5[which(l119.5[,3]>0.1),]
+
 
 l001.6.old <- getChrmRatio.MA.old("001",6)
 l002.6.old <- getChrmRatio.MA.old("002",6)
@@ -2117,21 +1861,6 @@ l028.6.old <- getChrmRatio.MA.old("028",6)
 l088.6.old <- getChrmRatio.MA.old("088",6)
 l108.6.old <- getChrmRatio.MA.old("108",6)
 l119.6.old <- getChrmRatio.MA.old("119",6)
-# l001.6.old.red <- l001.6.old[which(l002.6.old[,3]>0.1),]
-# l002.6.old.red <- l002.6.old[which(l002.6.old[,3]>0.1),]
-# l003.6.old.red <- l003.6.old[which(l003.6.old[,3]>0.1),]
-# l004.6.old.red <- l004.6.old[which(l004.6.old[,3]>0.1),]
-# l005.6.old.red <- l005.6.old[which(l005.6.old[,3]>0.1),]
-# l006.6.old.red <- l006.6.old[which(l006.6.old[,3]>0.1),]
-# l007.6.old.red <- l007.6.old[which(l007.6.old[,3]>0.1),]
-# l008.6.old.red <- l008.6.old[which(l008.6.old[,3]>0.1),]
-# l009.6.old.red <- l009.6.old[which(l009.6.old[,3]>0.1),]
-# l011.6.old.red <- l011.6.old[which(l011.6.old[,3]>0.1),]
-# l015.6.old.red <- l015.6.old[which(l015.6.old[,3]>0.1),]
-# l028.6.old.red <- l028.6.old[which(l028.6.old[,3]>0.1),]
-# l088.6.old.red <- l088.6.old[which(l088.6.old[,3]>0.1),]
-# l108.6.old.red <- l108.6.old[which(l108.6.old[,3]>0.1),]
-# l119.6.old.red <- l119.6.old[which(l119.6.old[,3]>0.1),]
 
 l001.7.old <- getChrmRatio.MA.old("001",7)
 l002.7.old <- getChrmRatio.MA.old("002",7)
@@ -2148,21 +1877,6 @@ l028.7.old <- getChrmRatio.MA.old("028",7)
 l088.7.old <- getChrmRatio.MA.old("088",7)
 l108.7.old <- getChrmRatio.MA.old("108",7)
 l119.7.old <- getChrmRatio.MA.old("119",7)
-# l001.7.red <- l001.7[which(l002.7[,3]>0.1),]
-# l002.7.red <- l002.7[which(l002.7[,3]>0.1),]
-# l003.7.red <- l003.7[which(l003.7[,3]>0.1),]
-# l004.7.red <- l004.7[which(l004.7[,3]>0.1),]
-# l005.7.red <- l005.7[which(l005.7[,3]>0.1),]
-# l006.7.red <- l006.7[which(l006.7[,3]>0.1),]
-# l007.7.red <- l007.7[which(l007.7[,3]>0.1),]
-# l008.7.red <- l008.7[which(l008.7[,3]>0.1),]
-# l009.7.red <- l009.7[which(l009.7[,3]>0.1),]
-# l011.7.red <- l011.7[which(l011.7[,3]>0.1),]
-# l015.7.red <- l015.7[which(l015.7[,3]>0.1),]
-# l028.7.red <- l028.7[which(l028.7[,3]>0.1),]
-# l088.7.red <- l088.7[which(l088.7[,3]>0.1),]
-# l108.7.red <- l108.7[which(l108.7[,3]>0.1),]
-# l119.7.red <- l119.7[which(l119.7[,3]>0.1),]
 
 l001.8.old <- getChrmRatio.MA.old("001",8)
 l002.8.old <- getChrmRatio.MA.old("002",8)
@@ -2179,21 +1893,6 @@ l028.8.old <- getChrmRatio.MA.old("028",8)
 l088.8.old <- getChrmRatio.MA.old("088",8)
 l108.8.old <- getChrmRatio.MA.old("108",8)
 l119.8.old <- getChrmRatio.MA.old("119",8)
-# l001.8.red <- l001.8[which(l002.8[,3]>0.1),]
-# l002.8.red <- l002.8[which(l002.8[,3]>0.1),]
-# l003.8.red <- l003.8[which(l003.8[,3]>0.1),]
-# l004.8.red <- l004.8[which(l004.8[,3]>0.1),]
-# l005.8.red <- l005.8[which(l005.8[,3]>0.1),]
-# l006.8.red <- l006.8[which(l006.8[,3]>0.1),]
-# l007.8.red <- l007.8[which(l007.8[,3]>0.1),]
-# l008.8.red <- l008.8[which(l008.8[,3]>0.1),]
-# l009.8.red <- l009.8[which(l009.8[,3]>0.1),]
-# l011.8.red <- l011.8[which(l011.8[,3]>0.1),]
-# l015.8.red <- l015.8[which(l015.8[,3]>0.1),]
-# l028.8.red <- l028.8[which(l028.8[,3]>0.1),]
-# l088.8.red <- l088.8[which(l088.8[,3]>0.1),]
-# l108.8.red <- l108.8[which(l108.8[,3]>0.1),]
-# l119.8.red <- l119.8[which(l119.8[,3]>0.1),]
 
 l001.9.old <- getChrmRatio.MA.old("001",9)
 l002.9.old <- getChrmRatio.MA.old("002",9)
@@ -2210,21 +1909,6 @@ l028.9.old <- getChrmRatio.MA.old("028",9)
 l088.9.old <- getChrmRatio.MA.old("088",9)
 l108.9.old <- getChrmRatio.MA.old("108",9)
 l119.9.old <- getChrmRatio.MA.old("119",9)
-# l001.9.red <- l001.9[which(l002.9[,3]>0.1),]
-# l002.9.red <- l002.9[which(l002.9[,3]>0.1),]
-# l003.9.red <- l003.9[which(l003.9[,3]>0.1),]
-# l004.9.red <- l004.9[which(l004.9[,3]>0.1),]
-# l005.9.red <- l005.9[which(l005.9[,3]>0.1),]
-# l006.9.red <- l006.9[which(l006.9[,3]>0.1),]
-# l007.9.red <- l007.9[which(l007.9[,3]>0.1),]
-# l008.9.red <- l008.9[which(l008.9[,3]>0.1),]
-# l009.9.red <- l009.9[which(l009.9[,3]>0.1),]
-# l011.9.red <- l011.9[which(l011.9[,3]>0.1),]
-# l015.9.red <- l015.9[which(l015.9[,3]>0.1),]
-# l028.9.red <- l028.9[which(l028.9[,3]>0.1),]
-# l088.9.red <- l088.9[which(l088.9[,3]>0.1),]
-# l108.9.red <- l108.9[which(l108.9[,3]>0.1),]
-# l119.9.red <- l119.9[which(l119.9[,3]>0.1),]
 
 l001.10.old <- getChrmRatio.MA.old("001",10)
 l002.10.old <- getChrmRatio.MA.old("002",10)
@@ -2241,21 +1925,6 @@ l028.10.old <- getChrmRatio.MA.old("028",10)
 l088.10.old <- getChrmRatio.MA.old("088",10)
 l108.10.old <- getChrmRatio.MA.old("108",10)
 l119.10.old <- getChrmRatio.MA.old("119",10)
-# l001.10.red <- l001.10[which(l002.10[,3]>0.1),]
-# l002.10.red <- l002.10[which(l002.10[,3]>0.1),]
-# l003.10.red <- l003.10[which(l003.10[,3]>0.1),]
-# l004.10.red <- l004.10[which(l004.10[,3]>0.1),]
-# l005.10.red <- l005.10[which(l005.10[,3]>0.1),]
-# l006.10.red <- l006.10[which(l006.10[,3]>0.1),]
-# l007.10.red <- l007.10[which(l007.10[,3]>0.1),]
-# l008.10.red <- l008.10[which(l008.10[,3]>0.1),]
-# l009.10.red <- l009.10[which(l009.10[,3]>0.1),]
-# l011.10.red <- l011.10[which(l011.10[,3]>0.1),]
-# l015.10.red <- l015.10[which(l015.10[,3]>0.1),]
-# l028.10.red <- l028.10[which(l028.10[,3]>0.1),]
-# l088.10.red <- l088.10[which(l088.10[,3]>0.1),]
-# l108.10.red <- l108.10[which(l108.10[,3]>0.1),]
-# l119.10.red <- l119.10[which(l119.10[,3]>0.1),]
 
 l001.11.old <- getChrmRatio.MA.old("001",11)
 l002.11.old <- getChrmRatio.MA.old("002",11)
@@ -2272,21 +1941,6 @@ l028.11.old <- getChrmRatio.MA.old("028",11)
 l088.11.old <- getChrmRatio.MA.old("088",11)
 l108.11.old <- getChrmRatio.MA.old("108",11)
 l119.11.old <- getChrmRatio.MA.old("119",11)
-# l001.11.red <- l001.11[which(l002.11[,3]>0.1),]
-# l002.11.red <- l002.11[which(l002.11[,3]>0.1),]
-# l003.11.red <- l003.11[which(l003.11[,3]>0.1),]
-# l004.11.red <- l004.11[which(l004.11[,3]>0.1),]
-# l005.11.red <- l005.11[which(l005.11[,3]>0.1),]
-# l006.11.red <- l006.11[which(l006.11[,3]>0.1),]
-# l007.11.red <- l007.11[which(l007.11[,3]>0.1),]
-# l008.11.red <- l008.11[which(l008.11[,3]>0.1),]
-# l009.11.red <- l009.11[which(l009.11[,3]>0.1),]
-# l011.11.red <- l011.11[which(l011.11[,3]>0.1),]
-# l015.11.red <- l015.11[which(l015.11[,3]>0.1),]
-# l028.11.red <- l028.11[which(l028.11[,3]>0.1),]
-# l088.11.red <- l088.11[which(l088.11[,3]>0.1),]
-# l108.11.red <- l108.11[which(l108.11[,3]>0.1),]
-# l119.11.red <- l119.11[which(l119.11[,3]>0.1),]
 
 l001.12.old <- getChrmRatio.MA.old("001",12)
 l002.12.old <- getChrmRatio.MA.old("002",12)
@@ -2303,21 +1957,6 @@ l028.12.old <- getChrmRatio.MA.old("028",12)
 l088.12.old <- getChrmRatio.MA.old("088",12)
 l108.12.old <- getChrmRatio.MA.old("108",12)
 l119.12.old <- getChrmRatio.MA.old("119",12)
-# l001.12.red <- l001.12[which(l002.12[,3]>0.1),]
-# l002.12.red <- l002.12[which(l002.12[,3]>0.1),]
-# l003.12.red <- l003.12[which(l003.12[,3]>0.1),]
-# l004.12.red <- l004.12[which(l004.12[,3]>0.1),]
-# l005.12.red <- l005.12[which(l005.12[,3]>0.1),]
-# l006.12.red <- l006.12[which(l006.12[,3]>0.1),]
-# l007.12.red <- l007.12[which(l007.12[,3]>0.1),]
-# l008.12.red <- l008.12[which(l008.12[,3]>0.1),]
-# l009.12.red <- l009.12[which(l009.12[,3]>0.1),]
-# l011.12.red <- l011.12[which(l011.12[,3]>0.1),]
-# l015.12.red <- l015.12[which(l015.12[,3]>0.1),]
-# l028.12.red <- l028.12[which(l028.12[,3]>0.1),]
-# l088.12.red <- l088.12[which(l088.12[,3]>0.1),]
-# l108.12.red <- l108.12[which(l108.12[,3]>0.1),]
-# l119.12.red <- l119.12[which(l119.12[,3]>0.1),]
 
 l001.13.old <- getChrmRatio.MA.old("001",13)
 l002.13.old <- getChrmRatio.MA.old("002",13)
@@ -2334,21 +1973,6 @@ l028.13.old <- getChrmRatio.MA.old("028",13)
 l088.13.old <- getChrmRatio.MA.old("088",13)
 l108.13.old <- getChrmRatio.MA.old("108",13)
 l119.13.old <- getChrmRatio.MA.old("119",13)
-# l001.13.red <- l001.13[which(l002.13[,3]>0.1),]
-# l002.13.red <- l002.13[which(l002.13[,3]>0.1),]
-# l003.13.red <- l003.13[which(l003.13[,3]>0.1),]
-# l004.13.red <- l004.13[which(l004.13[,3]>0.1),]
-# l005.13.red <- l005.13[which(l005.13[,3]>0.1),]
-# l006.13.red <- l006.13[which(l006.13[,3]>0.1),]
-# l007.13.red <- l007.13[which(l007.13[,3]>0.1),]
-# l008.13.red <- l008.13[which(l008.13[,3]>0.1),]
-# l009.13.red <- l009.13[which(l009.13[,3]>0.1),]
-# l011.13.red <- l011.13[which(l011.13[,3]>0.1),]
-# l015.13.red <- l015.13[which(l015.13[,3]>0.1),]
-# l028.13.red <- l028.13[which(l028.13[,3]>0.1),]
-# l088.13.red <- l088.13[which(l088.13[,3]>0.1),]
-# l108.13.red <- l108.13[which(l108.13[,3]>0.1),]
-# l119.13.red <- l119.13[which(l119.13[,3]>0.1),]
 
 l001.14.old <- getChrmRatio.MA.old("001",14)
 l002.14.old <- getChrmRatio.MA.old("002",14)
@@ -2365,21 +1989,6 @@ l028.14.old <- getChrmRatio.MA.old("028",14)
 l088.14.old <- getChrmRatio.MA.old("088",14)
 l108.14.old <- getChrmRatio.MA.old("108",14)
 l119.14.old <- getChrmRatio.MA.old("119",14)
-# l001.14.red <- l001.14[which(l002.14[,3]>0.1),]
-# l002.14.red <- l002.14[which(l002.14[,3]>0.1),]
-# l003.14.red <- l003.14[which(l003.14[,3]>0.1),]
-# l004.14.red <- l004.14[which(l004.14[,3]>0.1),]
-# l005.14.red <- l005.14[which(l005.14[,3]>0.1),]
-# l006.14.red <- l006.14[which(l006.14[,3]>0.1),]
-# l007.14.red <- l007.14[which(l007.14[,3]>0.1),]
-# l008.14.red <- l008.14[which(l008.14[,3]>0.1),]
-# l009.14.red <- l009.14[which(l009.14[,3]>0.1),]
-# l011.14.red <- l011.14[which(l011.14[,3]>0.1),]
-# l015.14.red <- l015.14[which(l015.14[,3]>0.1),]
-# l028.14.red <- l028.14[which(l028.14[,3]>0.1),]
-# l088.14.red <- l088.14[which(l088.14[,3]>0.1),]
-# l108.14.red <- l108.14[which(l108.14[,3]>0.1),]
-# l119.14.red <- l119.14[which(l119.14[,3]>0.1),]
 
 l001.15.old <- getChrmRatio.MA.old("001",15)
 l002.15.old <- getChrmRatio.MA.old("002",15)
@@ -2396,21 +2005,6 @@ l028.15.old <- getChrmRatio.MA.old("028",15)
 l088.15.old <- getChrmRatio.MA.old("088",15)
 l108.15.old <- getChrmRatio.MA.old("108",15)
 l119.15.old <- getChrmRatio.MA.old("119",15)
-# l001.15.red <- l001.15[which(l002.15[,3]>0.1),]
-# l002.15.red <- l002.15[which(l002.15[,3]>0.1),]
-# l003.15.red <- l003.15[which(l003.15[,3]>0.1),]
-# l004.15.red <- l004.15[which(l004.15[,3]>0.1),]
-# l005.15.red <- l005.15[which(l005.15[,3]>0.1),]
-# l006.15.red <- l006.15[which(l006.15[,3]>0.1),]
-# l007.15.red <- l007.15[which(l007.15[,3]>0.1),]
-# l008.15.red <- l008.15[which(l008.15[,3]>0.1),]
-# l009.15.red <- l009.15[which(l009.15[,3]>0.1),]
-# l011.15.red <- l011.15[which(l011.15[,3]>0.1),]
-# l015.15.red <- l015.15[which(l015.15[,3]>0.1),]
-# l028.15.red <- l028.15[which(l028.15[,3]>0.1),]
-# l088.15.red <- l088.15[which(l088.15[,3]>0.1),]
-# l108.15.red <- l108.15[which(l108.15[,3]>0.1),]
-# l119.15.red <- l119.15[which(l119.15[,3]>0.1),]
 
 l001.16.old <- getChrmRatio.MA.old("001",16)
 l002.16.old <- getChrmRatio.MA.old("002",16)
@@ -2427,920 +2021,409 @@ l028.16.old <- getChrmRatio.MA.old("028",16)
 l088.16.old <- getChrmRatio.MA.old("088",16)
 l108.16.old <- getChrmRatio.MA.old("108",16)
 l119.16.old <- getChrmRatio.MA.old("119",16)
-# l001.16.red <- l001.16[which(l002.16[,3]>0.1),]
-# l002.16.red <- l002.16[which(l002.16[,3]>0.1),]
-# l003.16.red <- l003.16[which(l003.16[,3]>0.1),]
-# l004.16.red <- l004.16[which(l004.16[,3]>0.1),]
-# l005.16.red <- l005.16[which(l005.16[,3]>0.1),]
-# l006.16.red <- l006.16[which(l006.16[,3]>0.1),]
-# l007.16.red <- l007.16[which(l007.16[,3]>0.1),]
-# l008.16.red <- l008.16[which(l008.16[,3]>0.1),]
-# l009.16.red <- l009.16[which(l009.16[,3]>0.1),]
-# l011.16.red <- l011.16[which(l011.16[,3]>0.1),]
-# l015.16.red <- l015.16[which(l015.16[,3]>0.1),]
-# l028.16.red <- l028.16[which(l028.16[,3]>0.1),]
-# l088.16.red <- l088.16[which(l088.16[,3]>0.1),]
-# l108.16.red <- l108.16[which(l108.16[,3]>0.1),]
-# l119.16.red <- l119.16[which(l119.16[,3]>0.1),]
 
 
 
 l002.1 <- getChrmRatio.GC("2",1)
-l002.1.red <- l002.1[which(l002.1[,3]>0.1),]
 l003.1 <- getChrmRatio.GC("3",1)
-l003.1.red <- l003.1[which(l003.1[,3]>0.1),]
 l005.1 <- getChrmRatio.GC("5",1)
-l005.1.red <- l005.1[which(l005.1[,3]>0.1),]
 l008.1 <- getChrmRatio.GC("8",1)
-l008.1.red <- l008.1[which(l008.1[,3]>0.1),]
 l009.1 <- getChrmRatio.GC("9",1)
-l009.1.red <- l009.1[which(l009.1[,3]>0.1),]
 l011.1 <- getChrmRatio.GC("11",1)
-l011.1.red <- l011.1[which(l011.1[,3]>0.1),]
 l018.1 <- getChrmRatio.GC("18",1)
-l018.1.red <- l018.1[which(l018.1[,3]>0.1),]
 l001.1 <- getChrmRatio.GC("1",1)
-l001.1.red <- l001.1[which(l001.1[,3]>0.1),]
-# l021.1 <- getChrmRatio.GC.r1("21",1)
-# l021.1.red <- l021.1[which(l021.1[,3]>0.1),]
-# l031.1 <- getChrmRatio.GC("31",1)
-# l031.1.red <- l031.1[which(l031.1[,3]>0.1),]
 l049.1 <- getChrmRatio.GC("49",1)
-l049.1.red <- l049.1[which(l049.1[,3]>0.1),]
 l004.1 <- getChrmRatio.GC("4",1)
-l004.1.red <- l004.1[which(l004.1[,3]>0.1),]
 l059.1 <- getChrmRatio.GC("59",1)
-l059.1.red <- l059.1[which(l059.1[,3]>0.1),]
 l061.1 <- getChrmRatio.GC("61",1)
-l061.1.red <- l061.1[which(l061.1[,3]>0.1),]
-# l066.1 <- getChrmRatio.GC.r1("66",1)
-# l066.1.red <- l066.1[which(l066.1[,3]>0.1),]
 l069.1 <- getChrmRatio.GC("69",1)
-l069.1.red <- l069.1[which(l069.1[,3]>0.1),]
 l076.1 <- getChrmRatio.GC("76",1)
-l076.1.red <- l076.1[which(l076.1[,3]>0.1),]
 l077.1 <- getChrmRatio.GC("77",1)
-l077.1.red <- l077.1[which(l077.1[,3]>0.1),]
 l007.1 <- getChrmRatio.GC("7",1)
-l007.1.red <- l007.1[which(l007.1[,3]>0.1),]
 
 
 l029.1 <- getChrmRatio.MAnew("29",1)
-l029.1.red <- l029.1[which(l029.1[,3]>0.1),]
 l050.1 <- getChrmRatio.MAnew("50",1)
-l050.1.red <- l050.1[which(l050.1[,3]>0.1),]
 l112.1 <- getChrmRatio.MAnew("112",1)
-l112.1.red <- l112.1[which(l112.1[,3]>0.1),]
 l115.1 <- getChrmRatio.MAnew("115",1)
-l115.1.red <- l115.1[which(l115.1[,3]>0.1),]
 l117.1 <- getChrmRatio.MAnew("117",1)
-l117.1.red <- l117.1[which(l117.1[,3]>0.1),]
 l123.1 <- getChrmRatio.MAnew("123",1)
-l123.1.red <- l123.1[which(l123.1[,3]>0.1),]
-# l141.1 <- getChrmRatio.MA("141",1)
-# l141.1.red <- l141.1[which(l141.1[,3]>0.1),]
 l152.1 <- getChrmRatio.MAnew("152",1)
-l152.1.red <- l152.1[which(l152.1[,3]>0.1),]
 
 l002.2 <- getChrmRatio.GC("2",2)
-l002.2.red <- l002.2[which(l002.2[,3]>0.1),]
 l003.2 <- getChrmRatio.GC("3",2)
-l003.2.red <- l003.2[which(l003.2[,3]>0.1),]
 l005.2 <- getChrmRatio.GC("5",2)
-l005.2.red <- l005.2[which(l005.2[,3]>0.1),]
 l008.2 <- getChrmRatio.GC("8",2)
-l008.2.red <- l008.2[which(l008.2[,3]>0.1),]
 l009.2 <- getChrmRatio.GC("9",2)
-l009.2.red <- l009.2[which(l009.2[,3]>0.1),]
 l011.2 <- getChrmRatio.GC("11",2)
-l011.2.red <- l011.2[which(l011.2[,3]>0.1),]
 l018.2 <- getChrmRatio.GC("18",2)
-l018.2.red <- l018.2[which(l018.2[,3]>0.1),]
 l001.2 <- getChrmRatio.GC("1",2)
-l001.2.red <- l001.2[which(l001.2[,3]>0.1),]
-# l021.2 <- getChrmRatio.GC.r1("21",2)
-# l021.2.red <- l021.2[which(l021.2[,3]>0.1),]
-# l031.2 <- getChrmRatio.GC("31",2)
-# l031.2.red <- l031.2[which(l031.2[,3]>0.1),]
 l049.2 <- getChrmRatio.GC("49",2)
-l049.2.red <- l049.2[which(l049.2[,3]>0.1),]
 l004.2 <- getChrmRatio.GC("4",2)
-l004.2.red <- l004.2[which(l004.2[,3]>0.1),]
 l059.2 <- getChrmRatio.GC("59",2)
-l059.2.red <- l059.2[which(l059.2[,3]>0.1),]
 l061.2 <- getChrmRatio.GC("61",2)
-l061.2.red <- l061.2[which(l061.2[,3]>0.1),]
-# l066.2 <- getChrmRatio.GC.r1("66",2)
-# l066.2.red <- l066.2[which(l066.2[,3]>0.1),]
 l069.2 <- getChrmRatio.GC("69",2)
-l069.2.red <- l069.2[which(l069.2[,3]>0.1),]
 l076.2 <- getChrmRatio.GC("76",2)
-l076.2.red <- l076.2[which(l076.2[,3]>0.1),]
 l077.2 <- getChrmRatio.GC("77",2)
-l077.2.red <- l077.2[which(l077.2[,3]>0.1),]
 l007.2 <- getChrmRatio.GC("7",2)
-l007.2.red <- l007.2[which(l007.2[,3]>0.1),]
 
 l029.2 <- getChrmRatio.MAnew("29",2)
-l029.2.red <- l029.2[which(l029.2[,3]>0.1),]
 l050.2 <- getChrmRatio.MAnew("50",2)
-l050.2.red <- l050.2[which(l050.2[,3]>0.1),]
 l112.2 <- getChrmRatio.MAnew("112",2)
-l112.2.red <- l112.2[which(l112.2[,3]>0.1),]
 l115.2 <- getChrmRatio.MAnew("115",2)
-l115.2.red <- l115.2[which(l115.2[,3]>0.1),]
 l117.2 <- getChrmRatio.MAnew("117",2)
-l117.2.red <- l117.2[which(l117.2[,3]>0.1),]
 l123.2 <- getChrmRatio.MAnew("123",2)
-l123.2.red <- l123.2[which(l123.2[,3]>0.1),]
-# l141.2 <- getChrmRatio.MA("141",2)
-# l141.2.red <- l141.2[which(l141.2[,3]>0.1),]
 l152.2 <- getChrmRatio.MAnew("152",2)
-l152.2.red <- l152.2[which(l152.2[,3]>0.1),]
 
 l002.3 <- getChrmRatio.GC("2",3)
-l002.3.red <- l002.3[which(l002.3[,3]>0.1),]
 l003.3 <- getChrmRatio.GC("3",3)
-l003.3.red <- l003.3[which(l003.3[,3]>0.1),]
 l005.3 <- getChrmRatio.GC("5",3)
-l005.3.red <- l005.3[which(l005.3[,3]>0.1),]
 l008.3 <- getChrmRatio.GC("8",3)
-l008.3.red <- l008.3[which(l008.3[,3]>0.1),]
 l009.3 <- getChrmRatio.GC("9",3)
-l009.3.red <- l009.3[which(l009.3[,3]>0.1),]
 l011.3 <- getChrmRatio.GC("11",3)
-l011.3.red <- l011.3[which(l011.3[,3]>0.1),]
 l018.3 <- getChrmRatio.GC("18",3)
-l018.3.red <- l018.3[which(l018.3[,3]>0.1),]
 l001.3 <- getChrmRatio.GC("1",3)
-l001.3.red <- l001.3[which(l001.3[,3]>0.1),]
-# l021.3 <- getChrmRatio.GC.r1("21",3)
-# l021.3.red <- l021.3[which(l021.3[,3]>0.1),]
-# l031.3 <- getChrmRatio.GC("31",3)
-# l031.3.red <- l031.3[which(l031.3[,3]>0.1),]
 l049.3 <- getChrmRatio.GC("49",3)
-l049.3.red <- l049.3[which(l049.3[,3]>0.1),]
 l004.3 <- getChrmRatio.GC("4",3)
-l004.3.red <- l004.3[which(l004.3[,3]>0.1),]
 l059.3 <- getChrmRatio.GC("59",3)
-l059.3.red <- l059.3[which(l059.3[,3]>0.1),]
 l061.3 <- getChrmRatio.GC("61",3)
-l061.3.red <- l061.3[which(l061.3[,3]>0.1),]
-# l066.3 <- getChrmRatio.GC.r1("66",3)
-# l066.3.red <- l066.3[which(l066.3[,3]>0.1),]
 l069.3 <- getChrmRatio.GC("69",3)
-l069.3.red <- l069.3[which(l069.3[,3]>0.1),]
 l076.3 <- getChrmRatio.GC("76",3)
-l076.3.red <- l076.3[which(l076.3[,3]>0.1),]
 l077.3 <- getChrmRatio.GC("77",3)
-l077.3.red <- l077.3[which(l077.3[,3]>0.1),]
 l007.3 <- getChrmRatio.GC("7",3)
-l007.3.red <- l007.3[which(l007.3[,3]>0.1),]
 
 l029.3 <- getChrmRatio.MAnew("29",3)
-l029.3.red <- l029.3[which(l029.3[,3]>0.1),]
 l050.3 <- getChrmRatio.MAnew("50",3)
-l050.3.red <- l050.3[which(l050.3[,3]>0.1),]
 l112.3 <- getChrmRatio.MAnew("112",3)
-l112.3.red <- l112.3[which(l112.3[,3]>0.1),]
 l115.3 <- getChrmRatio.MAnew("115",3)
-l115.3.red <- l115.3[which(l115.3[,3]>0.1),]
 l117.3 <- getChrmRatio.MAnew("117",3)
-l117.3.red <- l117.3[which(l117.3[,3]>0.1),]
 l123.3 <- getChrmRatio.MAnew("123",3)
-l123.3.red <- l123.3[which(l123.3[,3]>0.1),]
-# l141.3 <- getChrmRatio.MA("141",3)
-# l141.3.red <- l141.3[which(l141.3[,3]>0.1),]
 l152.3 <- getChrmRatio.MAnew("152",3)
-l152.3.red <- l152.3[which(l152.3[,3]>0.1),]
 
 l002.4 <- getChrmRatio.GC("2",4)
-l002.4.red <- l002.4[which(l002.4[,3]>0.1),]
 l003.4 <- getChrmRatio.GC("3",4)
-l003.4.red <- l003.4[which(l003.4[,3]>0.1),]
 l005.4 <- getChrmRatio.GC("5",4)
-l005.4.red <- l005.4[which(l005.4[,3]>0.1),]
 l008.4 <- getChrmRatio.GC("8",4)
-l008.4.red <- l008.4[which(l008.4[,3]>0.1),]
 l009.4 <- getChrmRatio.GC("9",4)
-l009.4.red <- l009.4[which(l009.4[,3]>0.1),]
 l011.4 <- getChrmRatio.GC("11",4)
-l011.4.red <- l011.4[which(l011.4[,3]>0.1),]
 l018.4 <- getChrmRatio.GC("18",4)
-l018.4.red <- l018.4[which(l018.4[,3]>0.1),]
 l001.4 <- getChrmRatio.GC("1",4)
-l001.4.red <- l001.4[which(l001.4[,3]>0.1),]
-# l021.4 <- getChrmRatio.GC.r1("21",4)
-# l021.4.red <- l021.4[which(l021.4[,3]>0.1),]
-# l031.4 <- getChrmRatio.GC("31",4)
-# l031.4.red <- l031.4[which(l031.4[,3]>0.1),]
 l049.4 <- getChrmRatio.GC("49",4)
-l049.4.red <- l049.4[which(l049.4[,3]>0.1),]
 l004.4 <- getChrmRatio.GC("4",4)
-l004.4.red <- l004.4[which(l004.4[,3]>0.1),]
 l059.4 <- getChrmRatio.GC("59",4)
-l059.4.red <- l059.4[which(l059.4[,3]>0.1),]
 l061.4 <- getChrmRatio.GC("61",4)
-l061.4.red <- l061.4[which(l061.4[,3]>0.1),]
-# l066.4 <- getChrmRatio.GC.r1("66",4)
-# l066.4.red <- l066.4[which(l066.4[,3]>0.1),]
 l069.4 <- getChrmRatio.GC("69",4)
-l069.4.red <- l069.4[which(l069.4[,3]>0.1),]
 l076.4 <- getChrmRatio.GC("76",4)
-l076.4.red <- l076.4[which(l076.4[,3]>0.1),]
 l077.4 <- getChrmRatio.GC("77",4)
-l077.4.red <- l077.4[which(l077.4[,3]>0.1),]
 l007.4 <- getChrmRatio.GC("7",4)
-l007.4.red <- l007.4[which(l007.4[,3]>0.1),]
 
 l029.4 <- getChrmRatio.MAnew("29",4)
-l029.4.red <- l029.4[which(l029.4[,3]>0.1),]
 l050.4 <- getChrmRatio.MAnew("50",4)
-l050.4.red <- l050.4[which(l050.4[,3]>0.1),]
 l112.4 <- getChrmRatio.MAnew("112",4)
-l112.4.red <- l112.4[which(l112.4[,3]>0.1),]
 l115.4 <- getChrmRatio.MAnew("115",4)
-l115.4.red <- l115.4[which(l115.4[,3]>0.1),]
 l117.4 <- getChrmRatio.MAnew("117",4)
-l117.4.red <- l117.4[which(l117.4[,3]>0.1),]
 l123.4 <- getChrmRatio.MAnew("123",4)
-l123.4.red <- l123.4[which(l123.4[,3]>0.1),]
-# l141.4 <- getChrmRatio.MA("141",4)
-# l141.4.red <- l141.4[which(l141.4[,3]>0.1),]
 l152.4 <- getChrmRatio.MAnew("152",4)
-l152.4.red <- l152.4[which(l152.4[,3]>0.1),]
 
 l002.5 <- getChrmRatio.GC("2",5)
-l002.5.red <- l002.5[which(l002.5[,3]>0.1),]
 l003.5 <- getChrmRatio.GC("3",5)
-l003.5.red <- l003.5[which(l003.5[,3]>0.1),]
 l005.5 <- getChrmRatio.GC("5",5)
-l005.5.red <- l005.5[which(l005.5[,3]>0.1),]
 l008.5 <- getChrmRatio.GC("8",5)
-l008.5.red <- l008.5[which(l008.5[,3]>0.1),]
 l009.5 <- getChrmRatio.GC("9",5)
-l009.5.red <- l009.5[which(l009.5[,3]>0.1),]
 l011.5 <- getChrmRatio.GC("11",5)
-l011.5.red <- l011.5[which(l011.5[,3]>0.1),]
 l018.5 <- getChrmRatio.GC("18",5)
-l018.5.red <- l018.5[which(l018.5[,3]>0.1),]
 l001.5 <- getChrmRatio.GC("1",5)
-l001.5.red <- l001.5[which(l001.5[,3]>0.1),]
-# l021.5 <- getChrmRatio.GC.r1("21",5)
-# l021.5.red <- l021.5[which(l021.5[,3]>0.1),]
-# l031.5 <- getChrmRatio.GC("31",5)
-# l031.5.red <- l031.5[which(l031.5[,3]>0.1),]
 l049.5 <- getChrmRatio.GC("49",5)
-l049.5.red <- l049.5[which(l049.5[,3]>0.1),]
 l004.5 <- getChrmRatio.GC("4",5)
-l004.5.red <- l004.5[which(l004.5[,3]>0.1),]
 l059.5 <- getChrmRatio.GC("59",5)
-l059.5.red <- l059.5[which(l059.5[,3]>0.1),]
 l061.5 <- getChrmRatio.GC("61",5)
-l061.5.red <- l061.5[which(l061.5[,3]>0.1),]
-# l066.5 <- getChrmRatio.GC.r1("66",5)
-# l066.5.red <- l066.5[which(l066.5[,3]>0.1),]
 l069.5 <- getChrmRatio.GC("69",5)
-l069.5.red <- l069.5[which(l069.5[,3]>0.1),]
 l076.5 <- getChrmRatio.GC("76",5)
-l076.5.red <- l076.5[which(l076.5[,3]>0.1),]
 l077.5 <- getChrmRatio.GC("77",5)
-l077.5.red <- l077.5[which(l077.5[,3]>0.1),]
 l007.5 <- getChrmRatio.GC("7",5)
-l007.5.red <- l007.5[which(l007.5[,3]>0.1),]
 
 l029.5 <- getChrmRatio.MAnew("29",5)
-l029.5.red <- l029.5[which(l029.5[,3]>0.1),]
 l050.5 <- getChrmRatio.MAnew("50",5)
-l050.5.red <- l050.5[which(l050.5[,3]>0.1),]
 l112.5 <- getChrmRatio.MAnew("112",5)
-l112.5.red <- l112.5[which(l112.5[,3]>0.1),]
 l115.5 <- getChrmRatio.MAnew("115",5)
-l115.5.red <- l115.5[which(l115.5[,3]>0.1),]
 l117.5 <- getChrmRatio.MAnew("117",5)
-l117.5.red <- l117.5[which(l117.5[,3]>0.1),]
 l123.5 <- getChrmRatio.MAnew("123",5)
-l123.5.red <- l123.5[which(l123.5[,3]>0.1),]
-# l141.5 <- getChrmRatio.MA("141",5)
-# l141.5.red <- l141.5[which(l141.5[,3]>0.1),]
 l152.5 <- getChrmRatio.MAnew("152",5)
-l152.5.red <- l152.5[which(l152.5[,3]>0.1),]
 
 l002.6 <- getChrmRatio.GC("2",6)
-l002.6.red <- l002.6[which(l002.6[,3]>0.1),]
 l003.6 <- getChrmRatio.GC("3",6)
-l003.6.red <- l003.6[which(l003.6[,3]>0.1),]
 l005.6 <- getChrmRatio.GC("5",6)
-l005.6.red <- l005.6[which(l005.6[,3]>0.1),]
 l008.6 <- getChrmRatio.GC("8",6)
-l008.6.red <- l008.6[which(l008.6[,3]>0.1),]
 l009.6 <- getChrmRatio.GC("9",6)
-l009.6.red <- l009.6[which(l009.6[,3]>0.1),]
 l011.6 <- getChrmRatio.GC("11",6)
-l011.6.red <- l011.6[which(l011.6[,3]>0.1),]
 l018.6 <- getChrmRatio.GC("18",6)
-l018.6.red <- l018.6[which(l018.6[,3]>0.1),]
 l001.6 <- getChrmRatio.GC("1",6)
-l001.6.red <- l001.6[which(l001.6[,3]>0.1),]
-# l021.6 <- getChrmRatio.GC.r1("21",6)
-# l021.6.red <- l021.6[which(l021.6[,3]>0.1),]
-# l031.6 <- getChrmRatio.GC("31",6)
-# l031.6.red <- l031.6[which(l031.6[,3]>0.1),]
 l049.6 <- getChrmRatio.GC("49",6)
-l049.6.red <- l049.6[which(l049.6[,3]>0.1),]
 l004.6 <- getChrmRatio.GC("4",6)
-l004.6.red <- l004.6[which(l004.6[,3]>0.1),]
 l059.6 <- getChrmRatio.GC("59",6)
-l059.6.red <- l059.6[which(l059.6[,3]>0.1),]
 l061.6 <- getChrmRatio.GC("61",6)
-l061.6.red <- l061.6[which(l061.6[,3]>0.1),]
-# l066.6 <- getChrmRatio.GC.r1("66",6)
-# l066.6.red <- l066.6[which(l066.6[,3]>0.1),]
 l069.6 <- getChrmRatio.GC("69",6)
-l069.6.red <- l069.6[which(l069.6[,3]>0.1),]
 l076.6 <- getChrmRatio.GC("76",6)
-l076.6.red <- l076.6[which(l076.6[,3]>0.1),]
 l077.6 <- getChrmRatio.GC("77",6)
-l077.6.red <- l077.6[which(l077.6[,3]>0.1),]
 l007.6 <- getChrmRatio.GC("7",6)
-l007.6.red <- l007.6[which(l007.6[,3]>0.1),]
 
 l029.6 <- getChrmRatio.MAnew("29",6)
-l029.6.red <- l029.6[which(l029.6[,3]>0.1),]
 l050.6 <- getChrmRatio.MAnew("50",6)
-l050.6.red <- l050.6[which(l050.6[,3]>0.1),]
 l112.6 <- getChrmRatio.MAnew("112",6)
-l112.6.red <- l112.6[which(l112.6[,3]>0.1),]
 l115.6 <- getChrmRatio.MAnew("115",6)
-l115.6.red <- l115.6[which(l115.6[,3]>0.1),]
 l117.6 <- getChrmRatio.MAnew("117",6)
-l117.6.red <- l117.6[which(l117.6[,3]>0.1),]
 l123.6 <- getChrmRatio.MAnew("123",6)
-l123.6.red <- l123.6[which(l123.6[,3]>0.1),]
-# l141.6 <- getChrmRatio.MAnew("141",6)
-# l141.6.red <- l141.6[which(l141.6[,3]>0.1),]
 l152.6 <- getChrmRatio.MAnew("152",6)
-l152.6.red <- l152.6[which(l152.6[,3]>0.1),]
 
 l002.7 <- getChrmRatio.GC("2",7)
-l002.7.red <- l002.7[which(l002.7[,3]>0.1),]
 l003.7 <- getChrmRatio.GC("3",7)
-l003.7.red <- l003.7[which(l003.7[,3]>0.1),]
 l005.7 <- getChrmRatio.GC("5",7)
-l005.7.red <- l005.7[which(l005.7[,3]>0.1),]
 l008.7 <- getChrmRatio.GC("8",7)
-l008.7.red <- l008.7[which(l008.7[,3]>0.1),]
 l009.7 <- getChrmRatio.GC("9",7)
-l009.7.red <- l009.7[which(l009.7[,3]>0.1),]
 l011.7 <- getChrmRatio.GC("11",7)
-l011.7.red <- l011.7[which(l011.7[,3]>0.1),]
 l018.7 <- getChrmRatio.GC("18",7)
-l018.7.red <- l018.7[which(l018.7[,3]>0.1),]
 l001.7 <- getChrmRatio.GC("1",7)
-l001.7.red <- l001.7[which(l001.7[,3]>0.1),]
-# l021.7 <- getChrmRatio.GC.r1("21",7)
-# l021.7.red <- l021.7[which(l021.7[,3]>0.1),]
-# l031.7 <- getChrmRatio.GC("31",7)
-# l031.7.red <- l031.7[which(l031.7[,3]>0.1),]
 l049.7 <- getChrmRatio.GC("49",7)
-l049.7.red <- l049.7[which(l049.7[,3]>0.1),]
 l004.7 <- getChrmRatio.GC("4",7)
-l004.7.red <- l004.7[which(l004.7[,3]>0.1),]
 l059.7 <- getChrmRatio.GC("59",7)
-l059.7.red <- l059.7[which(l059.7[,3]>0.1),]
 l061.7 <- getChrmRatio.GC("61",7)
-l061.7.red <- l061.7[which(l061.7[,3]>0.1),]
-# l066.7 <- getChrmRatio.GC.r1("66",7)
-# l066.7.red <- l066.7[which(l066.7[,3]>0.1),]
 l069.7 <- getChrmRatio.GC("69",7)
-l069.7.red <- l069.7[which(l069.7[,3]>0.1),]
 l076.7 <- getChrmRatio.GC("76",7)
-l076.7.red <- l076.7[which(l076.7[,3]>0.1),]
 l077.7 <- getChrmRatio.GC("77",7)
-l077.7.red <- l077.7[which(l077.7[,3]>0.1),]
 l007.7 <- getChrmRatio.GC("7",7)
-l007.7.red <- l007.7[which(l007.7[,3]>0.1),]
 
 l029.7 <- getChrmRatio.MAnew("29",7)
-l029.7.red <- l029.7[which(l029.7[,3]>0.1),]
 l050.7 <- getChrmRatio.MAnew("50",7)
-l050.7.red <- l050.7[which(l050.7[,3]>0.1),]
 l112.7 <- getChrmRatio.MAnew("112",7)
-l112.7.red <- l112.7[which(l112.7[,3]>0.1),]
 l115.7 <- getChrmRatio.MAnew("115",7)
-l115.7.red <- l115.7[which(l115.7[,3]>0.1),]
 l117.7 <- getChrmRatio.MAnew("117",7)
-l117.7.red <- l117.7[which(l117.7[,3]>0.1),]
 l123.7 <- getChrmRatio.MAnew("123",7)
-l123.7.red <- l123.7[which(l123.7[,3]>0.1),]
-# l141.7 <- getChrmRatio.MA("141",7)
-# l141.7.red <- l141.7[which(l141.7[,3]>0.1),]
 l152.7 <- getChrmRatio.MAnew("152",7)
-l152.7.red <- l152.7[which(l152.7[,3]>0.1),]
 
 l002.8 <- getChrmRatio.GC("2",8)
-l002.8.red <- l002.8[which(l002.8[,3]>0.1),]
 l003.8 <- getChrmRatio.GC("3",8)
-l003.8.red <- l003.8[which(l003.8[,3]>0.1),]
 l005.8 <- getChrmRatio.GC("5",8)
-l005.8.red <- l005.8[which(l005.8[,3]>0.1),]
 l008.8 <- getChrmRatio.GC("8",8)
-l008.8.red <- l008.8[which(l008.8[,3]>0.1),]
 l009.8 <- getChrmRatio.GC("9",8)
-l009.8.red <- l009.8[which(l009.8[,3]>0.1),]
 l011.8 <- getChrmRatio.GC("11",8)
-l011.8.red <- l011.8[which(l011.8[,3]>0.1),]
 l018.8 <- getChrmRatio.GC("18",8)
-l018.8.red <- l018.8[which(l018.8[,3]>0.1),]
 l001.8 <- getChrmRatio.GC("1",8)
-l001.8.red <- l001.8[which(l001.8[,3]>0.1),]
-# l021.8 <- getChrmRatio.GC.r1("21",8)
-# l021.8.red <- l021.8[which(l021.8[,3]>0.1),]
-# l031.8 <- getChrmRatio.GC("31",8)
-# l031.8.red <- l031.8[which(l031.8[,3]>0.1),]
 l049.8 <- getChrmRatio.GC("49",8)
-l049.8.red <- l049.8[which(l049.8[,3]>0.1),]
 l004.8 <- getChrmRatio.GC("4",8)
-l004.8.red <- l004.8[which(l004.8[,3]>0.1),]
 l059.8 <- getChrmRatio.GC("59",8)
-l059.8.red <- l059.8[which(l059.8[,3]>0.1),]
 l061.8 <- getChrmRatio.GC("61",8)
-l061.8.red <- l061.8[which(l061.8[,3]>0.1),]
-# l066.8 <- getChrmRatio.GC.r1("66",8)
-# l066.8.red <- l066.8[which(l066.8[,3]>0.1),]
 l069.8 <- getChrmRatio.GC("69",8)
-l069.8.red <- l069.8[which(l069.8[,3]>0.1),]
 l076.8 <- getChrmRatio.GC("76",8)
-l076.8.red <- l076.8[which(l076.8[,3]>0.1),]
 l077.8 <- getChrmRatio.GC("77",8)
-l077.8.red <- l077.8[which(l077.8[,3]>0.1),]
 l007.8 <- getChrmRatio.GC("7",8)
-l007.8.red <- l007.8[which(l007.8[,3]>0.1),]
 
 l029.8 <- getChrmRatio.MAnew("29",8)
-l029.8.red <- l029.8[which(l029.8[,3]>0.1),]
 l050.8 <- getChrmRatio.MAnew("50",8)
-l050.8.red <- l050.8[which(l050.8[,3]>0.1),]
 l112.8 <- getChrmRatio.MAnew("112",8)
-l112.8.red <- l112.8[which(l112.8[,3]>0.1),]
 l115.8 <- getChrmRatio.MAnew("115",8)
-l115.8.red <- l115.8[which(l115.8[,3]>0.1),]
 l117.8 <- getChrmRatio.MAnew("117",8)
-l117.8.red <- l117.8[which(l117.8[,3]>0.1),]
 l123.8 <- getChrmRatio.MAnew("123",8)
-l123.8.red <- l123.8[which(l123.8[,3]>0.1),]
-# l141.8 <- getChrmRatio.MA("141",8)
-# l141.8.red <- l141.8[which(l141.8[,3]>0.1),]
 l152.8 <- getChrmRatio.MAnew("152",8)
-l152.8.red <- l152.8[which(l152.8[,3]>0.1),]
 
 l002.9 <- getChrmRatio.GC("2",9)
-l002.9.red <- l002.9[which(l002.9[,3]>0.1),]
 l003.9 <- getChrmRatio.GC("3",9)
-l003.9.red <- l003.9[which(l003.9[,3]>0.1),]
 l005.9 <- getChrmRatio.GC("5",9)
-l005.9.red <- l005.9[which(l005.9[,3]>0.1),]
 l008.9 <- getChrmRatio.GC("8",9)
-l008.9.red <- l008.9[which(l008.9[,3]>0.1),]
 l009.9 <- getChrmRatio.GC("9",9)
-l009.9.red <- l009.9[which(l009.9[,3]>0.1),]
 l011.9 <- getChrmRatio.GC("11",9)
-l011.9.red <- l011.9[which(l011.9[,3]>0.1),]
 l018.9 <- getChrmRatio.GC("18",9)
-l018.9.red <- l018.9[which(l018.9[,3]>0.1),]
 l001.9 <- getChrmRatio.GC("1",9)
-l001.9.red <- l001.9[which(l001.9[,3]>0.1),]
-# l021.9 <- getChrmRatio.GC.r1("21",9)
-# l021.9.red <- l021.9[which(l021.9[,3]>0.1),]
-# l031.9 <- getChrmRatio.GC("31",9)
-# l031.9.red <- l031.9[which(l031.9[,3]>0.1),]
 l049.9 <- getChrmRatio.GC("49",9)
-l049.9.red <- l049.9[which(l049.9[,3]>0.1),]
 l004.9 <- getChrmRatio.GC("4",9)
-l004.9.red <- l004.9[which(l004.9[,3]>0.1),]
 l059.9 <- getChrmRatio.GC("59",9)
-l059.9.red <- l059.9[which(l059.9[,3]>0.1),]
 l061.9 <- getChrmRatio.GC("61",9)
-l061.9.red <- l061.9[which(l061.9[,3]>0.1),]
-# l066.9 <- getChrmRatio.GC.r1("66",9)
-# l066.9.red <- l066.9[which(l066.9[,3]>0.1),]
 l069.9 <- getChrmRatio.GC("69",9)
-l069.9.red <- l069.9[which(l069.9[,3]>0.1),]
 l076.9 <- getChrmRatio.GC("76",9)
-l076.9.red <- l076.9[which(l076.9[,3]>0.1),]
 l077.9 <- getChrmRatio.GC("77",9)
-l077.9.red <- l077.9[which(l077.9[,3]>0.1),]
 l007.9 <- getChrmRatio.GC("7",9)
-l007.9.red <- l007.9[which(l007.9[,3]>0.1),]
 
 l029.9 <- getChrmRatio.MAnew("29",9)
-l029.9.red <- l029.9[which(l029.9[,3]>0.1),]
 l050.9 <- getChrmRatio.MAnew("50",9)
-l050.9.red <- l050.9[which(l050.9[,3]>0.1),]
 l112.9 <- getChrmRatio.MAnew("112",9)
-l112.9.red <- l112.9[which(l112.9[,3]>0.1),]
 l115.9 <- getChrmRatio.MAnew("115",9)
-l115.9.red <- l115.9[which(l115.9[,3]>0.1),]
 l117.9 <- getChrmRatio.MAnew("117",9)
-l117.9.red <- l117.9[which(l117.9[,3]>0.1),]
 l123.9 <- getChrmRatio.MAnew("123",9)
-l123.9.red <- l123.9[which(l123.9[,3]>0.1),]
-# l141.9 <- getChrmRatio.MA("141",9)
-# l141.9.red <- l141.9[which(l141.9[,3]>0.1),]
 l152.9 <- getChrmRatio.MAnew("152",9)
-l152.9.red <- l152.9[which(l152.9[,3]>0.1),]
 
 l002.10 <- getChrmRatio.GC("2",10)
-l002.10.red <- l002.10[which(l002.10[,3]>0.1),]
 l003.10 <- getChrmRatio.GC("3",10)
-l003.10.red <- l003.10[which(l003.10[,3]>0.1),]
 l005.10 <- getChrmRatio.GC("5",10)
-l005.10.red <- l005.10[which(l005.10[,3]>0.1),]
 l008.10 <- getChrmRatio.GC("8",10)
-l008.10.red <- l008.10[which(l008.10[,3]>0.1),]
 l009.10 <- getChrmRatio.GC("9",10)
-l009.10.red <- l009.10[which(l009.10[,3]>0.1),]
 l011.10 <- getChrmRatio.GC("11",10)
-l011.10.red <- l011.10[which(l011.10[,3]>0.1),]
 l018.10 <- getChrmRatio.GC("18",10)
-l018.10.red <- l018.10[which(l018.10[,3]>0.1),]
 l001.10 <- getChrmRatio.GC("1",10)
-l001.10.red <- l001.10[which(l001.10[,3]>0.1),]
-# l021.10 <- getChrmRatio.GC.r1("21",10)
-# l021.10.red <- l021.10[which(l021.10[,3]>0.1),]
-# l031.10 <- getChrmRatio.GC("31",10)
-# l031.10.red <- l031.10[which(l031.10[,3]>0.1),]
 l049.10 <- getChrmRatio.GC("49",10)
-l049.10.red <- l049.10[which(l049.10[,3]>0.1),]
 l004.10 <- getChrmRatio.GC("4",10)
-l004.10.red <- l004.10[which(l004.10[,3]>0.1),]
 l059.10 <- getChrmRatio.GC("59",10)
-l059.10.red <- l059.10[which(l059.10[,3]>0.1),]
 l061.10 <- getChrmRatio.GC("61",10)
-l061.10.red <- l061.10[which(l061.10[,3]>0.1),]
-# l066.10 <- getChrmRatio.GC.r1("66",10)
-# l066.10.red <- l066.10[which(l066.10[,3]>0.1),]
 l069.10 <- getChrmRatio.GC("69",10)
-l069.10.red <- l069.10[which(l069.10[,3]>0.1),]
 l076.10 <- getChrmRatio.GC("76",10)
-l076.10.red <- l076.10[which(l076.10[,3]>0.1),]
 l077.10 <- getChrmRatio.GC("77",10)
-l077.10.red <- l077.10[which(l077.10[,3]>0.1),]
 l007.10 <- getChrmRatio.GC("7",10)
-l007.10.red <- l007.10[which(l007.10[,3]>0.1),]
 
 l029.10 <- getChrmRatio.MAnew("29",10)
-l029.10.red <- l029.10[which(l029.10[,3]>0.1),]
 l050.10 <- getChrmRatio.MAnew("50",10)
-l050.10.red <- l050.10[which(l050.10[,3]>0.1),]
 l112.10 <- getChrmRatio.MAnew("112",10)
-l112.10.red <- l112.10[which(l112.10[,3]>0.1),]
 l115.10 <- getChrmRatio.MAnew("115",10)
-l115.10.red <- l115.10[which(l115.10[,3]>0.1),]
 l117.10 <- getChrmRatio.MAnew("117",10)
-l117.10.red <- l117.10[which(l117.10[,3]>0.1),]
 l123.10 <- getChrmRatio.MAnew("123",10)
-l123.10.red <- l123.10[which(l123.10[,3]>0.1),]
-# l141.10 <- getChrmRatio.MA("141",10)
-# l141.10.red <- l141.10[which(l141.10[,3]>0.1),]
 l152.10 <- getChrmRatio.MAnew("152",10)
-l152.10.red <- l152.10[which(l152.10[,3]>0.1),]
 
 l002.11 <- getChrmRatio.GC("2",11)
-l002.11.red <- l002.11[which(l002.11[,3]>0.1),]
 l003.11 <- getChrmRatio.GC("3",11)
-l003.11.red <- l003.11[which(l003.11[,3]>0.1),]
 l005.11 <- getChrmRatio.GC("5",11)
-l005.11.red <- l005.11[which(l005.11[,3]>0.1),]
 l008.11 <- getChrmRatio.GC("8",11)
-l008.11.red <- l008.11[which(l008.11[,3]>0.1),]
 l009.11 <- getChrmRatio.GC("9",11)
-l009.11.red <- l009.11[which(l009.11[,3]>0.1),]
 l011.11 <- getChrmRatio.GC("11",11)
-l011.11.red <- l011.11[which(l011.11[,3]>0.1),]
 l018.11 <- getChrmRatio.GC("18",11)
-l018.11.red <- l018.11[which(l018.11[,3]>0.1),]
 l001.11 <- getChrmRatio.GC("1",11)
-l001.11.red <- l001.11[which(l001.11[,3]>0.1),]
-# l021.11 <- getChrmRatio.GC.r1("21",11)
-# l021.11.red <- l021.11[which(l021.11[,3]>0.1),]
-# l031.11 <- getChrmRatio.GC("31",11)
-# l031.11.red <- l031.11[which(l031.11[,3]>0.1),]
 l049.11 <- getChrmRatio.GC("49",11)
-l049.11.red <- l049.11[which(l049.11[,3]>0.1),]
 l004.11 <- getChrmRatio.GC("4",11)
-l004.11.red <- l004.11[which(l004.11[,3]>0.1),]
 l059.11 <- getChrmRatio.GC("59",11)
-l059.11.red <- l059.11[which(l059.11[,3]>0.1),]
 l061.11 <- getChrmRatio.GC("61",11)
-l061.11.red <- l061.11[which(l061.11[,3]>0.1),]
-# l066.11 <- getChrmRatio.GC.r1("66",11)
-# l066.11.red <- l066.11[which(l066.11[,3]>0.1),]
 l069.11 <- getChrmRatio.GC("69",11)
-l069.11.red <- l069.11[which(l069.11[,3]>0.1),]
 l076.11 <- getChrmRatio.GC("76",11)
-l076.11.red <- l076.11[which(l076.11[,3]>0.1),]
 l077.11 <- getChrmRatio.GC("77",11)
-l077.11.red <- l077.11[which(l077.11[,3]>0.1),]
 l007.11 <- getChrmRatio.GC("7",11)
-l007.11.red <- l007.11[which(l007.11[,3]>0.1),]
 
 l029.11 <- getChrmRatio.MAnew("29",11)
-l029.11.red <- l029.11[which(l029.11[,3]>0.1),]
 l050.11 <- getChrmRatio.MAnew("50",11)
-l050.11.red <- l050.11[which(l050.11[,3]>0.1),]
 l112.11 <- getChrmRatio.MAnew("112",11)
-l112.11.red <- l112.11[which(l112.11[,3]>0.1),]
 l115.11 <- getChrmRatio.MAnew("115",11)
-l115.11.red <- l115.11[which(l115.11[,3]>0.1),]
 l117.11 <- getChrmRatio.MAnew("117",11)
-l117.11.red <- l117.11[which(l117.11[,3]>0.1),]
 l123.11 <- getChrmRatio.MAnew("123",11)
-l123.11.red <- l123.11[which(l123.11[,3]>0.1),]
-# l141.11 <- getChrmRatio.MA("141",11)
-# l141.11.red <- l141.11[which(l141.11[,3]>0.1),]
 l152.11 <- getChrmRatio.MAnew("152",11)
-l152.11.red <- l152.11[which(l152.11[,3]>0.1),]
 
 l002.12 <- getChrmRatio.GC("2",12)
-l002.12.red <- l002.12[which(l002.12[,3]>0.1),]
 l003.12 <- getChrmRatio.GC("3",12)
-l003.12.red <- l003.12[which(l003.12[,3]>0.1),]
 l005.12 <- getChrmRatio.GC("5",12)
-l005.12.red <- l005.12[which(l005.12[,3]>0.1),]
 l008.12 <- getChrmRatio.GC("8",12)
-l008.12.red <- l008.12[which(l008.12[,3]>0.1),]
 l009.12 <- getChrmRatio.GC("9",12)
-l009.12.red <- l009.12[which(l009.12[,3]>0.1),]
 l011.12 <- getChrmRatio.GC("11",12)
-l011.12.red <- l011.12[which(l011.12[,3]>0.1),]
 l018.12 <- getChrmRatio.GC("18",12)
-l018.12.red <- l018.12[which(l018.12[,3]>0.1),]
 l001.12 <- getChrmRatio.GC("1",12)
-l001.12.red <- l001.12[which(l001.12[,3]>0.1),]
-# l021.12 <- getChrmRatio.GC.r1("21",12)
-# l021.12.red <- l021.12[which(l021.12[,3]>0.1),]
-# l031.12 <- getChrmRatio.GC("31",12)
-# l031.12.red <- l031.12[which(l031.12[,3]>0.1),]
 l049.12 <- getChrmRatio.GC("49",12)
-l049.12.red <- l049.12[which(l049.12[,3]>0.1),]
 l004.12 <- getChrmRatio.GC("4",12)
-l004.12.red <- l004.12[which(l004.12[,3]>0.1),]
 l059.12 <- getChrmRatio.GC("59",12)
-l059.12.red <- l059.12[which(l059.12[,3]>0.1),]
 l061.12 <- getChrmRatio.GC("61",12)
-l061.12.red <- l061.12[which(l061.12[,3]>0.1),]
-# l066.12 <- getChrmRatio.GC.r1("66",12)
-# l066.12.red <- l066.12[which(l066.12[,3]>0.1),]
 l069.12 <- getChrmRatio.GC("69",12)
-l069.12.red <- l069.12[which(l069.12[,3]>0.1),]
 l076.12 <- getChrmRatio.GC("76",12)
-l076.12.red <- l076.12[which(l076.12[,3]>0.1),]
 l077.12 <- getChrmRatio.GC("77",12)
-l077.12.red <- l077.12[which(l077.12[,3]>0.1),]
 l007.12 <- getChrmRatio.GC("7",12)
-l007.12.red <- l007.12[which(l007.12[,3]>0.1),]
 
 l029.12 <- getChrmRatio.MAnew("29",12)
-l029.12.red <- l029.12[which(l029.12[,3]>0.1),]
 l050.12 <- getChrmRatio.MAnew("50",12)
-l050.12.red <- l050.12[which(l050.12[,3]>0.1),]
 l112.12 <- getChrmRatio.MAnew("112",12)
-l112.12.red <- l112.12[which(l112.12[,3]>0.1),]
 l115.12 <- getChrmRatio.MAnew("115",12)
-l115.12.red <- l115.12[which(l115.12[,3]>0.1),]
 l117.12 <- getChrmRatio.MAnew("117",12)
-l117.12.red <- l117.12[which(l117.12[,3]>0.1),]
 l123.12 <- getChrmRatio.MAnew("123",12)
-l123.12.red <- l123.12[which(l123.12[,3]>0.1),]
-# l141.12 <- getChrmRatio.MA("141",12)
-# l141.12.red <- l141.12[which(l141.12[,3]>0.1),]
 l152.12 <- getChrmRatio.MAnew("152",12)
-l152.12.red <- l152.12[which(l152.12[,3]>0.1),]
 
 l002.13 <- getChrmRatio.GC("2",13)
-l002.13.red <- l002.13[which(l002.13[,3]>0.1),]
 l003.13 <- getChrmRatio.GC("3",13)
-l003.13.red <- l003.13[which(l003.13[,3]>0.1),]
 l005.13 <- getChrmRatio.GC("5",13)
-l005.13.red <- l005.13[which(l005.13[,3]>0.1),]
 l008.13 <- getChrmRatio.GC("8",13)
-l008.13.red <- l008.13[which(l008.13[,3]>0.1),]
 l009.13 <- getChrmRatio.GC("9",13)
-l009.13.red <- l009.13[which(l009.13[,3]>0.1),]
 l011.13 <- getChrmRatio.GC("11",13)
-l011.13.red <- l011.13[which(l011.13[,3]>0.1),]
 l018.13 <- getChrmRatio.GC("18",13)
-l018.13.red <- l018.13[which(l018.13[,3]>0.1),]
 l001.13 <- getChrmRatio.GC("1",13)
-l001.13.red <- l001.13[which(l001.13[,3]>0.1),]
-# l021.13 <- getChrmRatio.GC.r1("21",13)
-# l021.13.red <- l021.13[which(l021.13[,3]>0.1),]
-# l031.13 <- getChrmRatio.GC("31",13)
-# l031.13.red <- l031.13[which(l031.13[,3]>0.1),]
 l049.13 <- getChrmRatio.GC("49",13)
-l049.13.red <- l049.13[which(l049.13[,3]>0.1),]
 l004.13 <- getChrmRatio.GC("4",13)
-l004.13.red <- l004.13[which(l004.13[,3]>0.1),]
 l059.13 <- getChrmRatio.GC("59",13)
-l059.13.red <- l059.13[which(l059.13[,3]>0.1),]
 l061.13 <- getChrmRatio.GC("61",13)
-l061.13.red <- l061.13[which(l061.13[,3]>0.1),]
-# l066.13 <- getChrmRatio.GC.r1("66",13)
-# l066.13.red <- l066.13[which(l066.13[,3]>0.1),]
 l069.13 <- getChrmRatio.GC("69",13)
-l069.13.red <- l069.13[which(l069.13[,3]>0.1),]
 l076.13 <- getChrmRatio.GC("76",13)
-l076.13.red <- l076.13[which(l076.13[,3]>0.1),]
 l077.13 <- getChrmRatio.GC("77",13)
-l077.13.red <- l077.13[which(l077.13[,3]>0.1),]
 l007.13 <- getChrmRatio.GC("7",13)
-l007.13.red <- l007.13[which(l007.13[,3]>0.1),]
 
 l029.13 <- getChrmRatio.MAnew("29",13)
-l029.13.red <- l029.13[which(l029.13[,3]>0.1),]
 l050.13 <- getChrmRatio.MAnew("50",13)
-l050.13.red <- l050.13[which(l050.13[,3]>0.1),]
 l112.13 <- getChrmRatio.MAnew("112",13)
-l112.13.red <- l112.13[which(l112.13[,3]>0.1),]
 l115.13 <- getChrmRatio.MAnew("115",13)
-l115.13.red <- l115.13[which(l115.13[,3]>0.1),]
 l117.13 <- getChrmRatio.MAnew("117",13)
-l117.13.red <- l117.13[which(l117.13[,3]>0.1),]
 l123.13 <- getChrmRatio.MAnew("123",13)
-l123.13.red <- l123.13[which(l123.13[,3]>0.1),]
-# l141.13 <- getChrmRatio.MA("141",13)
-# l141.13.red <- l141.13[which(l141.13[,3]>0.1),]
 l152.13 <- getChrmRatio.MAnew("152",13)
-l152.13.red <- l152.13[which(l152.13[,3]>0.1),]
 
 l002.14 <- getChrmRatio.GC("2",14)
-l002.14.red <- l002.14[which(l002.14[,3]>0.1),]
 l003.14 <- getChrmRatio.GC("3",14)
-l003.14.red <- l003.14[which(l003.14[,3]>0.1),]
 l005.14 <- getChrmRatio.GC("5",14)
-l005.14.red <- l005.14[which(l005.14[,3]>0.1),]
 l008.14 <- getChrmRatio.GC("8",14)
-l008.14.red <- l008.14[which(l008.14[,3]>0.1),]
 l009.14 <- getChrmRatio.GC("9",14)
-l009.14.red <- l009.14[which(l009.14[,3]>0.1),]
 l011.14 <- getChrmRatio.GC("11",14)
-l011.14.red <- l011.14[which(l011.14[,3]>0.1),]
 l018.14 <- getChrmRatio.GC("18",14)
-l018.14.red <- l018.14[which(l018.14[,3]>0.1),]
 l001.14 <- getChrmRatio.GC("1",14)
-l001.14.red <- l001.14[which(l001.14[,3]>0.1),]
-# l021.14 <- getChrmRatio.GC.r1("21",14)
-# l021.14.red <- l021.14[which(l021.14[,3]>0.1),]
-# l031.14 <- getChrmRatio.GC("31",14)
-# l031.14.red <- l031.14[which(l031.14[,3]>0.1),]
 l049.14 <- getChrmRatio.GC("49",14)
-l049.14.red <- l049.14[which(l049.14[,3]>0.1),]
 l004.14 <- getChrmRatio.GC("4",14)
-l004.14.red <- l004.14[which(l004.14[,3]>0.1),]
 l059.14 <- getChrmRatio.GC("59",14)
-l059.14.red <- l059.14[which(l059.14[,3]>0.1),]
 l061.14 <- getChrmRatio.GC("61",14)
-l061.14.red <- l061.14[which(l061.14[,3]>0.1),]
-# l066.14 <- getChrmRatio.GC.r1("66",14)
-# l066.14.red <- l066.14[which(l066.14[,3]>0.1),]
 l069.14 <- getChrmRatio.GC("69",14)
-l069.14.red <- l069.14[which(l069.14[,3]>0.1),]
 l076.14 <- getChrmRatio.GC("76",14)
-l076.14.red <- l076.14[which(l076.14[,3]>0.1),]
 l077.14 <- getChrmRatio.GC("77",14)
-l077.14.red <- l077.14[which(l077.14[,3]>0.1),]
 l007.14 <- getChrmRatio.GC("7",14)
-l007.14.red <- l007.14[which(l007.14[,3]>0.1),]
 
 l029.14 <- getChrmRatio.MAnew("29",14)
-l029.14.red <- l029.14[which(l029.14[,3]>0.1),]
 l050.14 <- getChrmRatio.MAnew("50",14)
-l050.14.red <- l050.14[which(l050.14[,3]>0.1),]
 l112.14 <- getChrmRatio.MAnew("112",14)
-l112.14.red <- l112.14[which(l112.14[,3]>0.1),]
 l115.14 <- getChrmRatio.MAnew("115",14)
-l115.14.red <- l115.14[which(l115.14[,3]>0.1),]
 l117.14 <- getChrmRatio.MAnew("117",14)
-l117.14.red <- l117.14[which(l117.14[,3]>0.1),]
 l123.14 <- getChrmRatio.MAnew("123",14)
-l123.14.red <- l123.14[which(l123.14[,3]>0.1),]
-# l141.14 <- getChrmRatio.MA("141",14)
-# l141.14.red <- l141.14[which(l141.14[,3]>0.1),]
 l152.14 <- getChrmRatio.MAnew("152",14)
-l152.14.red <- l152.14[which(l152.14[,3]>0.1),]
 
 l002.15 <- getChrmRatio.GC("2",15)
-l002.15.red <- l002.15[which(l002.15[,3]>0.1),]
 l003.15 <- getChrmRatio.GC("3",15)
-l003.15.red <- l003.15[which(l003.15[,3]>0.1),]
 l005.15 <- getChrmRatio.GC("5",15)
-l005.15.red <- l005.15[which(l005.15[,3]>0.1),]
 l008.15 <- getChrmRatio.GC("8",15)
-l008.15.red <- l008.15[which(l008.15[,3]>0.1),]
 l009.15 <- getChrmRatio.GC("9",15)
-l009.15.red <- l009.15[which(l009.15[,3]>0.1),]
 l011.15 <- getChrmRatio.GC("11",15)
-l011.15.red <- l011.15[which(l011.15[,3]>0.1),]
 l018.15 <- getChrmRatio.GC("18",15)
-l018.15.red <- l018.15[which(l018.15[,3]>0.1),]
 l001.15 <- getChrmRatio.GC("1",15)
-l001.15.red <- l001.15[which(l001.15[,3]>0.1),]
-# l021.15 <- getChrmRatio.GC.r1("21",15)
-# l021.15.red <- l021.15[which(l021.15[,3]>0.1),]
-# l031.15 <- getChrmRatio.GC("31",15)
-# l031.15.red <- l031.15[which(l031.15[,3]>0.1),]
 l049.15 <- getChrmRatio.GC("49",15)
-l049.15.red <- l049.15[which(l049.15[,3]>0.1),]
 l004.15 <- getChrmRatio.GC("4",15)
-l004.15.red <- l004.15[which(l004.15[,3]>0.1),]
 l059.15 <- getChrmRatio.GC("59",15)
-l059.15.red <- l059.15[which(l059.15[,3]>0.1),]
 l061.15 <- getChrmRatio.GC("61",15)
-l061.15.red <- l061.15[which(l061.15[,3]>0.1),]
-# l066.15 <- getChrmRatio.GC.r1("66",15)
-# l066.15.red <- l066.15[which(l066.15[,3]>0.1),]
 l069.15 <- getChrmRatio.GC("69",15)
-l069.15.red <- l069.15[which(l069.15[,3]>0.1),]
 l076.15 <- getChrmRatio.GC("76",15)
-l076.15.red <- l076.15[which(l076.15[,3]>0.1),]
 l077.15 <- getChrmRatio.GC("77",15)
-l077.15.red <- l077.15[which(l077.15[,3]>0.1),]
 l007.15 <- getChrmRatio.GC("7",15)
-l007.15.red <- l007.15[which(l007.15[,3]>0.1),]
 
 l029.15 <- getChrmRatio.MAnew("29",15)
-l029.15.red <- l029.15[which(l029.15[,3]>0.1),]
 l050.15 <- getChrmRatio.MAnew("50",15)
-l050.15.red <- l050.15[which(l050.15[,3]>0.1),]
 l112.15 <- getChrmRatio.MAnew("112",15)
-l112.15.red <- l112.15[which(l112.15[,3]>0.1),]
 l115.15 <- getChrmRatio.MAnew("115",15)
-l115.15.red <- l115.15[which(l115.15[,3]>0.1),]
 l117.15 <- getChrmRatio.MAnew("117",15)
-l117.15.red <- l117.15[which(l117.15[,3]>0.1),]
 l123.15 <- getChrmRatio.MAnew("123",15)
-l123.15.red <- l123.15[which(l123.15[,3]>0.1),]
-# l141.15 <- getChrmRatio.MA("141",15)
-# l141.15.red <- l141.15[which(l141.15[,3]>0.1),]
 l152.15 <- getChrmRatio.MAnew("152",15)
-l152.15.red <- l152.15[which(l152.15[,3]>0.1),]
 
 l002.16 <- getChrmRatio.GC("2",16)
-l002.16.red <- l002.16[which(l002.16[,3]>0.1),]
 l003.16 <- getChrmRatio.GC("3",16)
-l003.16.red <- l003.16[which(l003.16[,3]>0.1),]
 l005.16 <- getChrmRatio.GC("5",16)
-l005.16.red <- l005.16[which(l005.16[,3]>0.1),]
 l008.16 <- getChrmRatio.GC("8",16)
-l008.16.red <- l008.16[which(l008.16[,3]>0.1),]
 l009.16 <- getChrmRatio.GC("9",16)
-l009.16.red <- l009.16[which(l009.16[,3]>0.1),]
 l011.16 <- getChrmRatio.GC("11",16)
-l011.16.red <- l011.16[which(l011.16[,3]>0.1),]
 l018.16 <- getChrmRatio.GC("18",16)
-l018.16.red <- l018.16[which(l018.16[,3]>0.1),]
 l001.16 <- getChrmRatio.GC("1",16)
-l001.16.red <- l001.16[which(l001.16[,3]>0.1),]
-# l021.16 <- getChrmRatio.GC.r1("21",16)
-# l021.16.red <- l021.16[which(l021.16[,3]>0.1),]
-# l031.16 <- getChrmRatio.GC("31",16)
-# l031.16.red <- l031.16[which(l031.16[,3]>0.1),]
 l049.16 <- getChrmRatio.GC("49",16)
-l049.16.red <- l049.16[which(l049.16[,3]>0.1),]
 l004.16 <- getChrmRatio.GC("4",16)
-l004.16.red <- l004.16[which(l004.16[,3]>0.1),]
 l059.16 <- getChrmRatio.GC("59",16)
-l059.16.red <- l059.16[which(l059.16[,3]>0.1),]
 l061.16 <- getChrmRatio.GC("61",16)
-l061.16.red <- l061.16[which(l061.16[,3]>0.1),]
-# l066.16 <- getChrmRatio.GC.r1("66",16)
-# l066.16.red <- l066.16[which(l066.16[,3]>0.1),]
 l069.16 <- getChrmRatio.GC("69",16)
-l069.16.red <- l069.16[which(l069.16[,3]>0.1),]
 l076.16 <- getChrmRatio.GC("76",16)
-l076.16.red <- l076.16[which(l076.16[,3]>0.1),]
 l077.16 <- getChrmRatio.GC("77",16)
-l077.16.red <- l077.16[which(l077.16[,3]>0.1),]
 l007.16 <- getChrmRatio.GC("7",16)
-l007.16.red <- l007.16[which(l007.16[,3]>0.1),]
 
 l029.16 <- getChrmRatio.MAnew("29",16)
-l029.16.red <- l029.16[which(l029.16[,3]>0.1),]
 l050.16 <- getChrmRatio.MAnew("50",16)
-l050.16.red <- l050.16[which(l050.16[,3]>0.1),]
 l112.16 <- getChrmRatio.MAnew("112",16)
-l112.16.red <- l112.16[which(l112.16[,3]>0.1),]
 l115.16 <- getChrmRatio.MAnew("115",16)
-l115.16.red <- l115.16[which(l115.16[,3]>0.1),]
 l117.16 <- getChrmRatio.MAnew("117",16)
-l117.16.red <- l117.16[which(l117.16[,3]>0.1),]
 l123.16 <- getChrmRatio.MAnew("123",16)
-l123.16.red <- l123.16[which(l123.16[,3]>0.1),]
-# l141.16 <- getChrmRatio.MA("141",16)
-# l141.16.red <- l141.16[which(l141.16[,3]>0.1),]
 l152.16 <- getChrmRatio.MAnew("152",16)
-l152.16.red <- l152.16[which(l152.16[,3]>0.1),]
 
 #############################################################
 #concatenate each line with its other chromosomes 
@@ -3357,12 +2440,9 @@ l8All <- rbind(l008.1,l008.2,l008.3,l008.4,l008.5,l008.6,l008.7,l008.8,l008.9,l0
 l9All <- rbind(l009.1,l009.2,l009.3,l009.4,l009.5,l009.6,l009.7,l009.8,l009.9,l009.10,l009.11,l009.12,l009.13,l009.14,l009.15,l009.16)
 l11All <- rbind(l011.1,l011.2,l011.3,l011.4,l011.5,l011.6,l011.7,l011.8,l011.9,l011.10,l011.11,l011.12,l011.13,l011.14,l011.15,l011.16)
 l18All <- rbind(l018.1,l018.2,l018.3,l018.4,l018.5,l018.6,l018.7,l018.8,l018.9,l018.10,l018.11,l018.12,l018.13,l018.14,l018.15,l018.16)
-# l21All <- rbind(l021.1,l021.2,l021.3,l021.4,l021.5,l021.6,l021.7,l021.8,l021.9,l021.10,l021.11,l021.12,l021.13,l021.14,l021.15,l021.16)
-# l31All <- rbind(l031.1,l031.2,l031.3,l031.4,l031.5,l031.6,l031.7,l031.8,l031.9,l031.10,l031.11,l031.12,l031.13,l031.14,l031.15,l031.16)
 l49All <- rbind(l049.1,l049.2,l049.3,l049.4,l049.5,l049.6,l049.7,l049.8,l049.9,l049.10,l049.11,l049.12,l049.13,l049.14,l049.15,l049.16)
 l59All <- rbind(l059.1,l059.2,l059.3,l059.4,l059.5,l059.6,l059.7,l059.8,l059.9,l059.10,l059.11,l059.12,l059.13,l059.14,l059.15,l059.16)
 l61All <- rbind(l061.1,l061.2,l061.3,l061.4,l061.5,l061.6,l061.7,l061.8,l061.9,l061.10,l061.11,l061.12,l061.13,l061.14,l061.15,l061.16)
-# l66All <- rbind(l066.1,l066.2,l066.3,l066.4,l066.5,l066.6,l066.7,l066.8,l066.9,l066.10,l066.11,l066.12,l066.13,l066.14,l066.15,l066.16)
 l69All <- rbind(l069.1,l069.2,l069.3,l069.4,l069.5,l069.6,l069.7,l069.8,l069.9,l069.10,l069.11,l069.12,l069.13,l069.14,l069.15,l069.16)
 l76All <- rbind(l076.1,l076.2,l076.3,l076.4,l076.5,l076.6,l076.7,l076.8,l076.9,l076.10,l076.11,l076.12,l076.13,l076.14,l076.15,l076.16)
 l77All <- rbind(l077.1,l077.2,l077.3,l077.4,l077.5,l077.6,l077.7,l077.8,l077.9,l077.10,l077.11,l077.12,l077.13,l077.14,l077.15,l077.16)
@@ -3375,7 +2455,6 @@ l112All <- rbind(l112.1,l112.2,l112.3,l112.4,l112.5,l112.6,l112.7,l112.8,l112.9,
 l115All <- rbind(l115.1,l115.2,l115.3,l115.4,l115.5,l115.6,l115.7,l115.8,l115.9,l115.10,l115.11,l115.12,l115.13,l115.14,l115.15,l115.16)
 l117All <- rbind(l117.1,l117.2,l117.3,l117.4,l117.5,l117.6,l117.7,l117.8,l117.9,l117.10,l117.11,l117.12,l117.13,l117.14,l117.15,l117.16)
 l123All <- rbind(l123.1,l123.2,l123.3,l123.4,l123.5,l123.6,l123.7,l123.8,l123.9,l123.10,l123.11,l123.12,l123.13,l123.14,l123.15,l123.16)
-# l141All <- rbind(l141.1,l141.2,l141.3,l141.4,l141.5,l141.6,l141.7,l141.8,l141.9,l141.10,l141.11,l141.12,l141.13,l141.14,l141.15,l141.16)
 l152All <- rbind(l152.1,l152.2,l152.3,l152.4,l152.5,l152.6,l152.7,l152.8,l152.9,l152.10,l152.11,l152.12,l152.13,l152.14,l152.15,l152.16)
 
 ### MA old 
@@ -3404,60 +2483,8 @@ Ratios.GC[3:18] <- apply(Ratios.GC[3:18], 1, function(x) log2(x) )
 View(Ratios.GC)
 write.csv(Ratios.GC, file = "log2Ratios.GC.csv")
 
-# plot(Ratios.GC)
 
 chr1 <- subset(Ratios.GC, chr==1)
-
-# # between two euploid lines
-# plot(chr1$`l2All[, 3]`,chr1$`l3All[, 3]`,xlim=c(-0.5,1), ylim=c(-1,1))
-# abline(-1, 1, col='purple', lty="dashed")
-# abline(0.583, 1, col="purple", lty="dashed") 
-# above <- chr1$`l3All[, 3]`-chr1$`l2All[, 3]` > 0.583
-# points(chr1$`l2All[, 3]`[above], chr1$`l3All[, 3]`[above], col="blue", cex=0.5)
-# below <- chr1$`l3All[, 3]`-chr1$`l2All[, 3]` < -1
-# points(chr1$`l2All[, 3]`[below], chr1$`l3All[, 3]`[below], col="red", cex=0.5)
-# 
-# ## between aneuploid and euploid line
-# plot(chr1$`l2All[, 3]`,chr1$`l7All[, 3]`,xlim=c(-0.5,1), ylim=c(-1,1))
-# abline(h=0.585,lty=4,col="deeppink1")
-# abline(h=-1,lty=4,col="deepskyblue1") 
-# above <- chr1$`l7All[, 3]`-chr1$`l2All[, 3]` > 0.583
-# points(chr1$`l2All[, 3]`[above], chr1$`l7All[, 3]`[above], col="red", cex=0.5)
-# below <- chr1$`l7All[, 3]`-chr1$`l2All[, 3]` < -1
-# points(chr1$`l2All[, 3]`[below], chr1$`l7All[, 3]`[below], col="blue", cex=0.5)
-# 
-# 
-
-# 
-# boxplot(Ratios.GC$`l7All[, 3]`,Ratios.GC$chr,data=chr1,xlab="Sample",ylab="log2 Ratio", cex.lab=1.3,main="Chromosome 1",las=3,ylim=c(-3.5,3.5),col="lightslateblue")
-# 
-# abline(h=0,lty=4)
-# abline(h=0.585,lty=4,col="deeppink1")
-# abline(h=-1,lty=4,col="deepskyblue1") 
-# abline(h=1,lty=4,col="purple") 
-
-# plot(meanX, meanY, main = "Expression in OPCs vs oligodendrocyte ",
-#     xlab="OPCs log2 expression: group1", 
-#     ylab="oligodendrocyte log2 expression: group2", 
-#     cex=0.5, cex.lab= 0.9, title(cex.main=2, font.main=7))
-# abline(-1, 1, col='purple', lty="dashed")
-# abline(1, 1, col="purple", lty="dashed")
-# above <- meanY-meanX > 1
-# points(meanX[above], meanY[above], col="red", cex=0.5)
-# below <- meanY-meanX < -1
-# points(meanX[below], meanY[below], col="blue", cex=0.5)
-
-# Ratios.MA <- cbind(l29All,l50All[,3],l112All[,3],l115All[,3],l117All[,3],l123All[,3],l141All[,3],l152All[,3])
-# str(Ratios.MA)
-# dim(Ratios.MA)
-# Ratios.MA[3:10] <- apply(Ratios.MA[3:10], 1, function(x) log2(x) ) 
-# write.csv(Ratios.MA,file = "log2Ratios.MA.csv")
-# 
-# Ratios.old <- cbind(l1Allold,l2Allold[,3],l3Allold[,3],l4Allold[,3],l5Allold[,3],l6Allold[,3],l7Allold[,3],l8Allold[,3],l9Allold[,3],l11Allold[,3],l15Allold[,3],l28Allold[,3],l88Allold[,3],l108Allold[,3],l119Allold[,3])
-# str(Ratios.old)
-# dim(Ratios.old)
-# Ratios.old[3:17] <- apply(Ratios.old[3:17], 1, function(x) log2(x) ) 
-# write.csv(Ratios.MA, file = "log2Ratios.old.csv")
 
 ```
 

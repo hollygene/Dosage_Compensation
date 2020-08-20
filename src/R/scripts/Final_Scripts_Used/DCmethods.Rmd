@@ -60,8 +60,17 @@ dev.off()
 
 
 
+### Number of aneuploid events per chromosome 
+aneuploidies <- read.table("/Users/hollymcqueary/Dropbox/McQueary/DosageCompensationG3/aneuploidies.txt",header=TRUE)
 
+library(data.table)
 
+numAneus <- reshape2::melt(aneuploidies, id.vars=1)
+
+pdf("anEvents.pdf")
+gcEvents <- ggplot(numAneus, x=Chromosome, y=value,color=variable)
+gcEvents + geom_col(aes(x=factor(Chromosome), y=value,fill=variable)) + theme_classic() + labs(y="Number", title="Number of Aneuploidies per Type in Each Experiment") + scale_fill_discrete(name=NULL)
+dev.off()
 
 ```
 
@@ -1818,14 +1827,14 @@ return(ratios$sampleOverAnc)
 }
 
 
-ratioDistributionsEuploids(ddsDefGC_1,genesGC_1,"Sample_1_GC")
-ratioDistributionsEuploids(ddsDefGC_2,genesGC_2,"Sample_2_GC")
-ratioDistributionsEuploids(ddsDefGC_3,genesGC_3,"Sample_3_GC")
+ratioDistributionsEuploids(ddsDefGC_1,genesGC_5,"Sample_1_GC")
+ratioDistributionsEuploids(ddsDefGC_2,genesGC_5,"Sample_2_GC")
+ratioDistributionsEuploids(ddsDefGC_3,genesGC_5,"Sample_3_GC")
 ratioDistributionsEuploids(ddsDefGC_5,genesGC_5,"Sample_5_GC")
 ratioDistributionsEuploids(ddsDefGC_9,genesGC_9,"Sample_9_GC")
 
-ratioDistGC2 <- ratioDistributionsEuploids(ddsDefGC_2,genesGC_2,"Sample_2_GC")
-ratioDistGC3 <- ratioDistributionsEuploids(ddsDefGC_3,genesGC_3,"Sample_3_GC")
+ratioDistGC2 <- ratioDistributionsEuploids(ddsDefGC_2,genesGC_5,"Sample_2_GC")
+ratioDistGC3 <- ratioDistributionsEuploids(ddsDefGC_3,genesGC_5,"Sample_3_GC")
 
 mean(ratioDistGC2)
 var(ratioDistGC2)
@@ -1875,7 +1884,7 @@ ratioDistributionsEuploidsMANew(ddsDefMAnewS115,genesMAnewS115,"Sample_115_MA")
 #####################################################################
 
 dds=ddsDefGC_4
-genes=genesGC_4
+genes=genesGC_5
 anChr="chrV"
 sample="Sample_4_GC"
 
@@ -1926,12 +1935,12 @@ ratioDistributionsTrisomy(ddsDefGC_7,genesGC_7,"chrI","Sample_7_GC_ChrI")
 ratioDistGC7 <- ratioDistributionsTrisomy(ddsDefGC_7,genesGC_7,"chrI","Sample_7_GC_ChrI")
 meanGC7 <- mean(ratioDistGC7)
 medianGC7 <- median(ratioDistGC7)
-ratioDistributionsTrisomy(ddsDefGC_4,genesGC_4,"chrV","Sample_4_GC_ChrV")
-ratioDistGC4 <- ratioDistributionsTrisomy(ddsDefGC_4,genesGC_4,"chrV","Sample_4_GC_ChrV")
+ratioDistributionsTrisomy(ddsDefGC_4,genesGC_5,"chrV","Sample_4_GC_ChrV")
+ratioDistGC4 <- ratioDistributionsTrisomy(ddsDefGC_4,genesGC_5,"chrV","Sample_4_GC_ChrV")
 meanGC4 <- mean(ratioDistGC4)
 medianGC4 <- median(ratioDistGC4)
 stdevGC4 <- sd(ratioDistGC4)
-ratioDistGC1 <- ratioDistributionsTrisomy(ddsDefGC_1,genesGC_1,"chrI","Sample_1_GC_ChrI")
+ratioDistGC1 <- ratioDistributionsTrisomy(ddsDefGC_1,genesGC_5,"chrI","Sample_1_GC_ChrI")
 ratioDistGC7 <- ratioDistributionsTrisomy(ddsDefGC_7,genesGC_7,"chrI","Sample_7_GC_ChrI")
 ks.test(ratioDistGC1,ratioDistGC7)
 
@@ -2421,6 +2430,7 @@ Find what genes are commonly sig DE between groups
 
 View(resGC7Dat)
 
+genesGC_1 <- genesGC_11
 
 # put all sample expression data in the same data frame
 allGCSamplesExpr <- rbind(resGC1Dat, resGC2Dat, resGC3Dat, resGC4Dat, resGC5Dat, resGC7Dat, resGC8Dat, resGC9Dat, resGC11Dat, resGC18Dat, resGC59Dat, resGC61Dat, resGC76Dat, resGC77Dat)

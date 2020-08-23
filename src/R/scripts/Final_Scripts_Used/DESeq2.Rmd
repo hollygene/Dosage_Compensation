@@ -4293,6 +4293,7 @@ Now want to make distributions of ratios for cis and trans genes in aneuploid sa
 
 ############ Euploid distributions
 ratioDistributionsEuploids <- function(dds, genes, sample) {
+  
 counts <- counts(dds,normalized=TRUE)
  ratios <- c()
  as.data.frame(ratios)
@@ -4306,47 +4307,40 @@ class(ratios$sampleOverAnc)
 ratios <- as.data.frame(ratios)
 library(ggplot2)
 
-allGenes <- qplot(ratios$sampleOverAnc,geom="histogram", breaks=c(seq(0,6,by=0.05),max(ratios$sampleOverAnc)), main=paste(sample), xlab = "Ratio", ylab="Number of Genes",fill=I("turquoise"),col=I("darkturquoise"))+ geom_vline(xintercept = 1) + coord_cartesian(xlim=c(0,6)) + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)), colour = "red", linetype ="longdash", size = .5 ) +  geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5 ) + theme_classic()
-{pdf(paste("euploid",sample,".pdf",sep=""))
-  print(allGenes)
-dev.off()}
-write.csv(ratios,file=paste("euploidRatios",sample,".csv",sep=""))
-return(ratios$sampleOverAnc)
+allGenes <- qplot(ratios$sampleOverAnc,geom="histogram", breaks=c(seq(0,6,by=0.05),max(ratios$sampleOverAnc)), main=sample, xlab = "Ratio", ylab="Number of Genes",fill=I("turquoise"),col=I("darkturquoise"))+ geom_vline(xintercept = 1) + coord_cartesian(xlim=c(0,6)) + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)), colour = "red", linetype ="longdash", size = .5 ) +  geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5 ) + theme_classic() + geom_vline(xintercept=1.5, col="magenta") + geom_vline(xintercept=0.5,col="green") + geom_vline(xintercept=2,col="orange") 
+
+print(allGenes)
+
 }
-ratioDistributionsEuploids(ddsDefGC_1,genesGC_1,"Sample_1_GC")
-ratioDistributionsEuploids(ddsDefGC_2,genesGC_2,"Sample_2_GC")
-ratioDistributionsEuploids(ddsDefGC_3,genesGC_3,"Sample_3_GC")
-ratioDistributionsEuploids(ddsDefGC_5,genesGC_5,"Sample_5_GC")
+
+ratioDistGC1 <- ratioDistributionsEuploids(ddsDefGC_1,genesGC_1,"Het Sample 1")
+ratioDistGC2 <- ratioDistributionsEuploids(ddsDefGC_2,genesGC_2,"Het Sample 2")
+ratioDistGC3 <- ratioDistributionsEuploids(ddsDefGC_3,genesGC_3,"Het Sample 3")
+ratioDistGC5 <- ratioDistributionsEuploids(ddsDefGC_5,genesGC_5,"Het Sample 5")
 # ratioDistributionsEuploids(ddsDefGC_6,genesGC_6,"Sample_6_GC")
-ratioDistributionsEuploids(ddsDefGC_9,genesGC_9,"Sample_9_GC")
+ratioDistGC9 <- ratioDistributionsEuploids(ddsDefGC_9,genesGC_9,"Het Sample 9")
 
-ratioDistGC2 <- ratioDistributionsEuploids(ddsDefGC_2,genesGC_2,"Sample_2_GC")
-ratioDistGC3 <- ratioDistributionsEuploids(ddsDefGC_3,genesGC_3,"Sample_3_GC")
 
-mean(ratioDistGC2)
-var(ratioDistGC2)
-median(ratioDistGC2)
+library(cowplot)
+
+hetEups <- plot_grid(ratioDistGC1, ratioDistGC2, ratioDistGC3, ratioDistGC5, ratioDistGC9, ncol = 2)
+pdf("hetEups.pdf")
+hetEups
+dev.off()
 
 library(car)
-
- ddsDefGC_11
-
-
-# leveneTest(ratioDistGC2 ~ ratioD, my.dataframe, center=mean)
-
 ks.test(ratioDistGC2,ratioDistGC3,alternative="two.sided")
 
-ratioDistributionsEuploids(ddsDefMAold_1,genesMAold_1,"Sample_1_MA")
-# ratioDistributionsEuploids(ddsDefMAnewS50,genesMAnewS50,"Sample_50_MA")
-
-ratioDistributionsEuploids(ddsDefMAold_2,genesMAold_2,"Sample_2_MA")
-ratioDistributionsEuploids(ddsDefMAold_3,genesMAold_3,"Sample_3_MA")
-ratioDistributionsEuploids(ddsDefMAold_4,genesMAold_4,"Sample_4_MA")
-ratioDistributionsEuploids(ddsDefMAold_5,genesMAold_5,"Sample_5_MA")
-ratioDistributionsEuploids(ddsDefMAold_7,genesMAold_7,"Sample_7_MA")
-ratioDistributionsEuploids(ddsDefMAold_8,genesMAold_8,"Sample_8_MA")
+ratioDistMA1 <- ratioDistributionsEuploids(ddsDefMAold_1,genesMAold_1,"Sample_1_MA")
+ratioDistMA2 <- ratioDistributionsEuploids(ddsDefMAold_2,genesMAold_2,"Sample_2_MA")
+ratioDistMA3 <- ratioDistributionsEuploids(ddsDefMAold_3,genesMAold_3,"Sample_3_MA")
+ratioDistMA4 <- ratioDistributionsEuploids(ddsDefMAold_4,genesMAold_4,"Sample_4_MA")
+ratioDistMA5 <- ratioDistributionsEuploids(ddsDefMAold_5,genesMAold_5,"Sample_5_MA")
+ratioDistMA7 <- ratioDistributionsEuploids(ddsDefMAold_7,genesMAold_7,"Sample_7_MA")
+ratioDistMA8 <- ratioDistributionsEuploids(ddsDefMAold_8,genesMAold_8,"Sample_8_MA")
 
 ratioDistributionsEuploidsMANew <- function(dds, genes, sample) {
+  
 counts <- counts(dds,normalized=TRUE)
  ratios <- c()
  as.data.frame(ratios)
@@ -4361,15 +4355,19 @@ ratios <- as.data.frame(ratios)
 
 allGenes <- qplot(ratios$sampleOverAnc,geom="histogram", breaks=c(seq(0,6,by=0.05),max(ratios$sampleOverAnc)), main=paste(sample), xlab = "Ratio", ylab="Number of Genes",fill=I("turquoise"),col=I("darkturquoise"))+ geom_vline(xintercept = 1)+ coord_cartesian(xlim=c(0,6)) + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)),
              colour = "red", linetype ="longdash", size = .5) + geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)),
-             colour = "blue", linetype ="longdash", size = .5) + theme_classic()
-{pdf(paste("euploid",sample,".pdf",sep=""))
-  print(allGenes)
-dev.off()}
-write.csv(ratios,file=paste("euploid",sample,".csv",sep=""))
+             colour = "blue", linetype ="longdash", size = .5) + theme_classic() + theme_classic() + geom_vline(xintercept=1.5, col="magenta") + geom_vline(xintercept=0.5,col="green") + geom_vline(xintercept=2,col="orange") 
+
+print(allGenes)
+
 }
 
-ratioDistributionsEuploidsMANew(ddsDefMAnewS50,genesMAnewS50,"Sample_50_MA")
-ratioDistributionsEuploidsMANew(ddsDefMAnewS115,genesMAnewS115,"Sample_115_MA")
+ratioDistMA50 <- ratioDistributionsEuploidsMANew(ddsDefMAnewS50,genesMAnewS50,"Sample_50_MA")
+ratioDistMA115 <- ratioDistributionsEuploidsMANew(ddsDefMAnewS115,genesMAnewS115,"Sample_115_MA")
+
+homEups <- plot_grid(ratioDistMA1, ratioDistMA2, ratioDistMA3, ratioDistMA4, ratioDistMA5, ratioDistMA7, ratioDistMA8, ratioDistMA50, ratioDistMA115 , ncol = 2)
+pdf("homEups.pdf")
+homEups
+dev.off()
 #####################################################################
 #####################################################################
 
@@ -4875,6 +4873,8 @@ stdevMA29 <- sd(ratioDistMA29)
 
 #### using ggplot to make figures 
 
+
+library(ggplot2)
 
 
 

@@ -50,7 +50,7 @@ sizeNumAneus1 + geom_point(color="deeppink1") + theme_classic()  + geom_smooth(m
 library(ggpmisc)
 my.formula <- y ~ x
 p1 <- ggplot(size_v_numAneus,aes(x=length,y=X.eventsMA))
-p3 <- p + geom_point(color="deeppink1") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="deeppink1",formula=my.formula) + stat_poly_eq(formula = my.formula, 
+p3 <- p1 + geom_point(color="deeppink1") + theme_classic()  + geom_smooth(method = "lm", se=FALSE, color="deeppink1",formula=my.formula) + stat_poly_eq(formula = my.formula, 
                 aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
                 parse = TRUE) + labs(y="Aneuploidy Events", x="Chromosome Length", title="Homozygous Ancestor") 
 

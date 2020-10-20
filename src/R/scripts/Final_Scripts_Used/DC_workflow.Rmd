@@ -747,9 +747,13 @@ X112 <- subset(logMat.MAnew, select=c("X112"))
 X112.sd <- subset(logMatsd2.MAnew, select=c("X112"))
 #merge the stdev with the mean and the chromosome number
 X112.all <- cbind(chrms,X112,X112.sd)
+View(X112.all)
 #change the column names appropriately
 colnames(X112.all)[1] <- "chr"; colnames(X112.all)[2] <- "mean";colnames(X112.all)[3] <- "sd"
 
+chr16x112 <- subset(X112.all,chr==16,select=c(chr,mean,sd))
+
+library(Hmisc)
 #plots the chromosomes with error bars for each one 
 {pdf("X112_chroms.pdf")
 with (
@@ -779,6 +783,9 @@ X108.sd <- subset(logMatsd2.MA.old, select=c("X108"))
 X108.all <- cbind(chrms,X108,X108.sd)
 #change the column names appropriately
 colnames(X108.all)[1] <- "chr"; colnames(X108.all)[2] <- "mean";colnames(X108.all)[3] <- "sd"
+chr8x108 <- subset(X108.all,chr==8,select=c(chr,mean,sd))
+chr9x108 <- subset(X108.all,chr==9,select=c(chr,mean,sd))
+
 #plots the chromosomes with error bars for each one 
 {pdf("X108_chroms.pdf")
 with (
@@ -804,6 +811,10 @@ X088.sd <- subset(logMatsd2.MA.old, select=c("X088"))
 X088.all <- cbind(chrms,X088,X088.sd)
 #change the column names appropriately
 colnames(X088.all)[1] <- "chr"; colnames(X088.all)[2] <- "mean";colnames(X088.all)[3] <- "sd"
+
+chr9x088 <- subset(X088.all,chr==9,select=c(chr,mean,sd))
+
+
 #plots the chromosomes with error bars for each one 
 {pdf("X088_chroms.pdf")
 with (
@@ -831,6 +842,8 @@ X001.all <- cbind(chrms,X001,X001.sd)
 #change the column names appropriately
 colnames(X001.all)[1] <- "chr"; colnames(X001.all)[2] <- "mean";colnames(X001.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
 {pdf("X001_chroms.pdf")
 with (
   data = X001.all
@@ -1043,6 +1056,9 @@ X009.all <- cbind(chrms,X009,X009.sd)
 #change the column names appropriately
 colnames(X009.all)[1] <- "chr"; colnames(X009.all)[2] <- "mean";colnames(X009.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr14x009 <- subset(X009.all,chr==14,select=c(chr,mean,sd))
+
+
 {pdf("X009_chroms.pdf")
 with (
   data = X009.all
@@ -1069,7 +1085,9 @@ X011.sd <- subset(logMatsd2.MA.old, select=c("X011"))
 X011.all <- cbind(chrms,X011,X011.sd)
 #change the column names appropriately
 colnames(X011.all)[1] <- "chr"; colnames(X011.all)[2] <- "mean";colnames(X011.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
+#plots the chromosomes with error bars for each one
+
+
 {pdf("X011_chroms.pdf")
 with (
   data = X011.all
@@ -1096,7 +1114,10 @@ X015.sd <- subset(logMatsd2.MA.old, select=c("X015"))
 X015.all <- cbind(chrms,X015,X015.sd)
 #change the column names appropriately
 colnames(X015.all)[1] <- "chr"; colnames(X015.all)[2] <- "mean";colnames(X015.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
+#plots the chromosomes with error bars for each one
+
+chr9x015 <- subset(X015.all,chr==9,select=c(chr,mean,sd))
+
 {pdf("X015_chroms.pdf")
 with (
   data = X015.all
@@ -1124,6 +1145,9 @@ X028.all <- cbind(chrms,X028,X028.sd)
 #change the column names appropriately
 colnames(X028.all)[1] <- "chr"; colnames(X028.all)[2] <- "mean";colnames(X028.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
+
 {pdf("X028_chroms.pdf")
 with (
   data = X028.all
@@ -1150,6 +1174,9 @@ X119.all <- cbind(chrms,X119,X119.sd)
 #change the column names appropriately
 colnames(X119.all)[1] <- "chr"; colnames(X119.all)[2] <- "mean";colnames(X119.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+chr9x119 <- subset(X119.all,chr==9,select=c(chr,mean,sd))
+
 {pdf("X119_chroms.pdf")
 with (
   data = X119.all
@@ -1178,6 +1205,8 @@ X115.all <- cbind(chrms,X115,X115.sd)
 #change the column names appropriately
 colnames(X115.all)[1] <- "chr"; colnames(X115.all)[2] <- "mean";colnames(X115.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
 {pdf("X115_chroms.pdf")
 with (
   data = X115.all
@@ -1204,6 +1233,9 @@ X117.all <- cbind(chrms,X117,X117.sd)
 #change the column names appropriately
 colnames(X117.all)[1] <- "chr"; colnames(X117.all)[2] <- "mean";colnames(X117.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr5x117 <- subset(X117.all,chr==5,select=c(chr,mean,sd))
+
+
 {pdf("X117_chroms.pdf")
 with (
   data = X117.all
@@ -1224,7 +1256,7 @@ dev.off()}
 
 #line 11 
 ##### LINE 21 AND 11 MIGHT BE MIXED UP STILL FROM LAST TIMEEEEE ##### *****
-View(logMat.GC)
+# View(logMat.GC)
 X11 <- subset(logMat.GC, select=c("X11"))
 X11.sd <- subset(logMatsd2.GC, select=c("X11"))
 #merge the stdev with the mean and the chromosome number
@@ -1232,6 +1264,10 @@ X11.all <- cbind(chrms,X11,X11.sd)
 #change the column names appropriately
 colnames(X11.all)[1] <- "chr"; colnames(X11.all)[2] <- "mean";colnames(X11.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr1x11 <- subset(X11.all,chr==1,select=c(chr,mean,sd))
+chr15x11 <- subset(X11.all,chr==15,select=c(chr,mean,sd))
+
+
 {pdf("X11_chroms.pdf")
 with (
   data = X11.all
@@ -1258,6 +1294,9 @@ X123.all <- cbind(chrms,X123,X123.sd)
 #change the column names appropriately
 colnames(X123.all)[1] <- "chr"; colnames(X123.all)[2] <- "mean";colnames(X123.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr5x123 <- subset(X123.all,chr==5,select=c(chr,mean,sd))
+
+
 {pdf("X123_chroms.pdf")
 with (
   data = X123.all
@@ -1285,6 +1324,11 @@ X152.all <- cbind(chrms,X152,X152.sd)
 #change the column names appropriately
 colnames(X152.all)[1] <- "chr"; colnames(X152.all)[2] <- "mean";colnames(X152.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+chr1x152 <- subset(X152.all,chr==1,select=c(chr,mean,sd))
+chr8x152 <- subset(X152.all,chr==8,select=c(chr,mean,sd))
+
+
 {pdf("X152_chroms.pdf")
 with (
   data = X152.all
@@ -1311,6 +1355,10 @@ X18.all <- cbind(chrms,X18,X18.sd)
 #change the column names appropriately
 colnames(X18.all)[1] <- "chr"; colnames(X18.all)[2] <- "mean";colnames(X18.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr1x18 <- subset(X18.all,chr==1,select=c(chr,mean,sd))
+chr12x18 <- subset(X18.all,chr==12,select=c(chr,mean,sd))
+
+
 {pdf("X18_chroms.pdf")
 with (
   data = X18.all
@@ -1337,6 +1385,8 @@ X1.all <- cbind(chrms,X1,X1.sd)
 #change the column names appropriately
 colnames(X1.all)[1] <- "chr"; colnames(X1.all)[2] <- "mean";colnames(X1.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
 {pdf("X1_chroms.pdf")
 with (
   data = X1.all
@@ -1364,6 +1414,9 @@ X29.all <- cbind(chrms,X29,X29.sd)
 #change the column names appropriately
 colnames(X29.all)[1] <- "chr"; colnames(X29.all)[2] <- "mean";colnames(X29.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr9x29 <- subset(X29.all,chr==9,select=c(chr,mean,sd))
+
+
 {pdf("X29_chroms.pdf")
 with (
   data = X29.all
@@ -1390,6 +1443,7 @@ X2.all <- cbind(chrms,X2,X2.sd)
 #change the column names appropriately
 colnames(X2.all)[1] <- "chr"; colnames(X2.all)[2] <- "mean";colnames(X2.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
 {pdf("X2_chroms.pdf")
 with (
   data = X2.all
@@ -1417,6 +1471,7 @@ X3.all <- cbind(chrms,X3,X3.sd)
 #change the column names appropriately
 colnames(X3.all)[1] <- "chr"; colnames(X3.all)[2] <- "mean";colnames(X3.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
 {pdf("X3_chroms.pdf")
 with (
   data = X3.all
@@ -1443,6 +1498,9 @@ X49.all <- cbind(chrms,X49,X49.sd)
 #change the column names appropriately
 colnames(X49.all)[1] <- "chr"; colnames(X49.all)[2] <- "mean";colnames(X49.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr5x49 <- subset(X49.all,chr==5,select=c(chr,mean,sd))
+
+
 {pdf("X49_chroms.pdf")
 with (
   data = X49.all
@@ -1469,6 +1527,9 @@ X4.all <- cbind(chrms,X4,X4.sd)
 #change the column names appropriately
 colnames(X4.all)[1] <- "chr"; colnames(X4.all)[2] <- "mean";colnames(X4.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr5x4 <- subset(X4.all,chr==5,select=c(chr,mean,sd))
+
+
 {pdf("X4_chroms.pdf")
 with (
   data = X4.all
@@ -1495,6 +1556,7 @@ X50.all <- cbind(chrms,X50,X50.sd)
 #change the column names appropriately
 colnames(X50.all)[1] <- "chr"; colnames(X50.all)[2] <- "mean";colnames(X50.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
 {pdf("X50_chroms.pdf")
 with (
   data = X50.all
@@ -1521,6 +1583,9 @@ X59.all <- cbind(chrms,X59,X59.sd)
 #change the column names appropriately
 colnames(X59.all)[1] <- "chr"; colnames(X59.all)[2] <- "mean";colnames(X59.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr7x59 <- subset(X59.all,chr==7,select=c(chr,mean,sd))
+
+
 {pdf("X59_chroms.pdf")
 with (
   data = X59.all
@@ -1546,7 +1611,9 @@ X5.sd <- subset(logMatsd2.GC, select=c("X5"))
 X5.all <- cbind(chrms,X5,X5.sd)
 #change the column names appropriately
 colnames(X5.all)[1] <- "chr"; colnames(X5.all)[2] <- "mean";colnames(X5.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
+#plots the chromosomes with error bars for each one
+
+
 {pdf("X5_chroms.pdf")
 with (
   data = X5.all
@@ -1572,7 +1639,10 @@ X61.sd <- subset(logMatsd2.GC, select=c("X61"))
 X61.all <- cbind(chrms,X61,X61.sd)
 #change the column names appropriately
 colnames(X61.all)[1] <- "chr"; colnames(X61.all)[2] <- "mean";colnames(X61.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
+#plots the chromosomes with error bars for each one
+chr7x61 <- subset(X61.all,chr==7,select=c(chr,mean,sd))
+
+
 {pdf("X61_chroms.pdf")
 with (
   data = X61.all
@@ -1600,6 +1670,8 @@ X69.all <- cbind(chrms,X69,X69.sd)
 #change the column names appropriately
 colnames(X69.all)[1] <- "chr"; colnames(X69.all)[2] <- "mean";colnames(X69.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
 {pdf("X68_chroms.pdf")
 with (
   data = X69.all
@@ -1624,7 +1696,11 @@ X76.sd <- subset(logMatsd2.GC, select=c("X76"))
 X76.all <- cbind(chrms,X76,X76.sd)
 #change the column names appropriately
 colnames(X76.all)[1] <- "chr"; colnames(X76.all)[2] <- "mean";colnames(X76.all)[3] <- "sd"
-#plots the chromosomes with error bars for each one 
+#plots the chromosomes with error bars for each one
+chr9x76 <- subset(X76.all,chr==9,select=c(chr,mean,sd))
+chr10x76 <- subset(X76.all,chr==10,select=c(chr,mean,sd))
+chr14x76 <- subset(X76.all,chr==14,select=c(chr,mean,sd))
+
 {pdf("X76_chroms.pdf")
 with (
   data = X76.all
@@ -1650,6 +1726,9 @@ X77.all <- cbind(chrms,X77,X77.sd)
 #change the column names appropriately
 colnames(X77.all)[1] <- "chr"; colnames(X77.all)[2] <- "mean";colnames(X77.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr12x77 <- subset(X77.all,chr==12,select=c(chr,mean,sd))
+
+
 {pdf("X77_chroms.pdf")
 with (
   data = X77.all
@@ -1675,6 +1754,8 @@ X7.all <- cbind(chrms,X7,X7.sd)
 #change the column names appropriately
 colnames(X7.all)[1] <- "chr"; colnames(X7.all)[2] <- "mean";colnames(X7.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr1x7 <- subset(X7.all,chr==1,select=c(chr,mean,sd))
+
 {pdf("X7_chroms.pdf")
 with (
   data = X7.all
@@ -1700,6 +1781,8 @@ X8.all <- cbind(chrms,X8,X8.sd)
 #change the column names appropriately
 colnames(X8.all)[1] <- "chr"; colnames(X8.all)[2] <- "mean";colnames(X8.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+chr16x8 <- subset(X8.all,chr==16,select=c(chr,mean,sd))
+
 {pdf("X8_chroms.pdf")
 with (
   data = X8.all
@@ -1725,6 +1808,8 @@ X9.all <- cbind(chrms,X9,X9.sd)
 #change the column names appropriately
 colnames(X9.all)[1] <- "chr"; colnames(X9.all)[2] <- "mean";colnames(X9.all)[3] <- "sd"
 #plots the chromosomes with error bars for each one 
+
+
 {pdf("X9_chroms.pdf")
 with (
   data = X9.all
@@ -1741,6 +1826,141 @@ title(main="Hybrid Line 9")
 labs <-c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1:16)
 axis(side=1, at=1:16, labels=labs[0:16],cex.axis=0.6)
 dev.off()}
+
+
+### Plot these onto graph 
+# need to combine data into one data frame though 
+str(chr16x112)
+chr16x112$line <- "x112"
+chr16x112$ploidy <- "trisomy"
+X001.all$line <- "x001"
+X001.all$ploidy <- "euploid"
+chr8x108$line <- "x108"
+chr8x108$ploidy <- "trisomy"
+chr9x108$line <- "x108"
+chr9x108$ploidy <- "monosomy"
+chr9x088$line <- "x088"
+chr9x088$ploidy <- "trisomy"
+X002.all$line <- "x002"
+X002.all$ploidy <- "euploid"
+X003.all$line <- "x003"
+X003.all$ploidy <- "euploid"
+X004.all$line <- "x004"
+X004.all$ploidy <- "euploid"
+X005.all$line <- "x005"
+X005.all$ploidy <- "euploid"
+X006.all$line <- "x006"
+X006.all$ploidy <- "euploid"
+X007.all$line <- "x007"
+X007.all$ploidy <- "euploid"
+X008.all$line <- "x008"
+X008.all$ploidy <- "euploid"
+chr14x009$line <- "x009"
+chr14x009$ploidy <- "trisomy"
+X011.all$line <- "x011"
+X011.all$ploidy <- "euploid"
+chr9x015$line <- "x015"
+chr9x015$ploidy <- "trisomy"
+X028.all$line <- "x028"
+X028.all$ploidy <- "euploid"
+chr9x119$line <- "x119"
+chr9x119$ploidy <- "trisomy"
+X115.all$line <- "x115"
+X115.all$ploidy <- "euploid"
+chr5x117$line <- "x117"
+chr5x117$ploidy <- "trisomy"
+chr5x123$line <- "x123"
+chr5x123$ploidy <- "trisomy"
+chr1x152$line <- "x152"
+chr1x152$ploidy <- "trisomy"
+chr8x152$line <- "x152"
+chr8x152$ploidy <- "trisomy"
+chr9x29$line <- "x29"
+chr9x29$ploidy <- "monosomy"
+X50.all$line <- "x50"
+X50.all$ploidy <- "euploid"
+homozygousLines <- rbind(chr16x112, X001.all,chr8x108,chr9x108,chr9x088,X002.all,X003.all,X004.all,X005.all,X006.all,X007.all,X008.all,chr14x009,X011.all,chr9x015,X028.all,chr9x119,X115.all,chr5x117,chr5x123,chr1x152,chr8x152,chr9x29,X50.all)
+homozygousLines$ancestor <- "Homozygous"
+
+chr1x11$line <- "x11"
+chr1x11$ploidy <- "monosomy"
+chr15x11$line <- "x11"
+chr15x11$ploidy <- "trisomy"
+chr1x18$line <- "x18"
+chr1x18$ploidy <- "trisomy"
+chr12x18$line <- "x18"
+chr12x18$ploidy <- "trisomy"
+X1.all$line <- "x1"
+X1.all$ploidy <- "euploid"
+X2.all$line <- "x2"
+X2.all$ploidy <- "euploid"
+X3.all$line <- "x3"
+X3.all$ploidy <- "euploid"
+X5.all$line <- "x5"
+X5.all$ploidy <- "euploid"
+X9.all$line <- "x9"
+X9.all$ploidy <- "euploid"
+X69.all$line <- "x69"
+X69.all$ploidy <- "euploid"
+chr5x49$line <- "x49"
+chr5x49$ploidy <- "trisomy"
+chr5x4$line <- "x4"
+chr5x4$ploidy <- "trisomy"
+chr7x59$line <- "x59"
+chr7x59$ploidy <- "trisomy"
+chr7x61$line <- "x61"
+chr7x61$ploidy <- "trisomy"
+chr9x76$line <- "x76"
+chr9x76$ploidy <- "trisomy"
+chr10x76$line <- "x76"
+chr10x76$ploidy <- "trisomy"
+chr14x76$line <- "x76"
+chr14x76$ploidy <- "trisomy"
+chr12x77$line <- "x77"
+chr12x77$ploidy <- "trisomy"
+chr1x7$line <- "x7"
+chr1x7$ploidy <- "trisomy"
+chr16x8$line <- "x8"
+chr16x8$ploidy <- "tetrasomy"
+
+heterozygousLines <- rbind(chr1x11,chr15x11,chr1x18,chr12x18,X1.all,X2.all,X3.all,X5.all,X9.all,X69.all,chr5x49,chr5x4,chr7x59,chr7x61,chr9x76,chr10x76,chr14x76,chr12x77,chr1x7,chr16x8)
+heterozygousLines$ancestor <- "Heterozygous"
+
+allLines <- rbind(heterozygousLines, homozygousLines)
+View(allLines)
+library(ggpubr)
+library(scales)
+show_col(hue_pal()(3))
+
+pdf("Figure4_redo.pdf")
+allLinesPlot <- ggplot(allLines, x=chr, y=mean)
+p1 <- allLinesPlot + geom_pointrange(aes(x=factor(chr),y=mean, ymax=(allLines$mean+allLines$sd),ymin=(allLines$mean-allLines$sd),color=factor(ploidy)))  + theme_classic() + facet_wrap(vars(ancestor)) + scale_color_manual(values=c("#808080","#00BA38", "#619CFF", "#F8766D")) + labs(x="Chromosome",y="Average log2(FPKM(line)/FPKM(anc))") + guides(color=guide_legend(title="Ploidy"))
+p1
+dev.off()
+
+## Combine these two plots together 
+### Number of aneuploid events per chromosome 
+aneuploidies <- read.table("/Users/hollymcqueary/Dropbox/McQueary/DosageCompensationG3/aneuploidies.txt",header=TRUE)
+# View(aneuploidies)
+
+library(data.table)
+
+numAneus <- reshape2::melt(aneuploidies, measure.vars=3:5)
+# View(numAneus)
+
+pdf("anEvents.pdf")
+gcEvents <- ggplot(numAneus, x=Chromosome, y=value,color=variable)
+gcEvents <- gcEvents + facet_wrap(vars(Ancestor)) + geom_col(aes(x=factor(Chromosome), y=value,fill=variable)) + theme_classic() + labs(y="Number of Events",x="") + scale_fill_discrete(name=NULL)
+gcEvents
+dev.off()
+
+
+
+library(cowplot)
+par(mar())
+pdf("fig2.pdf")
+plot_grid(gcEvents,p1,nrow=2, labels="AUTO")
+dev.off()
 
 ```
 
@@ -2507,6 +2727,10 @@ chr1Data <- data.frame(y=c((log2(l001.1[,3])),(log2(l002.1[,3])),(log2(l003.1[,3
         (log2(l123.1[,3])),(log2(l152.1[,3]))),
 Line=rep(c("Het1","Het2","Het3","Het4","Het5","Het7","Het8","Het9","Het11","Het18","Het49","Het59","Het61","Het69","Het76","Het77","Hom29","Hom50","Hom112","Hom115","Hom117","Hom123","Hom152"),each=length(l001.1$tracking_id)),copy_number=rep(c("2","2","2","2","2","3","2","2","1","3","2","2","2","2","2","2","2","2","2","2","2","2","3"),each=length(l001.1$tracking_id)))
 
+View(chr1Data)
+eups1 <- subset(chr1Data, copy_number==2,select=c(y,Line))
+
+
 # combine the old and the new 
 chr1DataCombo <- rbind(chr1Data,chr1Data.old)
 # make "Line" a factor
@@ -2514,11 +2738,11 @@ chr1DataCombo$Line <- as.factor(chr1DataCombo$Line)
 # make "copy number" a factor
 chr1DataCombo$copy_number <- as.factor(chr1DataCombo$copy_number)
 # chr 1 has 87 genes on it that I looked at
-View(chr1DataCombo)
+# View(chr1DataCombo)
 # set labels for lines
 chr1DataCombo$Line=factor(chr1DataCombo$Line, c("Het1","Het2","Het3","Het4","Het5","Het7","Het8","Het9","Het11","Het18","Het49","Het59","Het61","Het69","Het76","Het77","Hom1","Hom2","Hom3","Hom4","Hom5","Hom6","Hom7","Hom8","Hom9","Hom11","Hom15","Hom28","Hom29","Hom50","Hom88","Hom108","Hom112","Hom115","Hom117","Hom119","Hom123","Hom152"))
 
-colors <- c("1" = "blue", "2" = "gray", "2.5" = "pink", "3" = "red", "4" = "darkred")
+colors <- c("1" = "green", "2" = "gray", "2.5" = "pink", "3" = "red", "4" = "blue")
 
 
 myTitleTheme <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (10)))
@@ -2534,9 +2758,16 @@ myYlabelTheme <- theme(axis.title.y.left = element_text(family = "Helvetica", si
 myLegendTheme <- theme(legend.text = element_text(family = "Helvetica", size = (8)), legend.title = element_text(family = "Helvetica", size = (8)), legend.key.size = unit(0.3,"line"))
 
 # ggplot code to make a boxplot
+# original 
  p <- ggplot(chr1DataCombo, aes(x=Line, y=y,color=copy_number)) + 
-  geom_boxplot() + theme_classic() +scale_color_manual(values = colors) +ggtitle("Chromosome 1") +xlab("Sample") + ylab("log2(FPKMsample/FPKManc)") + geom_hline(yintercept = 0, col="darkgray") +geom_hline(yintercept = 0.583, col="red", linetype=2) + geom_hline(yintercept = -1, col="blue", linetype=2) + myTitleTheme + myXaxisTheme + myXlabelTheme + myYaxisTheme + myYlabelTheme + myLegendTheme
+  geom_boxplot() + theme_classic() +scale_color_manual(values = colors) +ggtitle("Chromosome 1") +xlab("Line") + ylab("log2(FPKMline/FPKManc)") + geom_hline(yintercept = 0, col="darkgray") + geom_hline(yintercept = 0.583, col="red", linetype=2) + geom_hline(yintercept = -1, col="blue", linetype=2) + myTitleTheme + myXaxisTheme + myXlabelTheme + myYaxisTheme + myYlabelTheme + myLegendTheme
 
+ 
+# for figure in paper 
+ p1 <- ggplot(chr1DataCombo, aes(x=Line,y=y,color=copy_number)) 
+ p1 + geom_boxplot() + theme_classic() +scale_color_manual(values = colors) +ggtitle("Chromosome 1") +xlab("Line") + ylab("log2(FPKMline/FPKManc)") 
+  
+ 
  
  # scale_color_manual(values=c("blue","gray","pink","red","darkred"))
 # graph the boxplot and save it to a pdf  
@@ -5413,6 +5644,8 @@ df.total[2,1] <- 46
 df.total[2,2] <- 121 
 
 test <- fisher.test(df.total )#, alternative="two.sided", conf.int=TRUE)
+test$p.value
+str(test)
 
 
 # iris$LongPetal <- ifelse(iris$Petal.Length > 4.5, 1, 0)

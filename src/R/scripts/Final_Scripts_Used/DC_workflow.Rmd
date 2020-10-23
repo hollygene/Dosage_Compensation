@@ -1932,12 +1932,22 @@ library(ggpubr)
 library(scales)
 show_col(hue_pal()(3))
 
-pdf("Figure4_redo.pdf")
-allLinesPlot <- ggplot(allLines, x=chr, y=mean)
-p1 <- allLinesPlot + geom_pointrange(aes(x=factor(chr),y=mean, ymax=(allLines$mean+allLines$sd),ymin=(allLines$mean-allLines$sd),color=factor(ploidy)))  + theme_classic() + facet_wrap(vars(ancestor)) + scale_color_manual(values=c("#808080","#00BA38", "#619CFF", "#F8766D")) + labs(x="Chromosome",y="Average log2(FPKM(line)/FPKM(anc))") + guides(color=guide_legend(title="Ploidy"))
-p1
+Euploid_Only <- allLines[(allLines$ploidy=='euploid'),]
+
+NotEuploid <- allLines[(allLines$ploidy!='euploid'),]
+
+
+pdf("Figure1.pdf")
+allLinesPlot <- ggplot(NotEuploid, x=chr, y=mean)
+p1 <- allLinesPlot + geom_pointrange(aes(x=factor(chr),y=mean, ymax=(NotEuploid$mean+NotEuploid$sd),ymin=(NotEuploid$mean-NotEuploid$sd),color=factor(ploidy)))  
+p2 <- p1 + geom_hline(data=Euploid_Only, yintercept=mean(Euploid_Only$mean), color="#888888", linetype="dashed") + facet_grid(~ancestor) + labs(x="Chromosome",y="Average log2(FPKM(line)/FPKM(anc))") + guides(color=guide_legend(title="Ploidy"))  + theme_classic() 
+p2
 dev.off()
 
+
+# stat_summary(data=NotEuploid, aes(x=chr, y= mean, col= ploidy), fun.data="mean.cl.boot") + stat_summary(data=NotEuploid, aes(x=chr, y= mean, col= ploidy), fun.y="mean")+
+#   
+  
 ## Combine these two plots together 
 ### Number of aneuploid events per chromosome 
 aneuploidies <- read.table("/Users/hollymcqueary/Dropbox/McQueary/DosageCompensationG3/aneuploidies.txt",header=TRUE)
@@ -1957,9 +1967,8 @@ dev.off()
 
 
 library(cowplot)
-par(mar())
-pdf("fig2.pdf")
-plot_grid(gcEvents,p1,nrow=2, labels="AUTO")
+pdf("fig1.pdf")
+plot_grid(gcEvents,p2,nrow=2, labels="AUTO")
 dev.off()
 
 ```

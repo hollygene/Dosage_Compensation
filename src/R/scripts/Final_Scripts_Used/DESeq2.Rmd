@@ -4097,9 +4097,9 @@ class(ratios$sampleOverAnc)
 ratios <- as.data.frame(ratios)
 library(ggplot2)
 
-allGenes <- qplot(ratios$sampleOverAnc,geom="histogram", breaks=c(seq(0,6,by=0.05),max(ratios$sampleOverAnc)), xlab = "Ratio", ylab="Number of Genes",fill=I("turquoise"),col=I("darkturquoise"))+ geom_vline(xintercept = 1) + coord_cartesian(xlim=c(0,6)) + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)), colour = "red", linetype ="longdash", size = .5 ) +  geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5 ) + theme_classic()  + theme(axis.title = element_text(size=7),axis.text=element_text(size=7))
-
-return(allGenes)
+allGenes <- ggplot(ratios,aes(x=sampleOverAnc))
+g1 <- allGenes + geom_density(fill="turquoise",alpha=0.2) + geom_vline(xintercept = 1)+ coord_cartesian(xlim=c(0,4))  + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)), colour = "red", linetype ="longdash", size = .5 )  +  geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5 ) + theme_classic()  + theme(axis.title = element_text(size=7),axis.text=element_text(size=7)) 
+return(g1)
 }
 
 ratioDistGC1 <- ratioDistributionsEuploids(ddsDefGC_1,genesGC_1) + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
@@ -4109,13 +4109,13 @@ ratioDistGC5 <- ratioDistributionsEuploids(ddsDefGC_5,genesGC_5) + theme(axis.ti
 ratioDistGC9 <- ratioDistributionsEuploids(ddsDefGC_9,genesGC_9) + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
 library(cowplot)
-
+library(ggpubr)
 
 pdf("hetEups.pdf")
 hetEups <- plot_grid(ratioDistGC1, ratioDistGC2, ratioDistGC3,ratioDistGC5, ratioDistGC9, ncol = 2, labels="AUTO",label_size = 8, hjust=1)
 annotate_figure(hetEups,
                bottom = text_grob("Ratio", size = 10),
-               left = text_grob("Number of Genes", rot = 90,size=10))
+               left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 
 library(car)
@@ -4143,12 +4143,9 @@ class(ratios)
 class(ratios$sampleOverAnc)
 ratios <- as.data.frame(ratios)
 
-allGenes <- qplot(ratios$sampleOverAnc,geom="histogram", breaks=c(seq(0,6,by=0.05),max(ratios$sampleOverAnc)), xlab = "Ratio", ylab="Number of Genes",fill=I("turquoise"),col=I("darkturquoise"))+ geom_vline(xintercept = 1)+ coord_cartesian(xlim=c(0,6)) + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)),
-             colour = "red", linetype ="longdash", size = .5) + geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)),
-             colour = "blue", linetype ="longdash", size = .5) + theme_classic() + theme(axis.title = element_text(size=7),axis.text=element_text(size=7))
-
-print(allGenes)
-
+allGenes <- ggplot(ratios,aes(x=sampleOverAnc))
+g1 <- allGenes + geom_density(fill="turquoise",alpha=0.2) + geom_vline(xintercept = 1)+ coord_cartesian(xlim=c(0,4))  + geom_vline(aes(xintercept = mean(ratios$sampleOverAnc, na.rm = T)), colour = "red", linetype ="longdash", size = .5 )  +  geom_vline(aes(xintercept = median(ratios$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5 ) + theme_classic()  + theme(axis.title = element_text(size=7),axis.text=element_text(size=7)) 
+print(g1)
 }
 
 ratioDistMA50 <- ratioDistributionsEuploidsMANew(ddsDefMAnewS50,genesMAnewS50)+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
@@ -4160,7 +4157,7 @@ pdf("homEups.pdf")
 homEups
 annotate_figure(homEups,
               bottom = text_grob("Ratio", size = 10),
-            left = text_grob("Number of Genes", rot = 90,size=10))
+            left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 #####################################################################
 #####################################################################
@@ -4169,6 +4166,9 @@ dev.off()
 dds=ddsDefGC_4
 genes=genesGC_4
 anChr="chrV"
+
+library(scales)
+show_col(hue_pal()(4))
 
 ratioDistributionsTrisomy <- function(dds, genes, anChr,sample) {
 counts <- counts(dds,normalized=TRUE)
@@ -4185,22 +4185,25 @@ ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
 ratios.cis$type <- "cis"
+ratios.cis$chr <- anChr
 # View(ratios.cis)
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.Trans$type <- "trans"
+ratios.Trans$chr <- "Non-Aneu"
 # View(ratios.Trans)
 ratios.All <- rbind(ratios.cis, ratios.Trans)
 # View(ratios.All)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity",alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + 
+  coord_cartesian(xlim=c(0,4)) + 
+  geom_vline(xintercept = 1) + #exp for disomy 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   # geom_vline(xintercept=0.5,col="green") + #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
   geom_vline(aes(xintercept = mean(ratios.cis$sampleOverAnc, na.rm = T)),colour = "red", linetype ="longdash", size = .5) + #mean cis genes
   geom_vline(aes(xintercept = mean(ratios.Trans$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5) + #mean trans genes
-  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title = sample)
-
+  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes",title=sample)
 }
 
 #black line is expected for euploid samples 
@@ -4221,8 +4224,8 @@ library(ggpubr)
 pdf("gcTris_samples_ratios.pdf")
 gcTri <- ggarrange(ratioDistGC7,ratioDistGC4,ratioDistGC49,ratioDistGC59,ratioDistGC61,ratioDistGC77,ncol=2,nrow=3,label.x="Ratio (Line/Ancestor)",label.y = "Number of Genes", common.legend = TRUE)
 annotate_figure(gcTri,
-             bottom = text_grob("Ratio", size = 10),
-           left = text_grob("Number of Genes", rot = 90,size=10))
+             bottom = text_grob("log2Ratio (Sample/Anc)", size = 10),
+           left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 ## for publication: labels are as follows: A-line 7 chromosome I, B-line 4 chromosome V, C- line 49 chromosome V, D-line 59 chr VII, E-line 61 chr VII, F-line 77 chr XII
 
@@ -4241,30 +4244,36 @@ ratios$sampleOverAnc <- ratios$sampleMean/ratios$ancMean
 ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
-ratios.cis$type=anChr
+ratios.cis$type="cis"
+ratios.cis$chr=anChr
 ratios.keepCis2 <- ratios$chr==anChr2
 ratios.Cis2 <- ratios[ratios.keepCis2,]
-ratios.Cis2$type=anChr2
+ratios.Cis2$type <- "cis"
+ratios.Cis2$chr=anChr2
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.keepTrans2 <- ratios$chr!=anChr2
 ratios.Trans2 <- ratios.Trans[ratios.keepTrans2,]
 ratios.Trans2$type="trans"
+ratios.Trans2$chr="trans"
 ratios.All <- rbind(ratios.cis, ratios.Cis2, ratios.Trans2)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity",alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,linetype=chr,fill=type)) +
+  geom_density(alpha=0.2) +
+  coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   # geom_vline(xintercept=0.5,col="green") + #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
   geom_vline(aes(xintercept = mean(ratios.cis$sampleOverAnc, na.rm = T)),colour = "red", linetype ="longdash", size = .5) +
   #mean cis genes
-   geom_vline(aes(xintercept = median(ratios.Cis2$sampleOverAnc, na.rm = T)), colour = "purple", linetype ="longdash", size = .5) + #mean trans genes
-  geom_vline(aes(xintercept = median(ratios.Trans2$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5) + 
+  geom_vline(aes(xintercept = median(ratios.Cis2$sampleOverAnc, na.rm = T)), colour = "purple", linetype ="longdash", size =
+               .5) + #mean trans genes
+  geom_vline(aes(xintercept = median(ratios.Trans2$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size =
+               .5) + 
   #mean trans genes
   theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title = sample)
 }
 
-ratioDistGC18 <- ratioDistributionsTrisomyMulti(ddsDefGC_18,genesGC_18,"chrI","chrXII", "A") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC18 <- ratioDistributionsTrisomyMulti(ddsDefGC_18,genesGC_18,"chrI","chrXII", "") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
 
 ratioDistributionsTriMonMulti <- function(dds, genes, anChr, anChr2, sample) {
@@ -4279,18 +4288,22 @@ ratios$sampleOverAnc <- ratios$sampleMean/ratios$ancMean
 ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
-ratios.cis$type=anChr
+ratios.cis$type="cis"
+ratios.cis$chr=anChr
 ratios.keepCis2 <- ratios$chr==anChr2
 ratios.Cis2 <- ratios[ratios.keepCis2,]
-ratios.Cis2$type=anChr2
+ratios.Cis2$type="cis"
+ratios.Cis2$chr=anChr2
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.keepTrans2 <- ratios$chr!=anChr2
 ratios.Trans2 <- ratios.Trans[ratios.keepTrans2,]
 ratios.Trans2$type="trans"
+ratios.Trans2$chr="trans"
 ratios.All <- rbind(ratios.cis, ratios.Cis2, ratios.Trans2)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity", alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) +
+  coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   geom_vline(xintercept=0.5,col="green") +   #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
@@ -4301,16 +4314,16 @@ allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
   #mean trans genes
   theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title = sample)
 }
-ratioDistGC11 <- ratioDistributionsTriMonMulti(ddsDefGC_11,genesGC_11,"chrI","chrXV", "B") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC11 <- ratioDistributionsTriMonMulti(ddsDefGC_11,genesGC_11,"chrI","chrXV", "") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
-ratioDistMA108 <- ratioDistributionsTriMonMulti(ddsDefMAold_108,genesMAold_108,"chrVIII","chrIX", "") 
+ratioDistMA108 <- ratioDistributionsTriMonMulti(ddsDefMAold_108,genesMAold_108,"chrVIII","chrIX", "") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
 ## for publication
 pdf("gcMulti_samples_ratios.pdf")
-gcMulti <- ggarrange(ratioDistGC18,ratioDistGC11,nrow=2,label.x="Ratio (Line/Ancestor)",label.y = "Number of Genes", common.legend = FALSE)
+gcMulti <- ggarrange(ratioDistGC7,ratioDistGC4,ratioDistGC18,ratioDistGC11,ratioDistGC49,ratioDistGC59,ratioDistGC61,ratioDistGC76,ratioDistGC77,ratioDistGC8,ncol=2,nrow=5,label.x="log2 Ratio (Line/Ancestor)",label.y = "Density of Genes", common.legend = TRUE)
 annotate_figure(gcMulti,
-         bottom = text_grob("Ratio", size = 10),
-       left = text_grob("Number of Genes", rot = 90,size=10))
+         bottom = text_grob("log2 Ratio(Sample/Anc)", size = 10),
+       left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 
 pdf("maMulti_samples_ratios.pdf")
@@ -4318,6 +4331,12 @@ ratioDistMA108
 dev.off()
 ## for publication: labels are as follows: A: line 18 B: line 11 het anc 
 
+pdf("gcMulti_ratios.pdf")
+gcMulti <- ggarrange(ratioDistGC11,ratioDistGC18,ncol=1,nrow=2,label.x="log2 Ratio (Line/Ancestor)",label.y = "Density of Genes", common.legend = FALSE)
+annotate_figure(gcMulti,
+         bottom = text_grob("log2 Ratio(Sample/Anc)", size = 10),
+       left = text_grob("Density of Genes", rot = 90,size=10))
+dev.off()
 
 
 ```
@@ -4337,26 +4356,32 @@ class(ratios$sampleOverAnc)
 ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr=="chrIX"
 ratios.cis <- ratios[ratios.keepCis,]
-ratios.cis$type="chrIX"
+ratios.cis$chr="chrIX"
+ratios.cis$type="cis"
 ratios.keepCis2 <- ratios$chr=="chrXIV"
 ratios.cis2 <- ratios[ratios.keepCis2,]
-ratios.cis2$type <- "chrXIV"
+ratios.cis2$type="cis"
+ratios.cis2$chr <- "chrXIV"
 ratios.keepCis3 <- ratios$chr=="chrX"
 ratios.cis3 <- ratios[ratios.keepCis3,]
-ratios.cis3$type <- "chrX"
+ratios.cis3$type="cis"
+ratios.cis3$chr <- "chrX"
 ratios.keepTrans <- ratios$chr!="chrIX"
 ratios.Trans <- ratios[ratios.keepTrans,]
-ratios.Trans$type <- "trans"
+ratios.Trans$type="trans"
+ratios.Trans$chr <- "trans"
 ratios.keepTrans2 <- ratios$chr!="chrXIV"
 ratios.Trans2 <- ratios.Trans[ratios.keepTrans2,]
 ratios.Trans2$type <- "trans"
+ratios.Trans2$chr <- "trans"
 ratios.keepTrans3 <- ratios$chr!="chrX"
 ratios.Trans3 <- ratios.Trans2[ratios.keepTrans3,]
 ratios.Trans3$type <- "trans"
-ratios76.All <- rbind(ratios.cis, ratios.cis2, ratios.cis3, ratios.Trans2)
+ratios.Trans3$chr <- "trans"
+ratios76.All <- rbind(ratios.cis, ratios.cis2, ratios.cis3, ratios.Trans3)
 
-ratioDistGC76 <- ggplot(ratios76.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios76.All$sampleOverAnc)), position = "identity", alpha=0.3) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+ratioDistGC76 <- ggplot(ratios76.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   geom_vline(xintercept=0.5,col="green") +   #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
@@ -4366,10 +4391,13 @@ ratioDistGC76 <- ggplot(ratios76.All, aes(x=sampleOverAnc,fill=type)) +
   geom_vline(aes(xintercept = median(ratios.cis3$sampleOverAnc, na.rm = T)), colour = "deeppink1", linetype ="longdash", size = .5) + #mean cis3 genes
   geom_vline(aes(xintercept = median(ratios.Trans3$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5) + 
   #mean trans genes
-  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title="C")
+  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Density of Genes", title="")
 
+ratioDistGC76 <- ratioDistGC76 + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
-
+pdf("gcLine76.pdf")
+ratioDistGC76
+dev.off()
 ```
 
 
@@ -4398,15 +4426,17 @@ ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
 ratios.cis$type <- "cis"
+ratios.cis$chr <- anChr
 # View(ratios.cis)
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.Trans$type <- "trans"
+ratios.Trans$chr <- "Non-Aneu"
 # View(ratios.Trans)
 ratios.All <- rbind(ratios.cis, ratios.Trans)
 # View(ratios.All)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity",alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + coord_cartesian(xlim=c(0,4))+ geom_vline(xintercept = 1) + 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   # geom_vline(xintercept=0.5,col="green") + #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
@@ -4423,8 +4453,8 @@ ratioDistMA123 <- ratioDistributionsTrisomyMAnew(ddsDefMAnewS123,genesMAnewS123,
 pdf("MA_ratios_trisomies.pdf")
 MAtri <- ggarrange(ratioDistMA15,ratioDistMA88,ratioDistMA119,ratioDistMA9,ratioDistMA112,ratioDistMA117,ratioDistMA123,ncol=2,nrow=4, common.legend = TRUE)
 annotate_figure(MAtri,
-      bottom = text_grob("Ratio", size = 10),
-      left = text_grob("Number of Genes", rot = 90,size=10))
+    bottom = text_grob("log2 Ratio(sample/Anc)", size = 10),
+     left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 
 
@@ -4444,18 +4474,21 @@ ratios$sampleOverAnc <- ratios$sampleMean/ratios$ancMean
 ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
-ratios.cis$type=anChr
+ratios.cis$type="cis"
+ratios.cis$chr <- anChr
 ratios.keepCis2 <- ratios$chr==anChr2
 ratios.Cis2 <- ratios[ratios.keepCis2,]
-ratios.Cis2$type=anChr2
+ratios.Cis2$type="cis"
+ratios.Cis2$chr <- anChr2
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.keepTrans2 <- ratios$chr!=anChr2
 ratios.Trans2 <- ratios.Trans[ratios.keepTrans2,]
 ratios.Trans2$type="trans"
+ratios.Trans2$chr <- "Non-Aneu"
 ratios.All <- rbind(ratios.cis, ratios.Cis2, ratios.Trans2)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity", alpha=0.25) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   geom_vline(xintercept=0.5,col="green") +   #exp for monosomy
   # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
@@ -4473,8 +4506,8 @@ ratioDistMA152.VIII <- ratioDistributionsTriMonMultiMAnew(ddsDefMAnewS152,genesM
 pdf("MA_lines_multi_aneu.pdf")
 maMulti <- ggarrange(ratioDistMA108,ratioDistMA152.VIII,nrow=2,labels="AUTO",common.legend = FALSE)
 annotate_figure(maMulti,
-    bottom = text_grob("Ratio", size = 10),
-     left = text_grob("Number of Genes", rot = 90,size=10))
+    bottom = text_grob("log2 Ratio(sample/Anc)", size = 10),
+     left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
 
 # for tetrasomy 
@@ -4493,15 +4526,17 @@ ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
 ratios.cis$type <- "cis"
+ratios.cis$chr <- anChr
 # View(ratios.cis)
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.Trans$type <- "trans"
+ratios.Trans$chr <- "Non-Aneu"
 # View(ratios.Trans)
 ratios.All <- rbind(ratios.cis, ratios.Trans)
 # View(ratios.All)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity",alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   # geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
   # geom_vline(xintercept=0.5,col="green") + #exp for monosomy
   geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
@@ -4510,7 +4545,7 @@ allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
   theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title = sample)
 
 }
-ratioDistGC8 <- ratioDistributionsTetrsomy(ddsDefGC_8,genesGC_8,"chrXVI","")
+ratioDistGC8 <- ratioDistributionsTetrsomy(ddsDefGC_8,genesGC_8,"chrXVI","J")  + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
 pdf("gc_line8_ratios.pdf")
 ratioDistGC8
@@ -4532,24 +4567,26 @@ ratios <- as.data.frame(ratios)
 ratios.keepCis <- ratios$chr==anChr
 ratios.cis <- ratios[ratios.keepCis,]
 ratios.cis$type <- "cis"
+ratios.cis$chr <- anChr
 # View(ratios.cis)
 ratios.keepTrans <- ratios$chr!=anChr
 ratios.Trans <- ratios[ratios.keepTrans,]
 ratios.Trans$type <- "trans"
+ratios.Trans$chr <- "Non-Aneu"
 # View(ratios.Trans)
 ratios.All <- rbind(ratios.cis, ratios.Trans)
 # View(ratios.All)
-allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type)) +
-  geom_histogram(breaks=c(seq(0, 6, by=0.05), max(ratios.All$sampleOverAnc)), position = "identity",alpha=0.6) + coord_cartesian(xlim=c(0,6),ylim=c(0,550)) + geom_vline(xintercept = 1) + 
+allRatiosPlot <- ggplot(ratios.All, aes(x=sampleOverAnc,fill=type,linetype=chr)) +
+  geom_density(alpha=0.2) + coord_cartesian(xlim=c(0,4)) + geom_vline(xintercept = 1) + 
   # geom_vline(xintercept=1.5, col="magenta") + #exp for trisomy 
-  geom_vline(xintercept=0.5,col="green") + #exp for monosomy
-  # geom_vline(xintercept=2,col="orange") + #exp for tetrasomy
+  geom_vline(xintercept=0.5,col="green") +  #exp for monosomy
+  # geom_vline(xintercept=2,col="orange") +  #exp for tetrasomy
   geom_vline(aes(xintercept = mean(ratios.cis$sampleOverAnc, na.rm = T)),colour = "red", linetype ="longdash", size = .5) + #mean cis genes
   geom_vline(aes(xintercept = median(ratios.Trans$sampleOverAnc, na.rm = T)), colour = "blue", linetype ="longdash", size = .5) + #mean trans genes
-  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Number of Genes", title = sample)
+  theme_classic() + labs(x="Ratio (Line/Ancestor)",y="Density of Genes", title = sample)
 
 }
-ratioDistMA29 <- ratioDistributionsMonosomyMAnew(ddsDefMAnewS29,genesMAnewS29,"chrIX","")
+ratioDistMA29 <- ratioDistributionsMonosomyMAnew(ddsDefMAnewS29,genesMAnewS29,"chrIX","") # + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
 
 pdf("ratios_MA_29.pdf")
 ratioDistMA29
@@ -4558,14 +4595,33 @@ dev.off()
 
 ## for supplement 
 pdf("maTris_samples_ratios.pdf")
-ggarrange(ratioDistMA15,ratioDistMA88,ratioDistMA119,ratioDistMA9,ncol=2,nrow=2,label.x="Ratio (Line/Ancestor)",label.y = "Number of Genes", common.legend = TRUE)
+maMulti <- ggarrange(ratioDistMA15,ratioDistMA88,ratioDistMA119,ratioDistMA9,ncol=2,nrow=2,label.x="Ratio (Line/Ancestor)",label.y = "Density of Genes", common.legend = TRUE)
+annotate_figure(maMulti,
+    bottom = text_grob("log2 Ratio(sample/Anc)", size = 10),
+     left = text_grob("Density of Genes", rot = 90,size=10))
 dev.off()
+
+
+ratioDistGC4 <- ratioDistributionsTrisomy(ddsDefGC_4,genesGC_4,"chrV","A")+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistMA117 <- ratioDistributionsTrisomyMAnew(ddsDefMAnewS117,genesMAnewS117,"chrV","B")+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC59 <- ratioDistributionsTrisomy(ddsDefGC_59,genesGC_59,"chrVII","C")+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistMA15 <- ratioDistributionsTrisomy(ddsDefMAold_15,genesMAold_15,"chrIX","D") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistMA29 <- ratioDistributionsMonosomyMAnew(ddsDefMAnewS29,genesMAnewS29,"chrIX","E")  + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistMA9 <- ratioDistributionsTrisomy(ddsDefMAold_9,genesMAold_9,"chrXIV","F")+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC8 <- ratioDistributionsTetrsomy(ddsDefGC_8,genesGC_8,"chrXVI","G")  + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistMA112 <- ratioDistributionsTrisomyMAnew(ddsDefMAnewS112,genesMAnewS112,"chrXVI","H")+ theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC11 <- ratioDistributionsTriMonMulti(ddsDefGC_11,genesGC_11,"chrI","chrXV", "I") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+ratioDistGC18 <- ratioDistributionsTrisomyMulti(ddsDefGC_18,genesGC_18,"chrI","chrXII", "J") + theme(axis.title.y = element_blank(),  axis.title.x = element_blank() )
+
 
 
 ## for main body of paper 
 pdf("main_body_fig_trisomics.pdf")
-
-
+trisomics <- ggarrange(ratioDistGC4, ratioDistMA117, ratioDistGC59, ratioDistMA15, ratioDistMA29, ratioDistMA9, ratioDistGC8, ratioDistMA112, ratioDistGC11, ratioDistGC18, ratioDistGC76,  ncol=3, nrow=4, label.x="Ratio (Line/Ancestor)",label.y = "Density of Genes", common.legend = TRUE)
+annotate_figure(trisomics,
+    bottom = text_grob("log2 Ratio(sample/Anc)", size = 10),
+     left = text_grob("Density of Genes", rot = 90,size=10))
+dev.off()
 
 
 ```
@@ -4625,29 +4681,20 @@ colnames(transMeanTrisomyTable) <-c("ddsDefGC_7","ddsDefGC_4","ddsDefGC_49","dds
 rownames(transMeanTrisomyTable) <- c("Expected_Mean","Observed_Mean","p-value (t-test")
 transMeanTrisomyTable <- as.data.frame(transMeanTrisomyTable)
 
-meanTrisomyGC_7 <- transMeanTrisomy(ddsDefGC_7,genesGC_7,"chrI")
+# meanTrisomyGC_7 <- transMeanTrisomy(ddsDefGC_7,genesGC_7,"chrI")
 
 expectedMeanChrITri <- 0.98
-chisq.test(meanTrisomyGC_7,expectedMeanChrITri)
+# chisq.test(meanTrisomyGC_7,expectedMeanChrITri)
 
-meanTrisomyGC_4 <- transMeanTrisomy(ddsDefGC_4,)
-
-for(line in rep.Trisomy){
-  for(genesTris in genesTris){
-    for(anChr in anChr) {
-    transMeanTrisomyTable <- c(transMeanTrisomyTable,transMeanTrisomy(rep.Trisomy, genesTris, anChr))
-    }
-  }
-}
-
-ratMatMed.MA <- matrix(y.MAnew,nrow=16,ncol=7)
-colnames(ratMatMed.MA) <- rep.MAnew
-ratMatMed.MA <- cbind(c(1:16),ratMatMed.MA)
-colnames(ratMatMed.MA)[1] <- "chr"
-#remove the ratios that are about 1
-ratMatMedRed.MA <- ratMatMed.MA
-ratMatMedRed.MA[ratMatMedRed.MA<1.35] <- NA
-
+# meanTrisomyGC_4 <- transMeanTrisomy(ddsDefGC_4,)
+# 
+# for(line in rep.Trisomy){
+#   for(genesTris in genesTris){
+#     for(anChr in anChr) {
+#     transMeanTrisomyTable <- c(transMeanTrisomyTable,transMeanTrisomy(rep.Trisomy, genesTris, anChr))
+#     }
+#   }
+# }
 
 p.valMA15 <- transMeanTrisomy(ddsDefMAold_15,genesMAold_15,"chrIX",0.96)
 p.valMA15
@@ -4657,13 +4704,6 @@ p.valMA119 <- transMeanTrisomy(ddsDefMAold_119,genesMAold_119,"chrIX",0.96)
 p.valMA119
 p.valMA9 <- transMeanTrisomy(ddsDefMAold_9,genesMAold_9,"chrXIV",0.94)
 p.valMA9
-
-
-
-
-ratioDistGC76.IX <- ratioDistributionsTrisomyMulti2(ddsDefGC_76,genesGC_76,"chrIX","chrXIV","chrX", "Het Sample 76 Chr IX")
-ratioDistGC76.X <- ratioDistributionsTrisomyMulti2(ddsDefGC_76,genesGC_76,"chrX","chrXIV","chrIX", "Het Sample 76 Chr IX")
-ratioDistGC76.XIV <- ratioDistributionsTrisomyMulti2(ddsDefGC_76,genesGC_76,"chrXIV","chrIX","chrX", "Het Sample 76 Chr XIV")
 
 
 ratioDistributionsTrisomyMultiMANew <- function(dds, genes, anChr,anChri2,sample) {
@@ -4835,23 +4875,23 @@ chr7
 dev.off()
 
 
-chr9 <- plot_grid(ratioDistMA108.IX, ratioDistMA15, ratioDistMA29, ratioDistMA88, ratioDistGC76.IX, ncol = 1, nrow =5 )
-pdf("chrIX.pdf", width = 10, height= 10)
-chr9
-dev.off()
+# chr9 <- plot_grid(ratioDistMA108.IX, ratioDistMA15, ratioDistMA29, ratioDistMA88, ratioDistGC76.IX, ncol = 1, nrow =5 )
+# pdf("chrIX.pdf", width = 10, height= 10)
+# chr9
+# dev.off()
 
-pdf("chrX.pdf", width=20, height=10)
-ratioDistGC76.X
-dev.off()
+# pdf("chrX.pdf", width=20, height=10)
+# ratioDistGC76.X
+# dev.off()
 
 pdf("chrXII.pdf", width=20, height=10)
 ratioDistGC77
 dev.off()
 
-chr14 <- plot_grid(ratioDistMA9, ratioDistGC76.XIV,  ncol = 1, nrow = 2 )
-pdf("chrXIV.pdf", width = 10, height= 10)
-chr14
-dev.off()
+# chr14 <- plot_grid(ratioDistMA9, ratioDistGC76.XIV,  ncol = 1, nrow = 2 )
+# pdf("chrXIV.pdf", width = 10, height= 10)
+# chr14
+# dev.off()
 
 
 pdf("chrXV.pdf", width=20, height=10)
@@ -6676,10 +6716,19 @@ resultsESR <- function(dds,sample,anc,genes,Anc) {
 }
 
 
-
+library(dplyr)
 esrGenesMA152 <- resultsESR(ddsDefMAnewS152,"152","Anc",genesMAnewS152,"Homozygous")
 View(esrGenesMA152)
+esrGenesMA152$line <- "152"
 esrGenesGC11 <- resultsESR(ddsDefGC_11,"Holly_11","Holly_Anc",genesGC_11,"Heterozygous")
+esrGenesGC11 %>% 
+  rename(
+     log2FoldChange = log2FoldChangeHolly_11
+    )
+esrGenesGC11$line <- "11"
+
+esrGenesTest <- rbind(esrGenesMA152,esrGenesGC11)
+
 esrGenesGC18 <- resultsESR(ddsDefGC_18,"Holly_18","Holly_Anc",genesGC_18,"Heterozygous")
 esrGenesGC7 <- resultsESR(ddsDefGC_7,"Holly_7","Holly_Anc",genesGC_7,"Heterozygous")
 View(esrGenesGC7)
@@ -6691,14 +6740,31 @@ esrGenesGC76 <- resultsESR(ddsDefGC_76,"Holly_76","Holly_Anc",genesGC_76,"Hetero
 esrGenesGC77 <- resultsESR(ddsDefGC_77,"Holly_77","Holly_Anc",genesGC_77,"Heterozygous")
 esrGenesGC8 <- resultsESR(ddsDefGC_8,"Holly_8","Holly_Anc",genesGC_8,"Heterozygous")
 
-esrGenesHet <- cbind(esrGenesMA152,esrGenesGC11,esrGenesGC18,esrGenesGC7,esrGenesGC4,esrGenesGC49,esrGenesGC59c,esrGenesGC61,esrGenesGC76,esrGenesGC77,esrGenesGC8)
+esrGenesHet <- cbind(esrGenesGC11,esrGenesGC18$log2FoldChangeHolly_18,esrGenesGC7$log2FoldChangeHolly_7,esrGenesGC4$log2FoldChangeHolly_4,esrGenesGC49$log2FoldChangeHolly_49,esrGenesGC59c$log2FoldChangeHolly_59,esrGenesGC61$log2FoldChangeHolly_61,esrGenesGC76$log2FoldChangeHolly_76,esrGenesGC77$log2FoldChangeHolly_77,esrGenesGC8$log2FoldChangeHolly_8)
+View(esrGenesHet)
+
+# Library
+library(ggplot2)
+
+# Dummy data
+x <- LETTERS[1:20]
+y <- paste0("var", seq(1,20))
+data <- expand.grid(X=x, Y=y)
+data$Z <- runif(400, 0, 5)
+ View(data)
+# Heatmap 
+ggplot(data, aes(X, Y, fill= Z)) + 
+  geom_tile()
+
+ggplot(esrGenesHet, aes())
+
 
 ##trial run of heatmap 
 # want genes on y axis 
 # sample clustered by ancestor and ploidy on x axis
 # values based on log2foldchange 
 library(ggplot2)
-BiocManager::install("ComplexHeatmap")
+# BiocManager::install("ComplexHeatmap")
 library(ComplexHeatmap)
 set.seed(123)
 nr1 = 4; nr2 = 8; nr3 = 6; nr = nr1 + nr2 + nr3
@@ -6760,48 +6826,48 @@ esrGenesMA123 <- resultsESR(ddsDefMAnewS123,"123","Anc",genesMAnewS123,"Homozygo
 
 ############################################################################################################
 ### need to do the euploid samples next - ESR genes
-esrGenesGC2 <- resultsESR(ddsDefGC_2,"Holly_2","Holly_Anc",genesGC_2)
+esrGenesGC2 <- resultsESR(ddsDefGC_2,"Holly_2","Holly_Anc",genesGC_2,"Heterozygous")
 
-esrGenesGC3 <- resultsESR(ddsDefGC_3,"Holly_3","Holly_Anc",genesGC_3)
+esrGenesGC3 <- resultsESR(ddsDefGC_3,"Holly_3","Holly_Anc",genesGC_3,"Heterozygous")
 
-esrGenesGC5 <- resultsESR(ddsDefGC_5,"Holly_5","Holly_Anc",genesGC_5)
+esrGenesGC5 <- resultsESR(ddsDefGC_5,"Holly_5","Holly_Anc",genesGC_5,"Heterozygous")
 
-esrGenesGC9 <- resultsESR(ddsDefGC_9,"Holly_9","Holly_Anc",genesGC_9)
+esrGenesGC9 <- resultsESR(ddsDefGC_9,"Holly_9","Holly_Anc",genesGC_9,"Heterozygous")
 
 ### for MA euploid samples 
-esrGenesMA1 <- resultsESR(ddsDefMAold_1,"SC001","SCA",genesMAold_1)
+esrGenesMA1 <- resultsESR(ddsDefMAold_1,"SC001","SCA",genesMAold_1,"Homozygous")
 # write.csv(esrGenesMA1$Sig,file="sigESRGenesMA1.csv")
 # write.csv(esrGenesMA1$NonSig,file="nonSigESRGenesMA1.csv")
 
-esrGenesMA2 <- resultsESR(ddsDefMAold_2,"SC002","SCA",genesMAold_2)
+esrGenesMA2 <- resultsESR(ddsDefMAold_2,"SC002","SCA",genesMAold_2,"Homozygous")
 # write.csv(esrGenesMA2$Sig,file="sigESRGenesMA2.csv")
 # write.csv(esrGenesMA2$NonSig,file="nonSigESRGenesMA2.csv")
 
-esrGenesMA3 <- resultsESR(ddsDefMAold_3,"SC003","SCA",genesMAold_3)
+esrGenesMA3 <- resultsESR(ddsDefMAold_3,"SC003","SCA",genesMAold_3,"Homozygous")
 # write.csv(esrGenesMA3$Sig,file="sigESRGenesMA3.csv")
 # write.csv(esrGenesMA3$NonSig,file="nonSigESRGenesMA3.csv")
 
-esrGenesMA4 <- resultsESR(ddsDefMAold_4,"SC004","SCA",genesMAold_4)
+esrGenesMA4 <- resultsESR(ddsDefMAold_4,"SC004","SCA",genesMAold_4,"Homozygous")
 # write.csv(esrGenesMA4$Sig,file="sigESRGenesMA4.csv")
 # write.csv(esrGenesMA4$NonSig,file="nonSigESRGenesMA4.csv")
 
-esrGenesMA5 <- resultsESR(ddsDefMAold_5,"SC005","SCA",genesMAold_5)
+esrGenesMA5 <- resultsESR(ddsDefMAold_5,"SC005","SCA",genesMAold_5,"Homozygous")
 # write.csv(esrGenesMA5$Sig,file="sigESRGenesMA5.csv")
 # write.csv(esrGenesMA5$NonSig,file="nonSigESRGenesMA5.csv")
 
-esrGenesMA7 <- resultsESR(ddsDefMAold_7,"SC007","SCA",genesMAold_7)
+esrGenesMA7 <- resultsESR(ddsDefMAold_7,"SC007","SCA",genesMAold_7,"Homozygous")
 # write.csv(esrGenesMA7$Sig,file="sigESRGenesMA7.csv")
 # write.csv(esrGenesMA7$NonSig,file="nonSigESRGenesMA7.csv")
 
-esrGenesMA8 <- resultsESR(ddsDefMAold_8,"SC008","SCA",genesMAold_8)
+esrGenesMA8 <- resultsESR(ddsDefMAold_8,"SC008","SCA",genesMAold_8,"Homozygous")
 # write.csv(esrGenesMA8$Sig,file="sigESRGenesMA8.csv")
 # write.csv(esrGenesMA8$NonSig,file="nonSigESRGenesMA8.csv")
 
-esrGenesMA50 <- resultsESR(ddsDefMAnewS50,"50","Anc",genesMAnewS50)
+esrGenesMA50 <- resultsESR(ddsDefMAnewS50,"50","Anc",genesMAnewS50,"Homozygous")
 # write.csv(esrGenesMA50$Sig,file="sigESRGenesMA50.csv")
 # write.csv(esrGenesMA50$NonSig,file="nonSigESRGenesMA50.csv")
 
-esrGenesMA115 <- resultsESR(ddsDefMAnewS115,"115","Anc",genesMAnewS115)
+esrGenesMA115 <- resultsESR(ddsDefMAnewS115,"115","Anc",genesMAnewS115,"Homozygous")
 # write.csv(esrGenesMA115$Sig,file="sigESRGenesMA115.csv")
 # write.csv(esrGenesMA115$NonSig,file="nonSigESRGenesMA115.csv")
 
@@ -6978,12 +7044,12 @@ upSetASRHetAneu <- list(GCS11=ASRGenesGC11$Sig$GENEID,
 pdf("asrGenesHetAneu.pdf",width=12,height=10)
 upset(fromList(upSetASRHetAneu),nsets=10,keep.order = F,matrix.color = "turquoise",main.bar.color = "black",sets.bar.color = "black",order.by = "freq",sets.x.label = "DE ASR Genes")
 dev.off()
-
-UpSet_contentsHetAneu <- listVennRegions(plotVenn(upSetASRHetAneu))
-ASR_genes_AneuHet <- UpSet_contents$`0, 1, 1, 1, 0, 1, 1, 0, 1, 1 (GCS18, GCS7, GCS4, GCS59, GCS61, GCS77, GCS8)`
-ASR_genes_AneuHet <- as.character(ASR_genes_AneuHet)
-ASR_genes_AneuHet <- ensembldb::select(txdb, keys=ASR_genes_AneuHet, columnns="GENEID","TXCHROM" , keytype="GENEID")
-
+# 
+# UpSet_contentsHetAneu <- listVennRegions(plotVenn(upSetASRHetAneu))
+# ASR_genes_AneuHet <- UpSet_contents$`0, 1, 1, 1, 0, 1, 1, 0, 1, 1 (GCS18, GCS7, GCS4, GCS59, GCS61, GCS77, GCS8)`
+# ASR_genes_AneuHet <- as.character(ASR_genes_AneuHet)
+# ASR_genes_AneuHet <- ensembldb::select(txdb, keys=ASR_genes_AneuHet, columnns="GENEID","TXCHROM" , keytype="GENEID")
+# 
 
 
 

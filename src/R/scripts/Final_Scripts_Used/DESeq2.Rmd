@@ -6740,66 +6740,129 @@ esrGenesGC76 <- resultsESR(ddsDefGC_76,"Holly_76","Holly_Anc",genesGC_76,"Hetero
 esrGenesGC77 <- resultsESR(ddsDefGC_77,"Holly_77","Holly_Anc",genesGC_77,"Heterozygous")
 esrGenesGC8 <- resultsESR(ddsDefGC_8,"Holly_8","Holly_Anc",genesGC_8,"Heterozygous")
 
-esrGenesHet <- cbind(esrGenesGC11,esrGenesGC18$log2FoldChangeHolly_18,esrGenesGC7$log2FoldChangeHolly_7,esrGenesGC4$log2FoldChangeHolly_4,esrGenesGC49$log2FoldChangeHolly_49,esrGenesGC59c$log2FoldChangeHolly_59,esrGenesGC61$log2FoldChangeHolly_61,esrGenesGC76$log2FoldChangeHolly_76,esrGenesGC77$log2FoldChangeHolly_77,esrGenesGC8$log2FoldChangeHolly_8)
+esrGenesHet <- cbind(esrGenesGC11$GENEID, esrGenesGC11$type, esrGenesGC11$anc, esrGenesGC11$log2FoldChangeHolly_11,esrGenesGC18$log2FoldChangeHolly_18,esrGenesGC7$log2FoldChangeHolly_7,esrGenesGC4$log2FoldChangeHolly_4,esrGenesGC49$log2FoldChangeHolly_49,esrGenesGC59c$log2FoldChangeHolly_59,esrGenesGC61$log2FoldChangeHolly_61,esrGenesGC76$log2FoldChangeHolly_76,esrGenesGC77$log2FoldChangeHolly_77,esrGenesGC8$log2FoldChangeHolly_8)
 View(esrGenesHet)
+colnames(esrGenesHet) <- c("GENEID","type","anc","11","18","7","4","49","59","61","76","77","8")
+View(esrGenesHet)
+
+
+
+
+
+
+```
+
+```{r heatmap, include=FALSE,echo=FALSE,eval=TRUE}
 
 # Library
 library(ggplot2)
+library(tidyr)
+library(tibble)
+library(hrbrthemes)
+library(dplyr)
 
-# Dummy data
-x <- LETTERS[1:20]
-y <- paste0("var", seq(1,20))
-data <- expand.grid(X=x, Y=y)
-data$Z <- runif(400, 0, 5)
- View(data)
+# Volcano dataset
+rm(volcano)
+volcano
+View(volcano)
+
+
 # Heatmap 
-ggplot(data, aes(X, Y, fill= Z)) + 
-  geom_tile()
+volc <- volcano %>% as_tibble() 
+View(volc)
+  volc <- volc %>% rowid_to_column(var="X")
+ volc <- volc  %>% gather(key="Y", value="Z", -1)
+ volc <- volc  %>% mutate(Y=as.numeric(gsub("V","",Y)))  # Change Y to numeric
 
-ggplot(esrGenesHet, aes())
+  # Viz
+  ggplot(volc, aes(X, Y, fill= Z)) + 
+    geom_tile() +
+    theme_ipsum() +
+    theme(legend.position="none")
+
+### Try with my esrGenes data 
+  
+esrGenesHet
+esrHet <- esrGenesHet %>% as_tibble()
+View(esrHet)
+esrHet <- esrHet[,c(1,4:13)]
+esrHet <- esrHet %>% gather(key="Y", value="Z", -1)
+esrHet <- esrHet %>% mutate(Z=as.numeric(Z))
+  # Viz
+  ggplot(esrHet, aes(Y, GENEID, fill= Z)) + 
+    geom_tile() +
+  scale_fill_distiller(palette = "RdPu") +
+  theme_ipsum()
+
+  
+  
+  ## Let's try pHeatmap now 
+  
+library(pheatmap)
+  BiocManager::install("DESeq")
+  # load package
+library("DESeq")
+ 
+# load data and subset
+example_file <- system.file ("extra/TagSeqExample.tab", package="DESeq")
+data <- read.delim(example_file, header=T, row.names="gene")
+data_subset <- as.matrix(data[rowSums(data)>50000,])
+ str(data_subset)
+# create heatmap using pheatmap
+pheatmap(data_subset)
+  
+  
+pheatmap(esrGenesHet)
+#NAs introduced by coercion 
+# problem likely that it is trying to cluster the first column (geneIDs) so I will have to make that rownames instead
+library(tidyverse)
+esrGenesHet2 <- as.data.frame(esrGenesHet)
+esrGenesHet2 <- esrGenesHet2 %>% remove_rownames %>% column_to_rownames(var="GENEID")
+View(esrGenesHet2)
+pheatmap(esrGenesHet2)
+esrGenesHet3 <- esrGenesHet2[,c(3:12)]
+View(esrGenesHet3)
+pheatmap(esrGenesHet3)
+str(esrGenesHet3)
+esrGenesHet3 <- mutate_all(esrGenesHet3, function(x) as.numeric(as.character(x)))
+str(esrGenesHet3)
+View(esrGenesHet3)
+esrGenesHet4 <- as.matrix(esrGenesHet3)
+View(esrGenesHet4)
+rownames(esrGenesHet4) <- rownames(esrGenesHet2)
+str(esrGenesHet4)
+pheatmap(esrGenesHet4)
+
+## let's try adding annotations now 
+# for the lines (by anc)
+my_sample_col <- data.frame(sample = rep(c("Hh"), c(10)))
+View(my_sample_col)
+row.names(my_sample_col) <- colnames(esrGenesHet4)
+line11chr <- c("I,XV")
+line76chr <- c("IX,X,XIV")
+my_chrs <- c(line11chr,"I","I","V","V","VII","VII",line76chr,"XII","XVI")
+View(my_chrs)
+my_sample_col$chr <- my_chrs
+
+# for the genes 
+# these are all ESR genes (for now)
+my_gene_col <- esrGenesHet[,2]
+View(my_gene_col)
+str(my_gene_col)
+my_gene_col <- as.data.frame(my_gene_col)
+rownames(my_gene_col) <- rownames(esrGenesHet4)
+head(my_gene_col)
+# try adding the annotations to the heatmap 
+pheatmap(esrGenesHet4, annotation_row = my_gene_col,annotation_col=my_sample_col)
 
 
-##trial run of heatmap 
-# want genes on y axis 
-# sample clustered by ancestor and ploidy on x axis
-# values based on log2foldchange 
-library(ggplot2)
-# BiocManager::install("ComplexHeatmap")
-library(ComplexHeatmap)
-set.seed(123)
-nr1 = 4; nr2 = 8; nr3 = 6; nr = nr1 + nr2 + nr3
-nc1 = 6; nc2 = 8; nc3 = 10; nc = nc1 + nc2 + nc3
-mat = cbind(rbind(matrix(rnorm(nr1*nc1, mean = 1,   sd = 0.5), nr = nr1),
-          matrix(rnorm(nr2*nc1, mean = 0,   sd = 0.5), nr = nr2),
-          matrix(rnorm(nr3*nc1, mean = 0,   sd = 0.5), nr = nr3)),
-    rbind(matrix(rnorm(nr1*nc2, mean = 0,   sd = 0.5), nr = nr1),
-          matrix(rnorm(nr2*nc2, mean = 1,   sd = 0.5), nr = nr2),
-          matrix(rnorm(nr3*nc2, mean = 0,   sd = 0.5), nr = nr3)),
-    rbind(matrix(rnorm(nr1*nc3, mean = 0.5, sd = 0.5), nr = nr1),
-          matrix(rnorm(nr2*nc3, mean = 0.5, sd = 0.5), nr = nr2),
-          matrix(rnorm(nr3*nc3, mean = 1,   sd = 0.5), nr = nr3))
-   )
-mat = mat[sample(nr, nr), sample(nc, nc)] # random shuffle rows and columns
-rownames(mat) = paste0("row", seq_len(nr))
-colnames(mat) = paste0("column", seq_len(nc))
-Heatmap(mat)
-View(mat)
-set.seed(123)
 
-mat = matrix(rnorm(100), 10)
 
-rownames(mat) = paste0("R", 1:10)
-
-colnames(mat) = paste0("C", 1:10)
-
-column_ha = HeatmapAnnotation(foo1 = runif(10), bar1 = anno_barplot(runif(10)))
-
-row_ha = rowAnnotation(foo2 = runif(10), bar2 = anno_barplot(runif(10)))
-
-Heatmap(mat, name = "mat", top_annotation = column_ha, right_annotation = row_ha)
+```
 
 
 
+```{r esrGenes, include=TRUE,echo=FALSE,eval=TRUE}
 ####################### MA samples Aneuploids
 
 esrGenesMA9 <- resultsESR(ddsDefMAold_9,"SC009","SCA",genesMAoldS9,"Homozygous")
